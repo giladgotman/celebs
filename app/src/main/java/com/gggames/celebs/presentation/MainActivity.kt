@@ -1,4 +1,4 @@
-package com.gggames.celebs
+package com.gggames.celebs.presentation
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
