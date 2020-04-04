@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
-import celebs.gggames.com.R
+import com.gggames.celebs.R
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.

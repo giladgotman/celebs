@@ -1,4 +1,4 @@
-package celebs.gggames.com
+package com.gggames.celebs
 
 import org.junit.Test
 
