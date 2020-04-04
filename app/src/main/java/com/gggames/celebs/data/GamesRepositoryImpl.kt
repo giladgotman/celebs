@@ -6,7 +6,7 @@ class GamesRepositoryImpl(
     private val firebaseGamesDataSource: GamesDataSource
 ) : GamesRepository{
     override fun getGames(): List<Game> {
-        TODO("Not yet implemented")
+        return firebaseGamesDataSource.getGames()
     }
 
 }
