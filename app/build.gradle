@@ -54,4 +54,9 @@ dependencies {
     // Firebase
     implementation "com.google.firebase:firebase-analytics:$versions.firebase_sdk"
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.2'
+
+
+    // rx-java
+    implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
 }
