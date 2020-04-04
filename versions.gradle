@@ -1,3 +1,4 @@
 ext.versions = [
-        firebase_sdk    : '17.2.3'
+        firebase_sdk    : '17.2.3',
+        jetpack_compose    : '0.1.0-dev02'
 ]

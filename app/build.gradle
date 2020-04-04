@@ -17,6 +17,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -54,4 +59,9 @@ dependencies {
     // Firebase
     implementation "com.google.firebase:firebase-analytics:$versions.firebase_sdk"
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.2'
+
+    //jetpack compose
+    implementation "androidx.ui:ui-tooling:$versions.jetpack_compose"
+    implementation "androidx.ui:ui-layout:$versions.jetpack_compose"
+    implementation "androidx.ui:ui-material:$versions.jetpack_compose"
 }
