@@ -10,11 +10,9 @@ import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.data.FirebaseGamesDataSource
-import com.gggames.celebs.data.GamesRepository
 import com.gggames.celebs.data.GamesRepositoryImpl
+import com.gggames.celebs.domain.GetGamesUseCase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -23,7 +21,7 @@ class FirstFragment : Fragment() {
 
     private val TAG = "gilad"
 
-    private lateinit var gamesRepo : GamesRepository
+    private lateinit var getGamesUseCase : GetGamesUseCase
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -35,17 +33,17 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gamesRepo = GamesRepositoryImpl(FirebaseGamesDataSource(FirebaseFirestore.getInstance()))
+        getGamesUseCase = GetGamesUseCase(GamesRepositoryImpl(FirebaseGamesDataSource(FirebaseFirestore.getInstance())))
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
 
-        getGames()
+        fetchGames()
     }
 
-    private fun getGames() {
+    private fun fetchGames() {
         Log.d(TAG, "fetching games");
-        val games = gamesRepo.getGames()
+        val games = getGamesUseCase()
         Log.d(TAG, "fetched games: $games");
     }
 }
