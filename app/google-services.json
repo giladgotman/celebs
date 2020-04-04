@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "164185231772",
+    "firebase_url": "https://celebs-9ac8d.firebaseio.com",
+    "project_id": "celebs-9ac8d",
+    "storage_bucket": "celebs-9ac8d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164185231772:android:5555cdfeaad8a848e73859",
+        "android_client_info": {
+          "package_name": "com.gggames.celebs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164185231772-44m91lfdc43317fa2fhat56gh4vid4c9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gggames.celebs",
+            "certificate_hash": "7c63b4d02dbe0c2bad8cc0c90eacbfe3a94ed4cf"
+          }
+        },
+        {
+          "client_id": "164185231772-t7cv150r523eruu7hb09rvl59f5fvo3e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARQuFftiLix9_btCjqAxg09eh84NgXsXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164185231772-t7cv150r523eruu7hb09rvl59f5fvo3e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
