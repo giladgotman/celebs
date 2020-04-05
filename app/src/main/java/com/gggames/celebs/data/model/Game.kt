@@ -20,7 +20,7 @@ data class GameInfo(
 sealed class GameState {
     data class Created(
         private val myCards: List<Card>,
-        private val otherCards: List<PlayersWithCards>
+        private val otherCardsCount: Map<Player, Int>
     ): GameState()
 
     data class Ready(private val gameInfo: GameInfo): GameState()

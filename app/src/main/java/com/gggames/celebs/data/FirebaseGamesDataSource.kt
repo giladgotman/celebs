@@ -1,12 +1,12 @@
 package com.gggames.celebs.data
 
 import android.util.Log
-import com.gggames.celebs.data.model.Game
-import com.gggames.celebs.data.model.Group
+import com.gggames.celebs.data.model.*
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Single
+import timber.log.Timber
 
 
 class FirebaseGamesDataSource(
@@ -47,9 +47,16 @@ fun DocumentSnapshot.toGameEntity() =
             data["name"] as String,
             (data["createdAt"] as Timestamp).seconds,
             (data["celebsCount"] as Long).toInt(),
-            data["groups"] as ArrayList<Group>
+            data["groups"] as ArrayList<Group>,
+            data["rounds"] as ArrayList<Round>,
+            parseGameState(data["state"])
         )
     }
+
+fun parseGameState(any: Any?): GameState {
+    Timber.w("any: $any")
+    return GameState.Created(listOf(Card("Putin")), mapOf(Player("gilad") to 5))
+}
 
 
 
