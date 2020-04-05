@@ -44,10 +44,9 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         getGamesUseCase = GetGamesUseCase(GamesRepositoryImpl(FirebaseGamesDataSource(FirebaseFirestore.getInstance())))
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            fetchGames()
+//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
-
-        fetchGames()
     }
 
     private fun fetchGames() {
