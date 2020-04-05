@@ -43,6 +43,11 @@ class FirebaseGamesDataSource(
 
     override fun addGame(game: Game): Completable {
         Timber.w("addGame: $game")
+
+        val gameRaw = game.toRaw()
+
+        Timber.w("gameRaw: $gameRaw")
+
         return Completable.complete()
     }
 }
