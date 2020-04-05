@@ -59,4 +59,7 @@ dependencies {
     // rx-java
     implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
     implementation "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
+
+    //Timber
+    implementation 'com.jakewharton.timber:timber:4.5.1'
 }
