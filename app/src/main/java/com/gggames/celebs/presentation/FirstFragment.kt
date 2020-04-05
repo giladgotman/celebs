@@ -7,9 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.data.FirebaseGamesDataSource
+import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.data.GamesRepositoryImpl
 import com.gggames.celebs.domain.GetGamesUseCase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,7 +41,11 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getGamesUseCase = GetGamesUseCase(GamesRepositoryImpl(FirebaseGamesDataSource(FirebaseFirestore.getInstance())))
+        getGamesUseCase = GetGamesUseCase(GamesRepositoryImpl(
+            FirebaseGamesDataSource(
+                FirebaseFirestore.getInstance()
+            )
+        ))
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
             fetchGames()
 //            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)

@@ -1,15 +1,27 @@
 package com.gggames.celebs.presentation
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.gggames.celebs.R
-
+import com.gggames.celebs.data.GamesRepositoryImpl
+import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
+import com.gggames.celebs.domain.AddGameUseCase
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    val addGameUseCase = AddGameUseCase(GamesRepositoryImpl(
+        FirebaseGamesDataSource(
+            FirebaseFirestore.getInstance()
+        )
+    ))
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,9 +29,13 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         createGameFab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            addGameUseCase()
         }
+    }
+
+    private fun createSnackbar(view: View) {
+        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            .setAction("Action", null).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

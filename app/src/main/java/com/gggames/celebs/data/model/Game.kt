@@ -10,22 +10,22 @@ data class Game (val id: String,
 )
 
 data class GameInfo(
-    private val round: Round,
-    private val score: Map<Group, Int>,
-    private val totalCards: Int,
-    private val cardsInDeck: Int,
-    private val currentPlayer: Player
+    val round: Round,
+    val score: Map<Group, Int>,
+    val totalCards: Int,
+    val cardsInDeck: Int,
+    val currentPlayer: Player
 )
 
 sealed class GameState {
     data class Created(
-        private val myCards: List<Card>,
-        private val otherCardsCount: Map<Player, Int>
+        val myCards: List<Card>,
+        val otherCardsCount: Map<Player, Int>
     ): GameState()
 
-    data class Ready(private val gameInfo: GameInfo): GameState()
+    data class Ready(val gameInfo: GameInfo): GameState()
 
-    data class Started(private val gameInfo: GameInfo): GameState()
+    data class Started(val gameInfo: GameInfo): GameState()
 
-    data class Finished(private val gameInfo: GameInfo): GameState()
+    data class Finished(val gameInfo: GameInfo): GameState()
 }
