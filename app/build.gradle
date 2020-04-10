@@ -62,4 +62,8 @@ dependencies {
 
     //Timber
     implementation 'com.jakewharton.timber:timber:4.5.1'
+
+    //anko
+    implementation "org.jetbrains.anko:anko-commons:$versions.anko"
+    implementation "org.jetbrains.anko:anko-design:$versions.anko" // For SnackBars
 }
