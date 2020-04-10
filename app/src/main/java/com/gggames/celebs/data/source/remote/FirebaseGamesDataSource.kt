@@ -3,9 +3,9 @@ package com.gggames.celebs.data.source.remote
 import android.util.Log
 import com.gggames.celebs.data.GamesDataSource
 import com.gggames.celebs.data.model.Game
-import com.gggames.celebs.data.source.remote.model.*
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentSnapshot
+import com.gggames.celebs.data.source.remote.model.GameRaw
+import com.gggames.celebs.data.source.remote.model.toRaw
+import com.gggames.celebs.data.source.remote.model.toUi
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -24,11 +24,9 @@ class FirebaseGamesDataSource(
             firestore.collection("games").get()
                 .addOnSuccessListener { result ->
                     for (game in result) {
-                        val gameEntity = game.toGameRaw()
-                        Log.d(TAG, "gameEntity ${game.toGameRaw()}")
-                        gameEntity?.let {
-                            games.add(it.toUi())
-                        }
+                        val gameEntity = game.toObject(GameRaw().javaClass)
+//                        val gameEntity = game.toGameRaw()
+                            games.add(gameEntity.toUi())
                     }
                     emitter.onSuccess(games)
                 }
@@ -43,33 +41,39 @@ class FirebaseGamesDataSource(
 
     override fun addGame(game: Game): Completable {
         Timber.w("addGame: $game")
-
         val gameRaw = game.toRaw()
-
         Timber.w("gameRaw: $gameRaw")
-
-        return Completable.complete()
+        return Completable.fromCallable {
+            firestore.collection("games")
+                .document(gameRaw.id).set(gameRaw).addOnSuccessListener {
+                    Timber.i("game added to firebase")
+                    Completable.complete()
+                }
+                .addOnFailureListener { error ->
+                    Timber.e(error, "error while trying to add game")
+                }
+        }
     }
 }
 
 
-fun DocumentSnapshot.toGameRaw() =
-    this.data?.let { data ->
-        GameRaw(
-            this.id,
-            data["name"] as String,
-            data["createdAt"] as Timestamp,
-            data["celebsCount"] as Long,
-            data["groups"] as ArrayList<GroupRaw>,
-            data["rounds"] as ArrayList<RoundRaw>,
-            parseGameState(data["state"])
-        )
-    }
-
-fun parseGameState(any: Any?): GameStateRaw {
-    Timber.w("any: $any")
-    return GameStateRaw(state = "created", myCards = listOf(CardRaw("Putin")), otherCardsCount = mapOf(PlayerRaw("gilad") to 5))
-}
+//fun DocumentSnapshot.toGameRaw() =
+//    this.data?.let { data ->
+//        GameRaw(
+//            this.id,
+//            data["name"] as String,
+//            data["createdAt"] as Timestamp,
+//            data["celebsCount"] as Long,
+//            data["groups"] as ArrayList<GroupRaw>,
+//            data["rounds"] as ArrayList<RoundRaw>,
+//            parseGameState(data["state"])
+//        )
+//    }
+//
+//fun parseGameState(any: Any?): GameStateRaw {
+//    Timber.w("any: $any")
+//    return GameStateRaw(state = "created", myCards = listOf(CardRaw("Putin")), otherCardsCount = mapOf("gilad" to 5))
+//}
 
 
 

@@ -7,7 +7,7 @@ import java.util.*
 
 fun Card.toRaw() = CardRaw(this.name)
 
-fun Player.toRaw() = PlayerRaw(this.name)
+fun Player.toRaw() = PlayerRaw(this.id, this.name)
 
 fun Group.toRaw() = GroupRaw(this.name, this.players.map { it.toRaw() })
 
@@ -17,7 +17,8 @@ fun GameState.toRaw() = when (this) {
     is GameState.Created -> GameStateRaw(
         "created",
         this.myCards.map { it.toRaw() },
-        this.otherCardsCount.mapKeys { it.key.toRaw() })
+        this.otherCardsCount
+    )
     is GameState.Ready -> TODO()
     is GameState.Started -> TODO()
     is GameState.Finished -> TODO()

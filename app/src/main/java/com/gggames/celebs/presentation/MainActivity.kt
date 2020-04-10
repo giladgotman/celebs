@@ -11,6 +11,7 @@ import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.domain.AddGameUseCase
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
+import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         FirebaseGamesDataSource(
             FirebaseFirestore.getInstance()
         )
-    ))
+    ),
+        SchedulerProvider()
+    )
 
 
 
