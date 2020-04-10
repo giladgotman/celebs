@@ -14,6 +14,7 @@ fun Group.toRaw() = GroupRaw(this.name, this.players.map { it.toRaw() })
 fun Round.toRaw() = RoundRaw(this.name)
 
 fun GameState.toRaw() = when (this) {
+    is GameState.Empty -> GameStateRaw("empty")
     is GameState.Created -> GameStateRaw(
         "created",
         this.myCards.map { it.toRaw() },

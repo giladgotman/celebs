@@ -15,6 +15,7 @@ fun GameStateRaw.toUi() = when (this.state) {
     "created" -> GameState.Created(
         this.myCards.map { it.toUi() },
         this.otherCardsCount)
+    "empty" -> GameState.Empty
     else -> TODO()
 }
 

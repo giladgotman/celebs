@@ -6,7 +6,7 @@ data class Game (val id: String,
                  val celebsCount: Int = 6,
                  val groups: List<Group> = emptyList(),
                  val rounds: List<Round> = defaultRoundsList(),
-                 val state: GameState
+                 val state: GameState = GameState.Empty
 )
 
 data class GameInfo(
@@ -18,6 +18,7 @@ data class GameInfo(
 )
 
 sealed class GameState {
+    object Empty : GameState()
     data class Created(
         val myCards: List<Card>,
         val otherCardsCount: Map<String, Int>
