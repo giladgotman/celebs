@@ -20,8 +20,8 @@ class AddGameUseCase(
                 })
 
     fun createDummyGame(): Game =
-        Game(id = "gameTestId",
-            name = "testGame",
+        Game(id = "gameTestId2",
+            name = "testGame2",
             createdAt = System.currentTimeMillis(),
             groups = listOf(
                 Group(("group1"),

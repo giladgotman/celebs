@@ -11,7 +11,7 @@ data class Game (val id: String,
 
 data class GameInfo(
     val round: Round,
-    val score: Map<Group, Int>,
+    val score: Map<String, Int>,
     val totalCards: Int,
     val cardsInDeck: Int,
     val currentPlayer: Player

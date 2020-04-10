@@ -57,23 +57,4 @@ class FirebaseGamesDataSource(
 }
 
 
-//fun DocumentSnapshot.toGameRaw() =
-//    this.data?.let { data ->
-//        GameRaw(
-//            this.id,
-//            data["name"] as String,
-//            data["createdAt"] as Timestamp,
-//            data["celebsCount"] as Long,
-//            data["groups"] as ArrayList<GroupRaw>,
-//            data["rounds"] as ArrayList<RoundRaw>,
-//            parseGameState(data["state"])
-//        )
-//    }
-//
-//fun parseGameState(any: Any?): GameStateRaw {
-//    Timber.w("any: $any")
-//    return GameStateRaw(state = "created", myCards = listOf(CardRaw("Putin")), otherCardsCount = mapOf("gilad" to 5))
-//}
-
-
 

@@ -2,26 +2,26 @@ package com.gggames.celebs.presentation
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.data.GamesRepositoryImpl
+import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.domain.GetGamesUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.fragment_first.*
-import java.lang.StringBuilder
+import kotlinx.android.synthetic.main.fragment_games.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class GamesFragment : Fragment() {
 
     private val TAG = "gilad"
 
@@ -36,7 +36,7 @@ class FirstFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first, container, false)
+        return inflater.inflate(R.layout.fragment_games, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +48,10 @@ class FirstFragment : Fragment() {
         ))
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
             fetchGames()
-//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
+
+        createGameFab.setOnClickListener {
+            findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment)
         }
     }
 

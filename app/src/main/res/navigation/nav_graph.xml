@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/GamesFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.gggames.celebs.presentation.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/GamesFragment"
+        android:name="com.gggames.celebs.presentation.GamesFragment"
+        android:label="@string/games_fragment_label"
+        tools:layout="@layout/fragment_games">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_GamesFragment_to_CreateGameFragment"
+            app:destination="@id/CreateGameFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.gggames.celebs.presentation.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/CreateGameFragment"
+        android:name="com.gggames.celebs.presentation.CreateGameFragment"
+        android:label="@string/create_game_fragment_label"
+        tools:layout="@layout/fragment_create_game">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_CreateGame_to_GamesFragment"
+            app:destination="@id/GamesFragment" />
     </fragment>
 </navigation>
