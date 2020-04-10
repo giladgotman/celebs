@@ -10,60 +10,90 @@
     android:paddingTop="@dimen/medium_margin"
     >
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/gameName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/create_game_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="@string/create_game_name"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/groupName1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
         android:layout_marginTop="@dimen/default_margin"
-        android:text="@string/create_game_group_1_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gameName" />
+        app:layout_constraintTop_toBottomOf="@+id/gameName"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="@string/create_game_group_1_name"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/groupName2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
         android:layout_marginTop="@dimen/default_margin"
-        android:text="@string/create_game_group_2_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groupName1" />
+        app:layout_constraintTop_toBottomOf="@+id/groupName1"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="@string/create_game_group_2_name"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/groupName3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
         android:layout_marginTop="@dimen/default_margin"
-        android:text="@string/create_game_group_3_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groupName2" />
+        app:layout_constraintTop_toBottomOf="@+id/groupName2"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="@string/create_game_group_3_name"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/cardsAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/create_game_num_cards"
-        android:text="6"
-        android:inputType="number"
         android:layout_marginTop="@dimen/default_margin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groupName3" />
+        app:layout_constraintTop_toBottomOf="@+id/groupName3"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text="6"
+            android:hint="@string/create_game_num_cards"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <Button
@@ -85,4 +115,6 @@
         android:layout_marginEnd="@dimen/default_margin"
         app:layout_constraintBaseline_toBaselineOf="@id/buttonDone"
         />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
