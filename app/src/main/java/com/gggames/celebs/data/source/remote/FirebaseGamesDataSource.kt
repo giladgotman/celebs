@@ -51,6 +51,7 @@ class FirebaseGamesDataSource(
                 }
                 .addOnFailureListener { error ->
                     Timber.e(error, "error while trying to add game")
+                    Completable.error(error)
                 }
         }
     }
