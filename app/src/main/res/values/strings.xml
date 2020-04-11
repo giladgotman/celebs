@@ -3,7 +3,9 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="games_fragment_label">Games Fragment</string>
+    <string name="games_fragment_title">Games</string>
     <string name="create_game_fragment_label">Create Game Fragment</string>
+    <string name="create_game_fragment_title">Create A Game</string>
 
     <string name="games_subtitle">Press Fetch to get the games</string>
     <string name="create_game_name">Game Name</string>
