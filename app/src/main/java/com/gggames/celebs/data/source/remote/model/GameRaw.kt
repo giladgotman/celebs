@@ -10,7 +10,8 @@ data class GameRaw (
     val celebsCount: Long = 6,
     val groups: List<GroupRaw>,
     val rounds: List<RoundRaw>,
-    val state: GameStateRaw = GameStateRaw()
+    val state: GameStateRaw = GameStateRaw(),
+    val cards: List<CardRaw> = emptyList()
 ) {
     constructor() : this(
         EMPTY_VALUE,
@@ -18,8 +19,8 @@ data class GameRaw (
         Timestamp.now(),
         6,
         emptyList(),
-        emptyList(),
-        GameStateRaw())
+        emptyList()
+    )
 }
 
 data class GameInfoRaw(

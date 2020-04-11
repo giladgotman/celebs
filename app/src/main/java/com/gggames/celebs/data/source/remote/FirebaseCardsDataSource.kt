@@ -5,7 +5,6 @@ import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.source.remote.model.GameRaw
 import com.gggames.celebs.data.source.remote.model.toRaw
 import com.gggames.celebs.data.source.remote.model.toUi
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -19,9 +18,9 @@ class FirebaseCardsDataSource(
     private val path = "games\\$gameId"
 
     override fun getAllCards(): Single<List<Card>> {
-        Timber.d("fetching cards")
+        Timber.d("fetching cards, gameId: $gameId")
         return Single.create<List<Card>> { emitter ->
-            firestore.document(path).get()
+            firestore.collection("games").document("$gameId").get()
                 .addOnSuccessListener { result ->
                     val cards = result.toObject(GameRaw().javaClass)?.state?.myCards
                     cards?.let {
@@ -42,15 +41,22 @@ class FirebaseCardsDataSource(
         Timber.w("cardsRaw: $cardsRaw")
         val addPath = "games\\$gameId"
         return Completable.fromCallable {
-            firestore.document(path).update("state.myCards", FieldValue.arrayUnion(cardsRaw))
-                .addOnSuccessListener {
-                    Timber.i("cards added to path: $addPath")
-                    Completable.complete()
+            firestore.runTransaction {
+                firestore.collection("games").document("$gameId")
+                    .update("state.myCards", cardsRaw)
+                cardsRaw.forEach {
+                    firestore.collection("games")
+                        .document("$gameId")
+                        .collection("cards")
+                        .add(it)
                 }
-                .addOnFailureListener { error ->
-                    Timber.e(error, "error while trying to add cards to path: $addPath")
-                    Completable.error(error)
-                }
+            }.addOnSuccessListener {
+                Timber.i("cards added to path: $addPath")
+                Completable.complete()
+            }.addOnFailureListener { error ->
+                Timber.e(error, "error while trying to add cards to path: $addPath")
+                Completable.error(error)
+            }
         }
     }
 }
