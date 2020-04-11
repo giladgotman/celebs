@@ -3,19 +3,31 @@
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="games_fragment_label">Games Fragment</string>
-    <string name="games_fragment_title">Games</string>
     <string name="create_game_fragment_label">Create Game Fragment</string>
-    <string name="create_game_fragment_title">Create A Game</string>
+    <string name="add_cards_fragment_label">Add Cards Fragment</string>
 
-    <string name="games_subtitle">Press Fetch to get the games</string>
+    <!--    Create Game Screen-->
+    <string name="create_game_fragment_title">Create A Game</string>
     <string name="create_game_name">Game Name</string>
     <string name="create_game_group_1_name">Group 1 Name</string>
     <string name="create_game_group_2_name">Group 2 Name</string>
     <string name="create_game_group_3_name">Group 3 Name</string>
     <string name="create_game_num_cards">#cards</string>
 
+    <!--    Games Screen-->
+    <string name="games_fragment_title">Games</string>
+    <string name="games_subtitle">Press Fetch to get the games</string>
+
+
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="add_cards_description">Add your cards</string>
+    <string name="add_cards_card_1">Card 1</string>
+    <string name="add_cards_card_2">Card 2</string>
+    <string name="add_cards_card_3">Card 3</string>
+    <string name="add_cards_card_4">Card 4</string>
+    <string name="add_cards_card_5">Card 5</string>
+    <string name="add_cards_card_6">Card 6</string>
 </resources>

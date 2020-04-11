@@ -13,7 +13,9 @@
 
         <action
             android:id="@+id/action_GamesFragment_to_CreateGameFragment"
-            app:destination="@id/CreateGameFragment" />
+            app:destination="@id/CreateGameFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/CreateGameFragment"
@@ -24,5 +26,21 @@
         <action
             android:id="@+id/action_CreateGame_to_GamesFragment"
             app:destination="@id/GamesFragment" />
+        <action
+            android:id="@+id/action_CreateGameFragment_to_AddCardsFragment"
+            app:destination="@id/AddCardsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AddCardsFragment"
+        android:name="com.gggames.celebs.presentation.AddCardsFragment"
+        android:label="@string/add_cards_fragment_label"
+        tools:layout="@layout/fragment_add_cards">
+        <action
+            android:id="@+id/action_AddCardsFragment_to_GamesFragment"
+            app:destination="@id/GamesFragment"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
 </navigation>

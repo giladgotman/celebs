@@ -16,6 +16,7 @@ import com.gggames.celebs.domain.AddGameUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_create_game.*
+import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -61,6 +62,13 @@ class CreateGameFragment : Fragment() {
             val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, groupList)
 
             addGameUseCase(game)
+                .subscribe(
+                    {
+                        Timber.i("gilad game added: ${game.id}")
+                        findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment)
+                    }, {
+                        Timber.e(it,"gilad game added failed. ${it.localizedMessage}")
+                    })
         }
     }
 }

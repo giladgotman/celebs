@@ -3,21 +3,15 @@ package com.gggames.celebs.domain
 import com.gggames.celebs.data.GamesRepository
 import com.gggames.celebs.data.model.*
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
-import timber.log.Timber
+import io.reactivex.Completable
 
 class AddGameUseCase(
     private val gamesRepository: GamesRepository,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
-    operator fun invoke(game: Game = createDummyGame()) =
+    operator fun invoke(game: Game = createDummyGame()): Completable =
         gamesRepository.addGame(game)
             .compose(schedulerProvider.applyDefault())
-            .subscribe(
-                {
-                    Timber.i("gilad game added: ${game.id}")
-                }, {
-                    Timber.e(it,"gilad game added failed. ${it.localizedMessage}")
-                })
 
     fun createDummyGame(): Game =
         Game(id = "gameTestId2",
