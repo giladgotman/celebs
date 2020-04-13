@@ -7,8 +7,12 @@ import io.reactivex.Single
 class CardsRepositoryImpl(
     private val firebaseCardsDataSource: CardsDataSource
 ) : CardsRepository{
+
     override fun getAllCards(): Single<List<Card>> =
         firebaseCardsDataSource.getAllCards()
+
+    override fun getMyCards(): Single<List<Card>> =
+        firebaseCardsDataSource.getMyCards()
 
     override fun addCards(cards: List<Card>): Completable =
         firebaseCardsDataSource.addCards(cards)

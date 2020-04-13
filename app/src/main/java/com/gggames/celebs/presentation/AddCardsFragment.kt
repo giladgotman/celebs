@@ -13,7 +13,7 @@ import com.gggames.celebs.data.CardsRepositoryImpl
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
 import com.gggames.celebs.domain.AddCards
-import com.gggames.celebs.domain.GetCards
+import com.gggames.celebs.domain.GetMyCards
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_add_cards.*
@@ -25,7 +25,7 @@ import timber.log.Timber
 class AddCardsFragment : Fragment() {
 
     lateinit var addCards: AddCards
-    lateinit var getCards: GetCards
+    lateinit var getMyCards: GetMyCards
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +48,7 @@ class AddCardsFragment : Fragment() {
             SchedulerProvider()
         )
 
-        getCards = GetCards(
+        getMyCards = GetMyCards(
             CardsRepositoryImpl(
                 FirebaseCardsDataSource(
                     "cardsTest1586610436812",
@@ -71,9 +71,8 @@ class AddCardsFragment : Fragment() {
             addCardIfNotNull(editTextToCard(add_cards_card6.editText), cardList)
 
 
-            getCards().subscribe({
+            getMyCards().subscribe({
                 Timber.w("ggg get cards successfully")
-                Timber.w("ggg card 0: ${it[0]}")
             },{
                 Timber.e(it,"ggg added cards failed")
             })
