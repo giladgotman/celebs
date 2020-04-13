@@ -27,6 +27,8 @@ class AddCardsFragment : Fragment() {
     lateinit var addCards: AddCards
     lateinit var getMyCards: GetMyCards
 
+    lateinit var gameId: String
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -38,10 +40,12 @@ class AddCardsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        gameId = arguments?.getString(GAME_ID)!!
+
         addCards = AddCards(
             CardsRepositoryImpl(
                 FirebaseCardsDataSource(
-                            "cardsTest1586610436812",
+                    gameId,
                     FirebaseFirestore.getInstance()
                 )
             ),
@@ -51,7 +55,7 @@ class AddCardsFragment : Fragment() {
         getMyCards = GetMyCards(
             CardsRepositoryImpl(
                 FirebaseCardsDataSource(
-                    "cardsTest1586610436812",
+                    gameId,
                     FirebaseFirestore.getInstance()
                 )
             ),
@@ -100,3 +104,5 @@ class AddCardsFragment : Fragment() {
         }
     }
 }
+
+const val GAME_ID = "GAME_ID"

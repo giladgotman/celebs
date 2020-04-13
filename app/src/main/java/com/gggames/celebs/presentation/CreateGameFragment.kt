@@ -65,7 +65,9 @@ class CreateGameFragment : Fragment() {
                 .subscribe(
                     {
                         Timber.i("gilad game added: ${game.id}")
-                        findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment)
+                        val args = Bundle()
+                        args.putString(GAME_ID, game.id)
+                        findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment, args)
                     }, {
                         Timber.e(it,"gilad game added failed. ${it.localizedMessage}")
                     })

@@ -42,5 +42,8 @@
             android:id="@+id/action_AddCardsFragment_to_GamesFragment"
             app:destination="@id/GamesFragment"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="gameId"
+            app:argType="string" />
     </fragment>
 </navigation>
