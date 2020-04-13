@@ -7,7 +7,7 @@ fun CardRaw.toUi() = Card(this.name)
 
 fun PlayerRaw.toUi() = Player(this.id, this.name)
 
-fun GroupRaw.toUi() = Group(this.name, this.players.map { it.toUi() })
+fun GroupRaw.toUi() = Team(this.name, this.players.map { it.toUi() })
 
 fun RoundRaw.toUi() = Round.Speaking // // TODO: 05.04.20 convert to real round
 

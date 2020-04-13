@@ -17,8 +17,8 @@ class AddGameUseCase(
         Game(id = "gameTestId2",
             name = "testGame2",
             createdAt = System.currentTimeMillis(),
-            groups = listOf(
-                Group(("group1"),
+            teams = listOf(
+                Team(("group1"),
                     players = emptyList()
                 )
             )

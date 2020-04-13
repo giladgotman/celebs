@@ -4,7 +4,7 @@ data class Game (val id: String,
                  val name: String,
                  val createdAt: Long,
                  val celebsCount: Int = 6,
-                 val groups: List<Group> = emptyList(),
+                 val teams: List<Team> = emptyList(),
                  val rounds: List<Round> = defaultRoundsList(),
                  val state: GameState = GameState.Empty
 )

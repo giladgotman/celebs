@@ -8,9 +8,10 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
+import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.GamesRepositoryImpl
 import com.gggames.celebs.data.model.Game
-import com.gggames.celebs.data.model.Group
+import com.gggames.celebs.data.model.Team
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.domain.AddGameUseCase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -49,15 +50,15 @@ class CreateGameFragment : Fragment() {
         view.findViewById<Button>(R.id.buttonDone).setOnClickListener {
             val now = System.currentTimeMillis()
             val cardsCount = cardsAmount.editText?.text.toString().toInt()
-            val groupList = mutableListOf<Group>()
+            val groupList = mutableListOf<Team>()
             if (groupName1.editText?.text?.isNotEmpty() == true) {
-                groupList.add(Group(groupName1.editText?.text.toString(), emptyList()))
+                groupList.add(Team(groupName1.editText?.text.toString(), emptyList()))
             }
             if (groupName2.editText?.text?.isNotEmpty() == true) {
-                groupList.add(Group(groupName2.editText?.text.toString(), emptyList()))
+                groupList.add(Team(groupName2.editText?.text.toString(), emptyList()))
             }
             if (groupName3.editText?.text?.isNotEmpty() == true) {
-                groupList.add(Group(groupName3.editText?.text.toString(), emptyList()))
+                groupList.add(Team(groupName3.editText?.text.toString(), emptyList()))
             }
             val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, groupList)
 
@@ -67,7 +68,8 @@ class CreateGameFragment : Fragment() {
                         Timber.i("gilad game added: ${game.id}")
                         val args = Bundle()
                         args.putString(GAME_ID, game.id)
-                        args.putStringArrayList(GROUPS_KEY, ArrayList(game.groups.map { it.name }))
+                        args.putStringArrayList(GROUPS_KEY, ArrayList(game.teams.map { it.name }))
+                        GameFlow.joinGame(game)
                         findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment, args)
                     }, {
                         Timber.e(it,"gilad game added failed. ${it.localizedMessage}")

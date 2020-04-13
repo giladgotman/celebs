@@ -10,8 +10,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.domain.AddCards
-import com.gggames.celebs.domain.GetMyCards
+import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.data.GamesRepositoryImpl
+import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
+import com.gggames.celebs.domain.ChooseTeam
+import com.google.firebase.firestore.FirebaseFirestore
+import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
 import timber.log.Timber
@@ -22,8 +27,7 @@ import timber.log.Timber
 class ChooseTeamFragment : Fragment() {
 
 
-    lateinit var addCards: AddCards
-    lateinit var getMyCards: GetMyCards
+    lateinit var chooseTeam: ChooseTeam
 
     lateinit var groups: ArrayList<String>
 
@@ -56,15 +60,14 @@ class ChooseTeamFragment : Fragment() {
             }
         }
 
-//        addCards = AddCards(
-//            CardsRepositoryImpl(
-//                FirebaseCardsDataSource(
-//                            "cardsTest1586610436812",
-//                    FirebaseFirestore.getInstance()
-//                )
-//            ),
-//            SchedulerProvider()
-//        )
+        chooseTeam = ChooseTeam(
+            GamesRepositoryImpl(
+                FirebaseGamesDataSource(
+                    FirebaseFirestore.getInstance()
+                )
+            ),
+            SchedulerProvider()
+        )
 
         view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
             findNavController().navigate(R.id.action_AddCardsFragment_to_GamesFragment)
@@ -72,14 +75,18 @@ class ChooseTeamFragment : Fragment() {
         view.findViewById<Button>(R.id.buttonDone).setOnClickListener {
             val selection = teamRadioGroup.checkedRadioButtonId
             val button = view.findViewById<RadioButton>(selection)
+            val teamName = button.text.toString()
+            Timber.w("selected team: $selection, team: $teamName")
 
-            Timber.w("selected team: $selection, team: ${button.text}")
-
-//            getMyCards().subscribe({
-//                Timber.w("ggg get cards successfully")
-//            },{
-//                Timber.e(it,"ggg added cards failed")
-//            })
+            val myPlayer = Player("id_gilad", "gilad")
+            GameFlow.currentGame?.let {
+                chooseTeam(it.id, myPlayer, teamName)
+                    .subscribe({
+                        Timber.w("ggg chooseTeam $teamName successfully")
+                    },{
+                        Timber.e(it,"ggg chooseTeam $teamName failed")
+                    })
+            }
         }
 
 
