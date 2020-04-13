@@ -45,5 +45,22 @@
         <argument
             android:name="gameId"
             app:argType="string" />
+        <argument
+            android:name="groups"
+            app:argType="string[]" />
+        <action
+            android:id="@+id/action_AddCardsFragment_to_chooseTeamFragment"
+            app:destination="@id/chooseTeamFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chooseTeamFragment"
+        android:name="com.gggames.celebs.presentation.ChooseTeamFragment"
+        android:label="@string/choose_team_fragment_label"
+        tools:layout="@layout/fragment_choose_teams"
+        >
+        <argument
+            android:name="groups"
+            app:argType="string[]" />
     </fragment>
 </navigation>

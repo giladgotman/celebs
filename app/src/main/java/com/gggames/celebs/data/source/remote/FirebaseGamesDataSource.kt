@@ -25,7 +25,6 @@ class FirebaseGamesDataSource(
                 .addOnSuccessListener { result ->
                     for (game in result) {
                         val gameEntity = game.toObject(GameRaw().javaClass)
-//                        val gameEntity = game.toGameRaw()
                             games.add(gameEntity.toUi())
                     }
                     emitter.onSuccess(games)

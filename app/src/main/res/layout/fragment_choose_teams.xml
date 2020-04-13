@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/default_margin"
+    android:paddingTop="@dimen/medium_margin"
+    android:paddingEnd="@dimen/default_margin"
+    tools:context="com.gggames.celebs.presentation.AddCardsFragment">
+
+    <TextView
+        android:id="@+id/chooseTeamDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose your team!"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <RadioGroup
+        android:id="@+id/teamRadioGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_margin"
+        android:orientation="horizontal"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chooseTeamDescription">
+
+        <RadioButton
+            android:id="@+id/radioButtonTeam1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            tools:text="Team1"
+            />
+
+        <RadioButton
+            android:id="@+id/radioButtonTeam2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Team2"
+            android:visibility="gone"
+            app:layout_goneMarginEnd="0dp"
+            />
+
+        <RadioButton
+            android:id="@+id/radioButtonTeam3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Team3"
+            android:visibility="gone"
+            />
+    </RadioGroup>
+
+
+    <Button
+        android:id="@+id/buttonDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:text="@string/done"
+        android:layout_marginTop="@dimen/big_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/teamRadioGroup" />
+
+    <Button
+        android:id="@+id/buttonCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:text="@string/cancel"
+        app:layout_constraintBaseline_toBaselineOf="@id/buttonDone"
+        app:layout_constraintEnd_toStartOf="@+id/buttonDone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

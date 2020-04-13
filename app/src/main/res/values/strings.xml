@@ -5,6 +5,7 @@
     <string name="games_fragment_label">Games Fragment</string>
     <string name="create_game_fragment_label">Create Game Fragment</string>
     <string name="add_cards_fragment_label">Add Cards Fragment</string>
+    <string name="choose_team_fragment_label">Choose Team Fragment</string>
 
     <!--    Create Game Screen-->
     <string name="create_game_fragment_title">Create A Game</string>

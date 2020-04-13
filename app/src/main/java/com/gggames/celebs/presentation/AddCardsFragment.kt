@@ -28,6 +28,7 @@ class AddCardsFragment : Fragment() {
     lateinit var getMyCards: GetMyCards
 
     lateinit var gameId: String
+    lateinit var groups: ArrayList<String>
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +42,7 @@ class AddCardsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         gameId = arguments?.getString(GAME_ID)!!
+        groups = arguments?.getStringArrayList(GROUPS_KEY)!!
 
         addCards = AddCards(
             CardsRepositoryImpl(
@@ -74,14 +76,11 @@ class AddCardsFragment : Fragment() {
             addCardIfNotNull(editTextToCard(add_cards_card5.editText), cardList)
             addCardIfNotNull(editTextToCard(add_cards_card6.editText), cardList)
 
-
-            getMyCards().subscribe({
-                Timber.w("ggg get cards successfully")
-            },{
-                Timber.e(it,"ggg added cards failed")
-            })
             addCards(cardList).subscribe({
                 Timber.w("ggg added cards successfully")
+                val args = Bundle()
+                args.putStringArrayList(GROUPS_KEY, groups)
+                findNavController().navigate(R.id.action_AddCardsFragment_to_chooseTeamFragment, args)
             },{
                 Timber.e(it,"ggg added cards failed")
             })
