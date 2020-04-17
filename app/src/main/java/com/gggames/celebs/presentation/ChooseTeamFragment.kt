@@ -20,7 +20,7 @@ import timber.log.Timber
  */
 class ChooseTeamFragment : Fragment() {
 
-    lateinit var groups: ArrayList<String>
+    lateinit var teams: ArrayList<String>
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -33,9 +33,9 @@ class ChooseTeamFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        groups = arguments?.getStringArrayList(GROUPS_KEY)!!
+        teams = arguments?.getStringArrayList(TEAMS_KEY)!!
 
-        groups.forEachIndexed{index, group->
+        teams.forEachIndexed{ index, group->
             when (index) {
                 0 -> {
                     teamRadioGroup.radioButtonTeam1.text = group
@@ -67,4 +67,4 @@ class ChooseTeamFragment : Fragment() {
     }
 }
 
-const val GROUPS_KEY = "GROUPS_KEY"
+const val TEAMS_KEY = "TEAMS_KEY"

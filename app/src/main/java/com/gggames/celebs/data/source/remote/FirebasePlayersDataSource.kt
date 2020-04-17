@@ -17,10 +17,6 @@ class FirebasePlayersDataSource(
 ) : PlayersDataSource {
     private val baseGamesPath = "games"
 
-    override fun me(): Single<Player> =
-        Single.just(Player("MY_PLAYER_ID", "gilad"))
-
-
     override fun getAllPlayers(gameId: String): Single<List<Player>> {
         val playersCollectionsRef = getCollectionReference(gameId)
         Timber.d("fetching all players, playersCollectionsRef: ${playersCollectionsRef.path}")

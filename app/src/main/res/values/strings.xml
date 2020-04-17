@@ -10,9 +10,9 @@
     <!--    Create Game Screen-->
     <string name="create_game_fragment_title">Create A Game</string>
     <string name="create_game_name">Game Name</string>
-    <string name="create_game_group_1_name">Group 1 Name</string>
-    <string name="create_game_group_2_name">Group 2 Name</string>
-    <string name="create_game_group_3_name">Group 3 Name</string>
+    <string name="create_game_team_1_name">Team 1 Name</string>
+    <string name="create_game_team_2_name">Team 2 Name</string>
+    <string name="create_game_team_3_name">Team 3 Name</string>
     <string name="create_game_num_cards">#cards</string>
 
     <!--    Games Screen-->

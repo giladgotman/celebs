@@ -17,7 +17,4 @@ class PlayersRepositoryImpl(
     override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable =
         firebasePlayersDataSource.chooseTeam(gameId, player, teamName)
 
-    override fun me(): Single<Player> =
-        firebasePlayersDataSource.me()
-
 }

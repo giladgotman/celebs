@@ -72,9 +72,7 @@ class CreateGameFragment : Fragment() {
                 .subscribe(
                     {
                         Timber.i("gilad game added: ${game.id}")
-                        val args = Bundle()
-                        args.putString(GAME_ID, game.id)
-                        args.putStringArrayList(GROUPS_KEY, ArrayList(game.teams.map { it.name }))
+                        val args = AddCardsFragment.createArgs(game.id, ArrayList(game.teams.map { it.name }), me.id)
                         GameFlow.joinAGame(me, game)
                         findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment, args)
                     }, {

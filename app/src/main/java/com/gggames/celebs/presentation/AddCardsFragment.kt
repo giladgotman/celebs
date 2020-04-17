@@ -42,9 +42,9 @@ class AddCardsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        gameId = arguments?.getString(GAME_ID)!!
-        groups = arguments?.getStringArrayList(GROUPS_KEY)!!
-        playerId = "playerIdTest"
+        gameId = arguments?.getString(GAME_ID_KEY)!!
+        groups = arguments?.getStringArrayList(TEAMS_KEY)!!
+        playerId = arguments?.getString(PLAYER_ID_KEY)!!
 
         addCards = AddCards(
             CardsRepositoryImpl(
@@ -81,14 +81,12 @@ class AddCardsFragment : Fragment() {
             addCards(cardList).subscribe({
                 Timber.w("ggg added cards successfully")
                 val args = Bundle()
-                args.putStringArrayList(GROUPS_KEY, groups)
+                args.putStringArrayList(TEAMS_KEY, groups)
                 findNavController().navigate(R.id.action_AddCardsFragment_to_chooseTeamFragment, args)
             },{
                 Timber.e(it,"ggg added cards failed")
             })
         }
-
-
     }
 
     private fun addCardIfNotNull(card: Card?, cardList: MutableList<Card>) {
@@ -104,6 +102,16 @@ class AddCardsFragment : Fragment() {
             null
         }
     }
+    companion object {
+        fun createArgs(gameId: String, groups: ArrayList<String>, playerId: String): Bundle {
+            val args = Bundle()
+            args.putString(GAME_ID_KEY, gameId)
+            args.putStringArrayList(TEAMS_KEY, groups)
+            args.putString(PLAYER_ID_KEY, playerId)
+            return args
+        }
+    }
 }
 
-const val GAME_ID = "GAME_ID"
+const val GAME_ID_KEY = "GAME_ID_KEY"
+const val PLAYER_ID_KEY = "PLAYER_ID_KEY"
