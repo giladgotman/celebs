@@ -6,7 +6,8 @@ data class Game (val id: String,
                  val celebsCount: Int = 6,
                  val teams: List<Team> = emptyList(),
                  val rounds: List<Round> = defaultRoundsList(),
-                 val state: GameState = GameState.Empty
+                 val state: GameState = GameState.Empty,
+                 val cards: List<Card> = emptyList()
 )
 
 data class GameInfo(

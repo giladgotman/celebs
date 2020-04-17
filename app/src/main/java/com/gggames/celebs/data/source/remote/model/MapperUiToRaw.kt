@@ -34,7 +34,8 @@ fun Game.toRaw() = GameRaw(
     this.rounds.map {
         it.toRaw()
     },
-    this.state.toRaw()
+    this.state.toRaw(),
+    this.cards.map { it.toRaw() }
 )
 
 

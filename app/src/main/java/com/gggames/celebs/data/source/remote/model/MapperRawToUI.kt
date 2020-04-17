@@ -28,7 +28,8 @@ fun GameRaw.toUi() = Game(
     this.rounds.map {
         it.toUi()
     },
-    this.state.toUi()
+    this.state.toUi(),
+    this.cards.map { it.toUi() }
 )
 
 
