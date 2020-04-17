@@ -11,6 +11,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.GamesRepositoryImpl
 import com.gggames.celebs.data.model.Game
+import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.model.Team
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.domain.AddGame
@@ -24,6 +25,7 @@ import timber.log.Timber
  */
 class CreateGameFragment : Fragment() {
 
+    val me: Player = Player("giladId", "gilad")
     val addGame = AddGame(
         GamesRepositoryImpl(
             FirebaseGamesDataSource(
@@ -69,7 +71,7 @@ class CreateGameFragment : Fragment() {
                         val args = Bundle()
                         args.putString(GAME_ID, game.id)
                         args.putStringArrayList(GROUPS_KEY, ArrayList(game.teams.map { it.name }))
-                        GameFlow.joinGame(game)
+                        GameFlow.joinAGame(me, game)
                         findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment, args)
                     }, {
                         Timber.e(it,"gilad game added failed. ${it.localizedMessage}")
