@@ -8,7 +8,7 @@ data class GameRaw (
     val name: String,
     val createdAt: Timestamp,
     val celebsCount: Long = 6,
-    val groups: List<GroupRaw>,
+    val teams: List<TeamRaw>,
     val rounds: List<RoundRaw>,
     val state: GameStateRaw = GameStateRaw(),
     val cards: List<CardRaw> = emptyList()

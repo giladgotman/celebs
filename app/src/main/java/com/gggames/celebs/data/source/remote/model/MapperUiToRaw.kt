@@ -9,7 +9,7 @@ fun Card.toRaw() = CardRaw(this.name)
 
 fun Player.toRaw() = PlayerRaw(this.id, this.name)
 
-fun Team.toRaw() = GroupRaw(this.name, this.players.map { it.toRaw() })
+fun Team.toRaw() = TeamRaw(this.name, this.players.map { it.toRaw() })
 
 fun Round.toRaw() = RoundRaw(this.name)
 
