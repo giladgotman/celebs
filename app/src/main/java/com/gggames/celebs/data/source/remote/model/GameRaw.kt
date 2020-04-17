@@ -10,6 +10,7 @@ data class GameRaw (
     val celebsCount: Long = 6,
     val teams: List<TeamRaw>,
     val rounds: List<RoundRaw>,
+    val players: List<PlayerRaw> = emptyList(),
     val state: GameStateRaw = GameStateRaw(),
     val cards: List<CardRaw> = emptyList()
 ) {

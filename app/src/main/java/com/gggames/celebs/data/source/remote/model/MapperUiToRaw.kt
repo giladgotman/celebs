@@ -7,7 +7,7 @@ import java.util.*
 
 fun Card.toRaw() = CardRaw(this.name)
 
-fun Player.toRaw() = PlayerRaw(this.id, this.name)
+fun Player.toRaw() = PlayerRaw(this.id, this.name, this.team)
 
 fun Team.toRaw() = TeamRaw(this.name, this.players.map { it.toRaw() })
 
@@ -34,6 +34,7 @@ fun Game.toRaw() = GameRaw(
     this.rounds.map {
         it.toRaw()
     },
+    this.players.map { it.toRaw() },
     this.state.toRaw(),
     this.cards.map { it.toRaw() }
 )

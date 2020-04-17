@@ -5,7 +5,7 @@ import com.gggames.celebs.data.model.*
 
 fun CardRaw.toUi() = Card(this.name)
 
-fun PlayerRaw.toUi() = Player(this.id, this.name)
+fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 
 fun TeamRaw.toUi() = Team(this.name, this.players.map { it.toUi() })
 
@@ -28,6 +28,7 @@ fun GameRaw.toUi() = Game(
     this.rounds.map {
         it.toUi()
     },
+    this.players.map { it.toUi() },
     this.state.toUi(),
     this.cards.map { it.toUi() }
 )
