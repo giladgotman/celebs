@@ -63,7 +63,7 @@ class FirebaseCardsDataSource(
     override fun addCards(cards: List<Card>): Completable {
         Timber.w("addCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
         val cardsRaw = cards.map { it.toRaw() }
-        return Completable.fromCallable {
+        return Completable.create { emitter->
             firestore.runTransaction {
                 gameRef.update("state.myCards", cardsRaw)
                 cardsRaw.forEach {
@@ -71,10 +71,10 @@ class FirebaseCardsDataSource(
                 }
             }.addOnSuccessListener {
                 Timber.i("cards added to path: ${cardsCollectionsRef.path}")
-                Completable.complete()
+                emitter.onComplete()
             }.addOnFailureListener { error ->
                 Timber.e(error, "error while trying to add cards to path: ${cardsCollectionsRef.path}")
-                Completable.error(error)
+                emitter.onError(error)
             }
         }
     }

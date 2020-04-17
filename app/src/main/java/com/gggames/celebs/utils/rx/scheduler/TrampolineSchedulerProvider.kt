@@ -12,6 +12,6 @@ class TrampolineSchedulerProvider : BaseSchedulerProvider {
 
     override fun ui(): Scheduler = Schedulers.trampoline()
 
-    override fun <T> applyDefaultSchedulers(): ObservableTransformer<T, T> =
+    override fun <T> applyDefault(): ObservableTransformer<T, T> =
         ObservableTransformer { it.subscribeOn(io()).observeOn(ui()) }
 }

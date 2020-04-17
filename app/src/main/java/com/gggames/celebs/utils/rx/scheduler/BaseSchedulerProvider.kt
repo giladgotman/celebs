@@ -13,12 +13,12 @@ interface BaseSchedulerProvider {
 
     fun ui(): Scheduler
 
-    fun <T> applyDefaultSchedulers(): ObservableTransformer<T, T> =
+    fun <T> applyDefault(): ObservableTransformer<T, T> =
         ObservableTransformer { it.subscribeOn(io()).observeOn(ui()) }
 
-    fun <T> applySingleDefaultSchedulers(): SingleTransformer<T, T> =
+    fun <T> applySingleDefault(): SingleTransformer<T, T> =
         SingleTransformer { it.subscribeOn(io()).observeOn(ui()) }
 
-    fun applyDefault(): CompletableTransformer =
+    fun applyCompletableDefault(): CompletableTransformer =
         CompletableTransformer { it.subscribeOn(io()).observeOn(ui()) }
 }

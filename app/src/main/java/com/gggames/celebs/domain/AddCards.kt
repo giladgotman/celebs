@@ -11,5 +11,5 @@ class AddCards(
 ) {
     operator fun invoke(cards: List<Card>): Completable =
         cardsRepository.addCards(cards)
-            .compose(schedulerProvider.applyDefault())
+            .compose(schedulerProvider.applyCompletableDefault())
 }

@@ -11,7 +11,7 @@ class AddGame(
 ) {
     operator fun invoke(game: Game = createDummyGame()): Completable =
         gamesRepository.addGame(game)
-            .compose(schedulerProvider.applyDefault())
+            .compose(schedulerProvider.applyCompletableDefault())
 
     fun createDummyGame(): Game =
         Game(id = "gameTestId2",

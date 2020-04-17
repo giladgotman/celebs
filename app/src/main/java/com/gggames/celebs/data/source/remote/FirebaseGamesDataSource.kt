@@ -43,22 +43,23 @@ class FirebaseGamesDataSource(
         Timber.w("addGame: $game")
         val gameRaw = game.toRaw()
         Timber.w("gameRaw: $gameRaw")
-        return Completable.fromCallable {
+        return Completable.create { emitter->
+            Timber.w("updating firestore...")
             firestore.collection("games")
                 .document(gameRaw.id).set(gameRaw).addOnSuccessListener {
                     Timber.i("game added to firebase")
-                    Completable.complete()
+                    emitter.onComplete()
                 }
                 .addOnFailureListener { error ->
                     Timber.e(error, "error while trying to add game")
-                    Completable.error(error)
+                    emitter.onError(error)
                 }
         }
     }
 
     override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable {
         Timber.w("chooseTeam: ${player.name}, team: $teamName")
-        return Completable.fromCallable {
+        return Completable.create { emitter->
 //            firestore.collection("games")
 //                .document(gameId).set(gameRaw).addOnSuccessListener {
 //                    Timber.i("game added to firebase")

@@ -62,7 +62,7 @@ class GamesFragment : Fragment() {
 
 
         val gameNames = StringBuilder()
-        gamesObservable.compose(scheduler.applyDefaultSchedulers())
+        gamesObservable.compose(scheduler.applyDefault())
             .subscribe(
                 { games ->
                     Log.d(TAG, "fetched games: $games")

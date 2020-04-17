@@ -23,17 +23,13 @@ import timber.log.Timber
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
+
+val me = Player("MY_PLAYER_ID", "gilad")
+
 class CreateGameFragment : Fragment() {
 
-    val me: Player = Player("giladId", "gilad")
-    val addGame = AddGame(
-        GamesRepositoryImpl(
-            FirebaseGamesDataSource(
-                FirebaseFirestore.getInstance()
-            )
-        ),
-        SchedulerProvider()
-    )
+    lateinit var addGame: AddGame
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -64,6 +60,14 @@ class CreateGameFragment : Fragment() {
             }
             val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, groupList)
 
+            addGame = AddGame(
+                GamesRepositoryImpl(
+                    FirebaseGamesDataSource(
+                        FirebaseFirestore.getInstance()
+                    )
+                ),
+                SchedulerProvider()
+            )
             addGame(game)
                 .subscribe(
                     {

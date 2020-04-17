@@ -11,12 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.data.GamesRepositoryImpl
-import com.gggames.celebs.data.model.Player
-import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
-import com.gggames.celebs.domain.ChooseTeam
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
 import timber.log.Timber
@@ -25,9 +19,6 @@ import timber.log.Timber
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 class ChooseTeamFragment : Fragment() {
-
-
-    lateinit var chooseTeam: ChooseTeam
 
     lateinit var groups: ArrayList<String>
 
@@ -60,15 +51,6 @@ class ChooseTeamFragment : Fragment() {
             }
         }
 
-        chooseTeam = ChooseTeam(
-            GamesRepositoryImpl(
-                FirebaseGamesDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
-
         view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
             findNavController().navigate(R.id.action_AddCardsFragment_to_GamesFragment)
         }
@@ -78,15 +60,7 @@ class ChooseTeamFragment : Fragment() {
             val teamName = button.text.toString()
             Timber.w("selected team: $selection, team: $teamName")
 
-            val myPlayer = Player("id_gilad", "gilad")
-            GameFlow.currentGame?.let {
-                chooseTeam(it.id, myPlayer, teamName)
-                    .subscribe({
-                        Timber.w("ggg chooseTeam $teamName successfully")
-                    },{
-                        Timber.e(it,"ggg chooseTeam $teamName failed")
-                    })
-            }
+            GameFlow.chooseAteam(teamName)
         }
 
 

@@ -11,5 +11,5 @@ class GetMyCards(
 ) {
     operator fun invoke(): Single<List<Card>> =
         cardsRepository.getMyCards()
-        .compose(schedulerProvider.applySingleDefaultSchedulers())
+        .compose(schedulerProvider.applySingleDefault())
 }

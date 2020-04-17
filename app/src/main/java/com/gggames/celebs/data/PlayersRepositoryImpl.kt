@@ -13,4 +13,11 @@ class PlayersRepositoryImpl(
 
     override fun addPlayer(gameId: String, player: Player): Completable =
         firebasePlayersDataSource.addPlayer(gameId, player)
+
+    override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable =
+        firebasePlayersDataSource.chooseTeam(gameId, player, teamName)
+
+    override fun me(): Single<Player> =
+        firebasePlayersDataSource.me()
+
 }
