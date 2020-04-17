@@ -13,7 +13,7 @@ import com.gggames.celebs.data.GamesRepositoryImpl
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Team
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
-import com.gggames.celebs.domain.AddGameUseCase
+import com.gggames.celebs.domain.AddGame
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_create_game.*
@@ -24,7 +24,7 @@ import timber.log.Timber
  */
 class CreateGameFragment : Fragment() {
 
-    val addGameUseCase = AddGameUseCase(
+    val addGame = AddGame(
         GamesRepositoryImpl(
             FirebaseGamesDataSource(
                 FirebaseFirestore.getInstance()
@@ -62,7 +62,7 @@ class CreateGameFragment : Fragment() {
             }
             val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, groupList)
 
-            addGameUseCase(game)
+            addGame(game)
                 .subscribe(
                     {
                         Timber.i("gilad game added: ${game.id}")

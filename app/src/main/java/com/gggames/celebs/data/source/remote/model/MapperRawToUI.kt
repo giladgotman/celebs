@@ -3,7 +3,7 @@ package com.gggames.celebs.data.source.remote.model
 import com.gggames.celebs.data.model.*
 
 
-fun CardRaw.toUi() = Card(this.name)
+fun CardRaw.toUi() = Card(this.name, this.player)
 
 fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 
@@ -29,8 +29,7 @@ fun GameRaw.toUi() = Game(
         it.toUi()
     },
     this.players.map { it.toUi() },
-    this.state.toUi(),
-    this.cards.map { it.toUi() }
+    this.state.toUi()
 )
 
 

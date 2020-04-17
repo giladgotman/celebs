@@ -5,7 +5,7 @@ import com.gggames.celebs.data.model.*
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 
-class AddGameUseCase(
+class AddGame(
     private val gamesRepository: GamesRepository,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
@@ -22,7 +22,7 @@ class AddGameUseCase(
                     players = emptyList()
                 )
             )
-            , state = GameState.Created(listOf(Card("Putin")), mapOf(createDummyPlayer().id to 5)) )
+            , state = GameState.Created(listOf(Card("Putin", "gilad")), mapOf(createDummyPlayer().id to 5)) )
 
     private fun createDummyPlayer(name: String = "gilad") = Player(name, name)
 }

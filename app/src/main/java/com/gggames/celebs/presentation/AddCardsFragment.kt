@@ -28,6 +28,7 @@ class AddCardsFragment : Fragment() {
     lateinit var getMyCards: GetMyCards
 
     lateinit var gameId: String
+    lateinit var playerId: String
     lateinit var groups: ArrayList<String>
 
     override fun onCreateView(
@@ -43,6 +44,7 @@ class AddCardsFragment : Fragment() {
 
         gameId = arguments?.getString(GAME_ID)!!
         groups = arguments?.getStringArrayList(GROUPS_KEY)!!
+        playerId = "playerIdTest"
 
         addCards = AddCards(
             CardsRepositoryImpl(
@@ -97,7 +99,7 @@ class AddCardsFragment : Fragment() {
 
     private fun editTextToCard(editText: EditText?): Card? {
         return if (editText?.text?.isNotEmpty() == true) {
-            Card(editText.text.toString())
+            Card(editText.text.toString(), playerId)
         } else {
             null
         }

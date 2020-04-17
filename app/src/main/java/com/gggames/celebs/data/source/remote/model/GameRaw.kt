@@ -11,8 +11,7 @@ data class GameRaw (
     val teams: List<TeamRaw>,
     val rounds: List<RoundRaw>,
     val players: List<PlayerRaw> = emptyList(),
-    val state: GameStateRaw = GameStateRaw(),
-    val cards: List<CardRaw> = emptyList()
+    val state: GameStateRaw = GameStateRaw()
 ) {
     constructor() : this(
         EMPTY_VALUE,
