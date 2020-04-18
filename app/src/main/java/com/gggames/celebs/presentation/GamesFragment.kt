@@ -31,6 +31,8 @@ class GamesFragment : Fragment() {
 
     private val disposables = CompositeDisposable()
 
+    private lateinit var playerName: String
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -41,17 +43,24 @@ class GamesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let {
+            playerName = it.getString(PLAYER_NAME_KEY)!!
+        }
+
         getGamesUseCase = GetGamesUseCase(GamesRepositoryImpl(
             FirebaseGamesDataSource(
                 FirebaseFirestore.getInstance()
             )
         ))
-        view.findViewById<Button>(R.id.button_first).setOnClickListener {
+        view.findViewById<Button>(R.id.button_fetch).setOnClickListener {
             fetchGames()
         }
 
         createGameFab.setOnClickListener {
-            findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment)
+            val args = Bundle()
+            args.putString(PLAYER_NAME_KEY, playerName)
+            findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment, args)
         }
     }
 
@@ -59,7 +68,6 @@ class GamesFragment : Fragment() {
         Log.d(TAG, "fetching games")
         textview_games.text = "fetching games.."
         val gamesObservable = getGamesUseCase()
-
 
         val gameNames = StringBuilder()
         gamesObservable.compose(scheduler.applyDefault())

@@ -33,7 +33,9 @@ class ChooseTeamFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        teams = arguments?.getStringArrayList(TEAMS_KEY)!!
+        arguments?.let {
+            teams = it.getStringArrayList(TEAMS_KEY)!!
+        }
 
         teams.forEachIndexed{ index, group->
             when (index) {

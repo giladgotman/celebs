@@ -6,7 +6,6 @@ import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
 import com.gggames.celebs.domain.ChooseTeam
 import com.gggames.celebs.domain.JoinGame
-import com.gggames.celebs.presentation.me
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
@@ -16,13 +15,18 @@ object GameFlow {
 
     private lateinit var joinGame: JoinGame
     private lateinit var chooseTeam: ChooseTeam
+    var me: Player? = null
+        private set
 
     private val disposables = CompositeDisposable()
 
     var currentGame: Game? = null
         private set
 
-    fun joinAGame(player: Player, game: Game) {
+    fun joinAGame(playerName: String, game: Game) {
+        val now = System.currentTimeMillis()
+        val id = generatePlayerId(playerName, now)
+        me = Player(id, playerName)
         joinGame = JoinGame(
             PlayersRepositoryImpl(
                 FirebasePlayersDataSource(
@@ -42,16 +46,18 @@ object GameFlow {
         )
 
         currentGame = game
-        joinGame(game.id, player).subscribe({
+        joinGame(game.id, me!!).subscribe({
             Timber.w("ggg you joined game : ${game.id}")
         },{
             Timber.e(it,"ggg failed to  join game : ${game.id}")
         }).let { disposables.add(it) }
     }
 
+    private fun generatePlayerId(playerName: String, now: Long) = "${playerName}_$now"
+
     fun chooseAteam(teamName: String) {
         currentGame?.let {
-            chooseTeam(it.id, me, teamName)
+            chooseTeam(it.id, me!!, teamName)
                 .subscribe({
                 Timber.w("ggg you chosed team : $teamName")
             },{

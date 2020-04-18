@@ -42,9 +42,11 @@ class AddCardsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        gameId = arguments?.getString(GAME_ID_KEY)!!
-        groups = arguments?.getStringArrayList(TEAMS_KEY)!!
-        playerId = arguments?.getString(PLAYER_ID_KEY)!!
+        arguments?.let {
+            gameId = it.getString(GAME_ID_KEY)!!
+            groups = it.getStringArrayList(TEAMS_KEY)!!
+            playerId = it.getString(PLAYER_ID_KEY)!!
+        }
 
         addCards = AddCards(
             CardsRepositoryImpl(
@@ -103,15 +105,16 @@ class AddCardsFragment : Fragment() {
         }
     }
     companion object {
-        fun createArgs(gameId: String, groups: ArrayList<String>, playerId: String): Bundle {
-            val args = Bundle()
-            args.putString(GAME_ID_KEY, gameId)
-            args.putStringArrayList(TEAMS_KEY, groups)
-            args.putString(PLAYER_ID_KEY, playerId)
-            return args
+        fun createArgs(gameId: String, teams: ArrayList<String>, playerId: String): Bundle {
+            return Bundle().apply {
+                putString(GAME_ID_KEY, gameId)
+                putStringArrayList(TEAMS_KEY, teams)
+                putString(PLAYER_ID_KEY, playerId)
+            }
         }
     }
 }
 
 const val GAME_ID_KEY = "GAME_ID_KEY"
 const val PLAYER_ID_KEY = "PLAYER_ID_KEY"
+const val PLAYER_NAME_KEY = "PLAYER_NAME_KEY"

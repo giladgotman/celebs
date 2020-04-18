@@ -3,8 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/GamesFragment">
+    app:startDestination="@id/loginFragment">
 
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.gggames.celebs.presentation.LoginFragment"
+        android:label="@string/login_fragment_label"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_GamesFragment"
+            app:destination="@id/GamesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/GamesFragment"
         android:name="com.gggames.celebs.presentation.GamesFragment"
@@ -63,4 +72,5 @@
             android:name="groups"
             app:argType="string[]" />
     </fragment>
+
 </navigation>

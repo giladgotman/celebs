@@ -7,7 +7,7 @@
     tools:context="com.gggames.celebs.presentation.GamesFragment">
 
     <Button
-        android:id="@+id/button_first"
+        android:id="@+id/button_fetch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="fetch"
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/games_subtitle"
-        app:layout_constraintBottom_toTopOf="@id/button_first"
+        app:layout_constraintBottom_toTopOf="@id/button_fetch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
