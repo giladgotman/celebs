@@ -1,12 +1,15 @@
 package com.gggames.celebs.core
 
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.gggames.celebs.data.PlayersRepositoryImpl
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
 import com.gggames.celebs.domain.ChooseTeam
 import com.gggames.celebs.domain.JoinGame
+import com.gggames.celebs.presentation.LoginActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
@@ -21,7 +24,8 @@ object GameFlow {
     var me: Player? = null
         private set
         get() {
-            return field?.let { preferenceManager.loadPlayer()} ?: field
+            return if (field != null) field
+            else preferenceManager.loadPlayer()
         }
 
     private val disposables = CompositeDisposable()
@@ -77,6 +81,9 @@ object GameFlow {
     fun logout() {
         me = null
         preferenceManager.savePlayer(null)
+        val intent = Intent(appContext, LoginActivity::class.java)
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+        appContext.startActivity(intent)
     }
 
     fun clear() {

@@ -4,6 +4,7 @@ import android.content.Context
 import com.gggames.celebs.R
 import com.gggames.celebs.data.model.Player
 import com.google.gson.Gson
+import timber.log.Timber
 
 class PreferenceManager(context: Context) {
 
@@ -15,6 +16,7 @@ class PreferenceManager(context: Context) {
     private val gson  = Gson()
 
     fun savePlayer(player: Player?) {
+        Timber.w("savePlayer : $player")
         val pj = player?.let { gson.toJson(player) }
         val editor = defaultSharedPreferences.edit()
         editor.putString(PREFS_KEY_PLAYER, pj)
@@ -23,7 +25,9 @@ class PreferenceManager(context: Context) {
 
     fun loadPlayer(): Player? {
         val playerString = defaultSharedPreferences.getString(PREFS_KEY_PLAYER, null)
-        return playerString?.let { gson.fromJson(playerString, Player::class.java)}
+        val player = playerString?.let { gson.fromJson(playerString, Player::class.java)}
+        Timber.w("loadPlayer : $player")
+        return player
     }
 
 
