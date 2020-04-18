@@ -8,7 +8,7 @@ import com.gggames.celebs.data.source.remote.model.toUi
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.Observable
 import timber.log.Timber
 
 
@@ -17,26 +17,29 @@ class FirebasePlayersDataSource(
 ) : PlayersDataSource {
     private val baseGamesPath = "games"
 
-    override fun getAllPlayers(gameId: String): Single<List<Player>> {
+    override fun getAllPlayers(gameId: String): Observable<List<Player>> {
         val playersCollectionsRef = getCollectionReference(gameId)
         Timber.d("fetching all players, playersCollectionsRef: ${playersCollectionsRef.path}")
-        return Single.create { emitter ->
-            playersCollectionsRef.get()
-                .addOnSuccessListener { result ->
-                    val players = result.documents.map { it.toObject(PlayerRaw::class.java) }
-                    players.let {
-                        emitter.onSuccess(players.mapNotNull { it?.toUi() })
+        return Observable.create { emitter ->
+            playersCollectionsRef.addSnapshotListener { value, e ->
+                if (e != null) {
+                    Timber.e(e, "getAllPlayers, error")
+                    emitter.onError(e)
+                } else {
+                    val players = mutableListOf<Player>()
+                    value?.let {
+                        for (player in it) {
+                            val player = player.toObject(PlayerRaw().javaClass)
+                            players.add(player.toUi())
+                        }
                     }
+                    emitter.onNext(players)
+                    Timber.w("getAllPlayers update")
                 }
-                .addOnFailureListener { exception ->
-                    Timber.e(
-                        exception,
-                        "Error fetching players for path: ${playersCollectionsRef.path}"
-                    )
-                    emitter.onError(exception)
-                }
+            }
         }
     }
+
 
     override fun addPlayer(gameId: String, player: Player): Completable {
         val playersCollectionsRef = getCollectionReference(gameId)

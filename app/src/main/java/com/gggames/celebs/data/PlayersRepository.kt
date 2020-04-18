@@ -2,10 +2,10 @@ package com.gggames.celebs.data
 
 import com.gggames.celebs.data.model.Player
 import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.Observable
 
 interface PlayersRepository {
-    fun getAllPlayers(gameId: String): Single<List<Player>>
+    fun getAllPlayers(gameId: String): Observable<List<Player>>
 
     fun addPlayer(gameId: String, player: Player): Completable
 

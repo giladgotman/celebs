@@ -11,4 +11,6 @@ interface GamesRepository {
     fun addGame(game: Game): Completable
 
     fun chooseTeam(gameId: String, player: Player, teamName: String): Completable
+
+//    fun observeGame(): Observable<Game>
 }
