@@ -9,6 +9,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
+import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.CardsRepositoryImpl
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
@@ -45,8 +46,9 @@ class AddCardsFragment : Fragment() {
         arguments?.let {
             gameId = it.getString(GAME_ID_KEY)!!
             groups = it.getStringArrayList(TEAMS_KEY)!!
-            playerId = it.getString(PLAYER_ID_KEY)!!
         }
+
+        playerId = GameFlow.me!!.id
 
         addCards = AddCards(
             CardsRepositoryImpl(

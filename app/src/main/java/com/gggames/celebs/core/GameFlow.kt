@@ -1,5 +1,6 @@
 package com.gggames.celebs.core
 
+import android.content.Context
 import com.gggames.celebs.data.PlayersRepositoryImpl
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
@@ -13,20 +14,27 @@ import timber.log.Timber
 
 object GameFlow {
 
+    lateinit var preferenceManager: PreferenceManager
     private lateinit var joinGame: JoinGame
     private lateinit var chooseTeam: ChooseTeam
+    private lateinit var appContext: Context
     var me: Player? = null
         private set
+        get() {
+            return field?.let { preferenceManager.loadPlayer()} ?: field
+        }
 
     private val disposables = CompositeDisposable()
 
     var currentGame: Game? = null
         private set
 
+    fun setContext(context: Context) {
+        appContext = context
+        preferenceManager = PreferenceManager(context)
+    }
+
     fun joinAGame(playerName: String, game: Game) {
-        val now = System.currentTimeMillis()
-        val id = generatePlayerId(playerName, now)
-        me = Player(id, playerName)
         joinGame = JoinGame(
             PlayersRepositoryImpl(
                 FirebasePlayersDataSource(
@@ -66,7 +74,19 @@ object GameFlow {
         }
     }
 
+    fun logout() {
+        me = null
+        preferenceManager.savePlayer(null)
+    }
+
     fun clear() {
         disposables.clear()
+    }
+
+    fun login(playerName: String) {
+        val now = System.currentTimeMillis()
+        val id = generatePlayerId(playerName, now)
+        me = Player(id, playerName)
+        preferenceManager.savePlayer(me)
     }
 }

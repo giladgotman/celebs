@@ -8,6 +8,7 @@ class CelebsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         initTimber()
+        GameFlow.setContext(applicationContext)
         Timber.i("onCreate")
     }
 

@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
+import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.GamesRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.domain.GetGamesUseCase
@@ -51,10 +52,6 @@ class GamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.let {
-            playerName = it.getString(PLAYER_NAME_KEY)!!
-        }
-
         getGamesUseCase = GetGamesUseCase(GamesRepositoryImpl(
             FirebaseGamesDataSource(
                 FirebaseFirestore.getInstance()
@@ -70,8 +67,13 @@ class GamesFragment : Fragment() {
             findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment, args)
         }
 
+        playerName = GameFlow.me!!.name
+
         gamesAdapter = GamesAdapter { game ->
             Timber.w("game selected: ${game.name}")
+            GameFlow.joinAGame(playerName, game)
+            val args = AddCardsFragment.createArgs(game.id, ArrayList(game.teams.map { it.name }), GameFlow.me!!.id)
+            findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
         }
 
         gamesRecyclerView.setHasFixedSize(true)
