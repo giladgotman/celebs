@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.data.GamesRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
@@ -17,6 +19,8 @@ import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_games.*
+import timber.log.Timber
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -32,6 +36,9 @@ class GamesFragment : Fragment() {
     private val disposables = CompositeDisposable()
 
     private lateinit var playerName: String
+
+
+    private lateinit var gamesAdapter: GamesAdapter
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -62,25 +69,32 @@ class GamesFragment : Fragment() {
             args.putString(PLAYER_NAME_KEY, playerName)
             findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment, args)
         }
+
+        gamesAdapter = GamesAdapter { game ->
+            Timber.w("game selected: ${game.name}")
+        }
+
+        gamesRecyclerView.setHasFixedSize(true)
+
+        val layoutManager = LinearLayoutManager(this.context)
+        gamesRecyclerView.layoutManager = layoutManager
+        gamesRecyclerView.itemAnimator = DefaultItemAnimator()
+        gamesRecyclerView.adapter = gamesAdapter
+
     }
 
     private fun fetchGames() {
         Log.d(TAG, "fetching games")
-        textview_games.text = "fetching games.."
-        val gamesObservable = getGamesUseCase()
-
-        val gameNames = StringBuilder()
-        gamesObservable.compose(scheduler.applyDefault())
+        button_fetch.text = "fetching..."
+        getGamesUseCase().compose(scheduler.applyDefault())
             .subscribe(
                 { games ->
-                    Log.d(TAG, "fetched games: $games")
-                    games.forEach { game ->
-                        gameNames.append("${game.name}\n")
-                    }
-                    textview_games.text = gameNames.toString()
+                    Timber.d("fetched games: $games")
+                    gamesAdapter.setData(games)
+                    button_fetch.text = "fetch"
                 },
                 {
-                    textview_games.text = it.message
+                    button_fetch.text = "fetch"
                 }).let { disposables.add(it) }
 
 

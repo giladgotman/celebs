@@ -16,13 +16,14 @@ import timber.log.Timber
 class FirebaseGamesDataSource(
     private val firestore: FirebaseFirestore
 ) : GamesDataSource {
+    private val GAMES_PATH = "games2"
     private val TAG = "gilad"
 
     override fun getGames(): Single<List<Game>> {
         Log.d(TAG, "fetching games")
         val games = mutableListOf<Game>()
-        return Single.create<List<Game>> { emitter ->
-            firestore.collection("games").get()
+        return Single.create { emitter ->
+            firestore.collection(GAMES_PATH).get()
                 .addOnSuccessListener { result ->
                     for (game in result) {
                         val gameEntity = game.toObject(GameRaw().javaClass)
@@ -45,7 +46,7 @@ class FirebaseGamesDataSource(
         Timber.w("gameRaw: $gameRaw")
         return Completable.create { emitter->
             Timber.w("updating firestore...")
-            firestore.collection("games")
+            firestore.collection(GAMES_PATH)
                 .document(gameRaw.id).set(gameRaw).addOnSuccessListener {
                     Timber.i("game added to firebase")
                     emitter.onComplete()
