@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.gggames.celebs.presentation.GamesFragment"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gameControlSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="@dimen/default_margin"
+        android:paddingStart="@dimen/default_margin"
+        android:paddingEnd="@dimen/default_margin"
+        >
+
+    <ImageView
+        android:id="@+id/cardsAmountIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_filter_none_24px"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/cardsAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cardsAmountIcon"
+        tools:text="24"
+        android:layout_marginEnd="5dp"
+        />
+
+    <Button
+        android:id="@+id/startButton"
+        app:layout_constraintTop_toTopOf="@+id/cardsAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/big_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_on_start"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/infoSection"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:background="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingStart="@dimen/default_margin"
+        android:paddingTop="@dimen/default_margin"
+        >
+        <TextView
+            android:id="@+id/teamsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/teams"
+            />
+
+        <TextView
+            android:id="@+id/team1Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/teamsTitle"
+            android:layout_marginTop="@dimen/default_margin"
+            tools:text="Team1:"
+            />
+        <TextView
+            android:id="@+id/team1Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/team1Name"
+            app:layout_constraintBaseline_toBaselineOf="@id/team1Name"
+            android:layout_marginTop="@dimen/default_margin"
+            tools:text="pupis, humis, gilad, jojo"
+            android:layout_marginStart="@dimen/default_margin"
+            />
+
+        <TextView
+            android:id="@+id/team2Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/team1Value"
+            android:layout_marginTop="@dimen/default_margin"
+            tools:text="Team2:"
+            />
+        <TextView
+            android:id="@+id/team2Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/team2Name"
+            app:layout_constraintBaseline_toBaselineOf="@id/team2Name"
+            android:layout_marginTop="@dimen/default_margin"
+            tools:text="pupis2, humis2, gilad2, jojo2"
+            android:layout_marginStart="@dimen/default_margin"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,4 +39,6 @@
     <string name="login_username_hint">Your name</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
+    <string name="game_on_start">Start</string>
+    <string name="teams">Teams</string>
 </resources>
