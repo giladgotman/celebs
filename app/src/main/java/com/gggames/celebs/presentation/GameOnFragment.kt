@@ -54,13 +54,7 @@ class GameOnFragment : Fragment() {
         playersObservable(gameId)
             .distinctUntilChanged()
             .subscribe({list->
-                val teams = list.groupBy { it.team }
-                val team1 = teams.keys.toList()[0]
-                Timber.w("team1 : ${teams.keys.toList()[0]}")
-                Timber.w("team2 : ${teams.keys.toList()[1]}")
-                team1?.let {
-                updateTeam(team1, teams[0]?.toList() ?: emptyList())
-                }
+                updateTeams(list)
             }, {
                 Timber.e(it, "error while observing players")
             }).let {
@@ -69,9 +63,21 @@ class GameOnFragment : Fragment() {
 
     }
 
-    fun updateTeam(teamName: String, players: List<Player>) {
+    private fun updateTeams(list: List<Player>) {
+        val teams = list.groupBy { it.team }
+        val teamList = teams.keys.toList().filterNotNull()
+        teamList.forEachIndexed { index, teamName ->
+            val players = teams[teamName]?.toList() ?: emptyList()
+            when (index) {
+                0 -> updateTeam1(teamName, players)
+                1 -> updateTeam2(teamName, players)
+            }
+        }
+    }
+
+    private fun updateTeam1(teamName: String, players: List<Player>) {
         Timber.w("updateTeam : teamName: $teamName , p: ${players.size}")
-        team1Name.text = teamName
+        team1Name.text = "$teamName : "
         val sb = StringBuilder()
         players.forEach {
             sb.append(it.name)
@@ -80,8 +86,9 @@ class GameOnFragment : Fragment() {
         team1Value.text = sb.toString()
     }
 
-    fun updateTea2(teamName: String, players: List<Player>) {
-        team2Name.text = teamName
+    private fun updateTeam2(teamName: String, players: List<Player>) {
+        Timber.w("updateTeam2 : teamName: $teamName , p: ${players.size}")
+        team2Name.text = "$teamName : "
         val sb = StringBuilder()
         players.forEach {
             sb.append(it.name)
@@ -89,6 +96,8 @@ class GameOnFragment : Fragment() {
         }
         team2Value.text = sb.toString()
     }
+
+    //todo add update Team3
 
 
     override fun onDestroy() {

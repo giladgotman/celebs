@@ -63,6 +63,8 @@ class ChooseTeamFragment : Fragment() {
             Timber.w("selected team: $selection, team: $teamName")
 
             GameFlow.chooseAteam(teamName)
+
+            findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
         }
 
 
