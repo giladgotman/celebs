@@ -55,15 +55,22 @@ class GameOnFragment : Fragment() {
             .distinctUntilChanged()
             .subscribe({list->
                 val teams = list.groupBy { it.team }
+                val team1 = teams.keys.toList()[0]
                 Timber.w("team1 : ${teams.keys.toList()[0]}")
                 Timber.w("team2 : ${teams.keys.toList()[1]}")
+                team1?.let {
+                updateTeam(team1, teams[0]?.toList() ?: emptyList())
+                }
             }, {
                 Timber.e(it, "error while observing players")
-            })
+            }).let {
+                disposables.add(it)
+            }
 
     }
 
     fun updateTeam(teamName: String, players: List<Player>) {
+        Timber.w("updateTeam : teamName: $teamName , p: ${players.size}")
         team1Name.text = teamName
         val sb = StringBuilder()
         players.forEach {
