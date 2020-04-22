@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/big_margin"
         android:orientation="horizontal"
+        android:textAlignment="viewStart"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,8 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="true"
-            tools:text="Team1"
-            />
+            android:textAlignment="viewStart"
+            tools:text="team1" />
 
         <RadioButton
             android:id="@+id/radioButtonTeam2"
@@ -47,6 +48,7 @@
             tools:text="Team2"
             android:visibility="gone"
             app:layout_goneMarginEnd="0dp"
+            android:textAlignment="viewStart"
             />
 
         <RadioButton
@@ -56,6 +58,7 @@
             android:layout_weight="1"
             tools:text="Team3"
             android:visibility="gone"
+            android:textAlignment="viewStart"
             />
     </RadioGroup>
 
