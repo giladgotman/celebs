@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gggames.celebs.R
 import com.gggames.celebs.data.model.Card
@@ -35,11 +36,11 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         super.onViewCreated(view, savedInstanceState)
 
         presenter.bind(this)
-        cardTextView.text = "Start"
+        cardTextView.text = ""
+        startButton.isVisible = true
 
-        cardTextView.setOnClickListener {
+        startButton.setOnClickListener {
             presenter.onPlayerStarted()
-            cardTextView.isEnabled = false
         }
 
         correctButton.setOnClickListener {
@@ -56,6 +57,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     }
 
     override fun updateCard(card: Card) {
+        startButton.isVisible = false
         cardTextView.text = card.name
     }
 
