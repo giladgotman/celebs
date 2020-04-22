@@ -6,18 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.data.cards.CardsRepositoryImpl
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.model.Player
-import com.gggames.celebs.data.players.PlayersRepositoryImpl
-import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
-import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
-import com.gggames.celebs.domain.cards.ObserveAllCards
-import com.gggames.celebs.domain.players.ObservePlayers
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
 
@@ -25,20 +15,18 @@ import timber.log.Timber
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class GameOnFragment : Fragment() {
+class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     private val TAG = "gilad"
 
-    private lateinit var playersObservable: ObservePlayers
+    lateinit var presenter: GamePresenter
 
-    private lateinit var cardsObservable: ObserveAllCards
-
-    private val disposables = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        presenter = GamePresenter()
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_game_on, container, false)
     }
@@ -46,59 +34,32 @@ class GameOnFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val gameId = GameFlow.currentGame!!.id
+        presenter.bind(this)
+        cardTextView.text = "Start"
 
-        playersObservable = ObservePlayers(
-            PlayersRepositoryImpl(
-                FirebasePlayersDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
-
-        cardsObservable = ObserveAllCards(
-            CardsRepositoryImpl(
-                FirebaseCardsDataSource(
-                    gameId,
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
-
-        playersObservable(gameId)
-            .distinctUntilChanged()
-            .subscribe({list->
-                updateTeams(list)
-            }, {
-                Timber.e(it, "error while observing players")
-            }).let {
-                disposables.add(it)
-            }
-
-        cardsObservable()
-            .distinctUntilChanged()
-            .subscribe({cards->
-                updateCards(cards)
-            }, {
-                Timber.e(it, "error while observing cards")
-            }).let {
-                disposables.add(it)
-            }
-
-        startButton.setOnClickListener {
-
+        cardTextView.setOnClickListener {
+            presenter.onPlayerStarted()
+            cardTextView.isEnabled = false
         }
 
-
+        correctButton.setOnClickListener {
+            pickNextCard()
+        }
     }
 
-    private fun updateCards(cards: List<Card>) {
+    private fun pickNextCard() {
+        presenter.onPickNextCard()
+    }
+
+    override fun updateCards(cards: List<Card>) {
         cardsAmount.text = cards.size.toString()
     }
 
-    private fun updateTeams(list: List<Player>) {
+    override fun updateCard(card: Card) {
+        cardTextView.text = card.name
+    }
+
+    override fun updateTeams(list: List<Player>) {
         val teams = list.groupBy { it.team }
         val teamList = teams.keys.toList().filterNotNull()
         teamList.forEachIndexed { index, teamName ->
@@ -137,6 +98,6 @@ class GameOnFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposables.clear()
+        presenter.unBind()
     }
 }

@@ -9,12 +9,17 @@ class CardsRepositoryImpl(
     private val firebaseCardsDataSource: CardsDataSource
 ) : CardsRepository {
 
+
+    var cache = mutableListOf<Card>()
+
     override fun getAllCards(): Observable<List<Card>> =
-        firebaseCardsDataSource.getAllCards()
+        firebaseCardsDataSource.getAllCards().doOnNext { cache = it.toMutableList() }
 
     override fun getMyCards(): Single<List<Card>> =
         firebaseCardsDataSource.getMyCards()
 
     override fun addCards(cards: List<Card>): Completable =
         firebaseCardsDataSource.addCards(cards)
+
+    override fun pickCard(): Card = cache.random()
 }
