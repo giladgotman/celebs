@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.data.PlayersRepositoryImpl
+import com.gggames.celebs.data.cards.CardsRepositoryImpl
+import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.players.PlayersRepositoryImpl
+import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
-import com.gggames.celebs.domain.ObservePlayers
+import com.gggames.celebs.domain.cards.ObserveAllCards
+import com.gggames.celebs.domain.players.ObservePlayers
 import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_game_on.*
@@ -28,7 +31,7 @@ class GameOnFragment : Fragment() {
 
     private lateinit var playersObservable: ObservePlayers
 
-    private val scheduler: BaseSchedulerProvider = SchedulerProvider()
+    private lateinit var cardsObservable: ObserveAllCards
 
     private val disposables = CompositeDisposable()
 
@@ -43,14 +46,30 @@ class GameOnFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val gameId = GameFlow.currentGame!!.id
+
         playersObservable = ObservePlayers(
             PlayersRepositoryImpl(
                 FirebasePlayersDataSource(
-                FirebaseFirestore.getInstance()
-            )
-            )
+                    FirebaseFirestore.getInstance()
+                )
+            ),
+            SchedulerProvider()
         )
-        val gameId = GameFlow.currentGame!!.id
+
+        cardsObservable = ObserveAllCards(
+            CardsRepositoryImpl(
+                FirebaseCardsDataSource(
+                    gameId,
+                    FirebaseFirestore.getInstance()
+                )
+            ),
+            SchedulerProvider()
+        )
+
+
+
+
         playersObservable(gameId)
             .distinctUntilChanged()
             .subscribe({list->
@@ -61,6 +80,21 @@ class GameOnFragment : Fragment() {
                 disposables.add(it)
             }
 
+        cardsObservable()
+            .distinctUntilChanged()
+            .subscribe({cards->
+                updateCards(cards)
+            }, {
+                Timber.e(it, "error while observing cards")
+            }).let {
+                disposables.add(it)
+            }
+
+
+    }
+
+    private fun updateCards(cards: List<Card>) {
+        cardsAmount.text = cards.size.toString()
     }
 
     private fun updateTeams(list: List<Player>) {

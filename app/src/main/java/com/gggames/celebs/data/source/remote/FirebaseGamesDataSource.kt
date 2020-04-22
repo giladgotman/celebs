@@ -1,7 +1,7 @@
 package com.gggames.celebs.data.source.remote
 
 import android.util.Log
-import com.gggames.celebs.data.GamesDataSource
+import com.gggames.celebs.data.games.GamesDataSource
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.source.remote.model.GameRaw

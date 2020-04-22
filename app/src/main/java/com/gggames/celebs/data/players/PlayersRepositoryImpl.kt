@@ -1,13 +1,12 @@
-package com.gggames.celebs.data
+package com.gggames.celebs.data.players
 
 import com.gggames.celebs.data.model.Player
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 
 class PlayersRepositoryImpl(
     private val firebasePlayersDataSource: PlayersDataSource
-) : PlayersRepository{
+) : PlayersRepository {
 
     override fun getAllPlayers(gameId: String): Observable<List<Player>> =
         firebasePlayersDataSource.getAllPlayers(gameId)

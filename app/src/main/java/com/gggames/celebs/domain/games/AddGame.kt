@@ -1,6 +1,6 @@
-package com.gggames.celebs.domain
+package com.gggames.celebs.domain.games
 
-import com.gggames.celebs.data.GamesRepository
+import com.gggames.celebs.data.games.GamesRepository
 import com.gggames.celebs.data.model.*
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable

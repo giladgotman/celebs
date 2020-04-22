@@ -1,8 +1,8 @@
-package com.gggames.celebs.domain
+package com.gggames.celebs.domain.games
 
-import com.gggames.celebs.data.GamesRepository
+import com.gggames.celebs.data.games.GamesRepository
 
-class GetGamesUseCase(
+class GetGames(
     private val gamesRepository: GamesRepository
 ){
     operator fun invoke() = gamesRepository.getGames()

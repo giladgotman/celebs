@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.data.CardsRepositoryImpl
+import com.gggames.celebs.data.cards.CardsRepositoryImpl
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
-import com.gggames.celebs.domain.AddCards
-import com.gggames.celebs.domain.GetMyCards
+import com.gggames.celebs.domain.cards.AddCards
+import com.gggames.celebs.domain.cards.GetMyCards
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_add_cards.*

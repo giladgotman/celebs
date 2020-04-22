@@ -3,12 +3,12 @@ package com.gggames.celebs.core
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import com.gggames.celebs.data.PlayersRepositoryImpl
+import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
-import com.gggames.celebs.domain.ChooseTeam
-import com.gggames.celebs.domain.JoinGame
+import com.gggames.celebs.domain.players.ChooseTeam
+import com.gggames.celebs.domain.players.JoinGame
 import com.gggames.celebs.presentation.LoginActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider

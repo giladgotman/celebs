@@ -1,14 +1,15 @@
-package com.gggames.celebs.data
+package com.gggames.celebs.data.cards
 
 import com.gggames.celebs.data.model.Card
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 
 class CardsRepositoryImpl(
     private val firebaseCardsDataSource: CardsDataSource
-) : CardsRepository{
+) : CardsRepository {
 
-    override fun getAllCards(): Single<List<Card>> =
+    override fun getAllCards(): Observable<List<Card>> =
         firebaseCardsDataSource.getAllCards()
 
     override fun getMyCards(): Single<List<Card>> =

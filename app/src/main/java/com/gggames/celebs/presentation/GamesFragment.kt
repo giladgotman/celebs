@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.data.GamesRepositoryImpl
+import com.gggames.celebs.data.games.GamesRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
-import com.gggames.celebs.domain.GetGamesUseCase
+import com.gggames.celebs.domain.games.GetGames
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
@@ -30,7 +30,7 @@ class GamesFragment : Fragment() {
 
     private val TAG = "gilad"
 
-    private lateinit var getGamesUseCase : GetGamesUseCase
+    private lateinit var getGames : GetGames
 
     private val scheduler: BaseSchedulerProvider = SchedulerProvider()
 
@@ -52,11 +52,13 @@ class GamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getGamesUseCase = GetGamesUseCase(GamesRepositoryImpl(
-            FirebaseGamesDataSource(
-                FirebaseFirestore.getInstance()
+        getGames = GetGames(
+            GamesRepositoryImpl(
+                FirebaseGamesDataSource(
+                    FirebaseFirestore.getInstance()
+                )
             )
-        ))
+        )
         view.findViewById<Button>(R.id.button_fetch).setOnClickListener {
             fetchGames()
         }
@@ -88,7 +90,7 @@ class GamesFragment : Fragment() {
     private fun fetchGames() {
         Log.d(TAG, "fetching games")
         button_fetch.text = "fetching..."
-        getGamesUseCase().compose(scheduler.applyDefault())
+        getGames().compose(scheduler.applyDefault())
             .subscribe(
                 { games ->
                     Timber.d("fetched games: $games")

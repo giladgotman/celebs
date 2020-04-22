@@ -1,7 +1,7 @@
 package com.gggames.celebs.data.source.remote
 
-import com.gggames.celebs.data.PlayersDataSource
 import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.players.PlayersDataSource
 import com.gggames.celebs.data.source.remote.model.PlayerRaw
 import com.gggames.celebs.data.source.remote.model.toRaw
 import com.gggames.celebs.data.source.remote.model.toUi

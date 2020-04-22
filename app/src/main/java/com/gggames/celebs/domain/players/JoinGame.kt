@@ -1,15 +1,15 @@
-package com.gggames.celebs.domain
+package com.gggames.celebs.domain.players
 
-import com.gggames.celebs.data.PlayersRepository
 import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.players.PlayersRepository
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 
-class ChooseTeam(
+class JoinGame(
     private val playersRepository: PlayersRepository,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
-    operator fun invoke(gameId: String, player: Player, teamName: String): Completable =
-        playersRepository.chooseTeam(gameId, player, teamName)
+    operator fun invoke(gameId: String, player: Player): Completable =
+        playersRepository.addPlayer(gameId, player)
             .compose(schedulerProvider.applyCompletableDefault())
 }
