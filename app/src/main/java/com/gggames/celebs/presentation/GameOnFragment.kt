@@ -67,9 +67,6 @@ class GameOnFragment : Fragment() {
             SchedulerProvider()
         )
 
-
-
-
         playersObservable(gameId)
             .distinctUntilChanged()
             .subscribe({list->
@@ -89,6 +86,10 @@ class GameOnFragment : Fragment() {
             }).let {
                 disposables.add(it)
             }
+
+        startButton.setOnClickListener {
+
+        }
 
 
     }
