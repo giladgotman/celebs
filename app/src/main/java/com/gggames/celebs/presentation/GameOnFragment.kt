@@ -57,6 +57,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     }
 
     override fun updateCard(card: Card) {
+        Timber.w("ggg update card: $card")
         startButton.isVisible = false
         cardTextView.text = card.name
     }

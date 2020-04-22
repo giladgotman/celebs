@@ -22,7 +22,7 @@ class AddGame(
                     players = emptyList()
                 )
             )
-            , state = GameState.Created(listOf(Card("Putin", "gilad")), mapOf(createDummyPlayer().id to 5)) )
+            , state = GameState.Created(listOf(Card("id","Putin", "gilad")), mapOf(createDummyPlayer().id to 5)) )
 
     private fun createDummyPlayer(name: String = "gilad") = Player(name, name)
 }

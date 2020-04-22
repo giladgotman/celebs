@@ -5,7 +5,7 @@ import com.google.firebase.Timestamp
 import java.util.*
 
 
-fun Card.toRaw() = CardRaw(this.name, this.player)
+fun Card.toRaw() = CardRaw(this.id, this.name, this.player, this.used)
 
 fun Player.toRaw() = PlayerRaw(this.id, this.name, this.team)
 

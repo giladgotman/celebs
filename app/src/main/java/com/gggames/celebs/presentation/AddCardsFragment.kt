@@ -101,7 +101,7 @@ class AddCardsFragment : Fragment() {
 
     private fun editTextToCard(editText: EditText?): Card? {
         return if (editText?.text?.isNotEmpty() == true) {
-            Card(editText.text.toString(), playerId)
+            Card(name = editText.text.toString(), player = playerId)
         } else {
             null
         }

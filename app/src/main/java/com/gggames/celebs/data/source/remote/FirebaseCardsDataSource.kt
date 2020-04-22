@@ -52,7 +52,7 @@ class FirebaseCardsDataSource(
                     emitter.onError(e)
                 } else {
                     val cards =
-                        value?.documents?.map { it.toObject(CardRaw::class.java) } ?: emptyList()
+                        value?.documents?.map { it.toObject(CardRaw::class.java)?.copy(id = it.id) } ?: emptyList()
                     emitter.onNext(cards.mapNotNull { it?.toUi() })
                     Timber.w("getAllCards update")
                 }

@@ -3,7 +3,7 @@ package com.gggames.celebs.data.source.remote.model
 import com.gggames.celebs.data.model.*
 
 
-fun CardRaw.toUi() = Card(this.name, this.player)
+fun CardRaw.toUi() = Card(this.id, this.name, this.player, this.used)
 
 fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 
