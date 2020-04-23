@@ -5,6 +5,7 @@ import com.gggames.celebs.data.cards.CardsRepository
 import com.gggames.celebs.data.cards.CardsRepositoryImpl
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.players.PlayersRepository
 import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
@@ -23,32 +24,30 @@ class GamePresenter {
 
     private lateinit var cardsRepository: CardsRepository
 
+    private lateinit var playersRepository: PlayersRepository
+
+    private lateinit var firebaseCardsDataSource: FirebaseCardsDataSource
+    private lateinit var firebasePlayersDataSource: FirebasePlayersDataSource
+
+
+    private var cardDeck = mutableListOf<Card>()
+
+    private val schedulerProvider = SchedulerProvider()
+
     private val disposables = CompositeDisposable()
-    lateinit var view: GameView
+    private lateinit var view: GameView
 
     fun bind(view: GameView) {
         this.view = view
         val gameId = GameFlow.currentGame!!.id
-        cardsRepository = CardsRepositoryImpl(
-            FirebaseCardsDataSource(
-                gameId,
-                FirebaseFirestore.getInstance()
-            )
-        )
+        firebaseCardsDataSource = FirebaseCardsDataSource(gameId, FirebaseFirestore.getInstance())
+        cardsRepository = CardsRepositoryImpl(firebaseCardsDataSource)
 
-        playersObservable = ObservePlayers(
-            PlayersRepositoryImpl(
-                FirebasePlayersDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
+        firebasePlayersDataSource = FirebasePlayersDataSource(FirebaseFirestore.getInstance())
+        playersRepository = PlayersRepositoryImpl(firebasePlayersDataSource)
 
-        cardsObservable = ObserveAllCards(
-            cardsRepository,
-            SchedulerProvider()
-        )
+        playersObservable = ObservePlayers(playersRepository, schedulerProvider)
+        cardsObservable = ObserveAllCards(cardsRepository, schedulerProvider)
 
         playersObservable(gameId)
             .distinctUntilChanged()
@@ -61,9 +60,11 @@ class GamePresenter {
             }
 
         cardsObservable()
+            .compose(schedulerProvider.applyDefault())
             .distinctUntilChanged()
             .subscribe({cards->
-                view.updateCards(cards)
+                cardDeck = cards.toMutableList()
+                view.updateCards(cards.filter { !it.used })
             }, {
                 Timber.e(it, "error while observing cards")
             }).let {
@@ -72,8 +73,18 @@ class GamePresenter {
     }
 
     fun onPickNextCard() {
-        val card = cardsRepository.pickCard()
-        view.updateCard(card)
+        val notUsedCards = cardDeck.filter { !it.used }
+        val card = if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
+        card?.let {
+            cardsRepository.updateCard(card)
+                .subscribe({
+                    view.updateCard(card)
+                }, {
+                    Timber.e(it, "error while update card")
+                }).let {
+                    disposables.add(it)
+                }
+        } ?: Timber.w("no un used cards left!")
     }
 
     fun onPlayerStarted() {

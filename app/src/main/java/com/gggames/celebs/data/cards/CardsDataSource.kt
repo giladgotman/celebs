@@ -11,4 +11,6 @@ interface CardsDataSource {
     fun getAllCards(): Observable<List<Card>>
 
     fun addCards(cards: List<Card>): Completable
+
+    fun update(card: Card): Completable
 }

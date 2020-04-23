@@ -19,9 +19,8 @@ class FirebaseCardsDataSource(
     private val gameId: String,
     private val firestore: FirebaseFirestore
 ) : CardsDataSource {
-    private val baseGamesPath = "games"
     private val gameRef: DocumentReference
-        get() = firestore.document("$baseGamesPath/$gameId/")
+        get() = firestore.document("$GAMES_PATH/$gameId/")
 
     private val cardsCollectionsRef: CollectionReference
         get() = firestore.collection("${gameRef.path}/cards/")
@@ -45,7 +44,7 @@ class FirebaseCardsDataSource(
 
     override fun getAllCards(): Observable<List<Card>> {
         Timber.d("fetching all cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
-        return return Observable.create { emitter ->
+        return Observable.create { emitter ->
             cardsCollectionsRef.addSnapshotListener { value, e ->
                 if (e != null) {
                     Timber.e(e, "getAllCards, error")
@@ -74,6 +73,26 @@ class FirebaseCardsDataSource(
                 emitter.onComplete()
             }.addOnFailureListener { error ->
                 Timber.e(error, "error while trying to add cards to path: ${cardsCollectionsRef.path}")
+                emitter.onError(error)
+            }
+        }
+    }
+
+    override fun update(card: Card): Completable {
+        Timber.w("update: $card, cardsCollectionsRef: ${cardsCollectionsRef.path}")
+        val cardRaw = card.toRaw()
+        if (cardRaw.id == null) {
+            return Completable.error(java.lang.IllegalArgumentException("CardRaw.id can't be null"))
+        }
+        return Completable.create { emitter->
+//            firestore.runTransaction {
+//                gameRef.update("state.myCards.$cardRaw", cardRaw)
+                cardsCollectionsRef.document(cardRaw.id).set(cardRaw)
+            .addOnSuccessListener {
+                Timber.i("card updated in path: ${cardsCollectionsRef.path}")
+                emitter.onComplete()
+            }.addOnFailureListener { error ->
+                Timber.e(error, "error while trying to update card in path: ${cardsCollectionsRef.path}")
                 emitter.onError(error)
             }
         }

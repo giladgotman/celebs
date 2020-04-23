@@ -12,11 +12,10 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import timber.log.Timber
 
-
 class FirebaseGamesDataSource(
     private val firestore: FirebaseFirestore
 ) : GamesDataSource {
-    private val GAMES_PATH = "games2"
+
     private val TAG = "gilad"
 
     override fun getGames(): Single<List<Game>> {
@@ -73,6 +72,8 @@ class FirebaseGamesDataSource(
         }
     }
 }
+
+val GAMES_PATH = "games2"
 
 
 
