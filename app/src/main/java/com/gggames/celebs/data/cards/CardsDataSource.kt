@@ -13,4 +13,6 @@ interface CardsDataSource {
     fun addCards(cards: List<Card>): Completable
 
     fun update(card: Card): Completable
+
+    fun updateCards(cards: List<Card>): Completable
 }

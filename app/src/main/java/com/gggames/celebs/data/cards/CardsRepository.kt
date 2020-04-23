@@ -13,4 +13,6 @@ interface CardsRepository {
     fun addCards(cards: List<Card>): Completable
 
     fun updateCard(card: Card): Completable
+
+    fun updateCards(cards: List<Card>): Completable
 }

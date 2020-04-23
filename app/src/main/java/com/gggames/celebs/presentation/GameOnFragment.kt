@@ -43,6 +43,10 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
             presenter.onPlayerStarted()
         }
 
+        reloadButton.setOnClickListener {
+            presenter.onReloadDeck()
+        }
+
         correctButton.setOnClickListener {
             pickNextCard()
         }

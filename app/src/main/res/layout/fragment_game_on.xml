@@ -84,10 +84,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
             app:layout_constraintTop_toBottomOf="@id/cardTextView"
             android:src="@drawable/ic_done_24px"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/cardTextView"
+            android:padding="30dp"
+            />
+
+        <ImageButton
+            android:id="@+id/reloadButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            app:layout_constraintTop_toBottomOf="@id/cardTextView"
+            android:src="@drawable/ic_refresh_24px"
+            app:layout_constraintStart_toStartOf="@id/cardTextView"
             android:padding="30dp"
             />
 

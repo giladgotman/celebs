@@ -95,6 +95,24 @@ class GamePresenter {
         disposables.clear()
     }
 
+    fun onReloadDeck() {
+        setAllCardsToUnused()
+        cardsRepository.updateCards(cardDeck)
+            .subscribe({
+                Timber.d("update cards success")
+            }, {
+                Timber.e(it, "error while update card")
+            }).let {
+                disposables.add(it)
+            }
+    }
+
+    private fun setAllCardsToUnused() {
+        cardDeck.forEachIndexed { index, item ->
+            cardDeck[index] = cardDeck[index].copy(used = false)
+        }
+    }
+
 
     interface GameView{
         fun updateCards(cards: List<Card>)

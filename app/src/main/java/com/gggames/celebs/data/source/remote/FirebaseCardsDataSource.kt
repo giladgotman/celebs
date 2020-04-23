@@ -85,14 +85,37 @@ class FirebaseCardsDataSource(
             return Completable.error(java.lang.IllegalArgumentException("CardRaw.id can't be null"))
         }
         return Completable.create { emitter->
-//            firestore.runTransaction {
-//                gameRef.update("state.myCards.$cardRaw", cardRaw)
                 cardsCollectionsRef.document(cardRaw.id).set(cardRaw)
             .addOnSuccessListener {
                 Timber.i("card updated in path: ${cardsCollectionsRef.path}")
                 emitter.onComplete()
             }.addOnFailureListener { error ->
                 Timber.e(error, "error while trying to update card in path: ${cardsCollectionsRef.path}")
+                emitter.onError(error)
+            }
+        }
+    }
+
+    override fun updateCards(cards: List<Card>): Completable {
+        Timber.w("updateCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
+        val cardsRaw = cards.map { it.toRaw() }
+        return Completable.create { emitter ->
+            firestore.runTransaction {
+                cardsRaw.forEach {
+                    if (it.id == null) {
+                        Completable.error(java.lang.IllegalArgumentException("CardRaw.id can't be null"))
+                    } else {
+                        cardsCollectionsRef.document(it.id).set(it)
+                    }
+                }
+            }.addOnSuccessListener {
+                Timber.i("cards updated to path: ${cardsCollectionsRef.path}")
+                emitter.onComplete()
+            }.addOnFailureListener { error ->
+                Timber.e(
+                    error,
+                    "error while trying to update cards to path: ${cardsCollectionsRef.path}"
+                )
                 emitter.onError(error)
             }
         }

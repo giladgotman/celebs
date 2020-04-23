@@ -20,4 +20,7 @@ class CardsRepositoryImpl(
 
     override fun updateCard(card: Card) : Completable =
         firebaseCardsDataSource.update(card)
+
+    override fun updateCards(cards: List<Card>): Completable =
+        firebaseCardsDataSource.updateCards(cards)
 }
