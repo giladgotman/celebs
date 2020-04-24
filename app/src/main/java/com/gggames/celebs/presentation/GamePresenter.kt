@@ -46,6 +46,8 @@ class GamePresenter {
 
     private var cardDeck = mutableListOf<Card>()
 
+    private var lastCard: Card? = null
+
     private val schedulerProvider = SchedulerProvider()
 
     private val disposables = CompositeDisposable()
@@ -122,6 +124,7 @@ class GamePresenter {
         if (card != null) {
             cardsRepository.updateCard(card)
                 .subscribe({
+                    lastCard = card
                     view.updateCard(card)
                 }, {
                     Timber.e(it, "error while update card")
@@ -194,8 +197,18 @@ class GamePresenter {
         view.setStartedState()
     }
 
+    private fun maybeFlipLastCard(): Completable =
+        lastCard?.let {
+            Timber.d("flipping last card: ${it.name}")
+            cardsRepository.updateCard(it.copy(used = false))
+        } ?: Completable.complete()
+
+
+
     fun onTurnEnded() {
-        endMyTurn().subscribe ({
+        maybeFlipLastCard()
+            .andThen(endMyTurn())
+            .subscribe({
             view.setStoppedState()
         }, {
             Timber.e(it, "error onTurnEnded")
