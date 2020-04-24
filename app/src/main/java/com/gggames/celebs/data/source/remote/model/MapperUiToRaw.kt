@@ -21,7 +21,7 @@ fun GameState.toRaw() = when (this) {
         this.otherCardsCount
     )
     is GameState.Ready -> TODO()
-    is GameState.Started -> TODO()
+    is GameState.Started -> GameStateRaw("started", gameInfo = this.gameInfo.toRaw())
     is GameState.Finished -> TODO()
 }
 
@@ -36,6 +36,14 @@ fun Game.toRaw() = GameRaw(
     },
     this.players.map { it.toRaw() },
     this.state.toRaw()
+)
+
+fun GameInfo.toRaw() = GameInfoRaw(
+    this.round.toRaw(),
+    this.score,
+    this.totalCards,
+    this.cardsInDeck,
+    this.currentPlayer.toRaw()
 )
 
 

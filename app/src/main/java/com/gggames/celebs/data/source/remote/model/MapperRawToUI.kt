@@ -16,6 +16,9 @@ fun GameStateRaw.toUi() = when (this.state) {
         this.myCards.map { it.toUi() },
         this.otherCardsCount)
     "empty" -> GameState.Empty
+    "ready" -> TODO()
+    "started" -> GameState.Started(this.gameInfo.toUi())
+    "finished" -> TODO()
     else -> TODO()
 }
 
@@ -30,6 +33,10 @@ fun GameRaw.toUi() = Game(
     },
     this.players.map { it.toUi() },
     this.state.toUi()
+)
+
+fun GameInfoRaw.toUi() = GameInfo(
+    this.round.toUi(), this.score, this.totalCards, this.cardsInDeck, this.currentPlayer.toUi()
 )
 
 

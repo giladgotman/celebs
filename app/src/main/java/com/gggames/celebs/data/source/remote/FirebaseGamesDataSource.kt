@@ -8,6 +8,7 @@ import com.gggames.celebs.data.source.remote.model.GameRaw
 import com.gggames.celebs.data.source.remote.model.toRaw
 import com.gggames.celebs.data.source.remote.model.toUi
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import io.reactivex.Completable
 import io.reactivex.Single
 import timber.log.Timber
@@ -46,7 +47,7 @@ class FirebaseGamesDataSource(
         return Completable.create { emitter->
             Timber.w("updating firestore...")
             firestore.collection(GAMES_PATH)
-                .document(gameRaw.id).set(gameRaw).addOnSuccessListener {
+                .document(gameRaw.id).set(gameRaw, SetOptions.merge()).addOnSuccessListener {
                     Timber.i("game added to firebase")
                     emitter.onComplete()
                 }

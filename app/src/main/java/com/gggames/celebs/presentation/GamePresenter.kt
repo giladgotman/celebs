@@ -3,16 +3,23 @@ package com.gggames.celebs.presentation
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.cards.CardsRepository
 import com.gggames.celebs.data.cards.CardsRepositoryImpl
+import com.gggames.celebs.data.games.GamesRepository
+import com.gggames.celebs.data.games.GamesRepositoryImpl
 import com.gggames.celebs.data.model.Card
+import com.gggames.celebs.data.model.GameInfo
+import com.gggames.celebs.data.model.GameState
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.players.PlayersRepository
 import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
+import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
 import com.gggames.celebs.domain.cards.ObserveAllCards
+import com.gggames.celebs.domain.games.AddGame
 import com.gggames.celebs.domain.players.ObservePlayers
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 
@@ -22,12 +29,16 @@ class GamePresenter {
 
     private lateinit var cardsObservable: ObserveAllCards
 
+    private lateinit var updateGame: AddGame
+
     private lateinit var cardsRepository: CardsRepository
 
     private lateinit var playersRepository: PlayersRepository
+    private lateinit var gamesRepository: GamesRepository
 
     private lateinit var firebaseCardsDataSource: FirebaseCardsDataSource
     private lateinit var firebasePlayersDataSource: FirebasePlayersDataSource
+    private lateinit var firebaseGamesDataSource: FirebaseGamesDataSource
 
 
     private var cardDeck = mutableListOf<Card>()
@@ -40,14 +51,20 @@ class GamePresenter {
     fun bind(view: GameView) {
         this.view = view
         val gameId = GameFlow.currentGame!!.id
-        firebaseCardsDataSource = FirebaseCardsDataSource(gameId, FirebaseFirestore.getInstance())
+        val firebase = FirebaseFirestore.getInstance()
+        firebaseCardsDataSource = FirebaseCardsDataSource(gameId, firebase)
         cardsRepository = CardsRepositoryImpl(firebaseCardsDataSource)
 
-        firebasePlayersDataSource = FirebasePlayersDataSource(FirebaseFirestore.getInstance())
+        firebasePlayersDataSource = FirebasePlayersDataSource(firebase)
         playersRepository = PlayersRepositoryImpl(firebasePlayersDataSource)
+
+        firebaseGamesDataSource = FirebaseGamesDataSource(firebase)
+        gamesRepository = GamesRepositoryImpl(firebaseGamesDataSource)
 
         playersObservable = ObservePlayers(playersRepository, schedulerProvider)
         cardsObservable = ObserveAllCards(cardsRepository, schedulerProvider)
+        updateGame = AddGame(gamesRepository, schedulerProvider)
+
 
         playersObservable(gameId)
             .distinctUntilChanged()
@@ -94,7 +111,17 @@ class GamePresenter {
     }
 
     fun onPlayerStarted() {
-        onPickNextCard()
+        setMeAsCurrentPlayer()
+            .subscribe(
+                { onPickNextCard() },
+                { Timber.e(it, "error while setting current player") }
+            ).let { disposables.add(it) }
+    }
+
+    private fun setMeAsCurrentPlayer(): Completable {
+        val updatedGame =
+            GameFlow.currentGame!!.copy(state = GameState.Started(GameInfo(currentPlayer = GameFlow.me!!)))
+        return updateGame(updatedGame)
     }
 
     fun unBind() {

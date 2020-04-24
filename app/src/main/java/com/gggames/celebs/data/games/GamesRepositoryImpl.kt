@@ -1,7 +1,5 @@
 package com.gggames.celebs.data.games
 
-import com.gggames.celebs.data.games.GamesDataSource
-import com.gggames.celebs.data.games.GamesRepository
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
 import io.reactivex.Completable

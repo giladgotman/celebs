@@ -15,7 +15,6 @@ import timber.log.Timber
 class FirebasePlayersDataSource(
     private val firestore: FirebaseFirestore
 ) : PlayersDataSource {
-    private val baseGamesPath = "games"
 
     override fun getAllPlayers(gameId: String): Observable<List<Player>> {
         val playersCollectionsRef = getCollectionReference(gameId)
@@ -60,7 +59,7 @@ class FirebasePlayersDataSource(
         }
     }
 
-    private fun getGameRef(gameId: String) = firestore.document("$baseGamesPath/$gameId/")
+    private fun getGameRef(gameId: String) = firestore.document("$GAMES_PATH/$gameId/")
 
     private fun getCollectionReference(gameRef: DocumentReference) =
         firestore.collection("${gameRef.path}/players/")

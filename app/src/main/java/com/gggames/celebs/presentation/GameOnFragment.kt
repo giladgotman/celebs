@@ -134,7 +134,6 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     //todo add update Team3
 
-
     override fun showGameOver() {
         cardTextView.text = "Game Over!"
         startButton.text = "FINISH"
