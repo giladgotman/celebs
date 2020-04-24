@@ -20,10 +20,18 @@ import java.util.*
  */
 class GameOnFragment : Fragment(), GamePresenter.GameView {
 
-    private val START_TIME_IN_MILLIS = 60000L
+    val STATE_STOPPED = 0
+    val STATE_STARTED = 1
+    val STATE_PAUSED = 2
+    val STATE_NEW_ROUND = 3
+
+    private var state: Int = STATE_STOPPED
+
+    //    private val START_TIME_IN_MILLIS = 60000L
+    private val START_TIME_IN_MILLIS = 30000L
 
     lateinit var presenter: GamePresenter
-    override var gameRound = 1
+
 
     private var mCountDownTimer: CountDownTimer? = null
 
@@ -58,24 +66,74 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
         roundTextView.setOnClickListener {
             presenter.onReloadDeck()
-            gameRound++
-            if (gameRound > 3) {
-                gameRound = 1
+        }
+
+        startButton.setOnClickListener {
+            when (state) {
+                STATE_STOPPED -> presenter.onPlayerStarted()
+                STATE_PAUSED -> presenter.onPlayerResumed()
+                STATE_STARTED -> presenter.onPlayerPaused()
+                STATE_NEW_ROUND -> presenter.onPlayerResumedNewRound()
             }
-            roundTextView.text = gameRound.toString()
-            setStoppedState()
         }
         setStoppedState()
         setupTimer()
     }
 
-    private fun setStoppedState() {
+    override fun setStartedState() {
+        startTimer()
+        mTimerRunning = true
+        state = STATE_STARTED
+        startButton.text = "Pause"
+        startButton.isEnabled = true
+        resetButton.isEnabled = true
+        correctButton.isEnabled = true
+    }
+
+
+
+    override fun setStoppedState() {
+        state = STATE_STOPPED
+        mTimeLeftInMillis = START_TIME_IN_MILLIS
         startButton.text = "Start"
         cardTextView.text = ""
         correctButton.isEnabled = false
         startButton.isEnabled = true
     }
 
+    override fun setPausedState() {
+        state = STATE_PAUSED
+        mCountDownTimer?.cancel()
+        correctButton.isEnabled = false
+        mTimerRunning = false
+        startButton.text = "Resume"
+        startButton.isEnabled = true
+    }
+
+    override fun setRoundEndState() {
+        state = STATE_NEW_ROUND
+        mCountDownTimer?.cancel()
+        correctButton.isEnabled = false
+        mTimerRunning = false
+        startButton.text = "Resume"
+        startButton.isEnabled = true
+    }
+
+    private fun startTimer() {
+        mCountDownTimer?.cancel()
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+            override fun onFinish() {
+                mTimerRunning = false
+                timerTextView.text = "Time's Up!"
+                presenter.onTurnEnded()
+            }
+
+            override fun onTick(millis: Long) {
+                mTimeLeftInMillis = millis
+                updateCountDownText()
+            }
+        }.start()
+    }
     private fun pickNextCard() {
         presenter.onPickNextCard()
     }
@@ -86,7 +144,6 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     override fun updateCard(card: Card) {
         Timber.w("ggg update card: $card")
-        correctButton.isEnabled = true
         cardTextView.text = card.name
     }
 
@@ -132,9 +189,17 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         team2Value.text = sb.toString()
     }
 
-    override fun setCurrentPlayer(player: Player) {
+    override fun setCurrentOtherPlayer(player: Player) {
         startButton.isEnabled = false
         cardTextView.text = "${player.name}'s turn"
+    }
+
+    override fun setNoCurrentPlayer() {
+        setStoppedState()
+    }
+
+    override fun setRound(round: String) {
+        roundTextView.text = round
     }
 
     //todo add update Team3
@@ -154,45 +219,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     }
 
     private fun setupTimer() {
-        startButton.setOnClickListener {
-            if (mTimerRunning) {
-                setPausedState()
-            } else {
-                if (isStoppedState()) {
-                    presenter.onPlayerStarted()
-                }
-                setStartedState()
-            }
-        }
         updateCountDownText()
-    }
-
-    private fun isStoppedState() = startButton.text == "Start"
-
-    private fun setStartedState() {
-        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
-            override fun onFinish() {
-                mTimerRunning = false
-                timerTextView.text = "Time's Up!"
-                setStoppedState()
-            }
-
-            override fun onTick(millis: Long) {
-                mTimeLeftInMillis = millis
-                updateCountDownText()
-            }
-        }.start()
-
-        mTimerRunning = true
-        startButton.text = "pause"
-        resetButton.isEnabled = true
-    }
-
-    private fun setPausedState() {
-        mCountDownTimer?.cancel()
-        correctButton.isEnabled = false
-        mTimerRunning = false
-        startButton.text = "Resume"
     }
 
     private fun resetTimer() {

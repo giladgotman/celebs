@@ -42,6 +42,7 @@ class GamePresenter {
     private lateinit var firebasePlayersDataSource: FirebasePlayersDataSource
     private lateinit var firebaseGamesDataSource: FirebaseGamesDataSource
 
+    var gameRound = 1
 
     private var cardDeck = mutableListOf<Card>()
 
@@ -52,6 +53,7 @@ class GamePresenter {
 
     fun bind(view: GameView) {
         this.view = view
+        gameRound = 1
         val gameId = GameFlow.currentGame!!.id
         val firebase = FirebaseFirestore.getInstance()
         firebaseCardsDataSource = FirebaseCardsDataSource(gameId, firebase)
@@ -94,11 +96,17 @@ class GamePresenter {
             .distinctUntilChanged()
             .subscribe({game->
                 val newPlayer = game.currentPlayer
-                if (newPlayer != null && newPlayer.id != GameFlow.currentGame?.currentPlayer?.id) {
-                    if (GameFlow.me != newPlayer) {
-                        Timber.w("new player is not me! newPlater: ${newPlayer.name}")
+                if (newPlayer?.id != GameFlow.currentGame?.currentPlayer?.id) {
+                    if (GameFlow.me == newPlayer) {
+                        Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
+                        onPickNextCard()
+                        view.setStartedState()
+                    } else {
+                        newPlayer?.let {
+                            view.setCurrentOtherPlayer(newPlayer)
+                        } ?: view.setNoCurrentPlayer()
                     }
-                    view.setCurrentPlayer(newPlayer)
+
                 }
                 GameFlow.updateGame(game)
             }, {
@@ -123,7 +131,7 @@ class GamePresenter {
         } else {
             Timber.w("no un used cards left!")
             view.showNoCardsLeft()
-            if (view.gameRound == 3) {
+            if (gameRound == 3) {
                 view.showGameOver()
             }
         }
@@ -132,7 +140,7 @@ class GamePresenter {
     fun onPlayerStarted() {
         setMeAsCurrentPlayer()
             .subscribe(
-                { onPickNextCard() },
+                { Timber.d("set me as current player success") },
                 { Timber.e(it, "error while setting current player") }
             ).let { disposables.add(it) }
     }
@@ -143,11 +151,24 @@ class GamePresenter {
         return updateGame(updatedGame)
     }
 
+    private fun endMyTurn(): Completable {
+        val updatedGame =
+            GameFlow.currentGame!!.copy(state = GameState.Started(GameInfo(currentPlayer = null)))
+        return updateGame(updatedGame)
+    }
+
     fun unBind() {
         disposables.clear()
     }
 
     fun onReloadDeck() {
+        gameRound++
+        if (gameRound > 3) {
+            gameRound = 1
+        }
+        view.setRound(gameRound.toString())
+        view.setRoundEndState()
+
         setAllCardsToUnused()
         cardsRepository.updateCards(cardDeck)
             .subscribe({
@@ -165,14 +186,42 @@ class GamePresenter {
         }
     }
 
+    fun onPlayerPaused() {
+        view.setPausedState()
+    }
+
+    fun onPlayerResumed() {
+        view.setStartedState()
+    }
+
+    fun onTurnEnded() {
+        endMyTurn().subscribe ({
+            view.setStoppedState()
+        }, {
+            Timber.e(it, "error onTurnEnded")
+        }).let {
+            disposables.add(it)
+        }
+    }
+
+    fun onPlayerResumedNewRound() {
+        onPickNextCard()
+        view.setStartedState()
+    }
+
 
     interface GameView{
-        var gameRound: Int
         fun updateCards(cards: List<Card>)
         fun updateTeams(list: List<Player>)
         fun updateCard(card: Card)
         fun showNoCardsLeft()
         fun showGameOver()
-        fun setCurrentPlayer(player: Player)
+        fun setCurrentOtherPlayer(player: Player)
+        fun setPausedState()
+        fun setStartedState()
+        fun setStoppedState()
+        fun setNoCurrentPlayer()
+        fun setRound(toString: String)
+        fun setRoundEndState()
     }
 }

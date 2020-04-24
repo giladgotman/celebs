@@ -28,7 +28,7 @@ data class GameInfoRaw(
     val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
-    val currentPlayer: PlayerRaw = PlayerRaw()
+    val currentPlayer: PlayerRaw? = null
 )
 
 data class GameStateRaw (

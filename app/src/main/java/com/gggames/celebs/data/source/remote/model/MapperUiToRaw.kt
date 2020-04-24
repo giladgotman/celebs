@@ -43,7 +43,7 @@ fun GameInfo.toRaw() = GameInfoRaw(
     this.score,
     this.totalCards,
     this.cardsInDeck,
-    this.currentPlayer.toRaw()
+    this.currentPlayer?.toRaw()
 )
 
 

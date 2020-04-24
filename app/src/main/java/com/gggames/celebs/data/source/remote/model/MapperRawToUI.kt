@@ -36,7 +36,7 @@ fun GameRaw.toUi() = Game(
 )
 
 fun GameInfoRaw.toUi() = GameInfo(
-    this.round.toUi(), this.score, this.totalCards, this.cardsInDeck, this.currentPlayer.toUi()
+    this.round.toUi(), this.score, this.totalCards, this.cardsInDeck, this.currentPlayer?.toUi()
 )
 
 

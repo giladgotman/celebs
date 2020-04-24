@@ -23,7 +23,7 @@ data class GameInfo(
     val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
-    val currentPlayer: Player
+    val currentPlayer: Player?
 )
 
 sealed class GameState {
