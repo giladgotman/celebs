@@ -15,12 +15,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingTop="@dimen/default_margin"
+        android:paddingBottom="@dimen/default_margin"
         android:paddingStart="@dimen/default_margin"
         android:paddingEnd="@dimen/default_margin"
         >
 
         <TextView
-            android:id="@+id/round"
+            android:id="@+id/roundTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_round_24px"
@@ -29,7 +30,23 @@
             android:text="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             />
+
+
+        <TextView
+            android:id="@+id/timerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="32dp"
+            tools:text="1:00"
+            android:layout_marginEnd="5dp"
+            />
+
 
 
     <ImageView
@@ -39,6 +56,7 @@
         android:src="@drawable/ic_filter_none_24px"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <TextView
@@ -49,6 +67,7 @@
         app:layout_constraintEnd_toStartOf="@+id/cardsAmountIcon"
         tools:text="24"
         android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -63,7 +82,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/gameTopSection"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/cardTextView"
@@ -80,39 +99,40 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Putin the president of russia" />
 
+
+        <ImageButton
+            android:id="@+id/resetButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:src="@drawable/ic_refresh_24px"
+            app:layout_constraintStart_toStartOf="@id/cardTextView"
+            app:layout_constraintTop_toBottomOf="@id/cardTextView" />
+
         <Button
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
             android:text="Start"
-            android:textSize="34sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/cardTextView" />
 
         <ImageButton
             android:id="@+id/correctButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
-            android:padding="30dp"
             android:src="@drawable/ic_done_24px"
             app:layout_constraintEnd_toEndOf="@id/cardTextView"
             app:layout_constraintTop_toBottomOf="@id/cardTextView" />
 
-        <ImageButton
-            android:id="@+id/reloadButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginBottom="@dimen/default_margin"
-            android:padding="30dp"
-            android:src="@drawable/ic_refresh_24px"
-            app:layout_constraintStart_toStartOf="@id/cardTextView"
-            app:layout_constraintTop_toBottomOf="@id/cardTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

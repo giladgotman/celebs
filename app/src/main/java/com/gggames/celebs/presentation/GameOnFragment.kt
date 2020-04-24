@@ -1,16 +1,17 @@
 package com.gggames.celebs.presentation
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gggames.celebs.R
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.model.Player
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
+import java.util.*
 
 
 /**
@@ -18,10 +19,17 @@ import timber.log.Timber
  */
 class GameOnFragment : Fragment(), GamePresenter.GameView {
 
+    private val START_TIME_IN_MILLIS = 60000L
     private val TAG = "gilad"
 
     lateinit var presenter: GamePresenter
     var gameRound = 1
+
+    private var mCountDownTimer: CountDownTimer? = null
+
+    private var mTimerRunning = false
+
+    private var mTimeLeftInMillis = START_TIME_IN_MILLIS
 
 
     override fun onCreateView(
@@ -38,24 +46,25 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
         presenter.bind(this)
         cardTextView.text = ""
-        startButton.isVisible = true
 
-        startButton.setOnClickListener {
-            presenter.onPlayerStarted()
-        }
-
-        reloadButton.setOnClickListener {
-            presenter.onReloadDeck()
-            gameRound++
-            if (gameRound > 3) {
-                gameRound = 1
-            }
-            round.text = gameRound.toString()
+        resetButton.setOnClickListener {
+            resetTimer()
         }
 
         correctButton.setOnClickListener {
             pickNextCard()
         }
+
+        roundTextView.setOnClickListener {
+            presenter.onReloadDeck()
+            gameRound++
+            if (gameRound > 3) {
+                gameRound = 1
+            }
+            roundTextView.text = gameRound.toString()
+        }
+
+        setupTimer()
     }
 
     private fun pickNextCard() {
@@ -68,7 +77,6 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     override fun updateCard(card: Card) {
         Timber.w("ggg update card: $card")
-        startButton.isVisible = false
         cardTextView.text = card.name
     }
 
@@ -113,4 +121,60 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         super.onDestroy()
         presenter.unBind()
     }
+
+    private fun setupTimer() {
+        startButton.setOnClickListener {
+            if (mTimerRunning) {
+                pauseTimer()
+            } else {
+                if (startButton.text == "Start") {
+                    presenter.onPlayerStarted()
+                }
+                startTimer()
+            }
+        }
+        updateCountDownText()
+    }
+
+    private fun startTimer() {
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+            override fun onFinish() {
+                mTimerRunning = false
+                timerTextView.text = "Time's Up!"
+                startButton.text = "Start"
+            }
+
+            override fun onTick(millis: Long) {
+                mTimeLeftInMillis = millis
+                updateCountDownText()
+            }
+        }.start()
+
+        mTimerRunning = true
+        startButton.text = "pause"
+    }
+
+    private fun pauseTimer() {
+        mCountDownTimer?.cancel()
+        mTimerRunning = false
+        startButton.text = "Resume"
+    }
+
+    private fun resetTimer() {
+        mCountDownTimer?.cancel()
+        mTimerRunning = false
+        startButton.text = "Start"
+        mTimeLeftInMillis = START_TIME_IN_MILLIS
+        updateCountDownText()
+    }
+
+    private fun updateCountDownText() {
+        val minutes = (mTimeLeftInMillis / 1000).toInt() / 60
+        val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
+
+        val timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+
+        timerTextView.text = timeLeftFormatted;
+    }
+
 }
