@@ -8,7 +8,15 @@ data class Game (val id: String,
                  val rounds: List<Round> = defaultRoundsList(),
                  val players: List<Player> = emptyList(),
                  val state: GameState = GameState.Empty
-)
+) {
+    val currentPlayer: Player?
+        get() {
+            return when (this.state) {
+                    is GameState.Started -> this.state.gameInfo.currentPlayer
+                    else -> null
+                }
+            }
+}
 
 data class GameInfo(
     val round: Round = Round.Speaking,

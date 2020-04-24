@@ -3,9 +3,9 @@ package com.gggames.celebs.core
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
 import com.gggames.celebs.domain.players.ChooseTeam
 import com.gggames.celebs.domain.players.JoinGame
@@ -32,6 +32,10 @@ object GameFlow {
 
     var currentGame: Game? = null
         private set
+
+    var currentPlayer: Player? = null
+
+
 
     fun setContext(context: Context) {
         appContext = context
@@ -95,5 +99,9 @@ object GameFlow {
         val id = generatePlayerId(playerName, now)
         me = Player(id, playerName)
         preferenceManager.savePlayer(me)
+    }
+
+    fun updateGame(game: Game) {
+        currentGame = game
     }
 }

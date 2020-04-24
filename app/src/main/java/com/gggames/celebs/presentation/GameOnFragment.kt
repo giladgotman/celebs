@@ -132,6 +132,11 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         team2Value.text = sb.toString()
     }
 
+    override fun setCurrentPlayer(player: Player) {
+        startButton.isEnabled = false
+        cardTextView.text = "${player.name}'s turn"
+    }
+
     //todo add update Team3
 
     override fun showGameOver() {

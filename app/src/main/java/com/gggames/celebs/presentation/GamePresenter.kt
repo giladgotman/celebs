@@ -16,6 +16,7 @@ import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
 import com.gggames.celebs.domain.cards.ObserveAllCards
 import com.gggames.celebs.domain.games.AddGame
+import com.gggames.celebs.domain.games.ObserveGame
 import com.gggames.celebs.domain.players.ObservePlayers
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
@@ -30,6 +31,7 @@ class GamePresenter {
     private lateinit var cardsObservable: ObserveAllCards
 
     private lateinit var updateGame: AddGame
+    private lateinit var observeGame: ObserveGame
 
     private lateinit var cardsRepository: CardsRepository
 
@@ -64,6 +66,7 @@ class GamePresenter {
         playersObservable = ObservePlayers(playersRepository, schedulerProvider)
         cardsObservable = ObserveAllCards(cardsRepository, schedulerProvider)
         updateGame = AddGame(gamesRepository, schedulerProvider)
+        observeGame = ObserveGame(gamesRepository, schedulerProvider)
 
 
         playersObservable(gameId)
@@ -77,13 +80,29 @@ class GamePresenter {
             }
 
         cardsObservable()
-            .compose(schedulerProvider.applyDefault())
             .distinctUntilChanged()
             .subscribe({cards->
                 cardDeck = cards.toMutableList()
                 view.updateCards(cards.filter { !it.used })
             }, {
                 Timber.e(it, "error while observing cards")
+            }).let {
+                disposables.add(it)
+            }
+
+        observeGame(gameId)
+            .distinctUntilChanged()
+            .subscribe({game->
+                val newPlayer = game.currentPlayer
+                if (newPlayer != null && newPlayer.id != GameFlow.currentGame?.currentPlayer?.id) {
+                    if (GameFlow.me != newPlayer) {
+                        Timber.w("new player is not me! newPlater: ${newPlayer.name}")
+                    }
+                    view.setCurrentPlayer(newPlayer)
+                }
+                GameFlow.updateGame(game)
+            }, {
+                Timber.e(it, "error while observing game")
             }).let {
                 disposables.add(it)
             }
@@ -154,5 +173,6 @@ class GamePresenter {
         fun updateCard(card: Card)
         fun showNoCardsLeft()
         fun showGameOver()
+        fun setCurrentPlayer(player: Player)
     }
 }

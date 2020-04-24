@@ -15,7 +15,9 @@ class GamesRepositoryImpl(
     override fun addGame(game: Game): Completable =
         firebaseGamesDataSource.addGame(game)
 
-
     override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable =
         firebaseGamesDataSource.chooseTeam(gameId, player, teamName)
+
+    override fun observeGame(gameId: String): Observable<Game> =
+        firebaseGamesDataSource.observeGame(gameId)
 }
