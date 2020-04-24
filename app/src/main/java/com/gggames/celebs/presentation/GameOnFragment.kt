@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.model.Player
@@ -20,10 +21,9 @@ import java.util.*
 class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     private val START_TIME_IN_MILLIS = 60000L
-    private val TAG = "gilad"
 
     lateinit var presenter: GamePresenter
-    var gameRound = 1
+    override var gameRound = 1
 
     private var mCountDownTimer: CountDownTimer? = null
 
@@ -51,6 +51,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
             resetTimer()
         }
 
+
         correctButton.setOnClickListener {
             pickNextCard()
         }
@@ -64,12 +65,15 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
             roundTextView.text = gameRound.toString()
             setStoppedState()
         }
-
+        setStoppedState()
         setupTimer()
     }
 
     private fun setStoppedState() {
         startButton.text = "Start"
+        cardTextView.text = ""
+        correctButton.isEnabled = false
+        startButton.isEnabled = true
     }
 
     private fun pickNextCard() {
@@ -82,12 +86,16 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     override fun updateCard(card: Card) {
         Timber.w("ggg update card: $card")
+        correctButton.isEnabled = true
         cardTextView.text = card.name
     }
 
     override fun showNoCardsLeft() {
-        pauseTimer()
+        setPausedState()
         cardTextView.text = "Round Ended"
+        startButton.isEnabled = false
+        startButton.text = "---"
+        resetButton.isEnabled = false
     }
 
     override fun updateTeams(list: List<Player>) {
@@ -127,6 +135,15 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     //todo add update Team3
 
 
+    override fun showGameOver() {
+        cardTextView.text = "Game Over!"
+        startButton.text = "FINISH"
+        startButton.isEnabled = true
+        startButton.setOnClickListener {
+            findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.unBind()
@@ -135,12 +152,12 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     private fun setupTimer() {
         startButton.setOnClickListener {
             if (mTimerRunning) {
-                pauseTimer()
+                setPausedState()
             } else {
                 if (isStoppedState()) {
                     presenter.onPlayerStarted()
                 }
-                startTimer()
+                setStartedState()
             }
         }
         updateCountDownText()
@@ -148,7 +165,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     private fun isStoppedState() = startButton.text == "Start"
 
-    private fun startTimer() {
+    private fun setStartedState() {
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
                 mTimerRunning = false
@@ -164,10 +181,12 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
         mTimerRunning = true
         startButton.text = "pause"
+        resetButton.isEnabled = true
     }
 
-    private fun pauseTimer() {
+    private fun setPausedState() {
         mCountDownTimer?.cancel()
+        correctButton.isEnabled = false
         mTimerRunning = false
         startButton.text = "Resume"
     }

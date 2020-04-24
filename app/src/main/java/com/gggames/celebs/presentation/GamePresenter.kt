@@ -87,6 +87,9 @@ class GamePresenter {
         } else {
             Timber.w("no un used cards left!")
             view.showNoCardsLeft()
+            if (view.gameRound == 3) {
+                view.showGameOver()
+            }
         }
     }
 
@@ -118,9 +121,11 @@ class GamePresenter {
 
 
     interface GameView{
+        var gameRound: Int
         fun updateCards(cards: List<Card>)
         fun updateTeams(list: List<Player>)
         fun updateCard(card: Card)
         fun showNoCardsLeft()
+        fun showGameOver()
     }
 }
