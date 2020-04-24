@@ -62,9 +62,14 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
                 gameRound = 1
             }
             roundTextView.text = gameRound.toString()
+            setStoppedState()
         }
 
         setupTimer()
+    }
+
+    private fun setStoppedState() {
+        startButton.text = "Start"
     }
 
     private fun pickNextCard() {
@@ -78,6 +83,11 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     override fun updateCard(card: Card) {
         Timber.w("ggg update card: $card")
         cardTextView.text = card.name
+    }
+
+    override fun showNoCardsLeft() {
+        pauseTimer()
+        cardTextView.text = "Round Ended"
     }
 
     override fun updateTeams(list: List<Player>) {
@@ -127,7 +137,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
             if (mTimerRunning) {
                 pauseTimer()
             } else {
-                if (startButton.text == "Start") {
+                if (isStoppedState()) {
                     presenter.onPlayerStarted()
                 }
                 startTimer()
@@ -136,12 +146,14 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         updateCountDownText()
     }
 
+    private fun isStoppedState() = startButton.text == "Start"
+
     private fun startTimer() {
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
                 mTimerRunning = false
                 timerTextView.text = "Time's Up!"
-                startButton.text = "Start"
+                setStoppedState()
             }
 
             override fun onTick(millis: Long) {

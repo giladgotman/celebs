@@ -75,7 +75,7 @@ class GamePresenter {
     fun onPickNextCard() {
         val notUsedCards = cardDeck.filter { !it.used }
         val card = if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
-        card?.let {
+        if (card != null) {
             cardsRepository.updateCard(card)
                 .subscribe({
                     view.updateCard(card)
@@ -84,7 +84,10 @@ class GamePresenter {
                 }).let {
                     disposables.add(it)
                 }
-        } ?: Timber.w("no un used cards left!")
+        } else {
+            Timber.w("no un used cards left!")
+            view.showNoCardsLeft()
+        }
     }
 
     fun onPlayerStarted() {
@@ -118,5 +121,6 @@ class GamePresenter {
         fun updateCards(cards: List<Card>)
         fun updateTeams(list: List<Player>)
         fun updateCard(card: Card)
+        fun showNoCardsLeft()
     }
 }
