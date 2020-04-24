@@ -21,6 +21,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     private val TAG = "gilad"
 
     lateinit var presenter: GamePresenter
+    var gameRound = 1
 
 
     override fun onCreateView(
@@ -45,6 +46,11 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
         reloadButton.setOnClickListener {
             presenter.onReloadDeck()
+            gameRound++
+            if (gameRound > 3) {
+                gameRound = 1
+            }
+            round.text = gameRound.toString()
         }
 
         correctButton.setOnClickListener {
