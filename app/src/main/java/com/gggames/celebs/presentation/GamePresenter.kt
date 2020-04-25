@@ -42,8 +42,6 @@ class GamePresenter {
     private lateinit var firebasePlayersDataSource: FirebasePlayersDataSource
     private lateinit var firebaseGamesDataSource: FirebaseGamesDataSource
 
-    var gameRound = 1
-
     private var cardDeck = mutableListOf<Card>()
 
     private var lastCard: Card? = null
@@ -55,7 +53,6 @@ class GamePresenter {
 
     fun bind(view: GameView) {
         this.view = view
-        gameRound = 1
         val gameId = GameFlow.currentGame!!.id
         val firebase = FirebaseFirestore.getInstance()
         firebaseCardsDataSource = FirebaseCardsDataSource(gameId, firebase)
@@ -96,9 +93,10 @@ class GamePresenter {
 
         observeGame(gameId)
             .distinctUntilChanged()
-            .subscribe({game->
-                val newPlayer = game.currentPlayer
-                if (newPlayer?.id != GameFlow.currentGame?.currentPlayer?.id) {
+            .subscribe({newGame->
+                val currentGame = GameFlow.currentGame!!
+                val newPlayer = newGame.currentPlayer
+                if (newPlayer?.id != currentGame.currentPlayer?.id) {
                     if (GameFlow.me == newPlayer) {
                         Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
                         onPickNextCard()
@@ -110,9 +108,27 @@ class GamePresenter {
                     }
 
                 }
-                GameFlow.updateGame(game)
+                if (currentGame.currentRound != newGame.currentRound) {
+                    loadNewRound(newGame.currentRound)
+                }
+                GameFlow.updateGame(newGame)
             }, {
                 Timber.e(it, "error while observing game")
+            }).let {
+                disposables.add(it)
+            }
+    }
+
+    private fun loadNewRound(newRound: Int) {
+        view.setRound(newRound.toString())
+        view.setRoundEndState()
+
+        setAllCardsToUnused()
+        cardsRepository.updateCards(cardDeck)
+            .subscribe({
+                Timber.d("update cards success")
+            }, {
+                Timber.e(it, "error while update card")
             }).let {
                 disposables.add(it)
             }
@@ -134,11 +150,14 @@ class GamePresenter {
         } else {
             Timber.w("no un used cards left!")
             view.showNoCardsLeft()
-            if (gameRound == 3) {
+            if (lastRound()) {
                 view.showGameOver()
             }
         }
     }
+
+    private fun lastRound(): Boolean  =
+        (GameFlow.currentGame?.state as GameState.Started).gameInfo.round == 3
 
     fun onPlayerStarted() {
         setMeAsCurrentPlayer()
@@ -160,27 +179,35 @@ class GamePresenter {
         return updateGame(updatedGame)
     }
 
+    private fun setNewRound(round: Int): Completable {
+        val game = GameFlow.currentGame!!
+        return if (game.state is GameState.Started) {
+            val updatedGame =
+                game.copy(state = game.state.copy(gameInfo = game.state.gameInfo.copy(round = round)))
+            updateGame(updatedGame)
+        } else {
+            Completable.complete()
+        }
+    }
+
     fun unBind() {
         disposables.clear()
     }
 
     fun onReloadDeck() {
-        gameRound++
-        if (gameRound > 3) {
-            gameRound = 1
-        }
-        view.setRound(gameRound.toString())
-        view.setRoundEndState()
-
-        setAllCardsToUnused()
-        cardsRepository.updateCards(cardDeck)
-            .subscribe({
-                Timber.d("update cards success")
-            }, {
-                Timber.e(it, "error while update card")
+        if (lastRound()) {
+            return
+        } else {
+            var gameRound = (GameFlow.currentGame!!.state as GameState.Started).gameInfo.round
+            gameRound++
+            setNewRound(gameRound)
+                .subscribe({
+            },{
+                Timber.e(it, "error setNewRound")
             }).let {
                 disposables.add(it)
             }
+        }
     }
 
     private fun setAllCardsToUnused() {

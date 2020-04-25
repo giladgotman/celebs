@@ -1,6 +1,5 @@
 package com.gggames.celebs.data.source.remote.model
 
-import com.gggames.celebs.data.model.Round
 import com.google.firebase.Timestamp
 
 data class GameRaw (
@@ -9,7 +8,6 @@ data class GameRaw (
     val createdAt: Timestamp,
     val celebsCount: Long = 6,
     val teams: List<TeamRaw>,
-    val rounds: List<RoundRaw>,
     val players: List<PlayerRaw> = emptyList(),
     val state: GameStateRaw = GameStateRaw()
 ) {
@@ -24,7 +22,7 @@ data class GameRaw (
 }
 
 data class GameInfoRaw(
-    val round: RoundRaw = Round.Speaking.toRaw(),
+    val round: Int = 1,
     val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
@@ -37,7 +35,7 @@ data class GameStateRaw (
     val otherCardsCount: Map<String, Int> = emptyMap(),
     val gameInfo: GameInfoRaw = GameInfoRaw()
 ) {
-    constructor() : this("created")
+    constructor() : this("empty")
 }
 
 const val EMPTY_VALUE = "EMPTY_VALUE"

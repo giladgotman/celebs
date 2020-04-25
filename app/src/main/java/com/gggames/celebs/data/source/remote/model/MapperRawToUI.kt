@@ -9,8 +9,6 @@ fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 
 fun TeamRaw.toUi() = Team(this.name, this.players.map { it.toUi() })
 
-fun RoundRaw.toUi() = Round.Speaking // // TODO: 05.04.20 convert to real round
-
 fun GameStateRaw.toUi() = when (this.state) {
     "created" -> GameState.Created(
         this.myCards.map { it.toUi() },
@@ -28,15 +26,12 @@ fun GameRaw.toUi() = Game(
     this.createdAt.toDate().time,
     this.celebsCount.toInt(),
     this.teams.map { it.toUi() },
-    this.rounds.map {
-        it.toUi()
-    },
     this.players.map { it.toUi() },
     this.state.toUi()
 )
 
 fun GameInfoRaw.toUi() = GameInfo(
-    this.round.toUi(), this.score, this.totalCards, this.cardsInDeck, this.currentPlayer?.toUi()
+    this.round, this.score, this.totalCards, this.cardsInDeck, this.currentPlayer?.toUi()
 )
 
 

@@ -11,8 +11,6 @@ fun Player.toRaw() = PlayerRaw(this.id, this.name, this.team)
 
 fun Team.toRaw() = TeamRaw(this.name, this.players.map { it.toRaw() })
 
-fun Round.toRaw() = RoundRaw(this.name)
-
 fun GameState.toRaw() = when (this) {
     is GameState.Empty -> GameStateRaw("empty")
     is GameState.Created -> GameStateRaw(
@@ -31,15 +29,12 @@ fun Game.toRaw() = GameRaw(
     Timestamp(Date(this.createdAt)),
     this.celebsCount.toLong(),
     this.teams.map { it.toRaw() },
-    this.rounds.map {
-        it.toRaw()
-    },
     this.players.map { it.toRaw() },
     this.state.toRaw()
 )
 
 fun GameInfo.toRaw() = GameInfoRaw(
-    this.round.toRaw(),
+    this.round,
     this.score,
     this.totalCards,
     this.cardsInDeck,

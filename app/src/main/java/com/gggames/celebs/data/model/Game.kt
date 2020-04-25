@@ -5,37 +5,34 @@ data class Game (val id: String,
                  val createdAt: Long,
                  val celebsCount: Int = 6,
                  val teams: List<Team> = emptyList(),
-                 val rounds: List<Round> = defaultRoundsList(),
                  val players: List<Player> = emptyList(),
                  val state: GameState = GameState.Empty
 ) {
     val currentPlayer: Player?
-        get() {
-            return when (this.state) {
-                    is GameState.Started -> this.state.gameInfo.currentPlayer
-                    else -> null
-                }
-            }
+        get() = this.state.gameInfo.currentPlayer
+    val currentRound: Int
+        get() = this.state.gameInfo.round
 }
 
 data class GameInfo(
-    val round: Round = Round.Speaking,
+//    val round: Round = Round.Speaking,
+    val round: Int = 1,
     val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
-    val currentPlayer: Player?
+    val currentPlayer: Player? = null
 )
 
-sealed class GameState {
-    object Empty : GameState()
+sealed class GameState(open val gameInfo: GameInfo) {
+    object Empty : GameState(GameInfo())
     data class Created(
         val myCards: List<Card>,
         val otherCardsCount: Map<String, Int>
-    ): GameState()
+    ) : GameState(GameInfo())
 
-    data class Ready(val gameInfo: GameInfo): GameState()
+    data class Ready(override val gameInfo: GameInfo) : GameState(gameInfo)
 
-    data class Started(val gameInfo: GameInfo): GameState()
+    data class Started(override val gameInfo: GameInfo) : GameState(gameInfo)
 
-    data class Finished(val gameInfo: GameInfo): GameState()
+    data class Finished(override val gameInfo: GameInfo) : GameState(gameInfo)
 }
