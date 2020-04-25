@@ -122,19 +122,29 @@ class GamePresenter {
             }
     }
 
-    private fun loadNewRound(newRound: Int) {
-        view.setRound(newRound.toString())
-        view.setRoundEndState()
+    fun onReloadDeck() {
+        if (lastRound()) {
+            return
+        } else {
+            var gameRound = GameFlow.currentGame!!.state.gameInfo.round
+            gameRound++
+            setNewRound(gameRound)
+                .subscribe({
+                    Timber.d("set new round success")
+                },{
+                    Timber.e(it, "error setNewRound")
+                }).let {
+                    disposables.add(it)
+                }
+        }
+    }
 
-        setAllCardsToUnused()
-        cardsRepository.updateCards(cardDeck)
-            .subscribe({
-                Timber.d("update cards success")
-            }, {
-                Timber.e(it, "error while update card")
-            }).let {
-                disposables.add(it)
-            }
+    fun onPlayerStarted() {
+        setMeAsCurrentPlayer()
+            .subscribe(
+                { Timber.d("set me as current player success") },
+                { Timber.e(it, "error while setting current player") }
+            ).let { disposables.add(it) }
     }
 
     fun onPickNextCard() {
@@ -163,16 +173,54 @@ class GamePresenter {
         }
     }
 
+    fun onPlayerResumedNewRound() {
+        onPickNextCard()
+        view.setStartedState()
+    }
+
+    fun onTurnEnded() {
+        maybeFlipLastCard()
+            .andThen(endMyTurn())
+            .subscribe({
+                view.setStoppedState()
+            }, {
+                Timber.e(it, "error onTurnEnded")
+            }).let {
+                disposables.add(it)
+            }
+    }
+
+    fun onPlayerPaused() {
+        view.setPausedState()
+    }
+
+    fun onPlayerResumed() {
+        view.setStartedState()
+    }
+
+    fun unBind() {
+        disposables.clear()
+    }
+
+    private fun loadNewRound(newRound: Int) {
+        view.setRound(newRound.toString())
+        view.setRoundEndState()
+
+        setAllCardsToUnused()
+        cardsRepository.updateCards(cardDeck)
+            .subscribe({
+                Timber.d("update cards success")
+            }, {
+                Timber.e(it, "error while update card")
+            }).let {
+                disposables.add(it)
+            }
+    }
+
     private fun lastRound(): Boolean  =
         (GameFlow.currentGame?.state as GameState.Started).gameInfo.round == 3
 
-    fun onPlayerStarted() {
-        setMeAsCurrentPlayer()
-            .subscribe(
-                { Timber.d("set me as current player success") },
-                { Timber.e(it, "error while setting current player") }
-            ).let { disposables.add(it) }
-    }
+
 
     private fun setMeAsCurrentPlayer(): Completable {
         val updatedGame =
@@ -200,39 +248,10 @@ class GamePresenter {
     private fun setNewGameState(state: GameState): Completable =
         updateGame(GameFlow.currentGame!!.copy(state = state))
 
-
-    fun unBind() {
-        disposables.clear()
-    }
-
-    fun onReloadDeck() {
-        if (lastRound()) {
-            return
-        } else {
-            var gameRound = (GameFlow.currentGame!!.state as GameState.Started).gameInfo.round
-            gameRound++
-            setNewRound(gameRound)
-                .subscribe({
-            },{
-                Timber.e(it, "error setNewRound")
-            }).let {
-                disposables.add(it)
-            }
-        }
-    }
-
     private fun setAllCardsToUnused() {
         cardDeck.forEachIndexed { index, item ->
             cardDeck[index] = cardDeck[index].copy(used = false)
         }
-    }
-
-    fun onPlayerPaused() {
-        view.setPausedState()
-    }
-
-    fun onPlayerResumed() {
-        view.setStartedState()
     }
 
     private fun maybeFlipLastCard(): Completable =
@@ -240,26 +259,6 @@ class GamePresenter {
             Timber.d("flipping last card: ${it.name}")
             cardsRepository.updateCard(it.copy(used = false))
         } ?: Completable.complete()
-
-
-
-    fun onTurnEnded() {
-        maybeFlipLastCard()
-            .andThen(endMyTurn())
-            .subscribe({
-            view.setStoppedState()
-        }, {
-            Timber.e(it, "error onTurnEnded")
-        }).let {
-            disposables.add(it)
-        }
-    }
-
-    fun onPlayerResumedNewRound() {
-        onPickNextCard()
-        view.setStartedState()
-    }
-
 
     interface GameView{
         fun updateCards(cards: List<Card>)
