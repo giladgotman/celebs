@@ -33,12 +33,12 @@
     <string name="add_cards_card_5">Card 5</string>
     <string name="add_cards_card_6">Card 6</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_welcome_title">Welcome To The Celebs Game!</string>
     <string name="login_username_hint">Your name</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
     <string name="game_on_start">Start</string>
     <string name="teams">Teams</string>
+    <string name="new_round_alert_message">Are you sure you want to start a new round?</string>
+    <string name="ok">OK</string>
 </resources>

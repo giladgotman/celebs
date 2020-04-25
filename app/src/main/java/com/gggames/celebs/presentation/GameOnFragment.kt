@@ -1,5 +1,7 @@
 package com.gggames.celebs.presentation
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -65,7 +67,24 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         }
 
         roundTextView.setOnClickListener {
-            presenter.onReloadDeck()
+
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        presenter.onReloadDeck()
+                    }
+
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        // Do nothing...
+                    }
+                }
+            }
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(getString(R.string.new_round_alert_message))
+                .setPositiveButton(getString(R.string.ok), dialogClickListener)
+                .setNegativeButton(getString(R.string.cancel), dialogClickListener)
+                .show()
+
         }
 
         startButton.setOnClickListener {

@@ -218,7 +218,7 @@ class GamePresenter {
     }
 
     private fun lastRound(): Boolean  =
-        (GameFlow.currentGame?.state as GameState.Started).gameInfo.round == 3
+        GameFlow.currentGame?.state?.gameInfo?.round == 3
 
 
 
