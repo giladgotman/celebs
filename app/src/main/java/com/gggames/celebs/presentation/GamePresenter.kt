@@ -106,10 +106,13 @@ class GamePresenter {
                             view.setCurrentOtherPlayer(newPlayer)
                         } ?: view.setNoCurrentPlayer()
                     }
-
                 }
                 if (currentGame.currentRound != newGame.currentRound) {
                     loadNewRound(newGame.currentRound)
+                }
+
+                if (newGame.state is GameState.Finished) {
+                    view.showGameOver()
                 }
                 GameFlow.updateGame(newGame)
             }, {
@@ -151,7 +154,11 @@ class GamePresenter {
             Timber.w("no un used cards left!")
             view.showNoCardsLeft()
             if (lastRound()) {
-                view.showGameOver()
+                setNewGameState(GameState.Finished(GameFlow.currentGame!!.state.gameInfo))
+                    .subscribe(
+                        { Timber.d("setNewGameState Finished success") },
+                        { Timber.e(it, "error setNewGameState Finished") }
+                    ).let { disposables.add(it) }
             }
         }
     }
@@ -189,6 +196,10 @@ class GamePresenter {
             Completable.complete()
         }
     }
+
+    private fun setNewGameState(state: GameState): Completable =
+        updateGame(GameFlow.currentGame!!.copy(state = state))
+
 
     fun unBind() {
         disposables.clear()

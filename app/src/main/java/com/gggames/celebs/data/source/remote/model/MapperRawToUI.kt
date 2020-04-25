@@ -14,10 +14,10 @@ fun GameStateRaw.toUi() = when (this.state) {
         this.myCards.map { it.toUi() },
         this.otherCardsCount)
     "empty" -> GameState.Empty
-    "ready" -> TODO()
+    "ready" -> GameState.Ready(this.gameInfo.toUi())
     "started" -> GameState.Started(this.gameInfo.toUi())
-    "finished" -> TODO()
-    else -> TODO()
+    "finished" -> GameState.Finished(this.gameInfo.toUi())
+    else -> throw IllegalArgumentException("Unknown state: ${this.state}")
 }
 
 fun GameRaw.toUi() = Game(

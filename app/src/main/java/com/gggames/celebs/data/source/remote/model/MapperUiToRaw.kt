@@ -18,9 +18,9 @@ fun GameState.toRaw() = when (this) {
         this.myCards.map { it.toRaw() },
         this.otherCardsCount
     )
-    is GameState.Ready -> TODO()
+    is GameState.Ready -> GameStateRaw("ready", gameInfo = this.gameInfo.toRaw())
     is GameState.Started -> GameStateRaw("started", gameInfo = this.gameInfo.toRaw())
-    is GameState.Finished -> TODO()
+    is GameState.Finished -> GameStateRaw("finished", gameInfo = this.gameInfo.toRaw())
 }
 
 fun Game.toRaw() = GameRaw(
