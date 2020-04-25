@@ -2,6 +2,7 @@ package com.gggames.celebs.data.source.remote
 
 import com.gggames.celebs.data.games.GamesDataSource
 import com.gggames.celebs.data.model.Game
+import com.gggames.celebs.data.model.GameState
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.source.remote.model.GameRaw
 import com.gggames.celebs.data.source.remote.model.toRaw
@@ -16,10 +17,19 @@ import timber.log.Timber
 class FirebaseGamesDataSource(
     private val firestore: FirebaseFirestore
 ) : GamesDataSource {
-    override fun getGames(): Single<List<Game>> {
+    override fun getGames(statesQuery: List<GameState>): Single<List<Game>> {
         val games = mutableListOf<Game>()
         return Single.create { emitter ->
-            firestore.collection(GAMES_PATH).get()
+            val query = if (statesQuery.isNotEmpty()) {
+                firestore.collection(GAMES_PATH)
+                    .whereIn("state.state", statesQuery.map { it.toRaw().state })
+            } else {
+                firestore.collection(GAMES_PATH).whereIn(
+                    "state.state",
+                    listOf("empty", "ready", "created", "started", "finished")
+                )
+            }
+            query.get()
                 .addOnSuccessListener { result ->
                     for (game in result) {
                         val gameEntity = game.toObject(GameRaw().javaClass)
@@ -31,8 +41,6 @@ class FirebaseGamesDataSource(
                     Timber.w(exception, "Error getting documents.")
                     emitter.onError(exception)
                 }
-
-
         }
     }
 
