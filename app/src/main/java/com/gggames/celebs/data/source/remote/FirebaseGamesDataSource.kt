@@ -3,7 +3,6 @@ package com.gggames.celebs.data.source.remote
 import com.gggames.celebs.data.games.GamesDataSource
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.GameState
-import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.source.remote.model.GameRaw
 import com.gggames.celebs.data.source.remote.model.toRaw
 import com.gggames.celebs.data.source.remote.model.toUi
@@ -62,21 +61,6 @@ class FirebaseGamesDataSource(
         }
     }
 
-    override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable {
-        Timber.w("chooseTeam: ${player.name}, team: $teamName")
-        return Completable.create { emitter ->
-//            firestore.collection("games")
-//                .document(gameId).set(gameRaw).addOnSuccessListener {
-//                    Timber.i("game added to firebase")
-//                    Completable.complete()
-//                }
-//                .addOnFailureListener { error ->
-//                    Timber.e(error, "error while trying to add game")
-//                    Completable.error(error)
-//                }
-        }
-    }
-
     override fun observeGame(gameId: String): Observable<Game> {
         Timber.w("observeGame: $gameId")
         return Observable.create { emitter ->
@@ -99,7 +83,7 @@ class FirebaseGamesDataSource(
     }
 }
 
-val GAMES_PATH = "games2"
+val GAMES_PATH = "games"
 
 
 
