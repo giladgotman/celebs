@@ -7,6 +7,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
@@ -22,18 +23,9 @@ import java.util.*
  */
 class GameOnFragment : Fragment(), GamePresenter.GameView {
 
-    val STATE_STOPPED = 0
-    val STATE_STARTED = 1
-    val STATE_PAUSED = 2
-    val STATE_NEW_ROUND = 3
-
-    private var state: Int = STATE_STOPPED
-
-    //    private val START_TIME_IN_MILLIS = 60000L
-    private val START_TIME_IN_MILLIS = 30000L
+    private val START_TIME_IN_MILLIS = 60000L
 
     lateinit var presenter: GamePresenter
-
 
     private var mCountDownTimer: CountDownTimer? = null
 
@@ -43,8 +35,8 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         presenter = GamePresenter()
         // Inflate the layout for this fragment
@@ -67,42 +59,43 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         }
 
         roundTextView.setOnClickListener {
-
-            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        presenter.onReloadDeck()
-                    }
-
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                        // Do nothing...
-                    }
-                }
-            }
-            val builder = AlertDialog.Builder(context)
-            builder.setMessage(getString(R.string.new_round_alert_message))
-                .setPositiveButton(getString(R.string.ok), dialogClickListener)
-                .setNegativeButton(getString(R.string.cancel), dialogClickListener)
-                .show()
-
+            presenter.onNewRoundClick()
         }
 
         startButton.setOnClickListener {
-            when (state) {
-                STATE_STOPPED -> presenter.onPlayerStarted()
-                STATE_PAUSED -> presenter.onPlayerResumed()
-                STATE_STARTED -> presenter.onPlayerPaused()
-                STATE_NEW_ROUND -> presenter.onPlayerResumedNewRound()
-            }
+            presenter.onStartButtonClick()
+
         }
         setStoppedState()
         setupTimer()
     }
 
+    override fun showNewRoundAlert(onClick: (Boolean) -> Unit) {
+        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    onClick(true)
+                }
+
+                DialogInterface.BUTTON_NEGATIVE -> {
+                    onClick(false)
+                }
+            }
+        }
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(getString(R.string.new_round_alert_message))
+            .setPositiveButton(getString(R.string.ok), dialogClickListener)
+            .setNegativeButton(getString(R.string.cancel), dialogClickListener)
+            .show()
+    }
+
+    override fun showLastRoundToast() {
+        Toast.makeText(this.context, "This is the last round", Toast.LENGTH_LONG).show()
+    }
+
     override fun setStartedState() {
         startTimer()
         mTimerRunning = true
-        state = STATE_STARTED
         startButton.text = "Pause"
         startButton.isEnabled = true
         resetButton.isEnabled = true
@@ -110,9 +103,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     }
 
 
-
     override fun setStoppedState() {
-        state = STATE_STOPPED
         mTimeLeftInMillis = START_TIME_IN_MILLIS
         startButton.text = "Start"
         cardTextView.text = ""
@@ -121,7 +112,6 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     }
 
     override fun setPausedState() {
-        state = STATE_PAUSED
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
         mTimerRunning = false
@@ -130,12 +120,9 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     }
 
     override fun setRoundEndState() {
-        state = STATE_NEW_ROUND
-        mCountDownTimer?.cancel()
-        correctButton.isEnabled = false
-        mTimerRunning = false
-        startButton.text = "Resume"
-        startButton.isEnabled = true
+        setPausedState()
+        cardTextView.text = "Round Ended"
+        startButton.isEnabled = false
     }
 
     private fun startTimer() {
@@ -153,6 +140,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
             }
         }.start()
     }
+
     private fun pickNextCard() {
         presenter.onPickNextCard()
     }
@@ -164,14 +152,6 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     override fun updateCard(card: Card) {
         Timber.w("ggg update card: $card")
         cardTextView.text = card.name
-    }
-
-    override fun showNoCardsLeft() {
-        setPausedState()
-        cardTextView.text = "Round Ended"
-        startButton.isEnabled = false
-        startButton.text = "---"
-        resetButton.isEnabled = false
     }
 
     override fun updateTeams(list: List<Player>) {
@@ -234,6 +214,8 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     override fun onDestroy() {
         super.onDestroy()
+        mCountDownTimer?.cancel()
+        mTimerRunning = false
         presenter.unBind()
     }
 
@@ -255,7 +237,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
         val timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
 
-        timerTextView.text = timeLeftFormatted;
+        timerTextView?.text = timeLeftFormatted;
     }
 
 }
