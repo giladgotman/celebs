@@ -104,4 +104,8 @@ object GameFlow {
     fun updateGame(game: Game) {
         currentGame = game
     }
+
+    fun isActivePlayer(): Boolean {
+        return currentGame?.state?.gameInfo?.currentPlayer == me
+    }
 }

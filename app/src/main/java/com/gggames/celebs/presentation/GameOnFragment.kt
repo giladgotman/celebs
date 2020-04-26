@@ -191,7 +191,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     override fun setCurrentOtherPlayer(player: Player) {
         startButton.isEnabled = false
-        cardTextView.text = "${player.name}'s turn"
+        cardTextView.text = "${player.name} is playing"
     }
 
     override fun setNoCurrentPlayer() {

@@ -233,15 +233,20 @@ class GamePresenter {
     }
 
     fun onTurnEnded() {
-        maybeFlipLastCard()
-            .andThen(endMyTurn())
-            .subscribe({
-                setState(STATE_STOPPED)
-            }, {
-                Timber.e(it, "error onTurnEnded")
-            }).let {
-                disposables.add(it)
-            }
+        if (GameFlow.isActivePlayer()) {
+            maybeFlipLastCard()
+                .andThen(endMyTurn())
+                .subscribe({
+                    setState(STATE_STOPPED)
+                }, {
+                    Timber.e(it, "error onTurnEnded")
+                }).let {
+                    disposables.add(it)
+                }
+        } else {
+            setState(STATE_STOPPED)
+            Timber.d("onTurnEnded, I'm not the active player. setting state to STOPPED")
+        }
     }
 
     fun onPlayerPaused() {
