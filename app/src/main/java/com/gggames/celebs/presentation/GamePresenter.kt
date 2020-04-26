@@ -105,6 +105,7 @@ class GamePresenter {
             .subscribe({newGame->
                 val currentGame = GameFlow.currentGame!!
                 val newPlayer = newGame.currentPlayer
+                Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${currentGame.currentPlayer?.name}")
                 if (newPlayer?.id != currentGame.currentPlayer?.id) {
                     if (GameFlow.me == newPlayer) {
                         Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
@@ -124,6 +125,7 @@ class GamePresenter {
                 if (newGame.state is GameState.Finished) {
                     view.showGameOver()
                 }
+                Timber.v("observeGame onNext: game: $newGame}")
                 GameFlow.updateGame(newGame)
             }, {
                 Timber.e(it, "error while observing game")
@@ -163,8 +165,17 @@ class GamePresenter {
             }
     }
     private fun onPlayerStarted() {
+        setStateAndMe()
+            .subscribe(
+                { Timber.d("set me as current player success") },
+                { Timber.e(it, "error while setting current player") }
+            ).let { disposables.add(it) }
+    }
+
+    private fun setStateAndMe(): Completable {
         val game = GameFlow.currentGame!!
-        val setStateAndMe = when (game.state) {
+        Timber.d("setStateAndMe, state: ${game.state}")
+        return when (game.state) {
             is GameState.Empty -> setNewGameState(GameState.Started(GameInfo(currentPlayer = (GameFlow.me!!))))
             is GameState.Started -> {
                 val updatedGame =
@@ -182,11 +193,6 @@ class GamePresenter {
             }
         }
 
-        setStateAndMe
-            .subscribe(
-                { Timber.d("set me as current player success") },
-                { Timber.e(it, "error while setting current player") }
-            ).let { disposables.add(it) }
     }
 
     fun onPickNextCard() {
@@ -218,9 +224,16 @@ class GamePresenter {
 
     private fun unUsedCards() = cardDeck.filter { !it.used }
 
-    fun onPlayerResumedNewRound() {
-        onPickNextCard()
-        setState(STATE_STARTED)
+    private fun onPlayerResumedNewRound() {
+        setStateAndMe()
+            .subscribe(
+                { Timber.d("set me as current player success")
+                    onPickNextCard()
+                    setState(STATE_STARTED)
+                },
+                { Timber.e(it, "error while setting current player") }
+            ).let { disposables.add(it) }
+
     }
 
     fun onTurnEnded() {
@@ -274,37 +287,6 @@ class GamePresenter {
     private fun lastRound(): Boolean  =
         GameFlow.currentGame?.state?.gameInfo?.round == 3
 
-    private fun setMeAsCurrentPlayer(): Completable {
-        val game = GameFlow.currentGame!!
-        return when (game.state) {
-            is GameState.Empty -> {
-                val updatedGame =
-                    game.copy(
-                        state = game.state.copy(
-                            gameInfo = game.state.gameInfo.copy(
-                                currentPlayer = GameFlow.me!!
-                            )
-                        )
-                    )
-                updateGame(updatedGame)
-            }
-            is GameState.Started -> {
-                val updatedGame =
-                    game.copy(
-                        state = game.state.copy(
-                            gameInfo = game.state.gameInfo.copy(
-                                currentPlayer = GameFlow.me!!
-                            )
-                        )
-                    )
-                updateGame(updatedGame)
-            }
-            else -> {
-                Completable.complete()
-            }
-        }
-    }
-
     private fun endMyTurn(): Completable {
         val game = GameFlow.currentGame!!
         return if (game.state is GameState.Started) {
@@ -343,6 +325,7 @@ class GamePresenter {
         } ?: Completable.complete()
 
     fun onStartButtonClick() {
+        Timber.d("---- startButton click, state: $state ----")
         when (state) {
             STATE_STOPPED -> onPlayerStarted()
             STATE_PAUSED -> onPlayerResumed()
