@@ -101,12 +101,12 @@
 
 
         <ImageButton
-            android:id="@+id/resetButton"
+            android:id="@+id/endTurnButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
-            android:src="@drawable/ic_refresh_24px"
+            android:src="@drawable/ic_close_24px"
             app:layout_constraintStart_toStartOf="@id/cardTextView"
             app:layout_constraintTop_toBottomOf="@id/cardTextView" />
 

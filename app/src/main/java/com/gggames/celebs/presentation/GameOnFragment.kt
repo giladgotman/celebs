@@ -24,13 +24,11 @@ import java.util.*
 class GameOnFragment : Fragment(), GamePresenter.GameView {
 
 //    private val START_TIME_IN_MILLIS = 60000L
-    private val START_TIME_IN_MILLIS = 10000L
+    private val START_TIME_IN_MILLIS = 20000L
 
     lateinit var presenter: GamePresenter
 
     private var mCountDownTimer: CountDownTimer? = null
-
-    private var mTimerRunning = false
 
     private var mTimeLeftInMillis = START_TIME_IN_MILLIS
 
@@ -50,8 +48,26 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         presenter.bind(this)
         cardTextView.text = ""
 
-        resetButton.setOnClickListener {
-            resetTimer()
+        endTurnButton.setOnClickListener {
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        timerTextView.text = "Turn Ended"
+                        presenter.onTurnEnded()
+                    }
+
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        startTimer()
+                    }
+                }
+            }
+            mCountDownTimer?.cancel()
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(getString(R.string.end_turn_alert_message))
+                .setPositiveButton(getString(R.string.ok), dialogClickListener)
+                .setNegativeButton(getString(R.string.cancel), dialogClickListener)
+                .show()
+
         }
 
 
@@ -96,10 +112,9 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     override fun setStartedState() {
         startTimer()
-        mTimerRunning = true
         startButton.text = "Pause"
         startButton.isEnabled = true
-        resetButton.isEnabled = true
+        endTurnButton.isEnabled = true
         correctButton.isEnabled = true
     }
 
@@ -109,13 +124,13 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         startButton.text = "Start"
         cardTextView.text = ""
         correctButton.isEnabled = false
+        endTurnButton.isEnabled = false
         startButton.isEnabled = true
     }
 
     override fun setPausedState() {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
-        mTimerRunning = false
         startButton.text = "Resume"
         startButton.isEnabled = true
     }
@@ -130,7 +145,6 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         mCountDownTimer?.cancel()
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
-                mTimerRunning = false
                 timerTextView.text = "Time's Up!"
                 presenter.onTurnEnded()
             }
@@ -216,19 +230,10 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     override fun onDestroy() {
         super.onDestroy()
         mCountDownTimer?.cancel()
-        mTimerRunning = false
         presenter.unBind()
     }
 
     private fun setupTimer() {
-        updateCountDownText()
-    }
-
-    private fun resetTimer() {
-        mCountDownTimer?.cancel()
-        mTimerRunning = false
-        startButton.text = "Start"
-        mTimeLeftInMillis = START_TIME_IN_MILLIS
         updateCountDownText()
     }
 
