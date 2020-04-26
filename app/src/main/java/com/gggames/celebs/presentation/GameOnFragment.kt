@@ -220,6 +220,8 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     override fun showGameOver() {
         cardTextView.text = "Game Over!"
+        timerTextView?.text = ""
+        mCountDownTimer?.cancel()
         startButton.text = "FINISH"
         startButton.isEnabled = true
         startButton.setOnClickListener {
