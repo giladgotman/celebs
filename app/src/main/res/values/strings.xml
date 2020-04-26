@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Celebs</string>
+    <string name="app_name">Hourglass</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="login_fragment_label">Login Fragment</string>
@@ -33,7 +33,8 @@
     <string name="add_cards_card_5">Card 5</string>
     <string name="add_cards_card_6">Card 6</string>
 
-    <string name="login_welcome_title">Welcome To The Celebs Game!</string>
+    <string name="login_welcome_title">Hi there, I am <b><i>Hourglass</i></b></string>
+    <string name="login_welcome_subtitle">Your remote <i>\"Celebs Game\"</i> companion</string>
     <string name="login_username_hint">Your name</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
