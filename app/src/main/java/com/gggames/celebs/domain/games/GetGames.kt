@@ -11,6 +11,6 @@ class GetGames(
     private val gamesRepository: GamesRepository
 ){
     operator fun invoke() = gamesRepository.getGames(
-        listOf(GameState.Empty, GameState.Ready(GameInfo()), GameState.Started(GameInfo()))
+        listOf(GameState.Empty(), GameState.Ready(GameInfo()), GameState.Started(GameInfo()))
     )
 }

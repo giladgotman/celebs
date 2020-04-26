@@ -31,8 +31,6 @@ data class GameInfoRaw(
 
 data class GameStateRaw (
     val state: String,
-    val myCards: List<CardRaw> = emptyList(),
-    val otherCardsCount: Map<String, Int> = emptyMap(),
     val gameInfo: GameInfoRaw = GameInfoRaw()
 ) {
     constructor() : this("empty")

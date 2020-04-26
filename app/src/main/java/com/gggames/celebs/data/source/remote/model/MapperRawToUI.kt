@@ -10,10 +10,7 @@ fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 fun TeamRaw.toUi() = Team(this.name, this.players.map { it.toUi() })
 
 fun GameStateRaw.toUi() = when (this.state) {
-    "created" -> GameState.Created(
-        this.myCards.map { it.toUi() },
-        this.otherCardsCount)
-    "empty" -> GameState.Empty
+    "empty" -> GameState.Empty(this.gameInfo.toUi())
     "ready" -> GameState.Ready(this.gameInfo.toUi())
     "started" -> GameState.Started(this.gameInfo.toUi())
     "finished" -> GameState.Finished(this.gameInfo.toUi())

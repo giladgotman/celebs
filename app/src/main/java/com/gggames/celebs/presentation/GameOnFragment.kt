@@ -23,7 +23,8 @@ import java.util.*
  */
 class GameOnFragment : Fragment(), GamePresenter.GameView {
 
-    private val START_TIME_IN_MILLIS = 60000L
+//    private val START_TIME_IN_MILLIS = 60000L
+    private val START_TIME_IN_MILLIS = 20000L
 
     lateinit var presenter: GamePresenter
 

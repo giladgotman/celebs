@@ -162,9 +162,27 @@ class GamePresenter {
                 disposables.add(it)
             }
     }
-
     private fun onPlayerStarted() {
-        setMeAsCurrentPlayer()
+        val game = GameFlow.currentGame!!
+        val setStateAndMe = when (game.state) {
+            is GameState.Empty -> setNewGameState(GameState.Started(GameInfo(currentPlayer = (GameFlow.me!!))))
+            is GameState.Started -> {
+                val updatedGame =
+                    game.copy(
+                        state = game.state.copy(
+                            gameInfo = game.state.gameInfo.copy(
+                                currentPlayer = GameFlow.me!!
+                            )
+                        )
+                    )
+                updateGame(updatedGame)
+            }
+            else -> {
+                Completable.complete()
+            }
+        }
+
+        setStateAndMe
             .subscribe(
                 { Timber.d("set me as current player success") },
                 { Timber.e(it, "error while setting current player") }
@@ -257,15 +275,45 @@ class GamePresenter {
         GameFlow.currentGame?.state?.gameInfo?.round == 3
 
     private fun setMeAsCurrentPlayer(): Completable {
-        val updatedGame =
-            GameFlow.currentGame!!.copy(state = GameState.Started(GameInfo(currentPlayer = GameFlow.me!!)))
-        return updateGame(updatedGame)
+        val game = GameFlow.currentGame!!
+        return when (game.state) {
+            is GameState.Empty -> {
+                val updatedGame =
+                    game.copy(
+                        state = game.state.copy(
+                            gameInfo = game.state.gameInfo.copy(
+                                currentPlayer = GameFlow.me!!
+                            )
+                        )
+                    )
+                updateGame(updatedGame)
+            }
+            is GameState.Started -> {
+                val updatedGame =
+                    game.copy(
+                        state = game.state.copy(
+                            gameInfo = game.state.gameInfo.copy(
+                                currentPlayer = GameFlow.me!!
+                            )
+                        )
+                    )
+                updateGame(updatedGame)
+            }
+            else -> {
+                Completable.complete()
+            }
+        }
     }
 
     private fun endMyTurn(): Completable {
-        val updatedGame =
-            GameFlow.currentGame!!.copy(state = GameState.Started(GameInfo(currentPlayer = null)))
-        return updateGame(updatedGame)
+        val game = GameFlow.currentGame!!
+        return if (game.state is GameState.Started) {
+            val updatedGame =
+                game.copy(state = game.state.copy(gameInfo = game.state.gameInfo.copy(currentPlayer = null)))
+            updateGame(updatedGame)
+        } else {
+            Completable.complete()
+        }
     }
 
     private fun setNewRound(round: Int): Completable {

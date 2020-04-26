@@ -14,7 +14,6 @@ import com.gggames.celebs.data.cards.CardsRepositoryImpl
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
 import com.gggames.celebs.domain.cards.AddCards
-import com.gggames.celebs.domain.cards.GetMyCards
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_add_cards.*
@@ -26,7 +25,6 @@ import timber.log.Timber
 class AddCardsFragment : Fragment() {
 
     lateinit var addCards: AddCards
-    lateinit var getMyCards: GetMyCards
 
     lateinit var gameId: String
     lateinit var playerId: String
@@ -51,16 +49,6 @@ class AddCardsFragment : Fragment() {
         playerId = GameFlow.me!!.id
 
         addCards = AddCards(
-            CardsRepositoryImpl(
-                FirebaseCardsDataSource(
-                    gameId,
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
-
-        getMyCards = GetMyCards(
             CardsRepositoryImpl(
                 FirebaseCardsDataSource(
                     gameId,

@@ -6,7 +6,7 @@ data class Game (val id: String,
                  val celebsCount: Int = 6,
                  val teams: List<Team> = emptyList(),
                  val players: List<Player> = emptyList(),
-                 val state: GameState = GameState.Empty
+                 val state: GameState = GameState.Empty()
 ) {
     val currentPlayer: Player?
         get() = this.state.gameInfo.currentPlayer
@@ -24,11 +24,7 @@ data class GameInfo(
 )
 
 sealed class GameState(open val gameInfo: GameInfo) {
-    object Empty : GameState(GameInfo())
-    data class Created(
-        val myCards: List<Card>,
-        val otherCardsCount: Map<String, Int>
-    ) : GameState(GameInfo())
+    data class Empty(override val gameInfo: GameInfo = GameInfo()) : GameState(gameInfo)
 
     data class Ready(override val gameInfo: GameInfo) : GameState(gameInfo)
 
