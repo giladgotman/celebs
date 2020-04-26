@@ -1,11 +1,13 @@
 package com.gggames.celebs.presentation
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -59,9 +61,6 @@ class GamesFragment : Fragment() {
                 )
             )
         )
-        view.findViewById<Button>(R.id.button_fetch).setOnClickListener {
-            fetchGames()
-        }
 
         createGameFab.setOnClickListener {
             val args = Bundle()
@@ -78,6 +77,17 @@ class GamesFragment : Fragment() {
             findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
         }
 
+
+        itemsswipetorefresh.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(this.requireContext(), R.color.colorPrimary))
+        itemsswipetorefresh.setColorSchemeColors(Color.WHITE)
+
+        itemsswipetorefresh.setOnRefreshListener {
+            fetchGames()
+            itemsswipetorefresh.isRefreshing = false
+        }
+
+
+
         gamesRecyclerView.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(this.context)
@@ -85,20 +95,23 @@ class GamesFragment : Fragment() {
         gamesRecyclerView.itemAnimator = DefaultItemAnimator()
         gamesRecyclerView.adapter = gamesAdapter
 
+
+        fetchGames()
     }
 
     private fun fetchGames() {
         Log.d(TAG, "fetching games")
-        button_fetch.text = "fetching..."
+        progress.isVisible = true
         getGames().compose(scheduler.applyDefault())
             .subscribe(
                 { games ->
                     Timber.d("fetched games: $games")
+                    progress.isVisible = false
                     gamesAdapter.setData(games)
-                    button_fetch.text = "fetch"
                 },
                 {
-                    button_fetch.text = "fetch"
+                    Timber.e(it, "error fetching games")
+                    progress.isVisible = false
                 }).let { disposables.add(it) }
 
 
