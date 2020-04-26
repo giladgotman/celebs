@@ -119,7 +119,9 @@ class GamePresenter {
                 }
                 view.setRound(newGame.currentRound.toString())
                 if (currentGame.currentRound != newGame.currentRound) {
-                    loadNewRound()
+                    if (GameFlow.me == newPlayer) {
+                        loadNewRound()
+                    }
                 }
 
                 if (newGame.state is GameState.Finished) {
@@ -224,16 +226,10 @@ class GamePresenter {
 
     private fun unUsedCards() = cardDeck.filter { !it.used }
 
-    private fun onPlayerResumedNewRound() {
-        setStateAndMe()
-            .subscribe(
-                { Timber.d("set me as current player success")
-                    onPickNextCard()
-                    setState(STATE_STARTED)
-                },
-                { Timber.e(it, "error while setting current player") }
-            ).let { disposables.add(it) }
 
+    private fun onPlayerResumedNewRound() {
+        onPickNextCard()
+        setState(STATE_STARTED)
     }
 
     fun onTurnEnded() {
@@ -271,6 +267,9 @@ class GamePresenter {
         }
     }
 
+    /*
+    Load new round - only for active player
+     */
     private fun loadNewRound() {
         setAllCardsToUnused()
         cardsRepository.updateCards(cardDeck)
@@ -331,7 +330,7 @@ class GamePresenter {
             STATE_PAUSED -> onPlayerResumed()
             STATE_STARTED -> onPlayerPaused()
             STATE_ROUND_OVER -> {/* disabled */}
-            STATE_NEW_ROUND -> onPlayerResumedNewRound()
+            STATE_NEW_ROUND -> onPlayerResumedNewRound() // only for active player
         }
     }
 
