@@ -7,7 +7,7 @@
     android:paddingStart="@dimen/default_margin"
     android:paddingTop="@dimen/medium_margin"
     android:paddingEnd="@dimen/default_margin"
-    tools:context="com.gggames.celebs.presentation.AddCardsFragment">
+    tools:context=".presentation.ChooseTeamFragment">
 
     <TextView
         android:id="@+id/chooseTeamDescription"
@@ -69,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/medium_margin"
         android:text="@string/done"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/big_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,6 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_margin"
         android:text="@string/cancel"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBaselineOf="@id/buttonDone"
         app:layout_constraintEnd_toStartOf="@+id/buttonDone" />
 

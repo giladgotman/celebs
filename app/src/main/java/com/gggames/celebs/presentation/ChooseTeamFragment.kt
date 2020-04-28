@@ -43,6 +43,9 @@ class ChooseTeamFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        buttonCancel.isVisible = true
+        buttonDone.isVisible = true
+
         chooseTeam = ChooseTeam(
             PlayersRepositoryImpl(
                 FirebasePlayersDataSource(
