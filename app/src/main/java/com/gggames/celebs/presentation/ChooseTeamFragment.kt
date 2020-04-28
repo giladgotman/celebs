@@ -6,11 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.data.players.PlayersRepositoryImpl
+import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
+import com.gggames.celebs.domain.players.ChooseTeam
+import com.google.firebase.firestore.FirebaseFirestore
+import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
 import timber.log.Timber
@@ -20,7 +27,9 @@ import timber.log.Timber
  */
 class ChooseTeamFragment : Fragment() {
 
+    private val disposables = CompositeDisposable()
     lateinit var teams: ArrayList<String>
+    private lateinit var chooseTeam: ChooseTeam
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +41,16 @@ class ChooseTeamFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        chooseTeam = ChooseTeam(
+            PlayersRepositoryImpl(
+                FirebasePlayersDataSource(
+                    FirebaseFirestore.getInstance()
+                )
+            ),
+            SchedulerProvider()
+        )
 
         arguments?.let {
             teams = it.getStringArrayList(TEAMS_KEY)!!
@@ -63,7 +82,16 @@ class ChooseTeamFragment : Fragment() {
             val teamName = button.text.toString()
             Timber.w("selected team: $selection, team: $teamName")
 
-            GameFlow.chooseAteam(teamName)
+            GameFlow.currentGame?.let {
+                chooseTeam(it.id, GameFlow.me!!, teamName)
+                    .subscribe({
+                        Timber.w("ggg you chosed team : $teamName")
+                    },{e->
+                        buttonDone.isEnabled = true
+                        Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG).show()
+                        Timber.e(e, "ggg failed to choose team : $teamName")
+                    }).let { disposables.add(it) }
+            }
 
             findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
         }

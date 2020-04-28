@@ -7,7 +7,6 @@ import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
-import com.gggames.celebs.domain.players.ChooseTeam
 import com.gggames.celebs.domain.players.JoinGame
 import com.gggames.celebs.presentation.LoginActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,7 +18,6 @@ object GameFlow {
 
     lateinit var preferenceManager: PreferenceManager
     private lateinit var joinGame: JoinGame
-    private lateinit var chooseTeam: ChooseTeam
     private lateinit var appContext: Context
     var me: Player? = null
         private set
@@ -52,15 +50,6 @@ object GameFlow {
             SchedulerProvider()
         )
 
-        chooseTeam = ChooseTeam(
-            PlayersRepositoryImpl(
-                FirebasePlayersDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
-
         currentGame = game
         joinGame(game.id, me!!).subscribe({
             Timber.w("ggg you joined game : ${game.id}")
@@ -70,17 +59,6 @@ object GameFlow {
     }
 
     private fun generatePlayerId(playerName: String, now: Long) = "${playerName}_$now"
-
-    fun chooseAteam(teamName: String) {
-        currentGame?.let {
-            chooseTeam(it.id, me!!, teamName)
-                .subscribe({
-                Timber.w("ggg you chosed team : $teamName")
-            },{
-                Timber.e(it,"ggg failed to choose team : $teamName")
-            }).let { disposables.add(it) }
-        }
-    }
 
     fun logout() {
         me = null
