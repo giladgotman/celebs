@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
@@ -48,7 +49,8 @@ class CreateGameFragment : Fragment() {
         }
 
 
-        view.findViewById<Button>(R.id.buttonDone).setOnClickListener {
+        buttonDone.setOnClickListener {
+            buttonDone.isEnabled = false
             val now = System.currentTimeMillis()
             val cardsCount = cardsAmount.editText?.text.toString().toInt()
             val groupList = mutableListOf<Team>()
@@ -79,6 +81,8 @@ class CreateGameFragment : Fragment() {
                         val args = AddCardsFragment.createArgs(game.id, ArrayList(game.teams.map { it.name }), GameFlow.me!!.id)
                         findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment, args)
                     }, {
+                        buttonDone.isEnabled = true
+                        Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG).show()
                         Timber.e(it,"gilad game added failed. ${it.localizedMessage}")
                     })
         }

@@ -54,9 +54,10 @@ class ChooseTeamFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
-            findNavController().navigate(R.id.action_AddCardsFragment_to_GamesFragment)
+            activity?.onBackPressed()
         }
-        view.findViewById<Button>(R.id.buttonDone).setOnClickListener {
+        buttonDone.setOnClickListener {
+            buttonDone.isEnabled = false
             val selection = teamRadioGroup.checkedRadioButtonId
             val button = view.findViewById<RadioButton>(selection)
             val teamName = button.text.toString()

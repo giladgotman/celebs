@@ -43,4 +43,5 @@
     <string name="new_round_alert_message">Are you sure you want to start a new round?</string>
     <string name="end_turn_alert_message">Are you sure you want to end your turn?</string>
     <string name="ok">OK</string>
+    <string name="error_generic">Something went wrong</string>
 </resources>

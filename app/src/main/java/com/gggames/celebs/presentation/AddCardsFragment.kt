@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
@@ -61,7 +62,8 @@ class AddCardsFragment : Fragment() {
         view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
             findNavController().navigate(R.id.action_AddCardsFragment_to_GamesFragment)
         }
-        view.findViewById<Button>(R.id.buttonDone).setOnClickListener {
+        buttonDone.setOnClickListener {
+            buttonDone.isEnabled = false
             val cardList = mutableListOf<Card>()
             addCardIfNotNull(editTextToCard(add_cards_card1.editText), cardList)
             addCardIfNotNull(editTextToCard(add_cards_card2.editText), cardList)
@@ -76,6 +78,8 @@ class AddCardsFragment : Fragment() {
                 args.putStringArrayList(TEAMS_KEY, groups)
                 findNavController().navigate(R.id.action_AddCardsFragment_to_chooseTeamFragment, args)
             },{
+                buttonDone.isEnabled = true
+                Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG).show()
                 Timber.e(it,"ggg added cards failed")
             })
         }
