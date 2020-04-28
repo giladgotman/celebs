@@ -67,22 +67,13 @@
         android:id="@+id/buttonDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginEnd="@dimen/default_margin"
         android:text="@string/done"
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_marginTop="@dimen/big_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/teamRadioGroup" />
-
-    <Button
-        android:id="@+id/buttonCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/default_margin"
-        android:text="@string/cancel"
-        android:visibility="gone"
-        app:layout_constraintBaseline_toBaselineOf="@id/buttonDone"
-        app:layout_constraintEnd_toStartOf="@+id/buttonDone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -42,8 +41,6 @@ class ChooseTeamFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        buttonCancel.isVisible = true
         buttonDone.isVisible = true
 
         chooseTeam = ChooseTeam(
@@ -75,9 +72,6 @@ class ChooseTeamFragment : Fragment() {
             }
         }
 
-        view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
-            activity?.onBackPressed()
-        }
         buttonDone.setOnClickListener {
             buttonDone.isEnabled = false
             val selection = teamRadioGroup.checkedRadioButtonId
