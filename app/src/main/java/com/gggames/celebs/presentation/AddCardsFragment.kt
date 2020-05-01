@@ -1,9 +1,12 @@
 package com.gggames.celebs.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -58,27 +61,41 @@ class AddCardsFragment : Fragment() {
             SchedulerProvider()
         )
 
-        buttonDone.setOnClickListener {
-            buttonDone.isEnabled = false
-            val cardList = mutableListOf<Card>()
-            addCardIfNotNull(editTextToCard(add_cards_card1.editText), cardList)
-            addCardIfNotNull(editTextToCard(add_cards_card2.editText), cardList)
-            addCardIfNotNull(editTextToCard(add_cards_card3.editText), cardList)
-            addCardIfNotNull(editTextToCard(add_cards_card4.editText), cardList)
-            addCardIfNotNull(editTextToCard(add_cards_card5.editText), cardList)
-            addCardIfNotNull(editTextToCard(add_cards_card6.editText), cardList)
-
-            addCards(cardList).subscribe({
-                Timber.w("ggg added cards successfully")
-                val args = Bundle()
-                args.putStringArrayList(TEAMS_KEY, groups)
-                findNavController().navigate(R.id.action_AddCardsFragment_to_chooseTeamFragment, args)
-            },{
-                buttonDone.isEnabled = true
-                Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG).show()
-                Timber.e(it,"ggg added cards failed")
-            })
+        add_cards_card6_editText.setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val imm: InputMethodManager = v.context
+                    .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                onDoneClick()
+                true
+            } else false
         }
+        buttonDone.setOnClickListener {
+            onDoneClick()
+        }
+    }
+
+    private fun onDoneClick() {
+        buttonDone.isEnabled = false
+        val cardList = mutableListOf<Card>()
+        addCardIfNotNull(editTextToCard(add_cards_card1.editText), cardList)
+        addCardIfNotNull(editTextToCard(add_cards_card2.editText), cardList)
+        addCardIfNotNull(editTextToCard(add_cards_card3.editText), cardList)
+        addCardIfNotNull(editTextToCard(add_cards_card4.editText), cardList)
+        addCardIfNotNull(editTextToCard(add_cards_card5.editText), cardList)
+        addCardIfNotNull(editTextToCard(add_cards_card6.editText), cardList)
+
+        addCards(cardList).subscribe({
+            Timber.w("ggg added cards successfully")
+            val args = Bundle()
+            args.putStringArrayList(TEAMS_KEY, groups)
+            findNavController().navigate(R.id.action_AddCardsFragment_to_chooseTeamFragment, args)
+        }, {
+            buttonDone.isEnabled = true
+            Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG)
+                .show()
+            Timber.e(it, "ggg added cards failed")
+        })
     }
 
     private fun addCardIfNotNull(card: Card?, cardList: MutableList<Card>) {
