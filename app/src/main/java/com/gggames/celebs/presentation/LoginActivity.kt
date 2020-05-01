@@ -1,7 +1,10 @@
 package com.gggames.celebs.presentation
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
@@ -13,14 +16,28 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        loginUsernameEditText.setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val imm: InputMethodManager = v.context
+                    .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                onDoneClick()
+                true
+            } else false
+        }
         buttonDone.setOnClickListener {
-            if (login_username.editText?.text?.isNotEmpty() == true) {
-                val name = login_username.editText?.text.toString()
-                GameFlow.login(name)
-                goToMainActivity(name)
-            } else {
-                login_username.error = "Please enter your name"
-            }
+            onDoneClick()
+        }
+    }
+
+    private fun onDoneClick() {
+        if (loginUsername.editText?.text?.isNotEmpty() == true) {
+            val name = loginUsername.editText?.text.toString()
+            GameFlow.login(name)
+            goToMainActivity(name)
+        } else {
+            loginUsername.error = "Please enter your name"
         }
     }
 
