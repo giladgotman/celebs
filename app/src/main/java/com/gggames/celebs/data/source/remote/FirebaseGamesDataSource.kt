@@ -2,7 +2,7 @@ package com.gggames.celebs.data.source.remote
 
 import com.gggames.celebs.data.games.GamesDataSource
 import com.gggames.celebs.data.model.Game
-import com.gggames.celebs.data.model.GameState
+import com.gggames.celebs.data.model.GameStateE
 import com.gggames.celebs.data.source.remote.model.GameRaw
 import com.gggames.celebs.data.source.remote.model.toRaw
 import com.gggames.celebs.data.source.remote.model.toUi
@@ -16,16 +16,16 @@ import timber.log.Timber
 class FirebaseGamesDataSource(
     private val firestore: FirebaseFirestore
 ) : GamesDataSource {
-    override fun getGames(statesQuery: List<GameState>): Single<List<Game>> {
+    override fun getGames(statesQuery: List<GameStateE>): Single<List<Game>> {
         val games = mutableListOf<Game>()
         return Single.create { emitter ->
             val query = if (statesQuery.isNotEmpty()) {
                 firestore.collection(GAMES_PATH)
-                    .whereIn("state.state", statesQuery.map { it.toRaw().state })
+                    .whereIn("state", statesQuery.map { it.toRaw() })
             } else {
                 firestore.collection(GAMES_PATH).whereIn(
-                    "state.state",
-                    listOf("empty", "ready", "created", "started", "finished")
+                    "state",
+                    GameStateE.values().map { it.toRaw() }
                 )
             }
             query.get()
@@ -46,9 +46,7 @@ class FirebaseGamesDataSource(
     override fun addGame(game: Game): Completable {
         Timber.w("addGame: $game")
         val gameRaw = game.toRaw()
-        Timber.w("gameRaw: $gameRaw")
         return Completable.create { emitter ->
-            Timber.w("updating firestore...")
             firestore.collection(GAMES_PATH)
                 .document(gameRaw.id).set(gameRaw, SetOptions.merge()).addOnSuccessListener {
                     Timber.i("game added to firebase")

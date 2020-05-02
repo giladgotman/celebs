@@ -8,7 +8,8 @@ data class GameRaw (
     val createdAt: Timestamp,
     val celebsCount: Long = 6,
     val teams: List<TeamRaw>,
-    val state: GameStateRaw = GameStateRaw()
+    val state: String? = null,
+    val gameInfo: GameInfoRaw = GameInfoRaw()
 ) {
     constructor() : this(
         EMPTY_VALUE,
@@ -27,11 +28,11 @@ data class GameInfoRaw(
     val currentPlayer: PlayerRaw? = null
 )
 
-data class GameStateRaw (
-    val state: String,
-    val gameInfo: GameInfoRaw = GameInfoRaw()
-) {
-    constructor() : this("empty")
-}
+//data class GameStateRawE (
+//    val state: String,
+//    val gameInfo: GameInfoRaw = GameInfoRaw()
+//) {
+//    constructor() : this("empty")
+//}
 
 const val EMPTY_VALUE = "EMPTY_VALUE"

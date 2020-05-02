@@ -12,6 +12,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.games.GamesRepositoryImpl
 import com.gggames.celebs.data.model.Game
+import com.gggames.celebs.data.model.GameStateE
 import com.gggames.celebs.data.model.Team
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.domain.games.AddGame
@@ -53,17 +54,17 @@ class CreateGameFragment : Fragment() {
             buttonDone.isEnabled = false
             val now = System.currentTimeMillis()
             val cardsCount = cardsAmount.editText?.text.toString().toInt()
-            val groupList = mutableListOf<Team>()
+            val teams = mutableListOf<Team>()
             if (groupName1.editText?.text?.isNotEmpty() == true) {
-                groupList.add(Team(groupName1.editText?.text.toString(), emptyList()))
+                teams.add(Team(groupName1.editText?.text.toString(), emptyList()))
             }
             if (groupName2.editText?.text?.isNotEmpty() == true) {
-                groupList.add(Team(groupName2.editText?.text.toString(), emptyList()))
+                teams.add(Team(groupName2.editText?.text.toString(), emptyList()))
             }
             if (groupName3.editText?.text?.isNotEmpty() == true) {
-                groupList.add(Team(groupName3.editText?.text.toString(), emptyList()))
+                teams.add(Team(groupName3.editText?.text.toString(), emptyList()))
             }
-            val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, groupList)
+            val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, teams, GameStateE.Created)
 
             addGame = AddGame(
                 GamesRepositoryImpl(

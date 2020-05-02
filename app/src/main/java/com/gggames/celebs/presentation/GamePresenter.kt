@@ -5,10 +5,7 @@ import com.gggames.celebs.data.cards.CardsRepository
 import com.gggames.celebs.data.cards.CardsRepositoryImpl
 import com.gggames.celebs.data.games.GamesRepository
 import com.gggames.celebs.data.games.GamesRepositoryImpl
-import com.gggames.celebs.data.model.Card
-import com.gggames.celebs.data.model.GameInfo
-import com.gggames.celebs.data.model.GameState
-import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.model.*
 import com.gggames.celebs.data.players.PlayersRepository
 import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
@@ -50,6 +47,9 @@ class GamePresenter {
 
     private val disposables = CompositeDisposable()
     private lateinit var view: GameView
+
+    private val game: Game
+        get() = GameFlow.currentGame!!
 
     val STATE_STOPPED = 0
     val STATE_STARTED = 1
@@ -103,10 +103,9 @@ class GamePresenter {
         observeGame(gameId)
             .distinctUntilChanged()
             .subscribe({newGame->
-                val currentGame = GameFlow.currentGame!!
                 val newPlayer = newGame.currentPlayer
-                Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${currentGame.currentPlayer?.name}")
-                if (newPlayer?.id != currentGame.currentPlayer?.id) {
+                Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${game.currentPlayer?.name}")
+                if (newPlayer?.id != game.currentPlayer?.id) {
                     if (GameFlow.me == newPlayer) {
                         Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
                         onPickNextCard()
@@ -118,13 +117,13 @@ class GamePresenter {
                     }
                 }
                 view.setRound(newGame.currentRound.toString())
-                if (currentGame.currentRound != newGame.currentRound) {
+                if (game.currentRound != newGame.currentRound) {
                     if (GameFlow.me == newPlayer) {
                         loadNewRound()
                     }
                 }
 
-                if (newGame.state is GameState.Finished) {
+                if (newGame.state == GameStateE.Finished) {
                     view.showGameOver()
                 }
                 Timber.v("observeGame onNext: game: $newGame}")
@@ -155,7 +154,7 @@ class GamePresenter {
     }
 
     private fun setNextRound() {
-        var gameRound = GameFlow.currentGame!!.state.gameInfo.round
+        var gameRound = game.gameInfo.round
         gameRound++
         setNewRound(gameRound)
             .subscribe({
@@ -167,35 +166,28 @@ class GamePresenter {
             }
     }
     private fun onPlayerStarted() {
-        setStateAndMe()
+        setStartedAndMeActive()
             .subscribe(
                 { Timber.d("set me as current player success") },
                 { Timber.e(it, "error while setting current player") }
             ).let { disposables.add(it) }
     }
 
-    private fun setStateAndMe(): Completable {
-        val game = GameFlow.currentGame!!
-        Timber.d("setStateAndMe, state: ${game.state}")
-        return when (game.state) {
-            is GameState.Empty -> setNewGameState(GameState.Started(GameInfo(currentPlayer = (GameFlow.me!!))))
-            is GameState.Started -> {
-                val updatedGame =
-                    game.copy(
-                        state = game.state.copy(
-                            gameInfo = game.state.gameInfo.copy(
-                                currentPlayer = GameFlow.me!!
-                            )
-                        )
-                    )
-                updateGame(updatedGame)
+    private fun setStartedAndMeActive(): Completable =
+        when (game.state) {
+            GameStateE.Created -> {
+                setNewGameStateAndGameInfo(
+                    GameStateE.Started,
+                    game.gameInfo.copy(currentPlayer = GameFlow.me!!)
+                )
+            }
+            GameStateE.Started -> {
+                setNewGameInfo(game.gameInfo.copy(currentPlayer = GameFlow.me!!))
             }
             else -> {
                 Completable.complete()
             }
         }
-
-    }
 
     fun onPickNextCard() {
         val notUsedCards = unUsedCards()
@@ -213,7 +205,7 @@ class GamePresenter {
         } else {
             Timber.w("no un used cards left!")
             if (lastRound()) {
-                setNewGameState(GameState.Finished(GameFlow.currentGame!!.state.gameInfo))
+                setNewGameState(GameStateE.Finished)
                     .subscribe(
                         { Timber.d("setNewGameState Finished success") },
                         { Timber.e(it, "error setNewGameState Finished") }
@@ -223,6 +215,12 @@ class GamePresenter {
             }
         }
     }
+
+    private fun setNewGameState(state: GameStateE): Completable =
+        updateGame(GameFlow.currentGame!!.copy(state = state))
+
+    private fun setNewGameInfo(gameInfo: GameInfo): Completable =
+        updateGame(GameFlow.currentGame!!.copy(gameInfo = gameInfo))
 
     private fun unUsedCards() = cardDeck.filter { !it.used }
 
@@ -289,32 +287,17 @@ class GamePresenter {
     }
 
     private fun lastRound(): Boolean  =
-        GameFlow.currentGame?.state?.gameInfo?.round == 3
+        game.gameInfo.round == 3
 
-    private fun endMyTurn(): Completable {
-        val game = GameFlow.currentGame!!
-        return if (game.state is GameState.Started) {
-            val updatedGame =
-                game.copy(state = game.state.copy(gameInfo = game.state.gameInfo.copy(currentPlayer = null)))
-            updateGame(updatedGame)
-        } else {
-            Completable.complete()
-        }
-    }
+    private fun endMyTurn(): Completable =
+        setNewGameInfo(game.gameInfo.copy(currentPlayer = null))
 
-    private fun setNewRound(round: Int): Completable {
-        val game = GameFlow.currentGame!!
-        return if (game.state is GameState.Started) {
-            val updatedGame =
-                game.copy(state = game.state.copy(gameInfo = game.state.gameInfo.copy(round = round)))
-            updateGame(updatedGame)
-        } else {
-            Completable.complete()
-        }
-    }
+    private fun setNewRound(round: Int): Completable =
+        setNewGameInfo(game.gameInfo.copy(round = round))
 
-    private fun setNewGameState(state: GameState): Completable =
-        updateGame(GameFlow.currentGame!!.copy(state = state))
+
+    private fun setNewGameStateAndGameInfo(state: GameStateE, gameInfo: GameInfo): Completable =
+        updateGame(game.copy(state = state, gameInfo = gameInfo))
 
     private fun setAllCardsToUnused() {
         cardDeck.forEachIndexed { index, item ->

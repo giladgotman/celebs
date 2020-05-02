@@ -31,10 +31,6 @@ object GameFlow {
     var currentGame: Game? = null
         private set
 
-    var currentPlayer: Player? = null
-
-
-
     fun setContext(context: Context) {
         appContext = context
         preferenceManager = PreferenceManager(context)
@@ -84,6 +80,6 @@ object GameFlow {
     }
 
     fun isActivePlayer(): Boolean {
-        return currentGame?.state?.gameInfo?.currentPlayer == me
+        return currentGame?.gameInfo?.currentPlayer == me
     }
 }
