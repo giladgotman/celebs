@@ -82,6 +82,7 @@ class ChooseTeamFragment : Fragment() {
             GameFlow.currentGame?.let {
                 chooseTeam(it.id, GameFlow.me!!, teamName)
                     .subscribe({
+                        GameFlow.setMyTeam(teamName)
                         Timber.w("ggg you chosed team : $teamName")
                     },{e->
                         buttonDone.isEnabled = true

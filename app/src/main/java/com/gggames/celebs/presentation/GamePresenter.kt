@@ -117,7 +117,7 @@ class GamePresenter {
         if (newPlayer?.id != game.currentPlayer?.id) {
             if (GameFlow.me == newPlayer) {
                 Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
-                onPickNextCard()
+                pickNextCard()
                 setState(STATE_STARTED)
             } else {
                 newPlayer?.let {
@@ -193,7 +193,29 @@ class GamePresenter {
             }
         }
 
-    fun onPickNextCard() {
+    fun onCorrectClick() {
+        GameFlow.me?.team?.let {
+            increaseScore(it)
+                .subscribe({
+                    pickNextCard()
+                }, {
+                    Timber.e(it, "error while increaseScore")
+                }).let { disposables.add(it) }
+        }
+
+    }
+
+    private fun increaseScore(teamName: String): Completable {
+        val currScore = game.gameInfo.score[teamName]
+        currScore?.let {
+            val mutableMap = game.gameInfo.score.toMutableMap()
+            mutableMap[teamName] = currScore + 1
+            return setNewGameInfo(game.gameInfo.copy(score = mutableMap))
+        }
+        return Completable.complete()
+    }
+
+    private fun pickNextCard() {
         val notUsedCards = unUsedCards()
         val card = if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
         if (card != null) {
@@ -230,7 +252,7 @@ class GamePresenter {
 
 
     private fun onPlayerResumedNewRound() {
-        onPickNextCard()
+        pickNextCard()
         setState(STATE_STARTED)
     }
 

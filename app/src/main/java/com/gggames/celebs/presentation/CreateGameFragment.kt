@@ -12,6 +12,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.games.GamesRepositoryImpl
 import com.gggames.celebs.data.model.Game
+import com.gggames.celebs.data.model.GameInfo
 import com.gggames.celebs.data.model.GameStateE
 import com.gggames.celebs.data.model.Team
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
@@ -64,7 +65,8 @@ class CreateGameFragment : Fragment() {
             if (groupName3.editText?.text?.isNotEmpty() == true) {
                 teams.add(Team(groupName3.editText?.text.toString(), emptyList()))
             }
-            val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, teams, GameStateE.Created)
+            val initialScore = teams.map { it.name to 0 }.toMap()
+            val game = Game("${gameName.editText?.text}$now", gameName.editText?.text.toString(), now, cardsCount, teams, GameStateE.Created, GameInfo(1, initialScore))
 
             addGame = AddGame(
                 GamesRepositoryImpl(

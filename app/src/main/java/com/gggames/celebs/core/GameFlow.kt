@@ -82,4 +82,8 @@ object GameFlow {
     fun isActivePlayer(): Boolean {
         return currentGame?.gameInfo?.currentPlayer == me
     }
+
+    fun setMyTeam(teamName: String) {
+        me = me?.copy(team = teamName)
+    }
 }

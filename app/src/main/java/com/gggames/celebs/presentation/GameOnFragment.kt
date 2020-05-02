@@ -72,7 +72,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
 
         correctButton.setOnClickListener {
-            pickNextCard()
+            presenter.onCorrectClick()
         }
 
         roundTextView.setOnClickListener {
@@ -156,10 +156,6 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         }.start()
     }
 
-    private fun pickNextCard() {
-        presenter.onPickNextCard()
-    }
-
     override fun updateCards(cards: List<Card>) {
         cardsAmount.text = cards.size.toString()
     }
@@ -224,6 +220,8 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         mCountDownTimer?.cancel()
         startButton.text = "FINISH"
         startButton.isEnabled = true
+        correctButton.isEnabled = false
+        endTurnButton.isEnabled = false
         startButton.setOnClickListener {
             findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
         }
