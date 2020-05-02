@@ -165,11 +165,23 @@
             android:layout_marginTop="@dimen/default_margin"
             tools:text="Team1:"
             />
+
+        <TextView
+            android:id="@+id/team1Score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/team1Name"
+            app:layout_constraintBaseline_toBaselineOf="@id/team1Name"
+            android:layout_marginTop="@dimen/default_margin"
+            tools:text="(1)"
+            android:layout_marginStart="2dp"
+            />
+
         <TextView
             android:id="@+id/team1Value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/team1Name"
+            app:layout_constraintStart_toEndOf="@id/team1Score"
             app:layout_constraintBaseline_toBaselineOf="@id/team1Name"
             android:layout_marginTop="@dimen/default_margin"
             tools:text="pupis, humis, gilad, jojo"
@@ -185,11 +197,22 @@
             android:layout_marginTop="@dimen/default_margin"
             tools:text="Team2:"
             />
+
+        <TextView
+            android:id="@+id/team2Score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/team2Name"
+            app:layout_constraintBaseline_toBaselineOf="@id/team2Name"
+            android:layout_marginTop="@dimen/default_margin"
+            tools:text="(1)"
+            android:layout_marginStart="2dp"
+            />
         <TextView
             android:id="@+id/team2Value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/team2Name"
+            app:layout_constraintStart_toEndOf="@id/team2Score"
             app:layout_constraintBaseline_toBaselineOf="@id/team2Name"
             android:layout_marginTop="@dimen/default_margin"
             tools:text="pupis2, humis2, gilad2, jojo2"

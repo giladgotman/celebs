@@ -132,6 +132,8 @@ class GamePresenter {
             }
         }
 
+        view.setScore(newGame.gameInfo.score)
+
         if (newGame.state == GameStateE.Finished) {
             view.showGameOver()
         }
@@ -362,5 +364,6 @@ class GamePresenter {
         fun setRound(toString: String)
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)
         fun showLastRoundToast()
+        fun setScore(score: Map<String, Int>)
     }
 }

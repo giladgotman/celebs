@@ -179,7 +179,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     private fun updateTeam1(teamName: String, players: List<Player>) {
         Timber.w("updateTeam : teamName: $teamName , p: ${players.size}")
-        team1Name.text = "$teamName : "
+        team1Name.text = "$teamName"
         val sb = StringBuilder()
         players.forEach {
             sb.append(it.name)
@@ -190,13 +190,20 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     private fun updateTeam2(teamName: String, players: List<Player>) {
         Timber.w("updateTeam2 : teamName: $teamName , p: ${players.size}")
-        team2Name.text = "$teamName : "
+        team2Name.text = "$teamName"
         val sb = StringBuilder()
         players.forEach {
             sb.append(it.name)
             sb.append(", ")
         }
         team2Value.text = sb.toString()
+    }
+
+    override fun setScore(score: Map<String, Int>) {
+        val score1 = score[team1Name.text] ?: 0
+        val score2 = score[team2Name.text] ?: 0
+        team1Score.text = "($score1) : "
+        team2Score.text = "($score2) : "
     }
 
     override fun setCurrentOtherPlayer(player: Player) {
