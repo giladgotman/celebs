@@ -24,7 +24,6 @@ fun Game.toRaw() = GameRaw(
     Timestamp(Date(this.createdAt)),
     this.celebsCount.toLong(),
     this.teams.map { it.toRaw() },
-    this.players.map { it.toRaw() },
     this.state.toRaw()
 )
 

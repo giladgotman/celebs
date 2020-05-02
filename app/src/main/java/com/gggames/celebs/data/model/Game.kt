@@ -5,7 +5,6 @@ data class Game (val id: String,
                  val createdAt: Long,
                  val celebsCount: Int = 6,
                  val teams: List<Team> = emptyList(),
-                 val players: List<Player> = emptyList(),
                  val state: GameState = GameState.Empty()
 ) {
     val currentPlayer: Player?

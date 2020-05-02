@@ -8,7 +8,6 @@ data class GameRaw (
     val createdAt: Timestamp,
     val celebsCount: Long = 6,
     val teams: List<TeamRaw>,
-    val players: List<PlayerRaw> = emptyList(),
     val state: GameStateRaw = GameStateRaw()
 ) {
     constructor() : this(
@@ -16,7 +15,6 @@ data class GameRaw (
         EMPTY_VALUE,
         Timestamp.now(),
         6,
-        emptyList(),
         emptyList()
     )
 }
