@@ -62,7 +62,7 @@ class GamePresenter {
 
     fun bind(view: GameView) {
         this.view = view
-        val gameId = GameFlow.currentGame!!.id
+        val gameId = game.id
         val firebase = FirebaseFirestore.getInstance()
         firebaseCardsDataSource = FirebaseCardsDataSource(gameId, firebase)
         cardsRepository = CardsRepositoryImpl(firebaseCardsDataSource)
@@ -103,36 +103,40 @@ class GamePresenter {
         observeGame(gameId)
             .distinctUntilChanged()
             .subscribe({newGame->
-                val newPlayer = newGame.currentPlayer
-                Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${game.currentPlayer?.name}")
-                if (newPlayer?.id != game.currentPlayer?.id) {
-                    if (GameFlow.me == newPlayer) {
-                        Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
-                        onPickNextCard()
-                        setState(STATE_STARTED)
-                    } else {
-                        newPlayer?.let {
-                            view.setCurrentOtherPlayer(newPlayer)
-                        } ?: view.setNoCurrentPlayer()
-                    }
-                }
-                view.setRound(newGame.currentRound.toString())
-                if (game.currentRound != newGame.currentRound) {
-                    if (GameFlow.me == newPlayer) {
-                        loadNewRound()
-                    }
-                }
-
-                if (newGame.state == GameStateE.Finished) {
-                    view.showGameOver()
-                }
-                Timber.v("observeGame onNext: game: $newGame}")
-                GameFlow.updateGame(newGame)
+                onGameUpdate(newGame)
             }, {
                 Timber.e(it, "error while observing game")
             }).let {
                 disposables.add(it)
             }
+    }
+
+    private fun onGameUpdate(newGame: Game) {
+        val newPlayer = newGame.currentPlayer
+        Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${game.currentPlayer?.name}")
+        if (newPlayer?.id != game.currentPlayer?.id) {
+            if (GameFlow.me == newPlayer) {
+                Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
+                onPickNextCard()
+                setState(STATE_STARTED)
+            } else {
+                newPlayer?.let {
+                    view.setCurrentOtherPlayer(newPlayer)
+                } ?: view.setNoCurrentPlayer()
+            }
+        }
+        view.setRound(newGame.currentRound.toString())
+        if (game.currentRound != newGame.currentRound) {
+            if (GameFlow.me == newPlayer) {
+                loadNewRound()
+            }
+        }
+
+        if (newGame.state == GameStateE.Finished) {
+            view.showGameOver()
+        }
+        Timber.v("observeGame onNext: game: $newGame}")
+        GameFlow.updateGame(newGame)
     }
 
     fun onNewRoundClick() {
@@ -217,10 +221,10 @@ class GamePresenter {
     }
 
     private fun setNewGameState(state: GameStateE): Completable =
-        updateGame(GameFlow.currentGame!!.copy(state = state))
+        updateGame(game.copy(state = state))
 
     private fun setNewGameInfo(gameInfo: GameInfo): Completable =
-        updateGame(GameFlow.currentGame!!.copy(gameInfo = gameInfo))
+        updateGame(game.copy(gameInfo = gameInfo))
 
     private fun unUsedCards() = cardDeck.filter { !it.used }
 
