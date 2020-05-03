@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gameTopSection"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,24 +76,23 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gameSection"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/infoSection"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/gameTopSection"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@id/gameTopSection"
+        >
 
         <TextView
             android:id="@+id/cardTextView"
             android:layout_width="300dp"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
+            android:minHeight="150dp"
             android:background="@color/gilad"
             android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/black"
             android:textSize="34sp"
             android:textStyle="bold|italic"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -139,14 +138,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/infoSection"
         android:layout_width="0dp"
-        android:layout_height="170dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingStart="@dimen/default_margin"
-        android:paddingTop="@dimen/default_margin"
+        android:padding="@dimen/default_margin"
         >
+
         <TextView
             android:id="@+id/teamsTitle"
             android:layout_width="wrap_content"
@@ -156,12 +155,20 @@
             android:text="@string/teams"
             />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/team1Layout"
+            app:layout_constraintTop_toBottomOf="@id/teamsTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
         <TextView
             android:id="@+id/team1Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/teamsTitle"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/default_margin"
             tools:text="Team1:"
             />
@@ -187,13 +194,20 @@
             tools:text="pupis, humis, gilad, jojo"
             android:layout_marginStart="@dimen/default_margin"
             />
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/team2Layout"
+            app:layout_constraintTop_toBottomOf="@id/team1Layout"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
         <TextView
             android:id="@+id/team2Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/team1Value"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/default_margin"
             tools:text="Team2:"
             />
@@ -218,13 +232,20 @@
             tools:text="pupis2, humis2, gilad2, jojo2"
             android:layout_marginStart="@dimen/default_margin"
             />
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/team3Layout"
+            app:layout_constraintTop_toBottomOf="@id/team2Layout"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
         <TextView
             android:id="@+id/team3Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/team2Value"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/default_margin"
             tools:text="Team3:"
             />
@@ -249,7 +270,7 @@
             tools:text="pupis2, humis2, gilad2, jojo2"
             android:layout_marginStart="@dimen/default_margin"
             />
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

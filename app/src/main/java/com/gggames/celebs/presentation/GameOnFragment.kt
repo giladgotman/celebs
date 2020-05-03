@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
@@ -85,8 +86,15 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
             presenter.onStartButtonClick()
 
         }
+        hideTeamsInfo()
         setStoppedState()
         setupTimer()
+    }
+
+    private fun hideTeamsInfo() {
+        team1Layout.isVisible = false
+        team2Layout.isVisible = false
+        team3Layout.isVisible = false
     }
 
     override fun showNewRoundAlert(onClick: (Boolean) -> Unit) {
@@ -179,16 +187,19 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
 
     private fun updateTeam1(teamName: String, players: List<Player>) {
         team1Name.text = "$teamName"
+        team1Layout.isVisible = true
         setPlayersForTeam(team1Value, players)
     }
 
     private fun updateTeam2(teamName: String, players: List<Player>) {
         team2Name.text = "$teamName"
+        team2Layout.isVisible = true
         setPlayersForTeam(team2Value, players)
     }
 
     private fun updateTeam3(teamName: String, players: List<Player>) {
         team3Name.text = "$teamName"
+        team3Layout.isVisible = true
         setPlayersForTeam(team3Value, players)
     }
 
