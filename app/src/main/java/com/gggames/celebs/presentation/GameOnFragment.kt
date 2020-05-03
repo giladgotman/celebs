@@ -16,6 +16,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.model.Team
+import com.gggames.celebs.utils.showInfoToast
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
 import java.util.*
@@ -117,7 +118,7 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
     }
 
     override fun showLastRoundToast() {
-        Toast.makeText(this.context, "This is the last round", Toast.LENGTH_LONG).show()
+        showInfoToast(requireContext(), "This is the last round", Toast.LENGTH_LONG)
     }
 
     override fun setStartedState() {

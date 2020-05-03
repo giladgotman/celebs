@@ -18,6 +18,7 @@ import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
 import com.gggames.celebs.domain.cards.AddCards
 import com.gggames.celebs.domain.cards.GetMyCards
+import com.gggames.celebs.utils.showErrorToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.Completable
@@ -110,12 +111,11 @@ class AddCardsFragment : Fragment() {
                 } else {
                     getString(R.string.error_generic)
                 }
-                Toast.makeText(
+                showErrorToast(
                     requireContext(),
                     errorMessage,
                     Toast.LENGTH_LONG
                 )
-                    .show()
                 Timber.e(it, "ggg added cards failed")
             }).let {
                 disposables.add(it)
@@ -126,7 +126,7 @@ class AddCardsFragment : Fragment() {
         return getMyCards(GameFlow.me!!)
             .flatMapCompletable { myCards ->
                 if (myCards.size + cardList.size > GameFlow.currentGame!!.celebsCount) {
-                    Completable.error(IllegalStateException("you can't add ${cardList.size} more cards. you already have ${myCards.size}."))
+                    Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))
                 } else {
                     addCards(cardList)
                         .compose(schedulerProvider.applyCompletableDefault())

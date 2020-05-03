@@ -6,4 +6,5 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="gilad">#FFF6DC</color>
+    <color name="error">#fe325e</color>
 </resources>

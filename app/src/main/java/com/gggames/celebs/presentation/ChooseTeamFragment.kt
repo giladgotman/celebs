@@ -14,6 +14,7 @@ import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.players.PlayersRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebasePlayersDataSource
 import com.gggames.celebs.domain.players.ChooseTeam
+import com.gggames.celebs.utils.showErrorToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
@@ -86,7 +87,7 @@ class ChooseTeamFragment : Fragment() {
                         Timber.w("ggg you chosed team : $teamName")
                     },{e->
                         buttonDone.isEnabled = true
-                        Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG).show()
+                        showErrorToast(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG)
                         Timber.e(e, "ggg failed to choose team : $teamName")
                     }).let { disposables.add(it) }
             }

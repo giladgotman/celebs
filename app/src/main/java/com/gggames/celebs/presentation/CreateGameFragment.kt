@@ -17,6 +17,7 @@ import com.gggames.celebs.data.model.GameStateE
 import com.gggames.celebs.data.model.Team
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.domain.games.AddGame
+import com.gggames.celebs.utils.showErrorToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import kotlinx.android.synthetic.main.fragment_create_game.*
@@ -85,7 +86,11 @@ class CreateGameFragment : Fragment() {
                         findNavController().navigate(R.id.action_CreateGameFragment_to_AddCardsFragment, args)
                     }, {
                         buttonDone.isEnabled = true
-                        Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG).show()
+                        showErrorToast(
+                            requireContext(),
+                            getString(R.string.error_generic),
+                            Toast.LENGTH_LONG
+                        )
                         Timber.e(it,"gilad game added failed. ${it.localizedMessage}")
                     })
         }
