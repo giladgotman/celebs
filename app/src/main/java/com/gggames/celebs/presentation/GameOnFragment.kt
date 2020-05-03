@@ -7,12 +7,14 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.data.model.Team
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
 import java.util.*
@@ -165,38 +167,40 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         cardTextView.text = card.name
     }
 
-    override fun updateTeams(list: List<Player>) {
-        val teams = list.groupBy { it.team }
-        val teamList = teams.keys.toList().filterNotNull()
-        teamList.forEachIndexed { index, teamName ->
-            val players = teams[teamName]?.toList() ?: emptyList()
+    override fun updateTeams(teams: List<Team>) {
+        teams.forEachIndexed { index, team ->
             when (index) {
-                0 -> updateTeam1(teamName, players)
-                1 -> updateTeam2(teamName, players)
+                0 -> updateTeam1(team.name, team.players)
+                1 -> updateTeam2(team.name, team.players)
+                2 -> updateTeam3(team.name, team.players)
             }
         }
     }
 
     private fun updateTeam1(teamName: String, players: List<Player>) {
-        Timber.w("updateTeam : teamName: $teamName , p: ${players.size}")
         team1Name.text = "$teamName"
-        val sb = StringBuilder()
-        players.forEach {
-            sb.append(it.name)
-            sb.append(", ")
-        }
-        team1Value.text = sb.toString()
+        setPlayersForTeam(team1Value, players)
     }
 
     private fun updateTeam2(teamName: String, players: List<Player>) {
-        Timber.w("updateTeam2 : teamName: $teamName , p: ${players.size}")
         team2Name.text = "$teamName"
+        setPlayersForTeam(team2Value, players)
+    }
+
+    private fun updateTeam3(teamName: String, players: List<Player>) {
+        team3Name.text = "$teamName"
+        setPlayersForTeam(team3Value, players)
+    }
+
+    private fun setPlayersForTeam(teamValue: TextView, players: List<Player>) {
         val sb = StringBuilder()
-        players.forEach {
-            sb.append(it.name)
-            sb.append(", ")
+        players.forEachIndexed { i, player ->
+            sb.append(player.name)
+            if (i < players.lastIndex) {
+                sb.append(", ")
+            }
         }
-        team2Value.text = sb.toString()
+        teamValue.text = sb.toString()
     }
 
     override fun setScore(score: Map<String, Int>) {
@@ -204,6 +208,20 @@ class GameOnFragment : Fragment(), GamePresenter.GameView {
         val score2 = score[team2Name.text] ?: 0
         team1Score.text = "($score1) : "
         team2Score.text = "($score2) : "
+        if (score.size > 2) {
+            val score3 = score[team3Name.text] ?: 0
+            team3Score.text = "($score3) : "
+        }
+    }
+
+    override fun setTeamNames(teams: List<Team>) {
+        teams.forEachIndexed { index, team ->
+            when (index) {
+                0 -> team1Name.text = team.name
+                1 -> team2Name.text = team.name
+                2 -> team3Name.text = team.name
+            }
+        }
     }
 
     override fun setCurrentOtherPlayer(player: Player) {

@@ -81,8 +81,8 @@ class GamePresenter {
 
         playersObservable(gameId)
             .distinctUntilChanged()
-            .subscribe({list->
-                view.updateTeams(list)
+            .subscribe({ players ->
+                onUpdatePlayers(players)
             }, {
                 Timber.e(it, "error while observing players")
             }).let {
@@ -111,6 +111,13 @@ class GamePresenter {
             }
     }
 
+    private fun onUpdatePlayers(players: List<Player>) {
+        val updatedTeams = game.teams.map { team ->
+            team.copy(players = players.filter { it.team == team.name })
+        }
+        view.updateTeams(updatedTeams)
+    }
+
     private fun onGameUpdate(newGame: Game) {
         val newPlayer = newGame.currentPlayer
         Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${game.currentPlayer?.name}")
@@ -126,6 +133,7 @@ class GamePresenter {
             }
         }
         view.setRound(newGame.currentRound.toString())
+        view.setTeamNames(newGame.teams)
         if (game.currentRound != newGame.currentRound) {
             if (GameFlow.me == newPlayer) {
                 loadNewRound()
@@ -352,7 +360,7 @@ class GamePresenter {
 
     interface GameView{
         fun updateCards(cards: List<Card>)
-        fun updateTeams(list: List<Player>)
+        fun updateTeams(teams: List<Team>)
         fun updateCard(card: Card)
         fun showGameOver()
         fun setCurrentOtherPlayer(player: Player)
@@ -365,5 +373,6 @@ class GamePresenter {
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)
         fun showLastRoundToast()
         fun setScore(score: Map<String, Int>)
+        fun setTeamNames(teams: List<Team>)
     }
 }
