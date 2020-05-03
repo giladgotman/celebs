@@ -104,9 +104,15 @@ class AddCardsFragment : Fragment() {
                 )
             }, {
                 buttonDone.isEnabled = true
+                val errorMessage =
+                if (it is java.lang.IllegalStateException) {
+                    it.localizedMessage
+                } else {
+                    getString(R.string.error_generic)
+                }
                 Toast.makeText(
                     requireContext(),
-                    getString(R.string.error_generic),
+                    errorMessage,
                     Toast.LENGTH_LONG
                 )
                     .show()
@@ -120,7 +126,7 @@ class AddCardsFragment : Fragment() {
         return getMyCards(GameFlow.me!!)
             .flatMapCompletable { myCards ->
                 if (myCards.size + cardList.size > GameFlow.currentGame!!.celebsCount) {
-                    Completable.error(IllegalStateException("you can't add ${cardList.size} more cards. you already have: ${myCards.size}"))
+                    Completable.error(IllegalStateException("you can't add ${cardList.size} more cards. you already have ${myCards.size}."))
                 } else {
                     addCards(cardList)
                         .compose(schedulerProvider.applyCompletableDefault())
