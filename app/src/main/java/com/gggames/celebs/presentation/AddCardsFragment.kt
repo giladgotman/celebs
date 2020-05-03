@@ -17,8 +17,11 @@ import com.gggames.celebs.data.cards.CardsRepositoryImpl
 import com.gggames.celebs.data.model.Card
 import com.gggames.celebs.data.source.remote.FirebaseCardsDataSource
 import com.gggames.celebs.domain.cards.AddCards
+import com.gggames.celebs.domain.cards.GetMyCards
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
+import io.reactivex.Completable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
 
@@ -28,6 +31,13 @@ import timber.log.Timber
 class AddCardsFragment : Fragment() {
 
     lateinit var addCards: AddCards
+    lateinit var getMyCards: GetMyCards
+
+    lateinit var cardsRepositoryImpl: CardsRepositoryImpl
+    lateinit var firebaseCardsDataSource: FirebaseCardsDataSource
+    private val schedulerProvider = SchedulerProvider()
+
+    private val disposables = CompositeDisposable()
 
     lateinit var gameId: String
     lateinit var playerId: String
@@ -51,15 +61,11 @@ class AddCardsFragment : Fragment() {
 
         playerId = GameFlow.me!!.id
 
-        addCards = AddCards(
-            CardsRepositoryImpl(
-                FirebaseCardsDataSource(
-                    gameId,
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
+        firebaseCardsDataSource = FirebaseCardsDataSource(gameId, FirebaseFirestore.getInstance())
+        cardsRepositoryImpl = CardsRepositoryImpl(firebaseCardsDataSource)
+
+        addCards = AddCards(cardsRepositoryImpl, schedulerProvider)
+        getMyCards = GetMyCards(cardsRepositoryImpl, schedulerProvider)
 
         add_cards_card6_editText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -85,17 +91,41 @@ class AddCardsFragment : Fragment() {
         addCardIfNotNull(editTextToCard(add_cards_card5.editText), cardList)
         addCardIfNotNull(editTextToCard(add_cards_card6.editText), cardList)
 
-        addCards(cardList).subscribe({
-            Timber.w("ggg added cards successfully")
-            val args = Bundle()
-            args.putStringArrayList(TEAMS_KEY, groups)
-            findNavController().navigate(R.id.action_AddCardsFragment_to_chooseTeamFragment, args)
-        }, {
-            buttonDone.isEnabled = true
-            Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG)
-                .show()
-            Timber.e(it, "ggg added cards failed")
-        })
+
+
+        tryToAddCards(cardList)
+            .subscribe({
+                Timber.w("ggg added cards successfully")
+                val args = Bundle()
+                args.putStringArrayList(TEAMS_KEY, groups)
+                findNavController().navigate(
+                    R.id.action_AddCardsFragment_to_chooseTeamFragment,
+                    args
+                )
+            }, {
+                buttonDone.isEnabled = true
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_generic),
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+                Timber.e(it, "ggg added cards failed")
+            }).let {
+                disposables.add(it)
+            }
+    }
+
+    private fun tryToAddCards(cardList: MutableList<Card>): Completable {
+        return getMyCards(GameFlow.me!!)
+            .flatMapCompletable { myCards ->
+                if (myCards.size + cardList.size > GameFlow.currentGame!!.celebsCount) {
+                    Completable.error(IllegalStateException("you can't add ${cardList.size} more cards. you already have: ${myCards.size}"))
+                } else {
+                    addCards(cardList)
+                        .compose(schedulerProvider.applyCompletableDefault())
+                }
+            }
     }
 
     private fun addCardIfNotNull(card: Card?, cardList: MutableList<Card>) {
