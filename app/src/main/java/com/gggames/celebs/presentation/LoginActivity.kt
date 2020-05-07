@@ -7,6 +7,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.celebs.R
+import com.gggames.celebs.core.CelebsApplication
 import com.gggames.celebs.core.GameFlow
 import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
@@ -16,6 +17,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        (application as CelebsApplication).appComponent.inject(this)
 
         loginUsernameEditText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
