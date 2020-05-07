@@ -2,5 +2,6 @@ ext.versions = [
         firebase_sdk    : '17.2.3',
         rxjava        : '2.2.15',
         rxandroid     : '2.1.1',
-        anko     : '0.10.8'
+        anko     : '0.10.8',
+        dagger : '2.25.2'
 ]
