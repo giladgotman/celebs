@@ -15,9 +15,9 @@ import timber.log.Timber
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as CelebsApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        (application as CelebsApplication).appComponent.inject(this)
 
         loginUsernameEditText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {

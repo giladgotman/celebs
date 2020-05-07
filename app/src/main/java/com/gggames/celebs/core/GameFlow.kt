@@ -3,6 +3,7 @@ package com.gggames.celebs.core
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import com.gggames.celebs.R
 import com.gggames.celebs.data.model.Game
 import com.gggames.celebs.data.model.Player
 import com.gggames.celebs.data.players.PlayersRepositoryImpl
@@ -33,7 +34,8 @@ object GameFlow {
 
     fun setContext(context: Context) {
         appContext = context
-        preferenceManager = PreferenceManager(context)
+        preferenceManager = PreferenceManager(context.getSharedPreferences(
+            context.getString(R.string.shared_prefs_default), Context.MODE_PRIVATE))
     }
 
     fun joinAGame(playerName: String, game: Game) {

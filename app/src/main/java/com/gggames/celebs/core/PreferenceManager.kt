@@ -1,17 +1,17 @@
 package com.gggames.celebs.core
 
-import android.content.Context
-import com.gggames.celebs.R
+import android.content.SharedPreferences
 import com.gggames.celebs.data.model.Player
 import com.google.gson.Gson
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PreferenceManager(context: Context) {
-
+@Singleton
+class PreferenceManager @Inject constructor(
+    private val defaultSharedPreferences: SharedPreferences)
+{
     private val PREFS_KEY_PLAYER = "PREFS_KEY_PLAYER"
-    private val defaultSharedPreferences = context.getSharedPreferences(
-        context.getString(R.string.shared_prefs_default), Context.MODE_PRIVATE
-    )
 
     private val gson  = Gson()
 
