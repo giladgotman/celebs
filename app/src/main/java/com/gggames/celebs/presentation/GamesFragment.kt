@@ -16,6 +16,8 @@ import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.games.GamesRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
+import com.gggames.celebs.di.ViewComponent
+import com.gggames.celebs.di.getAppComponent
 import com.gggames.celebs.domain.games.GetGames
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
@@ -40,6 +42,8 @@ class GamesFragment : Fragment() {
 
     private lateinit var playerName: String
 
+    private lateinit var viewComponent: ViewComponent
+
 
     private lateinit var gamesAdapter: GamesAdapter
 
@@ -53,6 +57,9 @@ class GamesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewComponent =  getAppComponent(requireContext()).viewComponent().create()
+
 
         getGames = GetGames(
             GamesRepositoryImpl(

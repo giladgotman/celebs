@@ -13,12 +13,14 @@ fun getAppComponent(context: Context): AppComponent =
 
 
 @Singleton
-@Component (modules = [AppModule::class])
+@Component (modules = [AppModule::class, SubComponentsModule::class])
 interface AppComponent {
     @AppContext
     fun context(): Context
 
     fun inject(loginActivity: LoginActivity)
+
+    fun viewComponent(): ViewComponent.Factory
 }
 
 
