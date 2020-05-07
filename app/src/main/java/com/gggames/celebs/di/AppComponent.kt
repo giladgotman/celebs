@@ -20,7 +20,7 @@ interface AppComponent {
 
     fun inject(loginActivity: LoginActivity)
 
-    fun viewComponent(): ViewComponent.Factory
+    fun viewComponent(): ViewComponent.Builder
 }
 
 

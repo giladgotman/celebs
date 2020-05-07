@@ -17,7 +17,7 @@ import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.data.games.GamesRepositoryImpl
 import com.gggames.celebs.data.source.remote.FirebaseGamesDataSource
 import com.gggames.celebs.di.ViewComponent
-import com.gggames.celebs.di.getAppComponent
+import com.gggames.celebs.di.createViewComponent
 import com.gggames.celebs.domain.games.GetGames
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
@@ -58,8 +58,8 @@ class GamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewComponent =  getAppComponent(requireContext()).viewComponent().create()
-
+        viewComponent =  createViewComponent(requireActivity())
+        viewComponent.inject(this)
 
         getGames = GetGames(
             GamesRepositoryImpl(
