@@ -2,7 +2,7 @@ package com.gggames.celebs.di
 
 import android.content.Context
 import androidx.fragment.app.Fragment
-import com.gggames.celebs.presentation.GamesFragment
+import com.gggames.celebs.presentation.creategame.GamesFragment
 import dagger.Subcomponent
 import javax.inject.Qualifier
 

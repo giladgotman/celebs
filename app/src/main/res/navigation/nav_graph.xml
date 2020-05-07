@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/GamesFragment"
-        android:name="com.gggames.celebs.presentation.GamesFragment"
+        android:name="com.gggames.celebs.presentation.creategame.GamesFragment"
         android:label="@string/games_fragment_label"
         tools:layout="@layout/fragment_games">
 
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/CreateGameFragment"
-        android:name="com.gggames.celebs.presentation.CreateGameFragment"
+        android:name="com.gggames.celebs.presentation.creategame.CreateGameFragment"
         android:label="@string/create_game_fragment_label"
         tools:layout="@layout/fragment_create_game">
 
@@ -40,7 +40,7 @@
 
     <fragment
         android:id="@+id/AddCardsFragment"
-        android:name="com.gggames.celebs.presentation.AddCardsFragment"
+        android:name="com.gggames.celebs.presentation.creategame.AddCardsFragment"
         android:label="@string/add_cards_fragment_label"
         tools:layout="@layout/fragment_add_cards">
         <action
@@ -60,7 +60,7 @@
 
     <fragment
         android:id="@+id/chooseTeamFragment"
-        android:name="com.gggames.celebs.presentation.ChooseTeamFragment"
+        android:name="com.gggames.celebs.presentation.creategame.ChooseTeamFragment"
         android:label="@string/choose_team_fragment_label"
         tools:layout="@layout/fragment_choose_teams"
         >
@@ -73,7 +73,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameOnFragment"
-        android:name="com.gggames.celebs.presentation.GameOnFragment"
+        android:name="com.gggames.celebs.presentation.gameon.GameOnFragment"
         android:label="GameOnFragment" >
         <action
             android:id="@+id/action_gameOnFragment_to_GamesFragment"

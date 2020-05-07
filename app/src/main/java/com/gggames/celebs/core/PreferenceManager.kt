@@ -1,7 +1,7 @@
 package com.gggames.celebs.core
 
 import android.content.SharedPreferences
-import com.gggames.celebs.data.model.Player
+import com.gggames.celebs.model.Player
 import com.google.gson.Gson
 import timber.log.Timber
 import javax.inject.Inject
