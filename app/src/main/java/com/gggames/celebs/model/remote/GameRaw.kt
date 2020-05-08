@@ -21,18 +21,22 @@ data class GameRaw (
 }
 
 data class GameInfoRaw(
-    val round: Int = 1,
     val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
-    val currentPlayer: PlayerRaw? = null
+    val round: RoundRaw = RoundRaw()
 )
 
-//data class GameStateRawE (
-//    val state: String,
-//    val gameInfo: GameInfoRaw = GameInfoRaw()
-//) {
-//    constructor() : this("empty")
-//}
+data class RoundRaw(
+    val roundState: String = "Ready",
+    val roundNumber: Int = 1,
+    val turn: TurnRaw = TurnRaw()
+)
+
+data class TurnRaw(
+    val state: String? = "Stopped",
+    val player: PlayerRaw? = null,
+    val time: String? = null
+)
 
 const val EMPTY_VALUE = "EMPTY_VALUE"

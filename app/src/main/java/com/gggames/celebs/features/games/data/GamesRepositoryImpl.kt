@@ -1,7 +1,7 @@
 package com.gggames.celebs.features.games.data
 
 import com.gggames.celebs.model.Game
-import com.gggames.celebs.model.GameStateE
+import com.gggames.celebs.model.GameState
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GamesRepositoryImpl @Inject constructor(
     private val gamesDataSource: GamesDataSource
 ) : GamesRepository {
-    override fun getGames(statesQuery: List<GameStateE>): Observable<List<Game>> {
+    override fun getGames(statesQuery: List<GameState>): Observable<List<Game>> {
         return gamesDataSource.getGames(statesQuery).toObservable()
     }
 

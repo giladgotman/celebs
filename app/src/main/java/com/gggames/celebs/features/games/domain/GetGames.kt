@@ -1,7 +1,7 @@
 package com.gggames.celebs.features.games.domain
 
 import com.gggames.celebs.features.games.data.GamesRepository
-import com.gggames.celebs.model.GameStateE
+import com.gggames.celebs.model.GameState
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import javax.inject.Inject
 
@@ -13,6 +13,6 @@ class GetGames @Inject constructor(
     private val schedulerProvider: BaseSchedulerProvider
 ){
     operator fun invoke() = gamesRepository.getGames(
-        listOf(GameStateE.Created, GameStateE.Started)
+        listOf(GameState.Created, GameState.Started)
     ).compose(schedulerProvider.applyDefault())
 }
