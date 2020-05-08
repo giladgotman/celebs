@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * The main fragment in which the game is happening
  */
 class GameOnFragment : Fragment(),
     GamePresenter.GameView {
@@ -257,8 +257,6 @@ class GameOnFragment : Fragment(),
         roundTextView.text = round
     }
 
-    //todo add update Team3
-
     override fun showGameOver() {
         cardTextView.text = "Game Over!"
         timerTextView?.text = ""
@@ -286,9 +284,9 @@ class GameOnFragment : Fragment(),
         val minutes = (mTimeLeftInMillis / 1000).toInt() / 60
         val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
 
-        val timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        val timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
 
-        timerTextView?.text = timeLeftFormatted;
+        timerTextView?.text = timeLeftFormatted
     }
 
 }
