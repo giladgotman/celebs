@@ -1,4 +1,4 @@
-package com.gggames.celebs.core
+package com.gggames.celebs.utils.prefs
 
 import android.content.SharedPreferences
 import com.gggames.celebs.model.Player

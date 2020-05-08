@@ -1,7 +1,8 @@
-package com.gggames.celebs.di
+package com.gggames.celebs.core.di
 
 import android.content.Context
 import com.gggames.celebs.core.CelebsApplication
+import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.login.LoginActivity
 import dagger.Component
 import javax.inject.Qualifier

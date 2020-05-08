@@ -10,6 +10,7 @@ import com.gggames.celebs.features.players.data.PlayersRepositoryImpl
 import com.gggames.celebs.features.players.data.remote.FirebasePlayersDataSource
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.presentation.login.LoginActivity
+import com.gggames.celebs.utils.prefs.PreferenceManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
@@ -34,8 +35,11 @@ object GameFlow {
 
     fun setContext(context: Context) {
         appContext = context
-        preferenceManager = PreferenceManager(context.getSharedPreferences(
-            context.getString(R.string.shared_prefs_default), Context.MODE_PRIVATE))
+        preferenceManager = PreferenceManager(
+            context.getSharedPreferences(
+                context.getString(R.string.shared_prefs_default), Context.MODE_PRIVATE
+            )
+        )
     }
 
     fun joinAGame(playerName: String, game: Game) {

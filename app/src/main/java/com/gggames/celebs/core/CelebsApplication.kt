@@ -2,9 +2,9 @@ package com.gggames.celebs.core
 
 import android.app.Application
 import com.gggames.celebs.BuildConfig
-import com.gggames.celebs.di.AppComponent
-import com.gggames.celebs.di.AppModule
-import com.gggames.celebs.di.DaggerAppComponent
+import com.gggames.celebs.core.di.AppComponent
+import com.gggames.celebs.core.di.AppModule
+import com.gggames.celebs.core.di.DaggerAppComponent
 import timber.log.Timber
 
 class CelebsApplication : Application() {

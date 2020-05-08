@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.di.ViewComponent
-import com.gggames.celebs.di.createViewComponent
 import com.gggames.celebs.features.games.data.GamesRepositoryImpl
 import com.gggames.celebs.features.games.data.remote.FirebaseGamesDataSource
 import com.gggames.celebs.features.games.domain.GetGames
+import com.gggames.celebs.presentation.di.ViewComponent
+import com.gggames.celebs.presentation.di.createViewComponent
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
@@ -58,7 +58,10 @@ class GamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewComponent =  createViewComponent(requireActivity())
+        viewComponent =
+            createViewComponent(
+                requireActivity()
+            )
         viewComponent.inject(this)
 
         getGames = GetGames(

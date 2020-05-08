@@ -1,4 +1,4 @@
-package com.gggames.celebs.di
+package com.gggames.celebs.core.di
 
 import android.content.Context
 import com.gggames.celebs.R

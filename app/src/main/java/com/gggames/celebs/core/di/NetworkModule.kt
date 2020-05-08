@@ -1,4 +1,4 @@
-package com.gggames.celebs.di
+package com.gggames.celebs.core.di
 
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
