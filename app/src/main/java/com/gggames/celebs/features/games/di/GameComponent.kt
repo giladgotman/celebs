@@ -8,8 +8,8 @@ import javax.inject.Qualifier
 interface GameComponent {
     @Subcomponent.Builder
     interface Builder {
-        fun viewModule(gameModule: GameModule): Builder
-        fun build(): GameModule
+        fun gameModule(gameModule: GameModule): Builder
+        fun build(): GameComponent
     }
 }
 

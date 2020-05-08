@@ -14,7 +14,7 @@ fun getAppComponent(context: Context): AppComponent =
 
 
 @Singleton
-@Component (modules = [AppModule::class, SubComponentsModule::class])
+@Component (modules = [AppModule::class, SubComponentsModule::class, NetworkModule::class, GamesModule::class])
 interface AppComponent {
     @AppContext
     fun context(): Context

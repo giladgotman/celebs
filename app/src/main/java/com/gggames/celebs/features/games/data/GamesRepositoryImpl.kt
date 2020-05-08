@@ -4,17 +4,18 @@ import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameStateE
 import io.reactivex.Completable
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class GamesRepositoryImpl(
-    private val firebaseGamesDataSource: GamesDataSource
+class GamesRepositoryImpl @Inject constructor(
+    private val gamesDataSource: GamesDataSource
 ) : GamesRepository {
     override fun getGames(statesQuery: List<GameStateE>): Observable<List<Game>> {
-        return firebaseGamesDataSource.getGames(statesQuery).toObservable()
+        return gamesDataSource.getGames(statesQuery).toObservable()
     }
 
     override fun addGame(game: Game): Completable =
-        firebaseGamesDataSource.addGame(game)
+        gamesDataSource.addGame(game)
 
     override fun observeGame(gameId: String): Observable<Game> =
-        firebaseGamesDataSource.observeGame(gameId)
+        gamesDataSource.observeGame(gameId)
 }

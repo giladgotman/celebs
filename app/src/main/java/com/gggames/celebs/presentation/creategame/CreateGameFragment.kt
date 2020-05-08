@@ -11,10 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.features.games.data.GamesDataSource
-import com.gggames.celebs.features.games.data.GamesRepository
-import com.gggames.celebs.features.games.data.GamesRepositoryImpl
-import com.gggames.celebs.features.games.data.remote.FirebaseGamesDataSource
 import com.gggames.celebs.features.games.domain.AddGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
@@ -23,11 +19,10 @@ import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_game.*
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -36,11 +31,9 @@ import timber.log.Timber
 class CreateGameFragment : Fragment() {
 
     private lateinit var viewComponent: ViewComponent
-    lateinit var addGame: AddGame
 
-    private lateinit var gamesRepository: GamesRepository
-    private lateinit var firebaseGamesDataSource: GamesDataSource
-    private val schedulerProvider = SchedulerProvider()
+    @Inject
+    lateinit var addGame: AddGame
 
     private val disposables = CompositeDisposable()
 
@@ -67,20 +60,6 @@ class CreateGameFragment : Fragment() {
         arguments?.let {
             playerName =it.getString(PLAYER_NAME_KEY)!!
         }
-
-        firebaseGamesDataSource =
-            FirebaseGamesDataSource(
-                FirebaseFirestore.getInstance()
-            )
-        gamesRepository =
-            GamesRepositoryImpl(
-                firebaseGamesDataSource
-            )
-
-        addGame = AddGame(
-            gamesRepository,
-            schedulerProvider
-        )
 
         gameName.editText?.addTextChangedListener {
             gameName.error = null

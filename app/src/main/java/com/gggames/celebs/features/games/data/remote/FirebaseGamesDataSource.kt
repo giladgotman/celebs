@@ -12,8 +12,9 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import timber.log.Timber
+import javax.inject.Inject
 
-class FirebaseGamesDataSource(
+class FirebaseGamesDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : GamesDataSource {
     override fun getGames(statesQuery: List<GameStateE>): Single<List<Game>> {

@@ -1,4 +1,4 @@
-package com.gggames.celebs.features.games.di
+package com.gggames.celebs.core.di
 
 import com.gggames.celebs.features.games.data.GamesDataSource
 import com.gggames.celebs.features.games.data.GamesRepository
@@ -9,7 +9,17 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class GameModule {
+class GamesModule {
 
+    @Provides
+    @Singleton
+    fun provideGamesRepository(
+        repository: GamesRepositoryImpl
+    ): GamesRepository = repository
 
+    @Provides
+    @Singleton
+    fun provideGamesDataSource(
+        dataSource: FirebaseGamesDataSource
+    ): GamesDataSource = dataSource
 }
