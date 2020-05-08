@@ -8,7 +8,6 @@ import com.gggames.celebs.features.cards.data.remote.FirebaseCardsDataSource
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
-import javax.inject.Singleton
 
 
 // TODO: 08.05.20 use @PerGame ?
@@ -21,13 +20,13 @@ class CardsModule {
     fun provideGameId(gameFlow: GameFlow) = gameFlow.currentGame!!.id
 
     @Provides
-    @Singleton
+    // TODO: 08.05.20 use @PerGame ?
     fun provideCardsRepository(
         repository: CardsRepositoryImpl
     ): CardsRepository = repository
 
     @Provides
-    @Singleton
+    // TODO: 08.05.20 use @PerGame ?
     fun provideCardsDataSource(
         dataSource: FirebaseCardsDataSource
     ): CardsDataSource = dataSource
