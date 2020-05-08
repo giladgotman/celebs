@@ -16,10 +16,13 @@ import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.di.ViewComponent
+import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showInfoToast
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 
 /**
@@ -31,6 +34,9 @@ class GameOnFragment : Fragment(),
     private val START_TIME_IN_MILLIS = 60000L
 //    private val START_TIME_IN_MILLIS = 20000L
 
+    private lateinit var viewComponent: ViewComponent
+
+    @Inject
     lateinit var presenter: GamePresenter
 
     private var mCountDownTimer: CountDownTimer? = null
@@ -42,13 +48,14 @@ class GameOnFragment : Fragment(),
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        presenter = GamePresenter()
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_game_on, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewComponent = createViewComponent(this)
+        viewComponent.inject(this)
 
         presenter.bind(this)
         cardTextView.text = ""

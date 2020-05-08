@@ -1,7 +1,7 @@
 package com.gggames.celebs.features.cards.data.remote
 
-import com.gggames.celebs.features.games.data.remote.GAMES_PATH
 import com.gggames.celebs.features.cards.data.CardsDataSource
+import com.gggames.celebs.features.games.data.remote.GAMES_PATH
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.remote.CardRaw
 import com.gggames.celebs.model.remote.toRaw
@@ -12,9 +12,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Observable
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Named
 
 
-class FirebaseCardsDataSource(
+class FirebaseCardsDataSource @Inject constructor(
+    @Named ("GameId")
     private val gameId: String,
     private val firestore: FirebaseFirestore
 ) : CardsDataSource {

@@ -3,8 +3,9 @@ package com.gggames.celebs.features.cards.data
 import com.gggames.celebs.model.Card
 import io.reactivex.Completable
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class CardsRepositoryImpl(
+class CardsRepositoryImpl @Inject constructor(
     private val firebaseCardsDataSource: CardsDataSource
 ) : CardsRepository {
 

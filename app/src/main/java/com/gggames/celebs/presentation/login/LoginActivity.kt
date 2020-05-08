@@ -13,15 +13,19 @@ import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.creategame.PLAYER_NAME_KEY
 import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
+import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var gameFlow: GameFlow
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as CelebsApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        loginUsernameEditText.setOnEditorActionListener { v, actionId, event ->
+        loginUsernameEditText.setOnEditorActionListener { v, actionId, _ ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val imm: InputMethodManager = v.context
                     .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -38,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
     private fun onDoneClick() {
         if (loginUsername.editText?.text?.isNotEmpty() == true) {
             val name = loginUsername.editText?.text.toString()
-            GameFlow.login(name)
+            gameFlow.login(name)
             goToMainActivity(name)
         } else {
             loginUsername.error = "Please enter your name"
@@ -56,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val me = GameFlow.me
+        val me = gameFlow.me
         Timber.w("onResume me: $me")
         if (me != null) {
             goToMainActivity(me.name)

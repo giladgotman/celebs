@@ -23,6 +23,7 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -32,7 +33,10 @@ class ChooseTeamFragment : Fragment() {
     private lateinit var viewComponent: ViewComponent
     private val disposables = CompositeDisposable()
     lateinit var teams: ArrayList<String>
-    private lateinit var chooseTeam: ChooseTeam
+    @Inject
+    lateinit var chooseTeam: ChooseTeam
+    @Inject
+    lateinit var gameFlow: GameFlow
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +49,7 @@ class ChooseTeamFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewComponent = createViewComponent(requireActivity())
+        viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
         buttonDone.isVisible = true
@@ -86,10 +90,10 @@ class ChooseTeamFragment : Fragment() {
             val teamName = button.text.toString()
             Timber.w("selected team: $selection, team: $teamName")
 
-            GameFlow.currentGame?.let {
-                chooseTeam(it.id, GameFlow.me!!, teamName)
+            gameFlow.currentGame?.let {
+                chooseTeam(it.id, gameFlow.me!!, teamName)
                     .subscribe({
-                        GameFlow.setMyTeam(teamName)
+                        gameFlow.setMyTeam(teamName)
                         Timber.w("ggg you chosed team : $teamName")
                     },{e->
                         buttonDone.isEnabled = true

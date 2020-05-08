@@ -2,7 +2,6 @@ package com.gggames.celebs.presentation.creategame
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,17 +13,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.features.games.data.GamesRepositoryImpl
-import com.gggames.celebs.features.games.data.remote.FirebaseGamesDataSource
 import com.gggames.celebs.features.games.domain.GetGames
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_games.*
 import timber.log.Timber
+import javax.inject.Inject
 
 
 /**
@@ -32,11 +27,11 @@ import timber.log.Timber
  */
 class GamesFragment : Fragment() {
 
-    private val TAG = "gilad"
+    @Inject
+    lateinit var getGames : GetGames
 
-    private lateinit var getGames : GetGames
-
-    private val scheduler: BaseSchedulerProvider = SchedulerProvider()
+    @Inject
+    lateinit var gameFlow: GameFlow
 
     private val disposables = CompositeDisposable()
 
@@ -57,16 +52,8 @@ class GamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewComponent = createViewComponent(requireActivity())
+        viewComponent = createViewComponent(this)
         viewComponent.inject(this)
-
-        getGames = GetGames(
-            GamesRepositoryImpl(
-                FirebaseGamesDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            )
-        )
 
         createGameFab.setOnClickListener {
             val args = Bundle()
@@ -74,16 +61,16 @@ class GamesFragment : Fragment() {
             findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment, args)
         }
 
-        playerName = GameFlow.me!!.name
+        playerName = gameFlow.me!!.name
 
         gamesAdapter =
             GamesAdapter { game ->
                 Timber.w("game selected: ${game.name}")
-                GameFlow.joinAGame(playerName, game)
+                gameFlow.joinAGame(playerName, game)
                 val args = AddCardsFragment.createArgs(
                     game.id,
                     ArrayList(game.teams.map { it.name }),
-                    GameFlow.me!!.id
+                    gameFlow.me!!.id
                 )
                 findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
             }
@@ -111,9 +98,9 @@ class GamesFragment : Fragment() {
     }
 
     private fun fetchGames() {
-        Log.d(TAG, "fetching games")
+        Timber.d("fetching games")
         progress.isVisible = true
-        getGames().compose(scheduler.applyDefault())
+        getGames()
             .subscribe(
                 { games ->
                     Timber.d("fetched games: $games")

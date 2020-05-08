@@ -7,15 +7,21 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.di.getAppComponent
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var gameFlow: GameFlow
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        getAppComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val playerName = GameFlow.me!!.name
+        val playerName = gameFlow.me!!.name
         toolbar.title = playerName
         setSupportActionBar(toolbar)
     }
@@ -38,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_logout -> {
                 finish()
-                GameFlow.logout()
+                gameFlow.logout()
                 true
             }
             else -> super.onOptionsItemSelected(item)

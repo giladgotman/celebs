@@ -4,8 +4,9 @@ import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.model.Game
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class ObserveGame(
+class ObserveGame @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val schedulerProvider: BaseSchedulerProvider
 ) {

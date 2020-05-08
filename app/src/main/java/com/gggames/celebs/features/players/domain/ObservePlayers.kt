@@ -2,8 +2,9 @@ package com.gggames.celebs.features.players.domain
 
 import com.gggames.celebs.features.players.data.PlayersRepository
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
+import javax.inject.Inject
 
-class ObservePlayers(
+class ObservePlayers @Inject constructor(
     private val playersRepository: PlayersRepository,
     private val schedulerProvider: BaseSchedulerProvider
 ){

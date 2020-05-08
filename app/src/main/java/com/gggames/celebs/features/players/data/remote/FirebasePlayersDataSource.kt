@@ -1,19 +1,20 @@
 package com.gggames.celebs.features.players.data.remote
 
-import com.gggames.celebs.model.Player
+import com.gggames.celebs.features.games.data.remote.GAMES_PATH
 import com.gggames.celebs.features.players.data.PlayersDataSource
+import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.remote.PlayerRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
-import com.gggames.celebs.features.games.data.remote.GAMES_PATH
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Observable
 import timber.log.Timber
+import javax.inject.Inject
 
 
-class FirebasePlayersDataSource(
+class FirebasePlayersDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : PlayersDataSource {
 

@@ -1,12 +1,11 @@
 package com.gggames.celebs.features.players.data
 
-import com.gggames.celebs.features.players.data.PlayersDataSource
-import com.gggames.celebs.features.players.data.PlayersRepository
 import com.gggames.celebs.model.Player
 import io.reactivex.Completable
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class PlayersRepositoryImpl(
+class PlayersRepositoryImpl @Inject constructor(
     private val firebasePlayersDataSource: PlayersDataSource
 ) : PlayersRepository {
 

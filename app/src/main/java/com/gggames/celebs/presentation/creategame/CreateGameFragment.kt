@@ -34,6 +34,8 @@ class CreateGameFragment : Fragment() {
 
     @Inject
     lateinit var addGame: AddGame
+    @Inject
+    lateinit var gameFlow: GameFlow
 
     private val disposables = CompositeDisposable()
 
@@ -50,7 +52,7 @@ class CreateGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewComponent = createViewComponent(requireActivity())
+        viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
         view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
@@ -89,11 +91,11 @@ class CreateGameFragment : Fragment() {
                     .subscribe(
                         {
                             Timber.i("gilad game added: ${game.id}")
-                            GameFlow.joinAGame(playerName, game)
+                            gameFlow.joinAGame(playerName, game)
                             val args = AddCardsFragment.createArgs(
                                 game.id,
                                 ArrayList(game.teams.map { it.name }),
-                                GameFlow.me!!.id
+                                gameFlow.me!!.id
                             )
                             findNavController().navigate(
                                 R.id.action_CreateGameFragment_to_AddCardsFragment,

@@ -4,8 +4,9 @@ import com.gggames.celebs.features.players.data.PlayersRepository
 import com.gggames.celebs.model.Player
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
+import javax.inject.Inject
 
-class ChooseTeam(
+class ChooseTeam @Inject constructor(
     private val playersRepository: PlayersRepository,
     private val schedulerProvider: BaseSchedulerProvider
 ) {

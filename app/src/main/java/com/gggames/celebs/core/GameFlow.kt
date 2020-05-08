@@ -3,24 +3,24 @@ package com.gggames.celebs.core
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import com.gggames.celebs.R
+import com.gggames.celebs.core.di.AppContext
+import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.Player
-import com.gggames.celebs.features.players.data.PlayersRepositoryImpl
-import com.gggames.celebs.features.players.data.remote.FirebasePlayersDataSource
-import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.presentation.login.LoginActivity
 import com.gggames.celebs.utils.prefs.PreferenceManager
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object GameFlow {
+@Singleton
+class GameFlow @Inject constructor(
+    private val preferenceManager: PreferenceManager,
+    private val joinGame: JoinGame,
+    @AppContext private val appContext: Context
 
-    lateinit var preferenceManager: PreferenceManager
-    private lateinit var joinGame: JoinGame
-    private lateinit var appContext: Context
+){
     var me: Player? = null
         private set
         get() {
@@ -33,25 +33,7 @@ object GameFlow {
     var currentGame: Game? = null
         private set
 
-    fun setContext(context: Context) {
-        appContext = context
-        preferenceManager = PreferenceManager(
-            context.getSharedPreferences(
-                context.getString(R.string.shared_prefs_default), Context.MODE_PRIVATE
-            )
-        )
-    }
-
     fun joinAGame(playerName: String, game: Game) {
-        joinGame = JoinGame(
-            PlayersRepositoryImpl(
-                FirebasePlayersDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
-
         currentGame = game
         joinGame(game.id, me!!).subscribe({
             Timber.w("ggg you joined game : ${game.id}")

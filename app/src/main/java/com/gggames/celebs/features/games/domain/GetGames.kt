@@ -2,14 +2,17 @@ package com.gggames.celebs.features.games.domain
 
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.model.GameStateE
+import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
+import javax.inject.Inject
 
 /*
-Gets games that are Empty, Ready or Started
+Gets games that are Created or Started
  */
-class GetGames(
-    private val gamesRepository: GamesRepository
+class GetGames @Inject constructor(
+    private val gamesRepository: GamesRepository,
+    private val schedulerProvider: BaseSchedulerProvider
 ){
     operator fun invoke() = gamesRepository.getGames(
         listOf(GameStateE.Created, GameStateE.Started)
-    )
+    ).compose(schedulerProvider.applyDefault())
 }

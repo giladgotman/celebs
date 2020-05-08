@@ -2,55 +2,33 @@ package com.gggames.celebs.presentation.gameon
 
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.data.CardsRepository
-import com.gggames.celebs.features.cards.data.CardsRepositoryImpl
-import com.gggames.celebs.features.games.data.GamesRepository
-import com.gggames.celebs.features.games.data.GamesRepositoryImpl
-import com.gggames.celebs.model.*
-import com.gggames.celebs.features.players.data.PlayersRepository
-import com.gggames.celebs.features.players.data.PlayersRepositoryImpl
-import com.gggames.celebs.features.cards.data.remote.FirebaseCardsDataSource
-import com.gggames.celebs.features.games.data.remote.FirebaseGamesDataSource
-import com.gggames.celebs.features.players.data.remote.FirebasePlayersDataSource
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.domain.AddGame
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
-import com.gggames.celebs.model.Card
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
+import com.gggames.celebs.model.*
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
+import javax.inject.Inject
 
-class GamePresenter {
-
-    private lateinit var playersObservable: ObservePlayers
-
-    private lateinit var cardsObservable: ObserveAllCards
-
-    private lateinit var updateGame: AddGame
-    private lateinit var observeGame: ObserveGame
-
-    private lateinit var cardsRepository: CardsRepository
-
-    private lateinit var playersRepository: PlayersRepository
-    private lateinit var gamesRepository: GamesRepository
-
-    private lateinit var firebaseCardsDataSource: FirebaseCardsDataSource
-    private lateinit var firebasePlayersDataSource: FirebasePlayersDataSource
-    private lateinit var firebaseGamesDataSource: FirebaseGamesDataSource
-
+class GamePresenter @Inject constructor(
+    private val playersObservable: ObservePlayers,
+    private val cardsObservable: ObserveAllCards,
+    private val updateGame: AddGame,
+    private val observeGame: ObserveGame,
+    private val gameFlow: GameFlow,
+    private val cardsRepository: CardsRepository
+) {
     private var cardDeck = mutableListOf<Card>()
 
     private var lastCard: Card? = null
-
-    private val schedulerProvider = SchedulerProvider()
 
     private val disposables = CompositeDisposable()
     private lateinit var view: GameView
 
     private val game: Game
-        get() = GameFlow.currentGame!!
+        get() = gameFlow.currentGame!!
 
     val STATE_STOPPED = 0
     val STATE_STARTED = 1
@@ -60,58 +38,9 @@ class GamePresenter {
 
     private var state: Int = STATE_STOPPED
 
-
     fun bind(view: GameView) {
         this.view = view
         val gameId = game.id
-        val firebase = FirebaseFirestore.getInstance()
-        firebaseCardsDataSource =
-            FirebaseCardsDataSource(
-                gameId,
-                firebase
-            )
-        cardsRepository =
-            CardsRepositoryImpl(
-                firebaseCardsDataSource
-            )
-
-        firebasePlayersDataSource =
-            FirebasePlayersDataSource(
-                firebase
-            )
-        playersRepository =
-            PlayersRepositoryImpl(
-                firebasePlayersDataSource
-            )
-
-        firebaseGamesDataSource =
-            FirebaseGamesDataSource(
-                firebase
-            )
-        gamesRepository =
-            GamesRepositoryImpl(
-                firebaseGamesDataSource
-            )
-
-        playersObservable =
-            ObservePlayers(
-                playersRepository,
-                schedulerProvider
-            )
-        cardsObservable =
-            ObserveAllCards(
-                cardsRepository,
-                schedulerProvider
-            )
-        updateGame = AddGame(
-            gamesRepository,
-            schedulerProvider
-        )
-        observeGame = ObserveGame(
-            gamesRepository,
-            schedulerProvider
-        )
-
 
         playersObservable(gameId)
             .distinctUntilChanged()
@@ -156,7 +85,7 @@ class GamePresenter {
         val newPlayer = newGame.currentPlayer
         Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${game.currentPlayer?.name}")
         if (newPlayer?.id != game.currentPlayer?.id) {
-            if (GameFlow.me == newPlayer) {
+            if (gameFlow.me == newPlayer) {
                 Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
                 pickNextCard()
                 setState(STATE_STARTED)
@@ -169,7 +98,7 @@ class GamePresenter {
         view.setRound(newGame.currentRound.toString())
         view.setTeamNames(newGame.teams)
         if (game.currentRound != newGame.currentRound) {
-            if (GameFlow.me == newPlayer) {
+            if (gameFlow.me == newPlayer) {
                 loadNewRound()
             }
         }
@@ -180,7 +109,7 @@ class GamePresenter {
             view.showGameOver()
         }
         Timber.v("observeGame onNext: game: $newGame}")
-        GameFlow.updateGame(newGame)
+        gameFlow.updateGame(newGame)
     }
 
     fun onNewRoundClick() {
@@ -226,11 +155,11 @@ class GamePresenter {
             GameStateE.Created -> {
                 setNewGameStateAndGameInfo(
                     GameStateE.Started,
-                    game.gameInfo.copy(currentPlayer = GameFlow.me!!)
+                    game.gameInfo.copy(currentPlayer = gameFlow.me!!)
                 )
             }
             GameStateE.Started -> {
-                setNewGameInfo(game.gameInfo.copy(currentPlayer = GameFlow.me!!))
+                setNewGameInfo(game.gameInfo.copy(currentPlayer = gameFlow.me!!))
             }
             else -> {
                 Completable.complete()
@@ -238,7 +167,7 @@ class GamePresenter {
         }
 
     fun onCorrectClick() {
-        GameFlow.me?.team?.let {
+        gameFlow.me?.team?.let {
             increaseScore(it)
                 .subscribe({
                     pickNextCard()
@@ -301,7 +230,7 @@ class GamePresenter {
     }
 
     fun onTurnEnded() {
-        if (GameFlow.isActivePlayer()) {
+        if (gameFlow.isActivePlayer()) {
             maybeFlipLastCard()
                 .andThen(endMyTurn())
                 .subscribe({
