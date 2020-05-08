@@ -3,6 +3,9 @@ package com.gggames.celebs.presentation.di
 import android.content.Context
 import androidx.fragment.app.Fragment
 import com.gggames.celebs.core.di.getAppComponent
+import com.gggames.celebs.presentation.creategame.AddCardsFragment
+import com.gggames.celebs.presentation.creategame.ChooseTeamFragment
+import com.gggames.celebs.presentation.creategame.CreateGameFragment
 import com.gggames.celebs.presentation.creategame.GamesFragment
 import dagger.Subcomponent
 import javax.inject.Qualifier
@@ -32,7 +35,10 @@ interface ViewComponent {
     @ViewContext
     fun context(): Context
 
-    fun inject(gamesFragment: GamesFragment)
+    fun inject(fragment: GamesFragment)
+    fun inject(fragment: AddCardsFragment)
+    fun inject(fragment: ChooseTeamFragment)
+    fun inject(fragment: CreateGameFragment)
 }
 
 

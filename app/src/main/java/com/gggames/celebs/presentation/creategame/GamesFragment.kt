@@ -44,7 +44,6 @@ class GamesFragment : Fragment() {
 
     private lateinit var viewComponent: ViewComponent
 
-
     private lateinit var gamesAdapter: GamesAdapter
 
     override fun onCreateView(
@@ -58,10 +57,7 @@ class GamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewComponent =
-            createViewComponent(
-                requireActivity()
-            )
+        viewComponent = createViewComponent(requireActivity())
         viewComponent.inject(this)
 
         getGames = GetGames(

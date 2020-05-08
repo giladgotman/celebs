@@ -14,10 +14,12 @@ import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.data.CardsRepositoryImpl
-import com.gggames.celebs.model.Card
 import com.gggames.celebs.features.cards.data.remote.FirebaseCardsDataSource
 import com.gggames.celebs.features.cards.domain.AddCards
 import com.gggames.celebs.features.cards.domain.GetMyCards
+import com.gggames.celebs.model.Card
+import com.gggames.celebs.presentation.di.ViewComponent
+import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
@@ -34,9 +36,12 @@ class AddCardsFragment : Fragment() {
     lateinit var addCards: AddCards
     lateinit var getMyCards: GetMyCards
 
+    private lateinit var viewComponent: ViewComponent
+
     lateinit var cardsRepositoryImpl: CardsRepositoryImpl
     lateinit var firebaseCardsDataSource: FirebaseCardsDataSource
     private val schedulerProvider = SchedulerProvider()
+
 
     private val disposables = CompositeDisposable()
 
@@ -54,6 +59,9 @@ class AddCardsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewComponent = createViewComponent(requireActivity())
+        viewComponent.inject(this)
 
         arguments?.let {
             gameId = it.getString(GAME_ID_KEY)!!

@@ -14,12 +14,14 @@ import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.games.data.GamesDataSource
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.data.GamesRepositoryImpl
+import com.gggames.celebs.features.games.data.remote.FirebaseGamesDataSource
+import com.gggames.celebs.features.games.domain.AddGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
 import com.gggames.celebs.model.GameStateE
 import com.gggames.celebs.model.Team
-import com.gggames.celebs.features.games.data.remote.FirebaseGamesDataSource
-import com.gggames.celebs.features.games.domain.AddGame
+import com.gggames.celebs.presentation.di.ViewComponent
+import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
@@ -33,10 +35,11 @@ import timber.log.Timber
 
 class CreateGameFragment : Fragment() {
 
+    private lateinit var viewComponent: ViewComponent
     lateinit var addGame: AddGame
 
-    lateinit var gamesRepository: GamesRepository
-    lateinit var firebaseGamesDataSource: GamesDataSource
+    private lateinit var gamesRepository: GamesRepository
+    private lateinit var firebaseGamesDataSource: GamesDataSource
     private val schedulerProvider = SchedulerProvider()
 
     private val disposables = CompositeDisposable()
@@ -53,6 +56,9 @@ class CreateGameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewComponent = createViewComponent(requireActivity())
+        viewComponent.inject(this)
 
         view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
             findNavController().navigate(R.id.action_CreateGame_to_GamesFragment)

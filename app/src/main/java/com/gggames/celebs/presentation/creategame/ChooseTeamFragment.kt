@@ -14,6 +14,8 @@ import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.players.data.PlayersRepositoryImpl
 import com.gggames.celebs.features.players.data.remote.FirebasePlayersDataSource
 import com.gggames.celebs.features.players.domain.ChooseTeam
+import com.gggames.celebs.presentation.di.ViewComponent
+import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
@@ -27,6 +29,7 @@ import timber.log.Timber
  */
 class ChooseTeamFragment : Fragment() {
 
+    private lateinit var viewComponent: ViewComponent
     private val disposables = CompositeDisposable()
     lateinit var teams: ArrayList<String>
     private lateinit var chooseTeam: ChooseTeam
@@ -41,6 +44,9 @@ class ChooseTeamFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewComponent = createViewComponent(requireActivity())
+        viewComponent.inject(this)
 
         buttonDone.isVisible = true
 
