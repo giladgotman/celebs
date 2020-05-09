@@ -14,6 +14,8 @@ data class Game (val id: String,
         get() = this.gameInfo.round.turn.player
     val currentRound: Int
         get() = this.gameInfo.round.roundNumber
+    val round = this.gameInfo.round
+    val turn = this.gameInfo.round.turn
 }
 
 data class GameInfo(
@@ -27,13 +29,15 @@ data class Round(val state: RoundState = RoundState.Ready, val roundNumber: Int 
 
 enum class RoundState {
     Ready,
-    Ended;
+    Ended,
+    New;
 
     companion object {
         fun fromName(name: String?): RoundState =
             when (name) {
                 "Ready" -> Ready
                 "Ended" -> Ended
+                "New" -> New
                 else -> throw IllegalArgumentException("Unknown round state name: $name")
             }
     }

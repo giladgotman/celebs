@@ -92,7 +92,9 @@ class GameOnFragment : Fragment(),
         }
 
         startButton.setOnClickListener {
-            presenter.onStartButtonClick()
+            val text = startButton.text.toString()
+            val buttonState = text.toButtonState()
+            presenter.onStartButtonClick(buttonState)
 
         }
         hideTeamsInfo()
@@ -289,4 +291,19 @@ class GameOnFragment : Fragment(),
         timerTextView?.text = timeLeftFormatted
     }
 
+}
+
+private fun String.toButtonState(): ButtonState =
+    when (this) {
+        "Start" -> ButtonState.Stopped
+        "Resume" -> ButtonState.Paused
+        "Pause" -> ButtonState.Running
+        else -> throw IllegalStateException("button state $this is unknown")
+    }
+
+
+enum class ButtonState {
+    Stopped,
+    Running,
+    Paused
 }
