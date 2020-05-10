@@ -13,8 +13,8 @@ class GamesRepositoryImpl @Inject constructor(
         return gamesDataSource.getGames(statesQuery).toObservable()
     }
 
-    override fun addGame(game: Game): Completable =
-        gamesDataSource.addGame(game)
+    override fun setGame(game: Game): Completable =
+        gamesDataSource.setGame(game)
 
     override fun observeGame(gameId: String): Observable<Game> =
         gamesDataSource.observeGame(gameId)

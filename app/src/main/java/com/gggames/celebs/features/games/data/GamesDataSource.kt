@@ -9,7 +9,7 @@ import io.reactivex.Single
 interface GamesDataSource {
     fun getGames(statesQuery: List<GameState> = emptyList()): Single<List<Game>>
 
-    fun addGame(game: Game): Completable
+    fun setGame(game: Game): Completable
 
     fun observeGame(gameId: String): Observable<Game>
 }

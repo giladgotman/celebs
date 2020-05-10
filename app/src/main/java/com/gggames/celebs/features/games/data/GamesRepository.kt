@@ -8,7 +8,7 @@ import io.reactivex.Observable
 interface GamesRepository {
     fun getGames(statesQuery: List<GameState>): Observable<List<Game>>
 
-    fun addGame(game: Game): Completable
+    fun setGame(game: Game): Completable
 
     fun observeGame(gameId: String): Observable<Game>
 }

@@ -3,7 +3,7 @@ package com.gggames.celebs.presentation.gameon
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
-import com.gggames.celebs.features.games.domain.AddGame
+import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
     private val cardsObservable: ObserveAllCards,
-    private val updateGame: AddGame,
+    private val updateGame: SetGame,
     private val observeGame: ObserveGame,
     private val gameFlow: GameFlow,
     private val cardsRepository: CardsRepository,

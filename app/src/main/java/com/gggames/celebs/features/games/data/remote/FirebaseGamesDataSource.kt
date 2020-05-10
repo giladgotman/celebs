@@ -44,17 +44,17 @@ class FirebaseGamesDataSource @Inject constructor(
         }
     }
 
-    override fun addGame(game: Game): Completable {
-        Timber.w("addGame: $game")
+    override fun setGame(game: Game): Completable {
+        Timber.w("setGame: $game")
         val gameRaw = game.toRaw()
         return Completable.create { emitter ->
             firestore.collection(GAMES_PATH)
                 .document(gameRaw.id).set(gameRaw, SetOptions.merge()).addOnSuccessListener {
-                    Timber.i("game added to firebase")
+                    Timber.i("game set to firebase")
                     emitter.onComplete()
                 }
                 .addOnFailureListener { error ->
-                    Timber.e(error, "error while trying to add game")
+                    Timber.e(error, "error while trying to set game")
                     emitter.onError(error)
                 }
         }

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.features.games.domain.AddGame
+import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
 import com.gggames.celebs.model.GameState
@@ -33,7 +33,7 @@ class CreateGameFragment : Fragment() {
     private lateinit var viewComponent: ViewComponent
 
     @Inject
-    lateinit var addGame: AddGame
+    lateinit var setGame: SetGame
     @Inject
     lateinit var gameFlow: GameFlow
 
@@ -87,7 +87,7 @@ class CreateGameFragment : Fragment() {
                     GameInfo(score = initialScore)
                 )
 
-                addGame(game)
+                setGame(game)
                     .subscribe(
                         {
                             Timber.i("gilad game added: ${game.id}")
