@@ -105,14 +105,15 @@
             app:layout_constraintVertical_bias="0.0"
             tools:text="Putin the president of russia" />
 
-        <ImageButton
+        <Button
             android:id="@+id/endTurnButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_close_24px"
+            android:text="X"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
             app:layout_constraintStart_toStartOf="@id/cardTextView" />
 
+<!--            android:src="@drawable/ic_close_24px"-->
         <Button
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
@@ -124,14 +125,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageButton
+        <Button
             android:id="@+id/correctButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_done_24px"
+            android:text="V"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
             app:layout_constraintEnd_toEndOf="@id/cardTextView" />
 
+<!--            android:src="@drawable/ic_done_24px"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
