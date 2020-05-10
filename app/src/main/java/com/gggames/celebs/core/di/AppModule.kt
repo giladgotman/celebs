@@ -30,6 +30,5 @@ class AppModule(private val application: CelebsApplication) {
 
     @Provides
     @Singleton
-    internal fun provideBaseSchedulerProvider(): BaseSchedulerProvider = SchedulerProvider()
-
+    fun provideBaseSchedulerProvider(): BaseSchedulerProvider = SchedulerProvider()
 }

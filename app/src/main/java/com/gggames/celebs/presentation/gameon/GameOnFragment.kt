@@ -82,7 +82,6 @@ class GameOnFragment : Fragment(),
 
         }
 
-
         correctButton.setOnClickListener {
             presenter.onCorrectClick()
         }
@@ -165,7 +164,7 @@ class GameOnFragment : Fragment(),
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
                 timerTextView.text = "Time's Up!"
-                presenter.onTurnEnded()
+                presenter.onTimesUp()
             }
 
             override fun onTick(millis: Long) {

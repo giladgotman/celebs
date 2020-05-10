@@ -7,6 +7,7 @@ import com.gggames.celebs.features.games.domain.AddGame
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
+import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
@@ -18,7 +19,8 @@ class GamePresenter @Inject constructor(
     private val updateGame: AddGame,
     private val observeGame: ObserveGame,
     private val gameFlow: GameFlow,
-    private val cardsRepository: CardsRepository
+    private val cardsRepository: CardsRepository,
+    private val audioPlayer: AudioPlayer
 ) {
     private var cardDeck = mutableListOf<Card>()
 
@@ -255,6 +257,7 @@ class GamePresenter @Inject constructor(
     }
 
     fun unBind() {
+        audioPlayer.release()
         disposables.clear()
     }
 
@@ -319,6 +322,11 @@ class GamePresenter @Inject constructor(
             STATE_ROUND_OVER -> {/* disabled */}
             STATE_NEW_ROUND -> onPlayerResumedNewRound() // only for active player
         }
+    }
+
+    fun onTimesUp() {
+        audioPlayer.play("timesupyalabye")
+        onTurnEnded()
     }
 
     interface GameView{
