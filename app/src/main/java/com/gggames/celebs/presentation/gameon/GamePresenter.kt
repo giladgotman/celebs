@@ -3,8 +3,9 @@ package com.gggames.celebs.presentation.gameon
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
-import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
+import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
 import com.gggames.celebs.utils.media.AudioPlayer
@@ -20,6 +21,7 @@ class GamePresenter @Inject constructor(
     private val observeGame: ObserveGame,
     private val gameFlow: GameFlow,
     private val cardsRepository: CardsRepository,
+    private val gamesRepository: GamesRepository,
     private val audioPlayer: AudioPlayer
 ) {
     private var cardDeck = mutableListOf<Card>()
@@ -30,8 +32,9 @@ class GamePresenter @Inject constructor(
     private lateinit var view: GameView
 
     private val game: Game
-        get() = gameFlow.currentGame!!
+        get() = gamesRepository.currentGame!!
 
+    private var lastGame: Game? = null
     private val roundState : RoundState
     get() = game.gameInfo.round.state
 
@@ -95,18 +98,18 @@ class GamePresenter @Inject constructor(
             onRoundUpdate(newGame.gameInfo.round)
         }
 
-//        if (newPlayer?.id != game.currentPlayer?.id) {
-//            if (gameFlow.me == newPlayer) {
-//                Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
-//                pickNextCard()
-//
-//                setState(STATE_STARTED)
-//            } else {
-//                newPlayer?.let {
-//                    view.setCurrentOtherPlayer(newPlayer)
-//                } ?: view.setNoCurrentPlayer()
-//            }
-//        }
+        if (newPlayer?.id != game.currentPlayer?.id) {
+            if (gameFlow.me == newPlayer) {
+                Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
+                pickNextCard()
+
+                setState(STATE_STARTED)
+            } else {
+                newPlayer?.let {
+                    view.setCurrentOtherPlayer(newPlayer)
+                } ?: view.setNoCurrentPlayer()
+            }
+        }
         view.setRound(newGame.currentRound.toString())
         view.setTeamNames(newGame.teams)
         if (game.currentRound != newGame.currentRound) {
@@ -121,7 +124,8 @@ class GamePresenter @Inject constructor(
             view.showGameOver()
         }
         Timber.v("observeGame onNext: game: $newGame}")
-        gameFlow.updateGame(newGame)
+        lastGame = newGame
+//        gameFlow.updateGame(newGame)
     }
 
     private fun onRoundUpdate(newRound: Round) {
@@ -325,16 +329,16 @@ class GamePresenter @Inject constructor(
         disposables.clear()
     }
 
-//    private fun setState(state: Int) {
-//        this.state = state
-//        when (state) {
-//            STATE_STARTED -> view.setStartedState()
-//            STATE_STOPPED -> view.setStoppedState()
-//            STATE_PAUSED -> view.setPausedState()
-//            STATE_ROUND_OVER -> view.setRoundEndState()
-//            STATE_NEW_ROUND -> view.setPausedState()
-//        }
-//    }
+    private fun setState(state: Int) {
+        this.state = state
+        when (state) {
+            STATE_STARTED -> view.setStartedState()
+            STATE_STOPPED -> view.setStoppedState()
+            STATE_PAUSED -> view.setPausedState()
+            STATE_ROUND_OVER -> view.setRoundEndState()
+            STATE_NEW_ROUND -> view.setPausedState()
+        }
+    }
 
     /*
     Load new round - only for active player

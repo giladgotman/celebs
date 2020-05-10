@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.games.domain.GetGames
+import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import io.reactivex.disposables.CompositeDisposable
@@ -32,6 +33,9 @@ class GamesFragment : Fragment() {
 
     @Inject
     lateinit var gameFlow: GameFlow
+
+    @Inject
+    lateinit var joinGame: JoinGame
 
     private val disposables = CompositeDisposable()
 
@@ -66,13 +70,19 @@ class GamesFragment : Fragment() {
         gamesAdapter =
             GamesAdapter { game ->
                 Timber.w("game selected: ${game.name}")
-                gameFlow.joinAGame(playerName, game)
-                val args = AddCardsFragment.createArgs(
-                    game.id,
-                    ArrayList(game.teams.map { it.name }),
-                    gameFlow.me!!.id
-                )
-                findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
+
+                joinGame(game, gameFlow.me!!)
+                    .subscribe({
+                        val args = AddCardsFragment.createArgs(
+                            game.id,
+                            ArrayList(game.teams.map { it.name }),
+                            gameFlow.me!!.id
+                        )
+                        findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
+                    }, {
+                        Timber.e(it,"error joinGame")
+                    })
+
             }
 
 
