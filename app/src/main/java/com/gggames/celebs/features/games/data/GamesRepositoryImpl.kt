@@ -33,5 +33,5 @@ class GamesRepositoryImpl @Inject constructor(
     }
 
     override fun observeGame(gameId: String): Observable<Game> =
-        gamesDataSource.observeGame(gameId)
+        gamesDataSource.observeGame(gameId).doOnNext { currentGame = it }
 }

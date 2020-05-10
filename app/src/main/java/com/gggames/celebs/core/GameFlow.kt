@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.gggames.celebs.core.di.AppContext
+import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.presentation.login.LoginActivity
 import com.gggames.celebs.utils.prefs.PreferenceManager
@@ -39,6 +40,8 @@ class GameFlow @Inject constructor(
         me = Player(id, playerName)
         preferenceManager.savePlayer(me)
     }
+
+    fun isMeActivePlayer(game: Game) = me == game.currentPlayer
 
     fun setMyTeam(teamName: String) {
         me = me?.copy(team = teamName)
