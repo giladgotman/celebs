@@ -8,6 +8,9 @@ import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
+import com.gggames.celebs.model.RoundState.Ready
+import com.gggames.celebs.model.TurnState.Running
+import com.gggames.celebs.model.TurnState.Stopped
 import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
@@ -91,33 +94,11 @@ class GamePresenter @Inject constructor(
 
     private fun onGameUpdate(newGame: Game) {
         val newPlayer = newGame.currentPlayer
-        Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${game.currentPlayer?.name}")
-
-
-        if (newGame.round != game.round) {
+        Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${lastGame?.currentPlayer?.name}")
+        if (newGame.round != lastGame?.round) {
             onRoundUpdate(newGame.gameInfo.round)
         }
-
-        if (newPlayer?.id != game.currentPlayer?.id) {
-            if (gameFlow.me == newPlayer) {
-                Timber.w("new player is me! newPlayer: ${newPlayer?.name}")
-                pickNextCard()
-
-                setState(STATE_STARTED)
-            } else {
-                newPlayer?.let {
-                    view.setCurrentOtherPlayer(newPlayer)
-                } ?: view.setNoCurrentPlayer()
-            }
-        }
-        view.setRound(newGame.currentRound.toString())
         view.setTeamNames(newGame.teams)
-        if (game.currentRound != newGame.currentRound) {
-            if (gameFlow.me == newPlayer) {
-                loadNewRound()
-            }
-        }
-
         view.setScore(newGame.gameInfo.score)
 
         if (newGame.state == GameState.Finished) {
@@ -129,25 +110,58 @@ class GamePresenter @Inject constructor(
     }
 
     private fun onRoundUpdate(newRound: Round) {
-        Timber.v("onRoundUpdate newRound: $newRound}")
-        if (newRound != game.round) {
-            when (newRound.state) {
-                RoundState.Ready -> {}
-                RoundState.Ended -> {}
-                RoundState.New -> {}
+        Timber.v("UPDATE::ROUND:: newRound: $newRound}")
+        if (newRound != lastGame?.round) {
+            view.setRound(newRound.roundNumber.toString())
+            if (lastGame?.currentRound != newRound.roundNumber) {
+                if (gameFlow.isMeActivePlayer(game)) {
+                    loadNewRound()
+                }
             }
-            if (newRound.turn != game.turn) {
+            when (newRound.state) {
+                Ready -> {
+                }
+                RoundState.Ended -> {
+                    view.setRoundEndState()
+                }
+                RoundState.New -> {
+                    view.setPausedState()
+                }
+            }
+            if (newRound.turn != lastGame?.turn) {
                 onTurnUpdate(newRound.turn)
             }
         }
     }
 
     private fun onTurnUpdate(turn: Turn) {
-        Timber.v("onTurnUpdate turn: $turn}")
-        when (turn.state) {
-            TurnState.Stopped -> {}
-            TurnState.Running -> {}
-            TurnState.Paused -> {}
+        Timber.v("UPDATE::TURN:: onTurnUpdate turn: $turn}")
+        if (gameFlow.isMeActivePlayer(game)) {
+            when (turn.state) {
+                Stopped -> {
+                    view.setStoppedState()
+                }
+                Running -> {
+                    view.setStartedState()
+                }
+                TurnState.Paused -> {
+                    view.setPausedState()
+                }
+            }
+        } else {
+            when (turn.state) {
+                Stopped -> {
+                    view.setStoppedState()
+                }
+                Running -> {
+                    turn.player?.let {
+                        view.setCurrentOtherPlayer(it)
+                    } ?: view.setNoCurrentPlayer()
+                }
+                TurnState.Paused -> {
+                    view.setPausedState()
+                }
+            }
         }
     }
 
@@ -185,6 +199,8 @@ class GamePresenter @Inject constructor(
     }
     private fun onPlayerStarted() {
         setGameStateStartedAndMeActive()
+            .andThen(pickNextCard())
+            .andThen(setTurnState(Running))
             .subscribe(
                 { Timber.d("set me as current player success") },
                 { Timber.e(it, "error while setting current player") }
@@ -207,6 +223,14 @@ class GamePresenter @Inject constructor(
             }
         }
 
+
+    private fun gameInfoWith(turn: Turn): GameInfo =
+        game.gameInfo.copy(
+            round = game.gameInfo.round.copy(
+                turn = turn
+            )
+        )
+
     private fun gameInfoWith(player: Player?): GameInfo =
         game.gameInfo.copy(
             round = game.gameInfo.round.copy(
@@ -219,8 +243,8 @@ class GamePresenter @Inject constructor(
     fun onCorrectClick() {
         gameFlow.me?.team?.let {
             increaseScore(it)
+                .andThen(pickNextCard())
                 .subscribe({
-                    pickNextCard()
                 }, {
                     Timber.e(it, "error while increaseScore")
                 }).let { disposables.add(it) }
@@ -238,33 +262,26 @@ class GamePresenter @Inject constructor(
         return Completable.complete()
     }
 
-    private fun pickNextCard() {
+    private fun pickNextCard(): Completable {
         val notUsedCards = unUsedCards()
         val card = if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
-        if (card != null) {
+        Timber.w("pickNextCard, card: $card")
+        return if (card != null) {
             cardsRepository.updateCard(card)
-                .subscribe({
+                .andThen(
+                    Completable.fromCallable {
                     lastCard = card
                     view.updateCard(card)
-                }, {
-                    Timber.e(it, "error while update card")
-                }).let {
-                    disposables.add(it)
-                }
+                    }
+                )
         } else {
             Timber.w("no un used cards left!")
             if (lastRound()) {
                 setNewGameState(GameState.Finished)
-                    .subscribe(
-                        { Timber.d("setNewGameState Finished success") },
-                        { Timber.e(it, "error setNewGameState Finished") }
-                    ).let { disposables.add(it) }
             } else {
 //                setState(STATE_ROUND_OVER)
-                setRoundState(RoundState.Ended).subscribe(
-                    { Timber.d("setRoundState Ended success") },
-                    { Timber.e(it, "error setRoundState Ended") }
-                ).let { disposables.add(it) }
+                setTurnState(Stopped)
+                    .andThen(setRoundState(RoundState.Ended))
             }
         }
     }
@@ -290,37 +307,47 @@ class GamePresenter @Inject constructor(
 
 
     private fun onPlayerResumedNewRound() {
-        pickNextCard()
-        setTurnState(TurnState.Running)
+//        pickNextCard()
+        setRoundState(Ready)
+            .andThen(pickNextCard())
+            .andThen(setTurnState(Running))
+            .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
 //        setState(STATE_STARTED)
     }
 
     fun onTurnEnded() {
-        setTurnState(TurnState.Stopped)
-
-//        if (gameFlow.isActivePlayer()) {
-//            maybeFlipLastCard()
-//                .andThen(endMyTurn())
-//                .subscribe({
-//                    setState(STATE_STOPPED)
-//                }, {
-//                    Timber.e(it, "error onTurnEnded")
-//                }).let {
-//                    disposables.add(it)
-//                }
-//        } else {
-//            setState(STATE_STOPPED)
-//            Timber.d("onTurnEnded, I'm not the active player. setting state to STOPPED")
-//        }
+        setTurnState(Stopped)
+            .subscribe({
+            }, {
+                Timber.e(it, "error onTurnEnded")
+            }).let {
+                disposables.add(it)
+            }
+        if (gameFlow.isMeActivePlayer(game)) {
+            maybeFlipLastCard()
+                .andThen(endMyTurn())
+                .subscribe({
+                    view.setStoppedState()
+                }, {
+                    Timber.e(it, "error onTurnEnded")
+                }).let {
+                    disposables.add(it)
+                }
+        } else {
+            view.setStoppedState()
+            Timber.d("onTurnEnded, I'm not the active player. setting state to STOPPED")
+        }
     }
 
     fun onPlayerPaused() {
         setTurnState(TurnState.Paused)
+            .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
 //        setState(STATE_PAUSED)
     }
 
     fun onPlayerResumed() {
-        setTurnState(TurnState.Running)
+        setTurnState(Running)
+            .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
 //        setState(STATE_STARTED)
     }
 
@@ -329,16 +356,16 @@ class GamePresenter @Inject constructor(
         disposables.clear()
     }
 
-    private fun setState(state: Int) {
-        this.state = state
-        when (state) {
-            STATE_STARTED -> view.setStartedState()
-            STATE_STOPPED -> view.setStoppedState()
-            STATE_PAUSED -> view.setPausedState()
-            STATE_ROUND_OVER -> view.setRoundEndState()
-            STATE_NEW_ROUND -> view.setPausedState()
-        }
-    }
+//    private fun setState(state: Int) {
+//        this.state = state
+//        when (state) {
+//            STATE_STARTED -> view.setStartedState()
+//            STATE_STOPPED -> view.setStoppedState()
+//            STATE_PAUSED -> view.setPausedState()
+//            STATE_ROUND_OVER -> view.setRoundEndState()
+//            STATE_NEW_ROUND -> view.setPausedState()
+//        }
+//    }
 
     /*
     Load new round - only for active player
@@ -363,8 +390,11 @@ class GamePresenter @Inject constructor(
     private fun lastRound(): Boolean  =
         game.gameInfo.round.roundNumber == 3
 
-    private fun endMyTurn(): Completable =
-        setNewGameInfo(gameInfoWith(null))
+    private fun endMyTurn(): Completable {
+        val game = gameInfoWith(game.gameInfo.round.turn.copy(player = null, state = Stopped))
+        Timber.v("endMyTurn, game: $game")
+        return setNewGameInfo(game)
+    }
 
     private fun setNewRound(round: Int): Completable =
         setNewGameInfo(game.gameInfo.copy(round = game.gameInfo.round.copy(roundNumber = round)))
@@ -388,7 +418,7 @@ class GamePresenter @Inject constructor(
         } ?: Completable.complete()
 
     fun onStartButtonClick(buttonState: ButtonState) {
-        Timber.d("---- startButton click, state: $state ----")
+        Timber.d("---- startButton click, state: $buttonState, roundState: $roundState ----")
         when (buttonState) {
             ButtonState.Stopped -> onPlayerStarted()
             ButtonState.Running -> onPlayerPaused()
