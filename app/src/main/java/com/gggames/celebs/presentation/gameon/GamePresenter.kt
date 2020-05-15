@@ -111,6 +111,7 @@ class GamePresenter @Inject constructor(
 
     private fun onRoundUpdate(newRound: Round) {
         Timber.v("UPDATE::ROUND:: newRound: $newRound}")
+        val meActive = gameFlow.isMeActivePlayer(game)
         if (newRound != lastGame?.round) {
             view.setRound(newRound.roundNumber.toString())
             if (lastGame?.currentRound != newRound.roundNumber) {
@@ -122,10 +123,10 @@ class GamePresenter @Inject constructor(
                 Ready -> {
                 }
                 RoundState.Ended -> {
-                    view.setRoundEndState()
+                    view.setRoundEndState(meActive)
                 }
                 RoundState.New -> {
-                    view.setPausedState()
+                    view.setPausedState(meActive)
                 }
             }
             if (newRound.turn != lastGame?.turn) {
@@ -136,16 +137,17 @@ class GamePresenter @Inject constructor(
 
     private fun onTurnUpdate(turn: Turn) {
         Timber.v("UPDATE::TURN:: onTurnUpdate turn: $turn}")
+        val meActive = gameFlow.isMeActivePlayer(game)
         if (gameFlow.isMeActivePlayer(game)) {
             when (turn.state) {
                 Stopped -> {
                     view.setStoppedState()
                 }
                 Running -> {
-                    view.setStartedState()
+                    view.setStartedState(meActive)
                 }
                 TurnState.Paused -> {
-                    view.setPausedState()
+                    view.setPausedState(meActive)
                 }
             }
         } else {
@@ -155,11 +157,12 @@ class GamePresenter @Inject constructor(
                 }
                 Running -> {
                     turn.player?.let {
+                        view.setStartedState(meActive)
                         view.setCurrentOtherPlayer(it)
                     } ?: view.setNoCurrentPlayer()
                 }
                 TurnState.Paused -> {
-                    view.setPausedState()
+                    view.setPausedState(meActive)
                 }
             }
         }
@@ -317,12 +320,7 @@ class GamePresenter @Inject constructor(
 
     fun onTurnEnded() {
         setTurnState(Stopped)
-            .subscribe({
-            }, {
-                Timber.e(it, "error onTurnEnded")
-            }).let {
-                disposables.add(it)
-            }
+            .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
         if (gameFlow.isMeActivePlayer(game)) {
             maybeFlipLastCard()
                 .andThen(endMyTurn())
@@ -454,10 +452,10 @@ class GamePresenter @Inject constructor(
         fun updateCard(card: Card)
         fun showGameOver()
         fun setCurrentOtherPlayer(player: Player)
-        fun setPausedState()
-        fun setStartedState()
+        fun setPausedState(meActive: Boolean)
+        fun setStartedState(meActive: Boolean)
         fun setStoppedState()
-        fun setRoundEndState()
+        fun setRoundEndState(meActive: Boolean)
         fun setNoCurrentPlayer()
         fun setRound(toString: String)
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)

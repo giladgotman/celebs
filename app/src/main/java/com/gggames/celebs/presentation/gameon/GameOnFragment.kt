@@ -130,12 +130,12 @@ class GameOnFragment : Fragment(),
         showInfoToast(requireContext(), "This is the last round", Toast.LENGTH_LONG)
     }
 
-    override fun setStartedState() {
+    override fun setStartedState(meActive: Boolean) {
         startTimer()
         startButton.text = "Pause"
         startButton.isEnabled = true
-        endTurnButton.isEnabled = true
-        correctButton.isEnabled = true
+        endTurnButton.isEnabled = meActive
+        correctButton.isEnabled = meActive
     }
 
 
@@ -148,15 +148,15 @@ class GameOnFragment : Fragment(),
         startButton.isEnabled = true
     }
 
-    override fun setPausedState() {
+    override fun setPausedState(meActive: Boolean) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
         startButton.text = "Resume"
         startButton.isEnabled = true
     }
 
-    override fun setRoundEndState() {
-        setPausedState()
+    override fun setRoundEndState(meActive: Boolean) {
+        setPausedState(meActive)
         cardTextView.text = "Round Ended"
         startButton.isEnabled = false
     }
@@ -246,7 +246,6 @@ class GameOnFragment : Fragment(),
     }
 
     override fun setCurrentOtherPlayer(player: Player) {
-        startButton.isEnabled = false
         cardTextView.text = "${player.name} is playing"
     }
 
