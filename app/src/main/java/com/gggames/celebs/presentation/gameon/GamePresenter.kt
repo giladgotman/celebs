@@ -420,6 +420,12 @@ class GamePresenter @Inject constructor(
         view.showTimesUp()
     }
 
+    fun onCardsAmountClick() {
+        if (game.round.state == RoundState.Ended) {
+            view.showAllCards(cardDeck)
+        }
+    }
+
     interface GameView{
         fun updateCards(cards: List<Card>)
         fun updateTeams(teams: List<Team>)
@@ -438,5 +444,6 @@ class GamePresenter @Inject constructor(
         fun setTeamNames(teams: List<Team>)
         fun showTimesUp()
         fun setCorrectEnabled(enabled: Boolean)
+        fun showAllCards(cardDeck: List<Card>)
     }
 }

@@ -96,6 +96,10 @@ class GameOnFragment : Fragment(),
             presenter.onStartButtonClick(buttonState)
 
         }
+
+        cardsAmountIcon.setOnClickListener {
+            presenter.onCardsAmountClick()
+        }
         hideTeamsInfo()
         setStoppedState()
         setupTimer()
@@ -272,6 +276,21 @@ class GameOnFragment : Fragment(),
 
     override fun setRound(round: String) {
         roundTextView.text = round
+    }
+
+    override fun showAllCards(cards: List<Card>) {
+        val sb = java.lang.StringBuilder()
+        cards.forEachIndexed { index, card ->
+            sb.append("${index+1}: ${card.name}\n")
+        }
+        val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
+        }
+        val builder = AlertDialog.Builder(context)
+        builder
+            .setTitle("All cards")
+            .setMessage(sb.toString())
+            .setPositiveButton(getString(R.string.ok), dialogClickListener)
+            .show()
     }
 
     override fun showGameOver() {
