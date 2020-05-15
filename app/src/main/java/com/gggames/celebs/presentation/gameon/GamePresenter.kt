@@ -197,12 +197,35 @@ class GamePresenter @Inject constructor(
     }
     private fun onPlayerStarted() {
         setGameStateStartedAndMeActive()
-            .andThen(pickNextCard())
+            .andThen(handleNextCard(pickNextCard()))
             .andThen(setTurnState(Running))
             .subscribe(
                 { Timber.d("set me as current player success") },
                 { Timber.e(it, "error while setting current player") }
             ).let { disposables.add(it) }
+    }
+
+    private fun handleNextCard(card: Card?, time: Long? = null): Completable {
+        return if (card != null) {
+            cardsRepository.updateCard(card)
+                .andThen(
+                    Completable.fromCallable {
+                        lastCard = card
+                        view.updateCard(card)
+                        view.setCorrectEnabled(true)
+                    }
+                )
+        } else {
+            Timber.w("no un used cards left!")
+            if (lastRound()) {
+                setNewGameState(GameState.Finished)
+            } else {
+                val turn = time?.let { game.gameInfo.round.turn.copy(state = Stopped, time = it) }
+                    ?: game.gameInfo.round.turn.copy(state = Stopped)
+                setNewGameInfo(gameInfoWith(turn))
+                    .andThen(setRoundState(RoundState.Ended))
+            }
+        }
     }
 
     private fun setGameStateStartedAndMeActive(): Completable =
@@ -242,7 +265,7 @@ class GamePresenter @Inject constructor(
         view.setCorrectEnabled(false)
         gameFlow.me?.team?.let {
             increaseScore(it)
-                .andThen(pickNextCard(time))
+                .andThen(handleNextCard(pickNextCard(), time))
                 .subscribe({
                 }, {
                     Timber.e(it, "error while increaseScore")
@@ -261,30 +284,11 @@ class GamePresenter @Inject constructor(
         return Completable.complete()
     }
 
-    private fun pickNextCard(time: Long? = null): Completable {
+    private fun pickNextCard(): Card? {
         val notUsedCards = unUsedCards()
         val card = if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
         Timber.w("pickNextCard, card: $card")
-        return if (card != null) {
-            cardsRepository.updateCard(card)
-                .andThen(
-                    Completable.fromCallable {
-                    lastCard = card
-                    view.updateCard(card)
-                    view.setCorrectEnabled(true)
-                    }
-                )
-        } else {
-            Timber.w("no un used cards left!")
-            if (lastRound()) {
-                setNewGameState(GameState.Finished)
-            } else {
-                val turn = time?.let { game.gameInfo.round.turn.copy(state = Stopped, time = it) }
-                    ?: game.gameInfo.round.turn.copy(state = Stopped)
-                setNewGameInfo(gameInfoWith(turn))
-                    .andThen(setRoundState(RoundState.Ended))
-            }
-        }
+        return card
     }
 
     private fun setRoundState(state: RoundState): Completable {
@@ -309,7 +313,7 @@ class GamePresenter @Inject constructor(
 
     private fun onPlayerResumedNewRound() {
         setRoundState(Ready)
-            .andThen(pickNextCard())
+            .andThen(handleNextCard(pickNextCard()))
             .andThen(setTurnState(Running))
             .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
     }
