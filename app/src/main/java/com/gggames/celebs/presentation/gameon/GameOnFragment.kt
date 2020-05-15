@@ -7,6 +7,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -32,7 +33,7 @@ class GameOnFragment : Fragment(),
     GamePresenter.GameView {
 
     private val START_TIME_IN_MILLIS = 60000L
-//    private val START_TIME_IN_MILLIS = 20000L
+//    private val START_TIME_IN_MILLIS = 10000L
 
     private lateinit var viewComponent: ViewComponent
 
@@ -83,7 +84,7 @@ class GameOnFragment : Fragment(),
         }
 
         correctButton.setOnClickListener {
-            presenter.onCorrectClick()
+            presenter.onCorrectClick(mTimeLeftInMillis)
         }
 
         roundTextView.setOnClickListener {
@@ -91,8 +92,7 @@ class GameOnFragment : Fragment(),
         }
 
         startButton.setOnClickListener {
-            val text = startButton.text.toString()
-            val buttonState = text.toButtonState()
+            val buttonState = startButton.toButtonState(mTimeLeftInMillis)
             presenter.onStartButtonClick(buttonState)
 
         }
@@ -130,7 +130,10 @@ class GameOnFragment : Fragment(),
         showInfoToast(requireContext(), "This is the last round", Toast.LENGTH_LONG)
     }
 
-    override fun setStartedState(meActive: Boolean) {
+    override fun setStartedState(meActive: Boolean, time:Long?) {
+        time?.let {
+            updateTime(time)
+        }
         startTimer()
         startButton.text = "Pause"
         startButton.isEnabled = true
@@ -140,23 +143,35 @@ class GameOnFragment : Fragment(),
 
 
     override fun setStoppedState() {
-        mTimeLeftInMillis = START_TIME_IN_MILLIS
+        mCountDownTimer?.cancel()
+        updateTime(START_TIME_IN_MILLIS)
         startButton.text = "Start"
-        cardTextView.text = ""
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
     }
 
-    override fun setPausedState(meActive: Boolean) {
+    override fun showTimesUp() {
+        cardTextView.text = "Turn Ended"
+    }
+
+    override fun setPausedState(meActive: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
         startButton.text = "Resume"
         startButton.isEnabled = true
+        time?.let {
+            updateTime(time)
+        }
+    }
+
+    private fun updateTime(time: Long) {
+        mTimeLeftInMillis = time
+        timerTextView?.text = getFormattedTime()
     }
 
     override fun setRoundEndState(meActive: Boolean) {
-        setPausedState(meActive)
+        setPausedState(meActive, null)
         cardTextView.text = "Round Ended"
         startButton.isEnabled = false
     }
@@ -165,13 +180,11 @@ class GameOnFragment : Fragment(),
         mCountDownTimer?.cancel()
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
-                timerTextView.text = "Time's Up!"
                 presenter.onTimesUp()
             }
 
             override fun onTick(millis: Long) {
-                mTimeLeftInMillis = millis
-                updateCountDownText()
+                updateTime(millis)
             }
         }.start()
     }
@@ -277,31 +290,29 @@ class GameOnFragment : Fragment(),
     }
 
     private fun setupTimer() {
-        updateCountDownText()
+        updateTime(START_TIME_IN_MILLIS)
     }
 
-    private fun updateCountDownText() {
+    private fun getFormattedTime(): String {
         val minutes = (mTimeLeftInMillis / 1000).toInt() / 60
         val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
 
-        val timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-
-        timerTextView?.text = timeLeftFormatted
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
     }
 
 }
 
-private fun String.toButtonState(): ButtonState =
-    when (this) {
+private fun Button.toButtonState(time: Long): ButtonState =
+    when (this.text) {
         "Start" -> ButtonState.Stopped
-        "Resume" -> ButtonState.Paused
-        "Pause" -> ButtonState.Running
+        "Resume" -> ButtonState.Paused(time)
+        "Pause" -> ButtonState.Running(time)
         else -> throw IllegalStateException("button state $this is unknown")
     }
 
 
-enum class ButtonState {
-    Stopped,
-    Running,
-    Paused
+sealed class ButtonState(time: Long?) {
+    object Stopped : ButtonState(null)
+    data class Running(val time: Long) : ButtonState(time)
+    data class Paused(val time: Long) : ButtonState(time)
 }

@@ -1,5 +1,7 @@
 package com.gggames.celebs.model.remote
 
+import com.gggames.celebs.model.Round
+import com.gggames.celebs.model.Turn
 import com.google.firebase.Timestamp
 
 data class GameRaw (
@@ -28,15 +30,15 @@ data class GameInfoRaw(
 )
 
 data class RoundRaw(
-    val roundState: String = "Ready",
+    val roundState: String = Round().state.toRaw(),
     val roundNumber: Int = 1,
     val turn: TurnRaw = TurnRaw()
 )
 
 data class TurnRaw(
-    val state: String? = "Stopped",
+    val state: String = Turn().state.toRaw(),
     val player: PlayerRaw? = null,
-    val time: String? = null
+    val time: Long? = null
 )
 
 const val EMPTY_VALUE = "EMPTY_VALUE"
