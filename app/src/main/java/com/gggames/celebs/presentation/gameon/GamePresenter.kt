@@ -239,6 +239,7 @@ class GamePresenter @Inject constructor(
         )
 
     fun onCorrectClick(time: Long) {
+        view.setCorrectEnabled(false)
         gameFlow.me?.team?.let {
             increaseScore(it)
                 .andThen(pickNextCard(time))
@@ -270,6 +271,7 @@ class GamePresenter @Inject constructor(
                     Completable.fromCallable {
                     lastCard = card
                     view.updateCard(card)
+                    view.setCorrectEnabled(true)
                     }
                 )
         } else {
@@ -431,5 +433,6 @@ class GamePresenter @Inject constructor(
         fun setScore(score: Map<String, Int>)
         fun setTeamNames(teams: List<Team>)
         fun showTimesUp()
+        fun setCorrectEnabled(enabled: Boolean)
     }
 }

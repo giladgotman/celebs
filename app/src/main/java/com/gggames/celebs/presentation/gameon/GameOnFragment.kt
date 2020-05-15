@@ -151,6 +151,10 @@ class GameOnFragment : Fragment(),
         startButton.isEnabled = true
     }
 
+    override fun setCorrectEnabled(enabled: Boolean) {
+        correctButton.isEnabled = enabled
+    }
+
     override fun showTimesUp() {
         cardTextView.text = "Turn Ended"
     }
