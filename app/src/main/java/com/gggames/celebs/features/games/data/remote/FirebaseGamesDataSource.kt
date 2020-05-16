@@ -7,6 +7,7 @@ import com.gggames.celebs.model.remote.GameRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -28,7 +29,11 @@ class FirebaseGamesDataSource @Inject constructor(
                     "state",
                     GameState.values().map { it.toRaw() }
                 )
-            }
+            }.orderBy(
+                "createdAt",
+                Query.Direction.DESCENDING
+            )
+
             query.get()
                 .addOnSuccessListener { result ->
                     for (game in result) {
