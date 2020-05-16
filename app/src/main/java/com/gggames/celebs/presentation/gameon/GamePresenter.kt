@@ -16,6 +16,11 @@ import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
+
+//const val START_TIME_IN_MILLIS = 60000L
+const val TURN_TIME_MILLIS = 10000L
+
+
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
     private val cardsObservable: ObserveAllCards,
@@ -300,6 +305,11 @@ class GamePresenter @Inject constructor(
         val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state))))
         return updateGame(newGame)
     }
+    private fun setTurnStoppedState(): Completable {
+        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = Stopped, time = TURN_TIME_MILLIS))))
+        return updateGame(newGame)
+    }
+
 
 
     private fun setNewGameState(state: GameState): Completable =
@@ -321,7 +331,7 @@ class GamePresenter @Inject constructor(
     fun onTurnEnded() {
         if (gameFlow.isMeActivePlayer(game)) {
             view.setStoppedState()
-            setTurnState(Stopped)
+            setTurnStoppedState()
                 .andThen(maybeFlipLastCard())
                 .andThen(endMyTurn())
                 .subscribe({}, { Timber.e(it, "error onTurnEnded") }).let {

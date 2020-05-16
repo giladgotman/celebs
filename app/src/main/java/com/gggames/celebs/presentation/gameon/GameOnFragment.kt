@@ -32,9 +32,6 @@ import javax.inject.Inject
 class GameOnFragment : Fragment(),
     GamePresenter.GameView {
 
-//    private val START_TIME_IN_MILLIS = 60000L
-    private val START_TIME_IN_MILLIS = 10000L
-
     private lateinit var viewComponent: ViewComponent
 
     @Inject
@@ -42,7 +39,7 @@ class GameOnFragment : Fragment(),
 
     private var mCountDownTimer: CountDownTimer? = null
 
-    private var mTimeLeftInMillis = START_TIME_IN_MILLIS
+    private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
 
     override fun onCreateView(
@@ -148,7 +145,7 @@ class GameOnFragment : Fragment(),
 
     override fun setStoppedState() {
         mCountDownTimer?.cancel()
-        updateTime(START_TIME_IN_MILLIS)
+        updateTime(TURN_TIME_MILLIS)
         startButton.text = "Start"
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
@@ -313,7 +310,7 @@ class GameOnFragment : Fragment(),
     }
 
     private fun setupTimer() {
-        updateTime(START_TIME_IN_MILLIS)
+        updateTime(TURN_TIME_MILLIS)
     }
 
     private fun getFormattedTime(): String {
