@@ -77,9 +77,9 @@
         android:id="@+id/gameSection"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="@dimen/default_margin"
-        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintBottom_toTopOf="@id/infoSection"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,23 +87,41 @@
         app:layout_constraintTop_toBottomOf="@id/gameTopSection">
 
 
-        <TextView
-            android:id="@+id/cardTextView"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCardView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/default_margin"
-            android:background="@color/gilad"
-            android:gravity="center_horizontal|center_vertical"
-            android:textColor="@color/black"
-            android:textSize="34sp"
-            android:textStyle="bold|italic"
+            android:layout_marginBottom="@dimen/medium_margin"
+            android:elevation="5dp"
+            android:foregroundGravity="center"
             app:layout_constraintBottom_toTopOf="@id/startButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:text="Putin the president of russia" />
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gilad"
+                >
+            <TextView
+                android:id="@+id/cardTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:gravity="center_horizontal|center_vertical"
+                android:textColor="@color/black"
+                android:textSize="34sp"
+                android:textStyle="bold|italic"
+                tools:text="Putin the president of russia" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/endTurnButton"
@@ -111,7 +129,7 @@
             android:layout_height="64dp"
             android:text="X"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
-            app:layout_constraintStart_toStartOf="@id/cardTextView" />
+            app:layout_constraintStart_toStartOf="@id/cardCardView" />
 
         <!--            android:src="@drawable/ic_close_24px"-->
         <Button
@@ -131,7 +149,7 @@
             android:layout_height="64dp"
             android:text="V"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
-            app:layout_constraintEnd_toEndOf="@id/cardTextView" />
+            app:layout_constraintEnd_toEndOf="@id/cardCardView" />
 
         <!--            android:src="@drawable/ic_done_24px"-->
 
