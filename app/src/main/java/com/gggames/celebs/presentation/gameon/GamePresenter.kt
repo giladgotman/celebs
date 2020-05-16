@@ -225,8 +225,8 @@ class GamePresenter @Inject constructor(
             if (lastRound()) {
                 setNewGameState(GameState.Finished)
             } else {
-                val turn = time?.let { game.gameInfo.round.turn.copy(state = Stopped, time = it) }
-                    ?: game.gameInfo.round.turn.copy(state = Stopped)
+                val turn = time?.let { game.gameInfo.round.turn.copy(state = Paused, time = it) }
+                    ?: game.gameInfo.round.turn.copy(state = Paused)
                 setNewGameInfo(gameInfoWith(turn))
                     .andThen(setRoundState(RoundState.Ended))
             }
