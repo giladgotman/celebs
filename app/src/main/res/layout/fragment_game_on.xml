@@ -77,10 +77,10 @@
         android:id="@+id/gameSection"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintBottom_toTopOf="@id/infoSection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +91,7 @@
             android:id="@+id/cardTextView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/default_margin"
             android:background="@color/gilad"
             android:gravity="center_horizontal|center_vertical"
             android:textColor="@color/black"
@@ -107,17 +107,17 @@
 
         <Button
             android:id="@+id/endTurnButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:text="X"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
             app:layout_constraintStart_toStartOf="@id/cardTextView" />
 
-<!--            android:src="@drawable/ic_close_24px"-->
+        <!--            android:src="@drawable/ic_close_24px"-->
         <Button
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="64dp"
             android:text="Start"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -127,13 +127,13 @@
 
         <Button
             android:id="@+id/correctButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:text="V"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
             app:layout_constraintEnd_toEndOf="@id/cardTextView" />
 
-<!--            android:src="@drawable/ic_done_24px"-->
+        <!--            android:src="@drawable/ic_done_24px"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
