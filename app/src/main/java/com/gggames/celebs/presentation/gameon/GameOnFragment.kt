@@ -32,8 +32,8 @@ import javax.inject.Inject
 class GameOnFragment : Fragment(),
     GamePresenter.GameView {
 
-    private val START_TIME_IN_MILLIS = 60000L
-//    private val START_TIME_IN_MILLIS = 10000L
+//    private val START_TIME_IN_MILLIS = 60000L
+    private val START_TIME_IN_MILLIS = 10000L
 
     private lateinit var viewComponent: ViewComponent
 

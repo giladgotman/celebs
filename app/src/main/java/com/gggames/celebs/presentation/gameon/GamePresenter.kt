@@ -319,8 +319,8 @@ class GamePresenter @Inject constructor(
     }
 
     fun onTurnEnded() {
-        view.setStoppedState()
         if (gameFlow.isMeActivePlayer(game)) {
+            view.setStoppedState()
             setTurnState(Stopped)
                 .andThen(maybeFlipLastCard())
                 .andThen(endMyTurn())
@@ -415,9 +415,11 @@ class GamePresenter @Inject constructor(
     }
 
     fun onTimesUp() {
-        audioPlayer.play("timesupyalabye")
+        if (gameFlow.isMeActivePlayer(game)) {
+            audioPlayer.play("timesupyalabye")
+            view.showTimesUp()
+        }
         onTurnEnded()
-        view.showTimesUp()
     }
 
     fun onCardsAmountClick() {
