@@ -17,8 +17,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-//const val START_TIME_IN_MILLIS = 60000L
-const val TURN_TIME_MILLIS = 10000L
+const val TURN_TIME_MILLIS = 60000L
+//const val TURN_TIME_MILLIS = 10000L
 
 
 class GamePresenter @Inject constructor(
