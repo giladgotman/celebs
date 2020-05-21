@@ -10,8 +10,11 @@ import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
 import com.gggames.celebs.model.RoundState.Ready
 import com.gggames.celebs.model.TurnState.*
+import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
+import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -45,9 +48,11 @@ class GamePresenter @Inject constructor(
     private val roundState : RoundState
     get() = game.gameInfo.round.state
 
-    fun bind(view: GameView) {
+    fun bind(view: GameView, events: Observable<GameScreenContract.UiEvent>) {
         this.view = view
         val gameId = game.id
+
+        events.subscribe(::handleUiEvent).let { disposables.add(it) }
 
         playersObservable(gameId)
             .distinctUntilChanged()
@@ -79,6 +84,17 @@ class GamePresenter @Inject constructor(
             }).let {
                 disposables.add(it)
             }
+    }
+
+    private fun handleUiEvent(event: GameScreenContract.UiEvent) {
+        when (event) {
+            is RoundClick-> onNewRoundClick()
+            is StartStopClick-> onStartButtonClick(event.buttonState)
+            is CorrectClick-> onCorrectClick(event.time)
+            is EndTurnClick -> onTimerEnd()
+            is CardsAmountClick -> onCardsAmountClick()
+            is TimerEnd -> onTimerEnd()
+        }
     }
 
     private fun onUpdatePlayers(players: List<Player>) {
@@ -170,7 +186,7 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    fun onNewRoundClick() {
+    private fun onNewRoundClick() {
         when {
             lastRound() -> {
                 view.showLastRoundToast()
@@ -266,7 +282,7 @@ class GamePresenter @Inject constructor(
             )
         )
 
-    fun onCorrectClick(time: Long) {
+    private fun onCorrectClick(time: Long) {
         view.setCorrectEnabled(false)
         gameFlow.me?.team?.let {
             increaseScore(it)
@@ -328,7 +344,7 @@ class GamePresenter @Inject constructor(
             .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
     }
 
-    fun onTurnEnded() {
+    private fun onTurnEnded() {
         if (gameFlow.isMeActivePlayer(game)) {
             view.setStoppedState()
             setTurnStoppedState()
@@ -407,7 +423,7 @@ class GamePresenter @Inject constructor(
             cardsRepository.updateCard(it.copy(used = false))
         } ?: Completable.complete()
 
-    fun onStartButtonClick(buttonState: ButtonState) {
+    private fun onStartButtonClick(buttonState: ButtonState) {
         Timber.d("---- startButton click, state: $buttonState, roundState: $roundState ----")
         when (buttonState) {
             is ButtonState.Stopped -> onPlayerStarted()
@@ -424,7 +440,7 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    fun onTimesUp() {
+   private fun onTimerEnd() {
         if (gameFlow.isMeActivePlayer(game)) {
             audioPlayer.play("timesupyalabye")
             view.showTimesUp()
@@ -432,7 +448,7 @@ class GamePresenter @Inject constructor(
         onTurnEnded()
     }
 
-    fun onCardsAmountClick() {
+    private fun onCardsAmountClick() {
         if (game.round.state == RoundState.Ended) {
             view.showAllCards(cardDeck)
         }

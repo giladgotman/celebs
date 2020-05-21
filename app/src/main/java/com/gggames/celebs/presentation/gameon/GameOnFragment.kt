@@ -19,7 +19,10 @@ import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
+import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
 import com.gggames.celebs.utils.showInfoToast
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
 import java.util.*
@@ -41,6 +44,9 @@ class GameOnFragment : Fragment(),
 
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
+    private val _emitter = PublishSubject.create<UiEvent>()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +61,7 @@ class GameOnFragment : Fragment(),
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        presenter.bind(this)
+        presenter.bind(this, _emitter)
         cardTextView.text = ""
 
         endTurnButton.setOnClickListener {
@@ -63,7 +69,7 @@ class GameOnFragment : Fragment(),
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         timerTextView.text = "Turn Ended"
-                        presenter.onTurnEnded()
+                        _emitter.onNext(UiEvent.EndTurnClick)
                     }
 
                     DialogInterface.BUTTON_NEGATIVE -> {
@@ -81,21 +87,20 @@ class GameOnFragment : Fragment(),
         }
 
         correctButton.setOnClickListener {
-            presenter.onCorrectClick(mTimeLeftInMillis)
+            _emitter.onNext(UiEvent.CorrectClick(mTimeLeftInMillis))
         }
 
         roundTextView.setOnClickListener {
-            presenter.onNewRoundClick()
+            _emitter.onNext(RoundClick)
         }
 
         startButton.setOnClickListener {
             val buttonState = startButton.toButtonState(mTimeLeftInMillis)
-            presenter.onStartButtonClick(buttonState)
-
+            _emitter.onNext(UiEvent.StartStopClick(buttonState))
         }
 
         cardsAmountIcon.setOnClickListener {
-            presenter.onCardsAmountClick()
+            _emitter.onNext(UiEvent.CardsAmountClick)
         }
         hideTeamsInfo()
         setStoppedState()
@@ -185,7 +190,7 @@ class GameOnFragment : Fragment(),
         mCountDownTimer?.cancel()
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
-                presenter.onTimesUp()
+                _emitter.onNext(UiEvent.TimerEnd)
             }
 
             override fun onTick(millis: Long) {
@@ -322,17 +327,13 @@ class GameOnFragment : Fragment(),
 
 }
 
-private fun Button.toButtonState(time: Long): ButtonState =
+private fun Button.toButtonState(time: Long): GameScreenContract.ButtonState =
     when (this.text) {
-        "Start" -> ButtonState.Stopped
-        "Resume" -> ButtonState.Paused(time)
-        "Pause" -> ButtonState.Running(time)
+        "Start" -> GameScreenContract.ButtonState.Stopped
+        "Resume" -> GameScreenContract.ButtonState.Paused(time)
+        "Pause" -> GameScreenContract.ButtonState.Running(time)
         else -> throw IllegalStateException("button state $this is unknown")
     }
 
 
-sealed class ButtonState(time: Long?) {
-    object Stopped : ButtonState(null)
-    data class Running(val time: Long) : ButtonState(time)
-    data class Paused(val time: Long) : ButtonState(time)
-}
+
