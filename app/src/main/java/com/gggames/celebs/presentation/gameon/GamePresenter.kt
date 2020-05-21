@@ -56,34 +56,15 @@ class GamePresenter @Inject constructor(
 
         playersObservable(gameId)
             .distinctUntilChanged()
-            .subscribe({ players ->
-                onUpdatePlayers(players)
-            }, {
-                Timber.e(it, "error while observing players")
-            }).let {
-                disposables.add(it)
-            }
+            .subscribe(::onPlayersChange).let { disposables.add(it) }
 
         cardsObservable()
             .distinctUntilChanged()
-            .subscribe({cards->
-                cardDeck = cards.toMutableList()
-                view.updateCards(cards.filter { !it.used })
-            }, {
-                Timber.e(it, "error while observing cards")
-            }).let {
-                disposables.add(it)
-            }
+            .subscribe(::onCardsChange).let { disposables.add(it) }
 
         observeGame(gameId)
             .distinctUntilChanged()
-            .subscribe({newGame->
-                onGameUpdate(newGame)
-            }, {
-                Timber.e(it, "error while observing game")
-            }).let {
-                disposables.add(it)
-            }
+            .subscribe(::onGameChange).let { disposables.add(it) }
     }
 
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
@@ -97,14 +78,19 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    private fun onUpdatePlayers(players: List<Player>) {
+    private fun onCardsChange(cards: List<Card>) {
+        cardDeck = cards.toMutableList()
+        view.updateCards(cards.filter { !it.used })
+    }
+
+    private fun onPlayersChange(players: List<Player>) {
         val updatedTeams = game.teams.map { team ->
             team.copy(players = players.filter { it.team == team.name })
         }
         view.updateTeams(updatedTeams)
     }
 
-    private fun onGameUpdate(newGame: Game) {
+    private fun onGameChange(newGame: Game) {
         val newPlayer = newGame.currentPlayer
         Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${lastGame?.currentPlayer?.name}")
         if (newGame.round != lastGame?.round) {
