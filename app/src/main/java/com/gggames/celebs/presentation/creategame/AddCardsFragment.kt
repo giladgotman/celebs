@@ -15,6 +15,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.domain.AddCards
 import com.gggames.celebs.features.cards.domain.GetMyCards
+import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
@@ -35,13 +36,14 @@ class AddCardsFragment : Fragment() {
     @Inject
     lateinit var getMyCards: GetMyCards
     @Inject
-    lateinit var gameFlow: GameFlow
+    lateinit var gamesRepository : GamesRepository
+    @Inject
+    lateinit var gameFlow : GameFlow
 
     private lateinit var viewComponent: ViewComponent
 
     private val disposables = CompositeDisposable()
 
-//    lateinit var gameId: String
     private lateinit var playerId: String
     private lateinit var groups: ArrayList<String>
 
@@ -66,7 +68,7 @@ class AddCardsFragment : Fragment() {
 
         playerId = gameFlow.me!!.id
 
-        add_cards_card6_editText.setOnEditorActionListener { v, actionId, event ->
+        add_cards_card6_editText.setOnEditorActionListener { v, actionId, _ ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val imm: InputMethodManager = v.context
                     .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -121,7 +123,7 @@ class AddCardsFragment : Fragment() {
     private fun tryToAddCards(cardList: MutableList<Card>): Completable {
         return getMyCards(gameFlow.me!!)
             .flatMapCompletable { myCards ->
-                if (myCards.size + cardList.size > gameFlow.currentGame!!.celebsCount) {
+                if (myCards.size + cardList.size > gamesRepository.currentGame!!.celebsCount) {
                     Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))
                 } else {
                     addCards(cardList)

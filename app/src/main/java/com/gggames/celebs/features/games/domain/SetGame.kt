@@ -6,11 +6,11 @@ import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import javax.inject.Inject
 
-class AddGame @Inject constructor(
+class SetGame @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
     operator fun invoke(game: Game): Completable =
-        gamesRepository.addGame(game)
+        gamesRepository.setGame(game)
             .compose(schedulerProvider.applyCompletableDefault())
 }

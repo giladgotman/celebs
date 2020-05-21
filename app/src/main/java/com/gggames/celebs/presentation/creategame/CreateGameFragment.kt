@@ -11,7 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.features.games.domain.AddGame
+import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
 import com.gggames.celebs.model.GameState
@@ -33,9 +34,11 @@ class CreateGameFragment : Fragment() {
     private lateinit var viewComponent: ViewComponent
 
     @Inject
-    lateinit var addGame: AddGame
+    lateinit var setGame: SetGame
     @Inject
     lateinit var gameFlow: GameFlow
+    @Inject
+    lateinit var joinGame: JoinGame
 
     private val disposables = CompositeDisposable()
 
@@ -87,11 +90,11 @@ class CreateGameFragment : Fragment() {
                     GameInfo(score = initialScore)
                 )
 
-                addGame(game)
+                setGame(game)
+                    .andThen(joinGame(game, gameFlow.me!!))
                     .subscribe(
                         {
-                            Timber.i("gilad game added: ${game.id}")
-                            gameFlow.joinAGame(playerName, game)
+                            Timber.i("${gameFlow.me!!.name} created and joined game: ${game.id}")
                             val args = AddCardsFragment.createArgs(
                                 game.id,
                                 ArrayList(game.teams.map { it.name }),
@@ -108,7 +111,7 @@ class CreateGameFragment : Fragment() {
                                 getString(R.string.error_generic),
                                 Toast.LENGTH_LONG
                             )
-                            Timber.e(it, "gilad game added failed. ${it.localizedMessage}")
+                            Timber.e(it, "game add and join failed.")
                         })
                     .let {
                         disposables.add(it)

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.players.data.PlayersRepositoryImpl
 import com.gggames.celebs.features.players.data.remote.FirebasePlayersDataSource
 import com.gggames.celebs.features.players.domain.ChooseTeam
@@ -37,6 +38,7 @@ class ChooseTeamFragment : Fragment() {
     lateinit var chooseTeam: ChooseTeam
     @Inject
     lateinit var gameFlow: GameFlow
+    @Inject lateinit var gamesRepository: GamesRepository
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -90,11 +92,11 @@ class ChooseTeamFragment : Fragment() {
             val teamName = button.text.toString()
             Timber.w("selected team: $selection, team: $teamName")
 
-            gameFlow.currentGame?.let {
-                chooseTeam(it.id, gameFlow.me!!, teamName)
+            gamesRepository.currentGame?.let {game->
+                chooseTeam(game.id, gameFlow.me!!, teamName)
                     .subscribe({
                         gameFlow.setMyTeam(teamName)
-                        Timber.w("ggg you chosed team : $teamName")
+                        Timber.w("ggg you choose team : $teamName")
                     },{e->
                         buttonDone.isEnabled = true
                         showErrorToast(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG)

@@ -1,6 +1,6 @@
 package com.gggames.celebs.model
 
-import com.gggames.celebs.model.TurnState.Stopped
+import com.gggames.celebs.model.TurnState.Idle
 
 data class Game (val id: String,
                  val name: String,
@@ -14,6 +14,8 @@ data class Game (val id: String,
         get() = this.gameInfo.round.turn.player
     val currentRound: Int
         get() = this.gameInfo.round.roundNumber
+    val round = this.gameInfo.round
+    val turn = this.gameInfo.round.turn
 }
 
 data class GameInfo(
@@ -27,22 +29,25 @@ data class Round(val state: RoundState = RoundState.Ready, val roundNumber: Int 
 
 enum class RoundState {
     Ready,
-    Ended;
+    Ended,
+    New;
 
     companion object {
         fun fromName(name: String?): RoundState =
             when (name) {
                 "Ready" -> Ready
                 "Ended" -> Ended
+                "New" -> New
                 else -> throw IllegalArgumentException("Unknown round state name: $name")
             }
     }
 }
 
-data class Turn(val state: TurnState = Stopped, val player: Player? = null, val time: String? = null)
+data class Turn(val state: TurnState = Idle, val player: Player? = null, val time: Long? = null)
 
 
 enum class TurnState {
+    Idle,
     Stopped,
     Running,
     Paused;
@@ -50,6 +55,7 @@ enum class TurnState {
     companion object {
         fun fromName(name: String?): TurnState =
             when (name) {
+                "Idle" -> Idle
                 "Stopped" -> Stopped
                 "Running" -> Running
                 "Paused" -> Paused
