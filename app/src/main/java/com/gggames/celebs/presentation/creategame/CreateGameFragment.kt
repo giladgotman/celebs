@@ -14,7 +14,7 @@ import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.games.domain.AddGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
-import com.gggames.celebs.model.GameStateE
+import com.gggames.celebs.model.GameState
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
@@ -83,8 +83,8 @@ class CreateGameFragment : Fragment() {
                     now,
                     cardsCount,
                     teams,
-                    GameStateE.Created,
-                    GameInfo(1, initialScore)
+                    GameState.Created,
+                    GameInfo(score = initialScore)
                 )
 
                 addGame(game)

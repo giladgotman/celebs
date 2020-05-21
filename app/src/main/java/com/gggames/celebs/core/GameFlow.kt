@@ -68,7 +68,7 @@ class GameFlow @Inject constructor(
     }
 
     fun isActivePlayer(): Boolean {
-        return currentGame?.gameInfo?.currentPlayer == me
+        return currentGame?.gameInfo?.round?.turn?.player == me
     }
 
     fun setMyTeam(teamName: String) {

@@ -2,7 +2,7 @@ package com.gggames.celebs.features.games.data.remote
 
 import com.gggames.celebs.features.games.data.GamesDataSource
 import com.gggames.celebs.model.Game
-import com.gggames.celebs.model.GameStateE
+import com.gggames.celebs.model.GameState
 import com.gggames.celebs.model.remote.GameRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class FirebaseGamesDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : GamesDataSource {
-    override fun getGames(statesQuery: List<GameStateE>): Single<List<Game>> {
+    override fun getGames(statesQuery: List<GameState>): Single<List<Game>> {
         val games = mutableListOf<Game>()
         return Single.create { emitter ->
             val query = if (statesQuery.isNotEmpty()) {
@@ -26,7 +26,7 @@ class FirebaseGamesDataSource @Inject constructor(
             } else {
                 firestore.collection(GAMES_PATH).whereIn(
                     "state",
-                    GameStateE.values().map { it.toRaw() }
+                    GameState.values().map { it.toRaw() }
                 )
             }
             query.get()
@@ -82,7 +82,7 @@ class FirebaseGamesDataSource @Inject constructor(
     }
 }
 
-val GAMES_PATH = "games"
+val GAMES_PATH = "games_v2"
 
 
 

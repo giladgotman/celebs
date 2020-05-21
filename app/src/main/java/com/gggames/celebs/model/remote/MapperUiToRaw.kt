@@ -1,7 +1,6 @@
 package com.gggames.celebs.model.remote
 
 import com.gggames.celebs.model.*
-import com.gggames.celebs.model.Card
 import com.google.firebase.Timestamp
 import java.util.*
 
@@ -20,13 +19,6 @@ fun Team.toRaw() = TeamRaw(
     this.name,
     this.players.map { it.toRaw() })
 
-//fun GameState.toRaw() = when (this) {
-//    is GameState.Empty -> GameStateRaw("empty", gameInfo = this.gameInfo.toRaw())
-//    is GameState.Ready -> GameStateRaw("ready", gameInfo = this.gameInfo.toRaw())
-//    is GameState.Started -> GameStateRaw("started", gameInfo = this.gameInfo.toRaw())
-//    is GameState.Finished -> GameStateRaw("finished", gameInfo = this.gameInfo.toRaw())
-//}
-
 fun Game.toRaw() = GameRaw(
     this.id,
     this.name,
@@ -37,14 +29,25 @@ fun Game.toRaw() = GameRaw(
     this.gameInfo.toRaw()
 )
 
+fun Round.toRaw() = RoundRaw(
+    this.state.toRaw(), this.roundNumber, this.turn.toRaw()
+)
+
+fun Turn.toRaw() = TurnRaw(
+    this.state.toRaw(), this.player?.toRaw(), this.time
+)
+fun RoundState.toRaw() = this.name
+
+fun TurnState.toRaw() = this.name
+
+
 fun GameInfo.toRaw() = GameInfoRaw(
-    this.round,
     this.score,
     this.totalCards,
     this.cardsInDeck,
-    this.currentPlayer?.toRaw()
+    this.round.toRaw()
 )
 
-fun GameStateE.toRaw() = this.name
+fun GameState.toRaw() = this.name
 
 

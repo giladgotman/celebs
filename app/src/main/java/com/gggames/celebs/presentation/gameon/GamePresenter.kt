@@ -107,7 +107,7 @@ class GamePresenter @Inject constructor(
 
         view.setScore(newGame.gameInfo.score)
 
-        if (newGame.state == GameStateE.Finished) {
+        if (newGame.state == GameState.Finished) {
             view.showGameOver()
         }
         Timber.v("observeGame onNext: game: $newGame}")
@@ -133,7 +133,7 @@ class GamePresenter @Inject constructor(
     }
 
     private fun setNextRound() {
-        var gameRound = game.gameInfo.round
+        var gameRound = game.gameInfo.round.roundNumber
         gameRound++
         setNewRound(gameRound)
             .subscribe({
@@ -154,19 +154,28 @@ class GamePresenter @Inject constructor(
 
     private fun setStartedAndMeActive(): Completable =
         when (game.state) {
-            GameStateE.Created -> {
+            GameState.Created -> {
                 setNewGameStateAndGameInfo(
-                    GameStateE.Started,
-                    game.gameInfo.copy(currentPlayer = gameFlow.me!!)
+                    GameState.Started,
+                    gameInfoWith(gameFlow.me!!)
                 )
             }
-            GameStateE.Started -> {
-                setNewGameInfo(game.gameInfo.copy(currentPlayer = gameFlow.me!!))
+            GameState.Started -> {
+                setNewGameInfo(gameInfoWith(gameFlow.me!!))
             }
             else -> {
                 Completable.complete()
             }
         }
+
+    private fun gameInfoWith(player: Player?): GameInfo =
+        game.gameInfo.copy(
+            round = game.gameInfo.round.copy(
+                turn = game.gameInfo.round.turn.copy(
+                    player = player
+                )
+            )
+        )
 
     fun onCorrectClick() {
         gameFlow.me?.team?.let {
@@ -206,7 +215,7 @@ class GamePresenter @Inject constructor(
         } else {
             Timber.w("no un used cards left!")
             if (lastRound()) {
-                setNewGameState(GameStateE.Finished)
+                setNewGameState(GameState.Finished)
                     .subscribe(
                         { Timber.d("setNewGameState Finished success") },
                         { Timber.e(it, "error setNewGameState Finished") }
@@ -217,7 +226,7 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    private fun setNewGameState(state: GameStateE): Completable =
+    private fun setNewGameState(state: GameState): Completable =
         updateGame(game.copy(state = state))
 
     private fun setNewGameInfo(gameInfo: GameInfo): Completable =
@@ -289,16 +298,16 @@ class GamePresenter @Inject constructor(
     }
 
     private fun lastRound(): Boolean  =
-        game.gameInfo.round == 3
+        game.gameInfo.round.roundNumber == 3
 
     private fun endMyTurn(): Completable =
-        setNewGameInfo(game.gameInfo.copy(currentPlayer = null))
+        setNewGameInfo(gameInfoWith(null))
 
     private fun setNewRound(round: Int): Completable =
-        setNewGameInfo(game.gameInfo.copy(round = round))
+        setNewGameInfo(game.gameInfo.copy(round = game.gameInfo.round.copy(roundNumber = round)))
 
 
-    private fun setNewGameStateAndGameInfo(state: GameStateE, gameInfo: GameInfo): Completable =
+    private fun setNewGameStateAndGameInfo(state: GameState, gameInfo: GameInfo): Completable =
         updateGame(game.copy(state = state, gameInfo = gameInfo))
 
     private fun setAllCardsToUnused() {
