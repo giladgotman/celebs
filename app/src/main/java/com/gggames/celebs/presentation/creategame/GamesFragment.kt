@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.games.domain.GetGames
+import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.JoinGame
+import com.gggames.celebs.model.Game
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import io.reactivex.disposables.CompositeDisposable
@@ -30,6 +32,9 @@ class GamesFragment : Fragment() {
 
     @Inject
     lateinit var getGames : GetGames
+
+    @Inject
+    lateinit var observeGame: ObserveGame
 
     @Inject
     lateinit var gameFlow: GameFlow
@@ -70,19 +75,7 @@ class GamesFragment : Fragment() {
         gamesAdapter =
             GamesAdapter { game ->
                 Timber.w("game selected: ${game.name}")
-
-                joinGame(game, gameFlow.me!!)
-                    .subscribe({
-                        val args = AddCardsFragment.createArgs(
-                            game.id,
-                            ArrayList(game.teams.map { it.name }),
-                            gameFlow.me!!.id
-                        )
-                        findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
-                    }, {
-                        Timber.e(it,"error joinGame")
-                    })
-
+                joinGameAndGoToAddCards(game)
             }
 
 
@@ -94,8 +87,6 @@ class GamesFragment : Fragment() {
             itemsswipetorefresh.isRefreshing = false
         }
 
-
-
         gamesRecyclerView.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(this.context)
@@ -103,8 +94,28 @@ class GamesFragment : Fragment() {
         gamesRecyclerView.itemAnimator = DefaultItemAnimator()
         gamesRecyclerView.adapter = gamesAdapter
 
+        arguments?.getString("gameId")?.let {gameId->
+            arguments?.remove("gameId")
+            observeGame(gameId).take(1).subscribe({
+                joinGameAndGoToAddCards(it)
+            }, {
+                Timber.e(it, "Error trying to joing game: $gameId")
+            }).let { disposables.add(it) }
+        } ?: fetchGames()
+    }
 
-        fetchGames()
+    private fun joinGameAndGoToAddCards(game: Game) {
+        joinGame(game, gameFlow.me!!)
+            .subscribe({
+                val args = AddCardsFragment.createArgs(
+                    game.id,
+                    ArrayList(game.teams.map { it.name }),
+                    gameFlow.me!!.id
+                )
+                findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
+            }, {
+                Timber.e(it, "error joinGame")
+            }).let { disposables.add(it) }
     }
 
     private fun fetchGames() {

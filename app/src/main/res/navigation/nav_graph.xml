@@ -21,6 +21,16 @@
             app:destination="@id/AddCardsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+
+        <argument
+            android:name="gameId"
+            app:argType="string"
+             />
+
+        <deepLink
+            android:id="@+id/joinGame"
+            app:uri="hourglass://joinGame/{gameId}" />
+
     </fragment>
     <fragment
         android:id="@+id/CreateGameFragment"
