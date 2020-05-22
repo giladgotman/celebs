@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.core.di.getAppComponent
@@ -31,6 +32,13 @@ class MainActivity : AppCompatActivity() {
             .setAction("Action", null).show()
     }
 
+    fun setShareVisible(visible: Boolean) {
+        button_share.isVisible = visible
+    }
+
+    fun setTitle(title: String) {
+        toolbar_title.text = title
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)

@@ -62,7 +62,8 @@ class AddCardsFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        setTitle(gamesRepository.currentGame!!.name)
+        (activity as MainActivity).setTitle(gamesRepository.currentGame!!.name)
+        (activity as MainActivity).setShareVisible(true)
 
         arguments?.let {
 //            gameId = it.getString(GAME_ID_KEY)!!
@@ -84,11 +85,6 @@ class AddCardsFragment : Fragment() {
             onDoneClick()
         }
     }
-
-    private fun setTitle(title: String) {
-        (activity as MainActivity).supportActionBar?.title = title
-    }
-
 
     private fun onDoneClick() {
         buttonDone.isEnabled = false
