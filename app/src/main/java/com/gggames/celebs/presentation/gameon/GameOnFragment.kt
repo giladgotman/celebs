@@ -95,8 +95,8 @@ class GameOnFragment : Fragment(),
         }
 
         startButton.setOnClickListener {
-            val buttonState = startButton.toButtonState(mTimeLeftInMillis)
-            _emitter.onNext(UiEvent.StartStopClick(buttonState))
+            val buttonState = startButton.toButtonState()
+            _emitter.onNext(UiEvent.StartStopClick(buttonState, mTimeLeftInMillis))
         }
 
         cardsAmountIcon.setOnClickListener {
@@ -327,11 +327,11 @@ class GameOnFragment : Fragment(),
 
 }
 
-private fun Button.toButtonState(time: Long): GameScreenContract.ButtonState =
+private fun Button.toButtonState(): GameScreenContract.ButtonState =
     when (this.text) {
         "Start" -> GameScreenContract.ButtonState.Stopped
-        "Resume" -> GameScreenContract.ButtonState.Paused(time)
-        "Pause" -> GameScreenContract.ButtonState.Running(time)
+        "Resume" -> GameScreenContract.ButtonState.Paused
+        "Pause" -> GameScreenContract.ButtonState.Running
         else -> throw IllegalStateException("button state $this is unknown")
     }
 

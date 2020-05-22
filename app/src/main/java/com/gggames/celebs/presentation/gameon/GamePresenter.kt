@@ -70,7 +70,7 @@ class GamePresenter @Inject constructor(
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
         when (event) {
             is RoundClick-> onNewRoundClick()
-            is StartStopClick-> onStartButtonClick(event.buttonState)
+            is StartStopClick-> onStartButtonClick(event.buttonState, event.time)
             is CorrectClick-> onCorrectClick(event.time)
             is EndTurnClick -> onTimerEnd()
             is CardsAmountClick -> onCardsAmountClick()
@@ -409,17 +409,17 @@ class GamePresenter @Inject constructor(
             cardsRepository.updateCard(it.copy(used = false))
         } ?: Completable.complete()
 
-    private fun onStartButtonClick(buttonState: ButtonState) {
+    private fun onStartButtonClick(buttonState: ButtonState, time: Long?) {
         Timber.d("---- startButton click, state: $buttonState, roundState: $roundState ----")
         when (buttonState) {
-            is ButtonState.Stopped -> onPlayerStarted()
-            is ButtonState.Running -> onPlayerPaused(buttonState.time)
-            is ButtonState.Paused ->
+            ButtonState.Stopped -> onPlayerStarted()
+            ButtonState.Running -> onPlayerPaused(time)
+            ButtonState.Paused ->
             {
                 if (roundState == RoundState.New) {
                     onPlayerResumedNewRound()
                 } else {
-                    onPlayerResumed(buttonState.time)
+                    onPlayerResumed(time)
                 }
 
             }
