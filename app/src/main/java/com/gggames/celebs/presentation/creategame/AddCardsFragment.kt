@@ -17,6 +17,7 @@ import com.gggames.celebs.features.cards.domain.AddCards
 import com.gggames.celebs.features.cards.domain.GetMyCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.model.Card
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
@@ -61,6 +62,8 @@ class AddCardsFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
+        setTitle(gamesRepository.currentGame!!.name)
+
         arguments?.let {
 //            gameId = it.getString(GAME_ID_KEY)!!
             groups = it.getStringArrayList(TEAMS_KEY)!!
@@ -81,6 +84,11 @@ class AddCardsFragment : Fragment() {
             onDoneClick()
         }
     }
+
+    private fun setTitle(title: String) {
+        (activity as MainActivity).supportActionBar?.title = title
+    }
+
 
     private fun onDoneClick() {
         buttonDone.isEnabled = false
