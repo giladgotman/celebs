@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -145,6 +146,13 @@ class GameOnFragment : Fragment(),
         startButton.isEnabled = true
         endTurnButton.isEnabled = meActive
         correctButton.isEnabled = meActive
+
+        val cardColor = if (meActive) {
+            ContextCompat.getColor(requireContext(), R.color.green)
+        } else {
+            ContextCompat.getColor(requireContext(), R.color.gilad)
+        }
+        cardLayout.setBackgroundColor(cardColor)
     }
 
 
@@ -155,6 +163,8 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
+
+        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun setCorrectEnabled(enabled: Boolean) {
@@ -312,6 +322,7 @@ class GameOnFragment : Fragment(),
         startButton.setOnClickListener {
             findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
         }
+        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun onDestroy() {
