@@ -29,7 +29,7 @@
 
         <deepLink
             android:id="@+id/joinGame"
-            app:uri="hourglass://joinGame/{gameId}" />
+            app:uri="https://gglab.page.link/joinGame/{gameId}" />
 
     </fragment>
     <fragment

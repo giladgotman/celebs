@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.core.di.getAppComponent
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.utils.showErrorToast
 import com.google.android.material.snackbar.Snackbar
 import com.idagio.app.core.utils.share.Shareable
+import com.idagio.app.core.utils.share.getDynamicUri
 import com.idagio.app.core.utils.share.share
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -30,11 +34,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         button_share.setOnClickListener {
-            val game = gamesRepository.currentGame
-            game?.let {
-                val url = Uri.parse("hourglass://joinGame/${it.id}")
-                val shareable = Shareable.Factory().create(it.id, it.name, url)
-                share(shareable)
+            gamesRepository.currentGame?.let { game ->
+                val uri = Uri.parse("https://gglab.page.link/joinGame/${game.id}")
+                getDynamicUri(uri).subscribe({ shortUri ->
+                    val shareable = Shareable.Factory().create(game.id, game.name, shortUri)
+                    share(shareable)
+                }, {
+                    Timber.e(it, "error sharing link")
+                    showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
+                })
+
             }
         }
         setSupportActionBar(toolbar)
