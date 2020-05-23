@@ -1,5 +1,6 @@
 package com.gggames.celebs.presentation
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,7 +10,10 @@ import androidx.core.view.isVisible
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.core.di.getAppComponent
+import com.gggames.celebs.features.games.data.GamesRepository
 import com.google.android.material.snackbar.Snackbar
+import com.idagio.app.core.utils.share.Shareable
+import com.idagio.app.core.utils.share.share
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -18,11 +22,23 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var gameFlow: GameFlow
 
+    @Inject
+    lateinit var gamesRepository: GamesRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         getAppComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        button_share.setOnClickListener {
+            val game = gamesRepository.currentGame
+            game?.let {
+                val url = Uri.parse("hourglass://joinGame/${it.id}")
+                val shareable = Shareable.Factory().create(it.id, it.name, url)
+                share(shareable)
+            }
+        }
         setSupportActionBar(toolbar)
+
     }
 
     private fun createSnackbar(view: View) {
