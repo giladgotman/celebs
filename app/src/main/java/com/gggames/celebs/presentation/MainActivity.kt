@@ -15,8 +15,10 @@ import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.utils.showErrorToast
 import com.google.android.material.snackbar.Snackbar
 import com.idagio.app.core.utils.share.Shareable
-import com.idagio.app.core.utils.share.getDynamicUri
+import com.idagio.app.core.utils.share.createDynamicLink
+import com.idagio.app.core.utils.share.getPendingDeepLink
 import com.idagio.app.core.utils.share.share
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var shareableFactory: Shareable.Factory
 
+    private val disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         getAppComponent(this).inject(this)
         super.onCreate(savedInstanceState)
@@ -39,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         button_share.setOnClickListener {
             gamesRepository.currentGame?.let { game ->
                 val uri = Uri.parse("https://gglab.page.link/joinGame/${game.id}")
-                getDynamicUri(uri).subscribe({ shortUri ->
+                createDynamicLink(uri).subscribe({ shortUri ->
                     val shareable = shareableFactory.create(game.id, game.name, shortUri)
                     share(shareable)
                 }, {
@@ -51,6 +55,14 @@ class MainActivity : AppCompatActivity() {
         }
         setSupportActionBar(toolbar)
 
+        getPendingDeepLink().subscribe({
+            Timber.w("found uri from deeplink: $it")
+            // TODO: 23.05.20 handle deeplink when needed. for example navigate to a game after install
+        }, {
+            Timber.e(it, "error sharing link")
+        }).let {
+            disposables.add(it)
+        }
     }
 
     private fun createSnackbar(view: View) {
@@ -83,5 +95,10 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.clear()
     }
 }

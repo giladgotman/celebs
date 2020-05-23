@@ -10,6 +10,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.ktx.Firebase
 import io.reactivex.Single
+import timber.log.Timber
 
 fun Activity.share(shareable: Shareable) {
     val activity = this
@@ -27,7 +28,7 @@ fun Activity.share(shareable: Shareable) {
 }
 
 @Suppress("ThrowableNotThrown")
-fun getDynamicUri(uri: Uri, minAppVersion: Int = 9): Single<Uri> {
+fun createDynamicLink(uri: Uri, minAppVersion: Int = 9): Single<Uri> {
     return Single.create { emitter ->
         Firebase.dynamicLinks.shortLinkAsync(ShortDynamicLink.Suffix.SHORT) {
             link = uri
@@ -46,5 +47,25 @@ fun getDynamicUri(uri: Uri, minAppVersion: Int = 9): Single<Uri> {
         }.addOnFailureListener {
             emitter.onError(it)
         }
+    }
+}
+
+fun Activity.getPendingDeepLink(): Single<Uri> {
+    return Single.create { emitter ->
+        Firebase.dynamicLinks
+            .getDynamicLink(this.intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                    deepLink?.let {
+                        emitter.onSuccess(deepLink)
+                    } ?: emitter.onError(IllegalArgumentException("deeplink is null"))
+                }
+            }
+            .addOnFailureListener(this) { e ->
+                Timber.e(e.fillInStackTrace(), "getDynamicLink:onFailure. ${e.localizedMessage}")
+                emitter.onError(e.fillInStackTrace())
+            }
     }
 }
