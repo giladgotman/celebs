@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showAbout() {
         val sb = StringBuilder()
-        sb.append("This game made with love in our GG Lab")
+        sb.append("This game was made with love")
         sb.append("\n\n\n")
         sb.append("Version: ${BuildConfig.VERSION_NAME}")
         val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
