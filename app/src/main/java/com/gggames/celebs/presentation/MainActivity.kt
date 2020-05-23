@@ -29,6 +29,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var gamesRepository: GamesRepository
 
+    @Inject
+    lateinit var shareableFactory: Shareable.Factory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         getAppComponent(this).inject(this)
         super.onCreate(savedInstanceState)
@@ -37,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             gamesRepository.currentGame?.let { game ->
                 val uri = Uri.parse("https://gglab.page.link/joinGame/${game.id}")
                 getDynamicUri(uri).subscribe({ shortUri ->
-                    val shareable = Shareable.Factory().create(game.id, game.name, shortUri)
+                    val shareable = shareableFactory.create(game.id, game.name, shortUri)
                     share(shareable)
                 }, {
                     Timber.e(it, "error sharing link")
