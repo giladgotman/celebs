@@ -161,8 +161,14 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = enabled
     }
 
-    override fun showTimesUp() {
-        cardTextView.text = "Turn Ended"
+    override fun showTurnEnded(name: String?) {
+        name?.let {
+            cardTextView.text = "$name's Turn Ended"
+        }
+    }
+
+    override fun showTurnEndedActivePlayer() {
+        cardTextView.text = "Your Turn Ended"
     }
 
     override fun setPausedState(meActive: Boolean, time: Long?) {

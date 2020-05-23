@@ -141,7 +141,10 @@ class GamePresenter @Inject constructor(
                     view.setStoppedState()
                 }
                 Stopped -> {
-                    view.setStoppedState()
+                    if (lastGame?.turn?.state != turn.state) {
+                        view.setStoppedState()
+                        view.showTurnEndedActivePlayer()
+                    }
                 }
                 Running -> {
                     view.setStartedState(meActive)
@@ -156,8 +159,10 @@ class GamePresenter @Inject constructor(
                     view.setStoppedState()
                 }
                 Stopped -> {
-                    view.setStoppedState()
-                    view.showTimesUp()
+                    if (lastGame?.turn?.state != turn.state) {
+                        view.setStoppedState()
+                        view.showTurnEnded(lastGame?.round?.turn?.player?.name)
+                    }
                 }
                 Running -> {
                     turn.player?.let {
@@ -429,7 +434,7 @@ class GamePresenter @Inject constructor(
    private fun onTimerEnd() {
         if (gameFlow.isMeActivePlayer(game)) {
             audioPlayer.play("timesupyalabye")
-            view.showTimesUp()
+            view.showTurnEndedActivePlayer()
         }
         onTurnEnded()
     }
@@ -456,7 +461,8 @@ class GamePresenter @Inject constructor(
         fun showLastRoundToast()
         fun setScore(score: Map<String, Int>)
         fun setTeamNames(teams: List<Team>)
-        fun showTimesUp()
+        fun showTurnEnded(name: String?)
+        fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
     }
