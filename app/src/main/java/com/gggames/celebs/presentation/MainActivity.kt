@@ -22,8 +22,6 @@ class MainActivity : AppCompatActivity() {
         getAppComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val playerName = gameFlow.me!!.name
-        toolbar.title = playerName
         setSupportActionBar(toolbar)
     }
 

@@ -17,6 +17,7 @@ import com.gggames.celebs.features.games.domain.GetGames
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.model.Game
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import io.reactivex.disposables.CompositeDisposable
@@ -71,6 +72,10 @@ class GamesFragment : Fragment() {
         }
 
         playerName = gameFlow.me!!.name
+
+
+        (activity as MainActivity).setTitle("Games")
+        (activity as MainActivity).setShareVisible(false)
 
         gamesAdapter =
             GamesAdapter { game ->
