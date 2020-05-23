@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.R
 import com.gggames.celebs.core.CelebsApplication
 import com.gggames.celebs.core.GameFlow
@@ -37,6 +38,8 @@ class LoginActivity : AppCompatActivity() {
         buttonDone.setOnClickListener {
             onDoneClick()
         }
+
+        versionValue.text = getString(R.string.version_value, BuildConfig.VERSION_NAME)
     }
 
     private fun onDoneClick() {

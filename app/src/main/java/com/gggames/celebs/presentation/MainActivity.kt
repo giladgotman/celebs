@@ -1,5 +1,7 @@
 package com.gggames.celebs.presentation
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.core.di.getAppComponent
@@ -78,23 +81,39 @@ class MainActivity : AppCompatActivity() {
         toolbar_title.text = title
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_logout -> {
+            R.id.menu_logout -> {
                 finish()
                 gameFlow.logout()
                 true
             }
+            R.id.menu_about -> {
+                showAbout()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showAbout() {
+        val sb = StringBuilder()
+        sb.append("This game made with love in our GG Lab")
+        sb.append("\n\n\n")
+        sb.append("Version: ${BuildConfig.VERSION_NAME}")
+        val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
+        }
+        val builder = AlertDialog.Builder(this)
+        builder
+            .setTitle("About")
+            .setMessage(sb.toString())
+            .setPositiveButton(getString(R.string.ok), dialogClickListener)
+            .show()
+
     }
 
     override fun onDestroy() {
