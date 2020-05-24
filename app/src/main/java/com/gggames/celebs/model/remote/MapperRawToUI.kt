@@ -18,6 +18,7 @@ fun GameRaw.toUi() = Game(
     this.id,
     this.name,
     this.createdAt.toDate().time,
+    this.password,
     this.celebsCount.toInt(),
     this.teams.map { it.toUi() },
     GameState.fromName(this.state),

@@ -23,6 +23,7 @@ fun Game.toRaw() = GameRaw(
     this.id,
     this.name,
     Timestamp(Date(this.createdAt)),
+    this.password,
     this.celebsCount.toLong(),
     this.teams.map { it.toRaw() },
     this.state?.name,
