@@ -9,6 +9,7 @@ interface GameScreenContract {
         object CardsAmountClick : UiEvent()
         object RoundClick : UiEvent()
         object TimerEnd : UiEvent()
+        object FinishGameClick : UiEvent()
     }
 
     enum class ButtonState {

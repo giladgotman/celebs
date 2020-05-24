@@ -18,4 +18,6 @@ class PlayersRepositoryImpl @Inject constructor(
     override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable =
         firebasePlayersDataSource.chooseTeam(gameId, player, teamName)
 
+    override fun removePlayer(gameId: String, player: Player): Completable =
+        firebasePlayersDataSource.removePlayer(gameId, player)
 }

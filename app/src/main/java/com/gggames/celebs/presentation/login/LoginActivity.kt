@@ -11,7 +11,6 @@ import com.gggames.celebs.R
 import com.gggames.celebs.core.CelebsApplication
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.presentation.MainActivity
-import com.gggames.celebs.presentation.creategame.PLAYER_NAME_KEY
 import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -54,9 +53,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToMainActivity(name: String) {
         val intent = Intent(this, MainActivity::class.java)
-        val args = Bundle()
-        args.putString(PLAYER_NAME_KEY, name)
-        intent.putExtras(args)
         startActivity(intent)
         finish()
     }

@@ -75,7 +75,12 @@ class GamePresenter @Inject constructor(
             is EndTurnClick -> onTimerEnd()
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
+            is FinishGameClick -> onFinishClick()
         }
+    }
+
+    private fun onFinishClick() {
+
     }
 
     private fun onCardsChange(cards: List<Card>) {

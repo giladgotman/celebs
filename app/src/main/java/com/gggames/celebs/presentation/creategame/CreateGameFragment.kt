@@ -12,10 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.games.data.MAX_CARDS
-import com.gggames.celebs.features.games.domain.SetGame
-import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
 import com.gggames.celebs.model.GameState
@@ -23,35 +20,24 @@ import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_game.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 
-class CreateGameFragment : Fragment() {
+class CreateGameFragment : Fragment() , CreateGamePresenter.View{
 
     private lateinit var viewComponent: ViewComponent
 
     @Inject
-    lateinit var setGame: SetGame
-    @Inject
-    lateinit var gameFlow: GameFlow
-    @Inject
-    lateinit var joinGame: JoinGame
-
-    private val disposables = CompositeDisposable()
-
-    private lateinit var playerName: String
+    lateinit var presenter: CreateGamePresenter
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_create_game, container, false)
     }
 
@@ -72,10 +58,6 @@ class CreateGameFragment : Fragment() {
             } else false
         }
 
-        arguments?.let {
-            playerName =it.getString(PLAYER_NAME_KEY)!!
-        }
-
         gameName.editText?.addTextChangedListener {
             gameName.error = null
         }
@@ -86,13 +68,14 @@ class CreateGameFragment : Fragment() {
         buttonDone.setOnClickListener {
             onDoneClick()
         }
+
+        presenter.bind(this)
     }
 
     private fun onDoneClick() {
         if (inputValid()) {
-            buttonDone.isEnabled = false
             val game = getGameDetails()
-            joinGame(game)
+            presenter.onDoneClick(game)
         }
     }
 
@@ -115,33 +98,27 @@ class CreateGameFragment : Fragment() {
         return game
     }
 
-    private fun joinGame(game: Game) {
-        setGame(game)
-            .andThen(joinGame(game, gameFlow.me!!))
-            .subscribe(
-                {
-                    Timber.i("${gameFlow.me!!.name} created and joined game: ${game.id}")
-                    val args = AddCardsFragment.createArgs(
-                        game.id,
-                        ArrayList(game.teams.map { it.name }),
-                        gameFlow.me!!.id
-                    )
-                    findNavController().navigate(
-                        R.id.action_CreateGameFragment_to_AddCardsFragment,
-                        args
-                    )
-                }, {
-                    buttonDone.isEnabled = true
-                    showErrorToast(
-                        requireContext(),
-                        getString(R.string.error_generic),
-                        Toast.LENGTH_LONG
-                    )
-                    Timber.e(it, "game add and join failed.")
-                })
-            .let {
-                disposables.add(it)
-            }
+    override fun setDoneEnabled(enabled: Boolean) {
+        buttonDone.isEnabled = enabled
+    }
+
+    override fun navigateToAddCards(gameId: String) {
+        findNavController().navigate(
+            R.id.action_CreateGameFragment_to_AddCardsFragment
+        )
+    }
+
+    override fun showGenericError() {
+        showErrorToast(
+            requireContext(),
+            getString(R.string.error_generic),
+            Toast.LENGTH_LONG
+        )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.unBind()
     }
 
     private fun getTeamsValue(): MutableList<Team> {

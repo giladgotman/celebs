@@ -22,10 +22,10 @@ class GamesRepositoryImpl @Inject constructor(
         return gamesDataSource.getGames(statesQuery).toObservable()
     }
 
-    override fun setGame(game: Game, updateRemote: Boolean): Completable {
+    override fun setGame(game: Game?, updateRemote: Boolean): Completable {
         currentGame = game
         Timber.w("setGame, currentGame: $currentGame")
-        return if (updateRemote) {
+        return if (updateRemote && game != null) {
             gamesDataSource.setGame(game)
         } else {
             Completable.complete()

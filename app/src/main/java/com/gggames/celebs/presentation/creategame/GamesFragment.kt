@@ -73,9 +73,7 @@ class GamesFragment : Fragment() {
             return
         }
         createGameFab.setOnClickListener {
-            val args = Bundle()
-            args.putString(PLAYER_NAME_KEY, playerName)
-            findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment, args)
+            findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment)
         }
 
         (activity as MainActivity).setTitle("Games")
@@ -127,12 +125,7 @@ class GamesFragment : Fragment() {
     private fun joinGameAndGoToAddCards(game: Game) {
         joinGame(game, gameFlow.me!!)
             .subscribe({
-                val args = AddCardsFragment.createArgs(
-                    game.id,
-                    ArrayList(game.teams.map { it.name }),
-                    gameFlow.me!!.id
-                )
-                findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
+                findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment)
             }, {
                 Timber.e(it, "error joinGame")
             }).let { disposables.add(it) }

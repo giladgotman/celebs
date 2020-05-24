@@ -10,4 +10,6 @@ interface PlayersRepository {
     fun addPlayer(gameId: String, player: Player): Completable
 
     fun chooseTeam(gameId: String, player: Player, teamName: String): Completable
+
+    fun removePlayer(gameId: String, player: Player): Completable
 }

@@ -50,13 +50,11 @@ class AddCardsFragment : Fragment() {
     private val disposables = CompositeDisposable()
 
     private lateinit var playerId: String
-    private lateinit var groups: ArrayList<String>
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_cards, container, false)
     }
 
@@ -68,10 +66,6 @@ class AddCardsFragment : Fragment() {
 
         (activity as MainActivity).setTitle(gamesRepository.currentGame!!.name)
         (activity as MainActivity).setShareVisible(true)
-
-        arguments?.let {
-            groups = it.getStringArrayList(TEAMS_KEY)!!
-        }
 
         playerId = gameFlow.me!!.id
 
@@ -119,12 +113,8 @@ class AddCardsFragment : Fragment() {
 
         tryToAddCards(cardList)
             .subscribe({
-                Timber.w("ggg added cards successfully")
-                val args = Bundle()
-                args.putStringArrayList(TEAMS_KEY, groups)
                 findNavController().navigate(
-                    R.id.action_AddCardsFragment_to_chooseTeamFragment,
-                    args
+                    R.id.action_AddCardsFragment_to_chooseTeamFragment
                 )
             }, {
                 buttonDone.isEnabled = true
@@ -166,18 +156,4 @@ class AddCardsFragment : Fragment() {
             null
         }
     }
-    companion object {
-        fun createArgs(gameId: String, teams: ArrayList<String>, playerId: String): Bundle {
-            return Bundle().apply {
-                putString(GAME_ID_KEY, gameId)
-                putStringArrayList(TEAMS_KEY, teams)
-                putString(PLAYER_ID_KEY, playerId)
-            }
-        }
-    }
 }
-
-const val GAME_ID_KEY = "GAME_ID_KEY"
-const val PLAYER_ID_KEY = "PLAYER_ID_KEY"
-const val PLAYER_NAME_KEY = "PLAYER_NAME_KEY"
-
