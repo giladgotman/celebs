@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.features.games.data.MAX_CARDS
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.model.Game
@@ -166,7 +167,14 @@ class CreateGameFragment : Fragment() {
             groupName1.error = "Please enter team name"
             return false
         }
-
+        if (cardsAmount.editText?.text?.isEmpty() == true) {
+            cardsAmount.error = "Please enter cards amount"
+            return false
+        }
+        if (cardsAmount.editText?.text?.toString()?.toInt() ?:0 > MAX_CARDS) {
+            cardsAmount.error = "The maximum cards amount is $MAX_CARDS"
+            return false
+        }
         return true
     }
 }
