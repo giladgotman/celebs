@@ -109,6 +109,10 @@ class GamesFragment : Fragment() , GamesPresenter.View {
         requireActivity().finish()
     }
 
+    override fun showJoinedGameIsFinished(gameName: String) {
+        showInfoToast(requireContext(), "The game '$gameName' is already over")
+    }
+
     override fun navigateToAddCards() {
         findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment)
     }

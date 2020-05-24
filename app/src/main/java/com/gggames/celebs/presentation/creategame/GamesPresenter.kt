@@ -7,6 +7,7 @@ import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.model.Game
+import com.gggames.celebs.model.GameState
 import com.gggames.celebs.presentation.creategame.GamesPresenter.Result.*
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -36,35 +37,23 @@ class GamesPresenter @Inject constructor(
             return
         }
 
-        // TODO: 24.05.20 refactor. consider using mvi pattern here.
         leaveGameIfNeeded()
-            .andThen(joinGameFromDeepLinkIfExists(gameIdFromDeepLink))
-            .switchMap {
-                if (it is JoinedGame) {
-                    Observable.just(JoinedGame)
-                } else {
-                    getGames().map { GamesContent(it) }
-                }
-            }
-            .doOnSubscribe {
-                view.showLoading(true)
-            }
+            .andThen(isDeepLinkExists(gameIdFromDeepLink))
             .subscribe({ result ->
-                view.showLoading(false)
                 when (result) {
-                    is JoinedGame -> {
-                        view.navigateToAddCards()
+                    is NoDeepLink -> fetchGames()
+                    is GameFinished -> {
+                        view.showJoinedGameIsFinished(result.gameName)
+                        fetchGames()
                     }
-                    is GamesContent -> {
-                        view.show(result.games)
+                    is DeepLinkExists -> {
+                        joinGameAndGoToAddCards(result.game)
                     }
                 }
             }, {
-                view.showLoading(false)
-                Timber.e(it, "error while bind")
+                Timber.e(it, "error on bind")
                 view.showGenericError()
             }).let { disposables.add(it) }
-
     }
 
     private fun leaveGameIfNeeded(): Completable {
@@ -73,11 +62,16 @@ class GamesPresenter @Inject constructor(
         } ?: Completable.complete()
     }
 
-    private fun joinGameFromDeepLinkIfExists(gameIdFromDeepLink: String?): Observable<out Result> {
+    private fun isDeepLinkExists(gameIdFromDeepLink: String?): Observable<out Result> {
         return gameIdFromDeepLink?.let {
             observeGame(it).take(1)
-                .switchMapCompletable { game -> joinGame(game, gameFlow.me!!) }
-                .andThen(Observable.just(JoinedGame))
+                .map { game ->
+                    if (game.state == GameState.Finished) {
+                        GameFinished(game.name)
+                    } else {
+                        DeepLinkExists(game)
+                    }
+                }
         } ?: Observable.just(NoDeepLink)
     }
 
@@ -107,6 +101,7 @@ class GamesPresenter @Inject constructor(
                 {
                     Timber.e(it, "error fetching games")
                     view.showLoading(false)
+                    view.showGenericError()
                 }).let { disposables.add(it) }
     }
 
@@ -129,11 +124,12 @@ class GamesPresenter @Inject constructor(
         fun showLoading(show: Boolean)
         fun finishScreen()
         fun navigateToAddCards()
+        fun showJoinedGameIsFinished(gameName: String)
     }
 
     sealed class Result {
+        data class GameFinished(val gameName: String) : Result()
         object NoDeepLink : Result()
-        object JoinedGame : Result()
-        data class GamesContent(val games: List<Game>) : Result()
+        data class DeepLinkExists(val game: Game) : Result()
     }
 }
