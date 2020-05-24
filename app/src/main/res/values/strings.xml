@@ -19,8 +19,6 @@
 
     <!--    Games Screen-->
     <string name="games_fragment_title">Games</string>
-    <string name="games_subtitle">Press Fetch to get the games</string>
-
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>

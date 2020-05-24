@@ -17,6 +17,7 @@ import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
 import com.gggames.celebs.model.GameState
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
@@ -46,6 +47,10 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
 
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
+
+
+        (activity as MainActivity).setTitle(getString(R.string.create_game_fragment_title))
+        (activity as MainActivity).setShareVisible(false)
 
         cardsAmountEditText.setOnEditorActionListener { v, actionId, _ ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE
