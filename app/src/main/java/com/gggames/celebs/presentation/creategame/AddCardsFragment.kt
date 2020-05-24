@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
@@ -16,6 +17,7 @@ import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.domain.AddCards
 import com.gggames.celebs.features.cards.domain.GetMyCards
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.features.games.data.MAX_CARDS
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
@@ -40,6 +42,8 @@ class AddCardsFragment : Fragment() {
     lateinit var gamesRepository : GamesRepository
     @Inject
     lateinit var gameFlow : GameFlow
+
+    private var cardEditTextList = mutableListOf<EditText?>()
 
     private lateinit var viewComponent: ViewComponent
 
@@ -66,7 +70,6 @@ class AddCardsFragment : Fragment() {
         (activity as MainActivity).setShareVisible(true)
 
         arguments?.let {
-//            gameId = it.getString(GAME_ID_KEY)!!
             groups = it.getStringArrayList(TEAMS_KEY)!!
         }
 
@@ -81,20 +84,38 @@ class AddCardsFragment : Fragment() {
                 true
             } else false
         }
+        setCardsInputFields()
+        hideNonUsedCardsFields()
         buttonDone.setOnClickListener {
             onDoneClick()
+        }
+    }
+
+    private fun setCardsInputFields() {
+        cardEditTextList.add(add_cards_card1.editText)
+        cardEditTextList.add(add_cards_card2.editText)
+        cardEditTextList.add(add_cards_card3.editText)
+        cardEditTextList.add(add_cards_card4.editText)
+        cardEditTextList.add(add_cards_card5.editText)
+        cardEditTextList.add(add_cards_card6.editText)
+    }
+
+    private fun hideNonUsedCardsFields() {
+        val game = gamesRepository.currentGame!!
+        for (i in MAX_CARDS downTo (game.celebsCount + 1)) {
+            cardEditTextList[i - 1]?.isVisible = false
         }
     }
 
     private fun onDoneClick() {
         buttonDone.isEnabled = false
         val cardList = mutableListOf<Card>()
-        addCardIfNotNull(editTextToCard(add_cards_card1.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card2.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card3.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card4.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card5.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card6.editText), cardList)
+
+        cardEditTextList.forEach {
+            editTextToCard(it)?.let {card->
+                cardList.add(card)
+            }
+        }
 
         tryToAddCards(cardList)
             .subscribe({
@@ -135,12 +156,6 @@ class AddCardsFragment : Fragment() {
             }
     }
 
-    private fun addCardIfNotNull(card: Card?, cardList: MutableList<Card>) {
-        card?.let {
-            cardList.add(it)
-        }
-    }
-
     private fun editTextToCard(editText: EditText?): Card? {
         return if (editText?.text?.isNotEmpty() == true) {
             Card(
@@ -165,3 +180,4 @@ class AddCardsFragment : Fragment() {
 const val GAME_ID_KEY = "GAME_ID_KEY"
 const val PLAYER_ID_KEY = "PLAYER_ID_KEY"
 const val PLAYER_NAME_KEY = "PLAYER_NAME_KEY"
+
