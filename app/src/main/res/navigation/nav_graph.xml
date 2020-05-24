@@ -24,11 +24,11 @@
 
         <argument
             android:name="gameId"
-            app:argType="string"
-             />
+            app:argType="string" />
 
         <deepLink
             android:id="@+id/joinGame"
+            android:autoVerify="true"
             app:uri="https://gglab.page.link/joinGame/{gameId}" />
 
     </fragment>
