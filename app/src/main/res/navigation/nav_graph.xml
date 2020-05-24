@@ -83,6 +83,8 @@
             app:argType="string[]" />
         <action
             android:id="@+id/action_chooseTeamFragment_to_gameOnFragment"
+            app:popUpTo="@+id/chooseTeamFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/gameOnFragment" />
     </fragment>
     <fragment
