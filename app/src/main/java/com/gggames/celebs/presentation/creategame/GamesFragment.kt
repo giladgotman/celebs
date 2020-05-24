@@ -20,12 +20,9 @@ import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import com.gggames.celebs.utils.showInfoToast
 import kotlinx.android.synthetic.main.fragment_games.*
+import timber.log.Timber
 import javax.inject.Inject
 
-
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class GamesFragment : Fragment() , GamesPresenter.View {
 
     @Inject
@@ -79,10 +76,12 @@ class GamesFragment : Fragment() , GamesPresenter.View {
         gamesRecyclerView.adapter = gamesAdapter
 
         var gameIdFromDeepLink: String? = null
+
         arguments?.getString("gameId")?.let { gameId ->
             arguments?.remove("gameId")
             gameIdFromDeepLink = gameId
         }
+        Timber.w("ggg bind, gameIdFromDeepLink: $gameIdFromDeepLink")
         presenter.bind(this, gameIdFromDeepLink)
     }
 
@@ -90,7 +89,7 @@ class GamesFragment : Fragment() , GamesPresenter.View {
         gamesAdapter.setData(games)
     }
 
-    override fun showError() {
+    override fun showGenericError() {
         showErrorToast(
             requireContext(),
             getString(R.string.error_generic),
@@ -114,8 +113,8 @@ class GamesFragment : Fragment() , GamesPresenter.View {
         findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter.unBind()
     }
 }
