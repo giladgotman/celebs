@@ -73,7 +73,7 @@ class GamePresenter @Inject constructor(
             is RoundClick -> onNewRoundClick(event.time)
             is StartStopClick-> onStartButtonClick(event.buttonState, event.time)
             is CorrectClick-> onCorrectClick(event.time)
-            is EndTurnClick -> onTimerEnd()
+            is EndTurnClick -> onEndTurnClick()
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
@@ -455,6 +455,13 @@ class GamePresenter @Inject constructor(
    private fun onTimerEnd() {
         if (gameFlow.isMeActivePlayer(game)) {
             audioPlayer.play("timesupyalabye")
+            view.showTurnEndedActivePlayer()
+        }
+        onTurnEnded()
+    }
+
+    private fun onEndTurnClick() {
+        if (gameFlow.isMeActivePlayer(game)) {
             view.showTurnEndedActivePlayer()
         }
         onTurnEnded()
