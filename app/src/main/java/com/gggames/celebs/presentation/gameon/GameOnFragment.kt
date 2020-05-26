@@ -320,9 +320,13 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.setOnClickListener {
-            findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
+            _emitter.onNext(UiEvent.FinishGameClick)
         }
         cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+    }
+
+    override fun navigateToGames() {
+        findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
     override fun onDestroy() {

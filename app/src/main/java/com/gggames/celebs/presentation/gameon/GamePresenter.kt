@@ -80,7 +80,8 @@ class GamePresenter @Inject constructor(
     }
 
     private fun onFinishClick() {
-
+        releaseAll()
+        view.navigateToGames()
     }
 
     private fun onCardsChange(cards: List<Card>) {
@@ -367,9 +368,14 @@ class GamePresenter @Inject constructor(
     }
 
     fun unBind() {
+        releaseAll()
+    }
+
+    private fun releaseAll() {
         audioPlayer.release()
         disposables.clear()
     }
+
     /*
     Load new round - only for active player
      */
@@ -470,5 +476,6 @@ class GamePresenter @Inject constructor(
         fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
+        fun navigateToGames()
     }
 }
