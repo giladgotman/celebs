@@ -7,7 +7,7 @@ interface GameScreenContract {
         data class CorrectClick(val time: Long) : UiEvent()
         object EndTurnClick : UiEvent()
         object CardsAmountClick : UiEvent()
-        object RoundClick : UiEvent()
+        data class RoundClick(val time: Long) : UiEvent()
         object TimerEnd : UiEvent()
         object FinishGameClick : UiEvent()
     }

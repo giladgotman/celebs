@@ -92,7 +92,7 @@ class GameOnFragment : Fragment(),
         }
 
         roundTextView.setOnClickListener {
-            _emitter.onNext(RoundClick)
+            _emitter.onNext(RoundClick(mTimeLeftInMillis))
         }
 
         startButton.setOnClickListener {
@@ -173,22 +173,28 @@ class GameOnFragment : Fragment(),
 
     override fun showTurnEnded(name: String?) {
         name?.let {
-            cardTextView.text = "$name's Turn Ended"
+            cardTextView.text = "$name's turn ended"
         }
     }
 
     override fun showTurnEndedActivePlayer() {
-        cardTextView.text = "Your Turn Ended"
+        cardTextView.text = "Your turn ended"
     }
 
     override fun setPausedState(meActive: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
         startButton.text = "Resume"
-        startButton.isEnabled = true
+        startButton.isEnabled = meActive
         time?.let {
             updateTime(time)
         }
+    }
+
+    override fun setNewRound(meActive: Boolean, roundNumber: Int) {
+        cardTextView.text = "Round $roundNumber is ready"
+        startButton.isEnabled = meActive
+        endTurnButton.isEnabled = false
     }
 
     private fun updateTime(time: Long) {
@@ -199,6 +205,7 @@ class GameOnFragment : Fragment(),
     override fun setRoundEndState(meActive: Boolean) {
         setPausedState(meActive, null)
         cardTextView.text = "Round Ended"
+        endTurnButton.isEnabled = false
         startButton.isEnabled = false
     }
 

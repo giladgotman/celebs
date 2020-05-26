@@ -8,6 +8,7 @@ import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
+import com.gggames.celebs.model.RoundState.Ended
 import com.gggames.celebs.model.RoundState.Ready
 import com.gggames.celebs.model.TurnState.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
@@ -69,7 +70,7 @@ class GamePresenter @Inject constructor(
 
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
         when (event) {
-            is RoundClick-> onNewRoundClick()
+            is RoundClick -> onNewRoundClick(event.time)
             is StartStopClick-> onStartButtonClick(event.buttonState, event.time)
             is CorrectClick-> onCorrectClick(event.time)
             is EndTurnClick -> onTimerEnd()
@@ -129,7 +130,7 @@ class GamePresenter @Inject constructor(
                     view.setRoundEndState(meActive)
                 }
                 RoundState.New -> {
-                    view.setPausedState(meActive)
+                    view.setNewRound(meActive, newRound.roundNumber)
                 }
             }
             if (newRound.turn != lastGame?.turn) {
@@ -183,28 +184,29 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    private fun onNewRoundClick() {
+    private fun onNewRoundClick(time: Long) {
         when {
             lastRound() -> {
                 view.showLastRoundToast()
             }
             roundState == RoundState.Ended -> {
-                setNextRound()
+                setNextRound(time)
             }
             else -> {
                 view.showNewRoundAlert { approved ->
                     if (approved) {
-                        setNextRound()
+                        setNextRound(time)
                     }
                 }
             }
         }
     }
 
-    private fun setNextRound() {
+    private fun setNextRound(time: Long) {
         var gameRound = game.gameInfo.round.roundNumber
         gameRound++
-        setNewRound(gameRound)
+        endCurrentRound(time)
+            .andThen(setNewRound(gameRound))
             .subscribe({
                 Timber.d("set new round success")
             }, {
@@ -238,11 +240,19 @@ class GamePresenter @Inject constructor(
             if (lastRound()) {
                 setNewGameState(GameState.Finished)
             } else {
-                val turn = time?.let { game.gameInfo.round.turn.copy(state = Paused, time = it) }
-                    ?: game.gameInfo.round.turn.copy(state = Paused)
-                setNewGameInfo(gameInfoWith(turn))
-                    .andThen(setRoundState(RoundState.Ended))
+                endCurrentRound(time)
             }
+        }
+    }
+
+    private fun endCurrentRound(time: Long?): Completable {
+        return if (game.round.state == Ended) {
+            Completable.complete()
+        } else {
+            val turn = time?.let { game.gameInfo.round.turn.copy(state = Paused, time = it) }
+                ?: game.gameInfo.round.turn.copy(state = Paused)
+            return setNewGameInfo(gameInfoWith(turn))
+                .andThen(setRoundState(RoundState.Ended))
         }
     }
 
@@ -477,5 +487,6 @@ class GamePresenter @Inject constructor(
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
         fun navigateToGames()
+        fun setNewRound(meActive: Boolean, roundNumber: Int)
     }
 }
