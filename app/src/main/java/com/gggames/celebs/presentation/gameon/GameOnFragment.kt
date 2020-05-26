@@ -202,9 +202,9 @@ class GameOnFragment : Fragment(),
         timerTextView?.text = getFormattedTime()
     }
 
-    override fun setRoundEndState(meActive: Boolean) {
+    override fun setRoundEndState(meActive: Boolean, roundNumber: Int) {
         setPausedState(meActive, null)
-        cardTextView.text = "Round Ended"
+        cardTextView.text = "Round $roundNumber ended"
         endTurnButton.isEnabled = false
         startButton.isEnabled = false
     }

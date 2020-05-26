@@ -127,7 +127,7 @@ class GamePresenter @Inject constructor(
                 Ready -> {
                 }
                 RoundState.Ended -> {
-                    view.setRoundEndState(meActive)
+                    view.setRoundEndState(meActive, newRound.roundNumber)
                 }
                 RoundState.New -> {
                     view.setNewRound(meActive, newRound.roundNumber)
@@ -475,7 +475,7 @@ class GamePresenter @Inject constructor(
         fun setPausedState(meActive: Boolean, time: Long? = null)
         fun setStartedState(meActive: Boolean, time: Long? = null)
         fun setStoppedState()
-        fun setRoundEndState(meActive: Boolean)
+        fun setRoundEndState(meActive: Boolean, roundNumber: Int)
         fun setNoCurrentPlayer()
         fun setRound(toString: String)
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)
