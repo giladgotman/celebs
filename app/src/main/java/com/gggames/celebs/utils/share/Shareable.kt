@@ -21,7 +21,7 @@ data class Shareable(
             Shareable(
                 contentId,
                 contentTitle,
-                context.getString(R.string.share_message, uri.toString()),
+                context.getString(R.string.share_message, contentTitle, uri.toString()),
                 uri.toString(),
                 null
             )
