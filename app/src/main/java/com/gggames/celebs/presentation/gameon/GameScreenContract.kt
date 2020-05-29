@@ -18,4 +18,16 @@ interface GameScreenContract {
         Paused
     }
 
+    data class TeamsState (
+        val teamState: List<TeamState> = emptyList()
+    )
+
+    data class TeamState (
+        val name: String = "",
+        val players: List<String> = emptyList(),
+        val score: Int = 0
+    )
+
 }
+
+
