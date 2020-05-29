@@ -90,11 +90,7 @@ class GamePresenter @Inject constructor(
                 previous.updateNameAndScore(result.game.teams, result.game.gameInfo.score)
             }
             is Result.PlayersResult -> {
-                val newTeams = result.players.groupBy { it.team }
-                val newList =  previous.teamsList.mapIndexed { i, team ->
-                    TeamState(team.name, newTeams[team.name]?.map { it.name } ?: emptyList(), team.score)
-                }
-                TeamsState(newList)
+                previous.updatePlayers(result.players)
             }
             is Result.CardsResult -> previous
         }
@@ -107,6 +103,14 @@ class GamePresenter @Inject constructor(
                 name = team.name,
                 score = score[team.name] ?: 0,
                 players = this.teamsList.getOrNull(i)?.players ?: emptyList())
+        }
+        return TeamsState(newList)
+    }
+
+    private fun TeamsState.updatePlayers(players: List<Player>): TeamsState {
+        val newTeams = players.groupBy { it.team }
+        val newList = this.teamsList.map { team ->
+            TeamState(team.name, newTeams[team.name]?.map { it.name } ?: emptyList(), team.score)
         }
         return TeamsState(newList)
     }
