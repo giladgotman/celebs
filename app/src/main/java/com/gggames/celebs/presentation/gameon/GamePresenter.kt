@@ -87,15 +87,7 @@ class GamePresenter @Inject constructor(
     private fun reduce()  = {previous: TeamsState, result: Result ->
         when (result) {
             is Result.GameResult -> {
-                val gameResult = result.game
-                val newList =  gameResult.teams.mapIndexed { i, team ->
-                    TeamState(
-                        team.name,
-                        previous.teamsList.getOrNull(i)?.players ?: emptyList(),
-                        gameResult.gameInfo.score[team.name] ?: 0
-                    )
-                }
-                TeamsState(newList)
+                previous.updateNameAndScore(result.game.teams, result.game.gameInfo.score)
             }
             is Result.PlayersResult -> {
                 val newTeams = result.players.groupBy { it.team }
@@ -106,6 +98,17 @@ class GamePresenter @Inject constructor(
             }
             is Result.CardsResult -> previous
         }
+    }
+
+    private fun TeamsState.updateNameAndScore(teams: List<Team>, score: Map<String, Int>): GameScreenContract.TeamsState {
+        val newList=
+        teams.mapIndexed { i, team ->
+            TeamState(
+                name = team.name,
+                score = score[team.name] ?: 0,
+                players = this.teamsList.getOrNull(i)?.players ?: emptyList())
+        }
+        return TeamsState(newList)
     }
 
 
