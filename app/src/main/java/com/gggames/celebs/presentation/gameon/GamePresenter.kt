@@ -16,6 +16,7 @@ import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Observable.merge
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
@@ -52,15 +53,11 @@ class GamePresenter @Inject constructor(
     private val roundState : RoundState
     get() = game.gameInfo.round.state
 
-    fun bind(view: GameView, events: Observable<GameScreenContract.UiEvent>) {
+    fun bind(view: GameView, events: Observable<UiEvent>) {
         this.view = view
         val gameId = game.id
 
         events.subscribe(::handleUiEvent).let { disposables.add(it) }
-
-        playersObservable(gameId)
-            .distinctUntilChanged()
-            .subscribe(::onPlayersChange).let { disposables.add(it) }
 
         cardsObservable()
             .distinctUntilChanged()
@@ -73,7 +70,11 @@ class GamePresenter @Inject constructor(
             .distinctUntilChanged()
             .subscribe(::onGameChange).let { disposables.add(it) }
 
-        sharedGame.scan(TeamsState(), reduce())
+        merge (
+            playersObservable(gameId),
+            sharedGame
+        )
+        .scan(TeamsState(), reduce())
             .distinctUntilChanged()
             .subscribe({
                 Timber.v("TEAMS STATE: $it")
@@ -83,15 +84,28 @@ class GamePresenter @Inject constructor(
                 }).let { disposables.add(it) }
     }
 
-    private fun reduce() = {previous: TeamsState, game: Game ->
-        val newList =  game.teams.mapIndexed { i, team ->
-            TeamState(
-                team.name,
-                previous.teamsList.getOrNull(i)?.players ?: emptyList(),
-                game.gameInfo.score[team.name] ?: 0
-            )
+    private fun reduce()  = {previous: TeamsState, result: Result ->
+        when (result) {
+            is Result.GameResult -> {
+                val gameResult = result.game
+                val newList =  gameResult.teams.mapIndexed { i, team ->
+                    TeamState(
+                        team.name,
+                        previous.teamsList.getOrNull(i)?.players ?: emptyList(),
+                        gameResult.gameInfo.score[team.name] ?: 0
+                    )
+                }
+                TeamsState(newList)
+            }
+            is Result.PlayersResult -> {
+                val newTeams = result.players.groupBy { it.team }
+                val newList =  previous.teamsList.mapIndexed { i, team ->
+                    TeamState(team.name, newTeams[team.name]?.map { it.name } ?: emptyList(), team.score)
+                }
+                TeamsState(newList)
+            }
+            is Result.CardsResult -> previous
         }
-        TeamsState(newList)
     }
 
 
@@ -117,24 +131,13 @@ class GamePresenter @Inject constructor(
         view.updateCards(cards.filter { !it.used })
     }
 
-    private fun onPlayersChange(players: List<Player>) {
-        val updatedTeams = game.teams.map { team ->
-            team.copy(players = players.filter { it.team == team.name })
-        }
-        view.updateTeams(updatedTeams)
-    }
-
-    private fun onGameChange(newGame: Game) {
+    private fun onGameChange(result: Result.GameResult) {
+        val newGame = result.game
         val newPlayer = newGame.currentPlayer
         Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${lastGame?.currentPlayer?.name}")
         if (newGame.round != lastGame?.round) {
             onRoundUpdate(newGame.gameInfo.round)
         }
-
-
-//        view.setTeamNames(newGame.teams)
-//        view.setScore(newGame.gameInfo.score)
-
         if (newGame.state == GameState.Finished) {
             view.showGameOver()
         }
@@ -155,7 +158,7 @@ class GamePresenter @Inject constructor(
             when (newRound.state) {
                 Ready -> {
                 }
-                RoundState.Ended -> {
+                Ended -> {
                     view.setRoundEndState(meActive, newRound.roundNumber)
                 }
                 RoundState.New -> {
@@ -504,7 +507,6 @@ class GamePresenter @Inject constructor(
 
     interface GameView{
         fun updateCards(cards: List<Card>)
-        fun updateTeams(teams: List<Team>)
         fun updateCard(card: Card)
         fun showGameOver()
         fun setCurrentOtherPlayer(player: Player)
@@ -516,8 +518,6 @@ class GamePresenter @Inject constructor(
         fun setRound(toString: String)
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)
         fun showLastRoundToast()
-        fun setScore(score: Map<String, Int>)
-        fun setTeamNames(teams: List<Team>)
         fun showTurnEnded(name: String?)
         fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)

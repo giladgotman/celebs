@@ -18,7 +18,6 @@ import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
-import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
@@ -260,18 +259,18 @@ class GameOnFragment : Fragment(),
     fun renderTeams(teamsState: GameScreenContract.TeamsState) {
         teamsState.teamsList.forEachIndexed { index, team ->
             renderTeam(index, team)
-            renderTeamScore(index, team.score)
         }
-    }
-
-    private fun renderTeamScore(index: Int, score: Int) {
-        teamScoreTextViews[index].text = "($score) : "
     }
 
     private fun renderTeam(index: Int, team: GameScreenContract.TeamState) {
         teamNameTextViews[index].text = team.name
         teamLayouts[index].isVisible = true
         renderTeamMembers(index, team.players)
+        renderTeamScore(index, team.score)
+    }
+
+    private fun renderTeamScore(index: Int, score: Int) {
+        teamScoreTextViews[index].text = "($score) : "
     }
 
     private fun renderTeamMembers(index: Int, players: List<String>) {
@@ -283,66 +282,6 @@ class GameOnFragment : Fragment(),
             }
         }
         teamMembersTextViews[index].text = sb.toString()
-    }
-
-    override fun updateTeams(teams: List<Team>) {
-        teams.forEachIndexed { index, team ->
-            when (index) {
-                0 -> updateTeam1(team.name, team.players)
-                1 -> updateTeam2(team.name, team.players)
-                2 -> updateTeam3(team.name, team.players)
-            }
-        }
-    }
-
-    private fun updateTeam1(teamName: String, players: List<Player>) {
-        team1Name.text = "$teamName"
-        team1Layout.isVisible = true
-        setPlayersForTeam(team1Value, players)
-    }
-
-    private fun updateTeam2(teamName: String, players: List<Player>) {
-        team2Name.text = "$teamName"
-        team2Layout.isVisible = true
-        setPlayersForTeam(team2Value, players)
-    }
-
-    private fun updateTeam3(teamName: String, players: List<Player>) {
-        team3Name.text = "$teamName"
-        team3Layout.isVisible = true
-        setPlayersForTeam(team3Value, players)
-    }
-
-    private fun setPlayersForTeam(teamValue: TextView, players: List<Player>) {
-        val sb = StringBuilder()
-        players.forEachIndexed { i, player ->
-            sb.append(player.name)
-            if (i < players.lastIndex) {
-                sb.append(", ")
-            }
-        }
-        teamValue.text = sb.toString()
-    }
-
-    override fun setScore(score: Map<String, Int>) {
-        val score1 = score[team1Name.text] ?: 0
-        val score2 = score[team2Name.text] ?: 0
-        team1Score.text = "($score1) : "
-        team2Score.text = "($score2) : "
-        if (score.size > 2) {
-            val score3 = score[team3Name.text] ?: 0
-            team3Score.text = "($score3) : "
-        }
-    }
-
-    override fun setTeamNames(teams: List<Team>) {
-        teams.forEachIndexed { index, team ->
-            when (index) {
-                0 -> team1Name.text = team.name
-                1 -> team2Name.text = team.name
-                2 -> team3Name.text = team.name
-            }
-        }
     }
 
     override fun setCurrentOtherPlayer(player: Player) {

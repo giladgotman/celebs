@@ -65,6 +65,7 @@ class GamesPresenter @Inject constructor(
     private fun isDeepLinkExists(gameIdFromDeepLink: String?): Observable<out Result> {
         return gameIdFromDeepLink?.let {
             observeGame(it).take(1)
+                .map { it.game }
                 .map { game ->
                     if (game.state == GameState.Finished) {
                         GameFinished(game.name)
