@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -45,6 +46,11 @@ class GameOnFragment : Fragment(),
 
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
+    private lateinit var teamNameTextViews: List<TextView>
+    private lateinit var teamLayouts: List<ConstraintLayout>
+    private lateinit var teamMembersTextViews: List<TextView>
+    private lateinit var teamScoreTextViews: List<TextView>
+
     private val _emitter = PublishSubject.create<UiEvent>()
 
 
@@ -62,8 +68,13 @@ class GameOnFragment : Fragment(),
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        presenter.bind(this, _emitter)
+
         cardTextView.text = ""
+
+        teamNameTextViews = mutableListOf(team1Name, team2Name, team3Name)
+        teamLayouts = mutableListOf(team1Layout, team2Layout, team3Layout)
+        teamMembersTextViews = mutableListOf(team1Value, team2Value, team3Value)
+        teamScoreTextViews = mutableListOf(team1Score, team2Score, team3Score)
 
         endTurnButton.setOnClickListener {
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -106,6 +117,8 @@ class GameOnFragment : Fragment(),
         hideTeamsInfo()
         setStoppedState()
         setupTimer()
+
+        presenter.bind(this, _emitter)
     }
 
     private fun hideTeamsInfo() {
@@ -229,6 +242,34 @@ class GameOnFragment : Fragment(),
     override fun updateCard(card: Card) {
         Timber.w("ggg update card: $card")
         cardTextView.text = card.name
+    }
+
+    fun renderTeams(teamsState: GameScreenContract.TeamsState) {
+        teamsState.teamsList.forEachIndexed { index, team ->
+            renderTeam(index, team)
+            renderTeamScore(index, team.score)
+        }
+    }
+
+    private fun renderTeamScore(index: Int, score: Int) {
+        teamScoreTextViews[index].text = "($score) : "
+    }
+
+    private fun renderTeam(index: Int, team: GameScreenContract.TeamState) {
+        teamNameTextViews[index].text = team.name
+        teamLayouts[index].isVisible = true
+        renderTeamMembers(index, team.players)
+    }
+
+    private fun renderTeamMembers(index: Int, players: List<String>) {
+        val sb = StringBuilder()
+        players.forEachIndexed { i, playerNamr ->
+            sb.append(playerNamr)
+            if (i < players.lastIndex) {
+                sb.append(", ")
+            }
+        }
+        teamMembersTextViews[index].text = sb.toString()
     }
 
     override fun updateTeams(teams: List<Team>) {

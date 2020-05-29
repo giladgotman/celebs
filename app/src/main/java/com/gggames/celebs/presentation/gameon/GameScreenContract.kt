@@ -19,7 +19,7 @@ interface GameScreenContract {
     }
 
     data class TeamsState (
-        val teamState: List<TeamState> = emptyList()
+        val teamsList: List<TeamState> = emptyList()
     )
 
     data class TeamState (
