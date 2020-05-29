@@ -24,6 +24,7 @@ import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
 import com.gggames.celebs.utils.showInfoToast
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
@@ -50,6 +51,8 @@ class GameOnFragment : Fragment(),
     private lateinit var teamLayouts: List<ConstraintLayout>
     private lateinit var teamMembersTextViews: List<TextView>
     private lateinit var teamScoreTextViews: List<TextView>
+
+    private val disposables = CompositeDisposable()
 
     private val _emitter = PublishSubject.create<UiEvent>()
 
@@ -118,7 +121,17 @@ class GameOnFragment : Fragment(),
         setStoppedState()
         setupTimer()
 
+
+        presenter.teamState.subscribe{
+            renderTeams(it)
+        }.let { disposables.add(it) }
+
         presenter.bind(this, _emitter)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        disposables.clear()
     }
 
     private fun hideTeamsInfo() {

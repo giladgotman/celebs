@@ -11,12 +11,13 @@ import com.gggames.celebs.model.*
 import com.gggames.celebs.model.RoundState.Ended
 import com.gggames.celebs.model.RoundState.Ready
 import com.gggames.celebs.model.TurnState.*
-import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
+import com.gggames.celebs.presentation.gameon.GameScreenContract.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,6 +37,8 @@ class GamePresenter @Inject constructor(
     private val audioPlayer: AudioPlayer
 ) {
     private var cardDeck = mutableListOf<Card>()
+
+    var teamState = PublishSubject.create<TeamsState>()
 
     private var lastCard: Card? = null
 
@@ -63,10 +66,34 @@ class GamePresenter @Inject constructor(
             .distinctUntilChanged()
             .subscribe(::onCardsChange).let { disposables.add(it) }
 
-        observeGame(gameId)
+        val sharedGame = observeGame(gameId)
+            .share()
+
+        sharedGame
             .distinctUntilChanged()
             .subscribe(::onGameChange).let { disposables.add(it) }
+
+        sharedGame.scan(TeamsState(), reduce())
+            .distinctUntilChanged()
+            .subscribe({
+                Timber.v("TEAMS STATE: $it")
+                teamState.onNext(it)
+            }, {
+                Timber.e(it,"error while observing game")
+                }).let { disposables.add(it) }
     }
+
+    private fun reduce() = {previous: TeamsState, game: Game ->
+        val newList =  game.teams.mapIndexed { i, team ->
+            TeamState(
+                team.name,
+                previous.teamsList.getOrNull(i)?.players ?: emptyList(),
+                game.gameInfo.score[team.name] ?: 0
+            )
+        }
+        TeamsState(newList)
+    }
+
 
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
         when (event) {
@@ -103,8 +130,10 @@ class GamePresenter @Inject constructor(
         if (newGame.round != lastGame?.round) {
             onRoundUpdate(newGame.gameInfo.round)
         }
-        view.setTeamNames(newGame.teams)
-        view.setScore(newGame.gameInfo.score)
+
+
+//        view.setTeamNames(newGame.teams)
+//        view.setScore(newGame.gameInfo.score)
 
         if (newGame.state == GameState.Finished) {
             view.showGameOver()
