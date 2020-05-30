@@ -273,11 +273,11 @@ class GameOnFragment : Fragment(),
     override fun setScore(score: Map<String, Int>) {
         val score1 = score[team1Name.text] ?: 0
         val score2 = score[team2Name.text] ?: 0
-        team1Score.text = "($score1) : "
-        team2Score.text = "($score2) : "
+        team1Score.text = "(score: $score1) : "
+        team2Score.text = "(score: $score2) : "
         if (score.size > 2) {
             val score3 = score[team3Name.text] ?: 0
-            team3Score.text = "($score3) : "
+            team3Score.text = "(score: $score3) : "
         }
     }
 
