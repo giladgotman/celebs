@@ -44,7 +44,6 @@ class FirebasePlayersDataSource @Inject constructor(
 
     override fun addPlayer(gameId: String, player: Player): Completable {
         val playersCollectionsRef = getCollectionReference(gameId)
-        Timber.w("addPlayer: $player, playersCollectionsRef: ${playersCollectionsRef.path}")
         val playersRaw = player.toRaw()
         return Completable.create { emitter->
             playersCollectionsRef.document(playersRaw.id).set(playersRaw)
@@ -71,17 +70,33 @@ class FirebasePlayersDataSource @Inject constructor(
 
     override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable {
         val playersCollectionsRef = getCollectionReference(gameId)
-        Timber.w("chooseTeam: ${player.name}, team: $teamName ref: ${playersCollectionsRef.path}")
         return Completable.create { emitter->
             playersCollectionsRef.document(player.id).update("team", teamName)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Timber.i("team chosen : $teamName for player: ${player.id}")
                         emitter.onComplete()
                     } else {
                         Timber.e(it.exception, "error while trying to choose team")
                         emitter.onError(it.exception ?: UnknownError(it.toString()))
                     }
+                }
+        }
+    }
+
+    override fun removePlayer(gameId: String, player: Player): Completable {
+        val playersCollectionsRef = getCollectionReference(gameId)
+        val playersRaw = player.toRaw()
+        return Completable.create { emitter->
+            playersCollectionsRef.document(playersRaw.id).delete()
+                .addOnSuccessListener {
+                    Timber.i("player removed. path: ${playersCollectionsRef.path}")
+                    emitter.onComplete()
+                }.addOnFailureListener { error ->
+                    Timber.e(
+                        error,
+                        "error while trying to remove player. path: ${playersCollectionsRef.path}"
+                    )
+                    emitter.onError(error)
                 }
         }
     }

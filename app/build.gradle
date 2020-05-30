@@ -12,8 +12,8 @@ android {
         applicationId "com.gggames.celebs"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 8
-        versionName "1.0.8"
+        versionCode 12
+        versionName "1.0.12"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -76,5 +76,11 @@ dependencies {
     implementation "com.google.dagger:dagger:$versions.dagger"
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
     kaptAndroidTest "com.google.dagger:dagger-$versions.dagger"
+
+    //deeplinks
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx:19.1.0'
+
+    //analytics
+//    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.2'
 
 }

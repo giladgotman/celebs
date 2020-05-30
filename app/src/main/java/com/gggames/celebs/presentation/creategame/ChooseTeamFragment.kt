@@ -33,7 +33,6 @@ class ChooseTeamFragment : Fragment() {
 
     private lateinit var viewComponent: ViewComponent
     private val disposables = CompositeDisposable()
-    lateinit var teams: ArrayList<String>
     @Inject
     lateinit var chooseTeam: ChooseTeam
     @Inject
@@ -44,7 +43,6 @@ class ChooseTeamFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_choose_teams, container, false)
     }
 
@@ -65,21 +63,17 @@ class ChooseTeamFragment : Fragment() {
             SchedulerProvider()
         )
 
-        arguments?.let {
-            teams = it.getStringArrayList(TEAMS_KEY)!!
-        }
-
-        teams.forEachIndexed{ index, group->
+        gamesRepository.currentGame!!.teams.forEachIndexed { index, team ->
             when (index) {
                 0 -> {
-                    teamRadioGroup.radioButtonTeam1.text = group
+                    teamRadioGroup.radioButtonTeam1.text = team.name
                 }
                 1 -> {
-                    teamRadioGroup.radioButtonTeam2.text = group
+                    teamRadioGroup.radioButtonTeam2.text = team.name
                     teamRadioGroup.radioButtonTeam2.isVisible = true
                 }
                 2 -> {
-                    teamRadioGroup.radioButtonTeam3.text = group
+                    teamRadioGroup.radioButtonTeam3.text = team.name
                     teamRadioGroup.radioButtonTeam3.isVisible = true
                 }
             }
@@ -106,9 +100,5 @@ class ChooseTeamFragment : Fragment() {
 
             findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
         }
-
-
     }
 }
-
-const val TEAMS_KEY = "TEAMS_KEY"

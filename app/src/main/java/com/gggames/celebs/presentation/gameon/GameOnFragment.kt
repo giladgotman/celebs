@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -19,7 +20,10 @@ import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
+import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
 import com.gggames.celebs.utils.showInfoToast
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
 import java.util.*
@@ -41,6 +45,9 @@ class GameOnFragment : Fragment(),
 
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
+    private val _emitter = PublishSubject.create<UiEvent>()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +62,7 @@ class GameOnFragment : Fragment(),
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        presenter.bind(this)
+        presenter.bind(this, _emitter)
         cardTextView.text = ""
 
         endTurnButton.setOnClickListener {
@@ -63,7 +70,7 @@ class GameOnFragment : Fragment(),
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         timerTextView.text = "Turn Ended"
-                        presenter.onTurnEnded()
+                        _emitter.onNext(UiEvent.EndTurnClick)
                     }
 
                     DialogInterface.BUTTON_NEGATIVE -> {
@@ -81,21 +88,20 @@ class GameOnFragment : Fragment(),
         }
 
         correctButton.setOnClickListener {
-            presenter.onCorrectClick(mTimeLeftInMillis)
+            _emitter.onNext(UiEvent.CorrectClick(mTimeLeftInMillis))
         }
 
         roundTextView.setOnClickListener {
-            presenter.onNewRoundClick()
+            _emitter.onNext(RoundClick(mTimeLeftInMillis))
         }
 
         startButton.setOnClickListener {
-            val buttonState = startButton.toButtonState(mTimeLeftInMillis)
-            presenter.onStartButtonClick(buttonState)
-
+            val buttonState = startButton.toButtonState()
+            _emitter.onNext(UiEvent.StartStopClick(buttonState, mTimeLeftInMillis))
         }
 
         cardsAmountIcon.setOnClickListener {
-            presenter.onCardsAmountClick()
+            _emitter.onNext(UiEvent.CardsAmountClick)
         }
         hideTeamsInfo()
         setStoppedState()
@@ -140,6 +146,13 @@ class GameOnFragment : Fragment(),
         startButton.isEnabled = true
         endTurnButton.isEnabled = meActive
         correctButton.isEnabled = meActive
+
+        val cardColor = if (meActive) {
+            ContextCompat.getColor(requireContext(), R.color.green)
+        } else {
+            ContextCompat.getColor(requireContext(), R.color.gilad)
+        }
+        cardLayout.setBackgroundColor(cardColor)
     }
 
 
@@ -150,24 +163,38 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
+
+        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun setCorrectEnabled(enabled: Boolean) {
         correctButton.isEnabled = enabled
     }
 
-    override fun showTimesUp() {
-        cardTextView.text = "Turn Ended"
+    override fun showTurnEnded(name: String?) {
+        name?.let {
+            cardTextView.text = "$name's turn ended"
+        }
+    }
+
+    override fun showTurnEndedActivePlayer() {
+        cardTextView.text = "Your turn ended"
     }
 
     override fun setPausedState(meActive: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
         startButton.text = "Resume"
-        startButton.isEnabled = true
+        startButton.isEnabled = meActive
         time?.let {
             updateTime(time)
         }
+    }
+
+    override fun setNewRound(meActive: Boolean, roundNumber: Int) {
+        cardTextView.text = "Round $roundNumber is ready"
+        startButton.isEnabled = meActive
+        endTurnButton.isEnabled = false
     }
 
     private fun updateTime(time: Long) {
@@ -175,9 +202,10 @@ class GameOnFragment : Fragment(),
         timerTextView?.text = getFormattedTime()
     }
 
-    override fun setRoundEndState(meActive: Boolean) {
+    override fun setRoundEndState(meActive: Boolean, roundNumber: Int) {
         setPausedState(meActive, null)
-        cardTextView.text = "Round Ended"
+        cardTextView.text = "Round $roundNumber ended"
+        endTurnButton.isEnabled = false
         startButton.isEnabled = false
     }
 
@@ -185,7 +213,7 @@ class GameOnFragment : Fragment(),
         mCountDownTimer?.cancel()
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
-                presenter.onTimesUp()
+                _emitter.onNext(UiEvent.TimerEnd)
             }
 
             override fun onTick(millis: Long) {
@@ -245,11 +273,11 @@ class GameOnFragment : Fragment(),
     override fun setScore(score: Map<String, Int>) {
         val score1 = score[team1Name.text] ?: 0
         val score2 = score[team2Name.text] ?: 0
-        team1Score.text = "($score1) : "
-        team2Score.text = "($score2) : "
+        team1Score.text = "(score: $score1) : "
+        team2Score.text = "(score: $score2) : "
         if (score.size > 2) {
             val score3 = score[team3Name.text] ?: 0
-            team3Score.text = "($score3) : "
+            team3Score.text = "(score: $score3) : "
         }
     }
 
@@ -299,8 +327,13 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.setOnClickListener {
-            findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
+            _emitter.onNext(UiEvent.FinishGameClick)
         }
+        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+    }
+
+    override fun navigateToGames() {
+        findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
     override fun onDestroy() {
@@ -322,17 +355,13 @@ class GameOnFragment : Fragment(),
 
 }
 
-private fun Button.toButtonState(time: Long): ButtonState =
+private fun Button.toButtonState(): GameScreenContract.ButtonState =
     when (this.text) {
-        "Start" -> ButtonState.Stopped
-        "Resume" -> ButtonState.Paused(time)
-        "Pause" -> ButtonState.Running(time)
+        "Start" -> GameScreenContract.ButtonState.Stopped
+        "Resume" -> GameScreenContract.ButtonState.Paused
+        "Pause" -> GameScreenContract.ButtonState.Running
         else -> throw IllegalStateException("button state $this is unknown")
     }
 
 
-sealed class ButtonState(time: Long?) {
-    object Stopped : ButtonState(null)
-    data class Running(val time: Long) : ButtonState(time)
-    data class Paused(val time: Long) : ButtonState(time)
-}
+

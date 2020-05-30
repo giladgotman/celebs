@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
@@ -16,7 +17,9 @@ import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.domain.AddCards
 import com.gggames.celebs.features.cards.domain.GetMyCards
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.features.games.data.MAX_CARDS
 import com.gggames.celebs.model.Card
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
@@ -40,18 +43,18 @@ class AddCardsFragment : Fragment() {
     @Inject
     lateinit var gameFlow : GameFlow
 
+    private var cardEditTextList = mutableListOf<EditText?>()
+
     private lateinit var viewComponent: ViewComponent
 
     private val disposables = CompositeDisposable()
 
     private lateinit var playerId: String
-    private lateinit var groups: ArrayList<String>
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_cards, container, false)
     }
 
@@ -61,10 +64,8 @@ class AddCardsFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        arguments?.let {
-//            gameId = it.getString(GAME_ID_KEY)!!
-            groups = it.getStringArrayList(TEAMS_KEY)!!
-        }
+        (activity as MainActivity).setTitle(gamesRepository.currentGame!!.name)
+        (activity as MainActivity).setShareVisible(true)
 
         playerId = gameFlow.me!!.id
 
@@ -77,29 +78,43 @@ class AddCardsFragment : Fragment() {
                 true
             } else false
         }
+        setCardsInputFields()
+        hideNonUsedCardsFields()
         buttonDone.setOnClickListener {
             onDoneClick()
+        }
+    }
+
+    private fun setCardsInputFields() {
+        cardEditTextList.add(add_cards_card1.editText)
+        cardEditTextList.add(add_cards_card2.editText)
+        cardEditTextList.add(add_cards_card3.editText)
+        cardEditTextList.add(add_cards_card4.editText)
+        cardEditTextList.add(add_cards_card5.editText)
+        cardEditTextList.add(add_cards_card6.editText)
+    }
+
+    private fun hideNonUsedCardsFields() {
+        val game = gamesRepository.currentGame!!
+        for (i in MAX_CARDS downTo (game.celebsCount + 1)) {
+            cardEditTextList[i - 1]?.isVisible = false
         }
     }
 
     private fun onDoneClick() {
         buttonDone.isEnabled = false
         val cardList = mutableListOf<Card>()
-        addCardIfNotNull(editTextToCard(add_cards_card1.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card2.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card3.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card4.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card5.editText), cardList)
-        addCardIfNotNull(editTextToCard(add_cards_card6.editText), cardList)
+
+        cardEditTextList.forEach {
+            editTextToCard(it)?.let {card->
+                cardList.add(card)
+            }
+        }
 
         tryToAddCards(cardList)
             .subscribe({
-                Timber.w("ggg added cards successfully")
-                val args = Bundle()
-                args.putStringArrayList(TEAMS_KEY, groups)
                 findNavController().navigate(
-                    R.id.action_AddCardsFragment_to_chooseTeamFragment,
-                    args
+                    R.id.action_AddCardsFragment_to_chooseTeamFragment
                 )
             }, {
                 buttonDone.isEnabled = true
@@ -131,12 +146,6 @@ class AddCardsFragment : Fragment() {
             }
     }
 
-    private fun addCardIfNotNull(card: Card?, cardList: MutableList<Card>) {
-        card?.let {
-            cardList.add(it)
-        }
-    }
-
     private fun editTextToCard(editText: EditText?): Card? {
         return if (editText?.text?.isNotEmpty() == true) {
             Card(
@@ -147,17 +156,4 @@ class AddCardsFragment : Fragment() {
             null
         }
     }
-    companion object {
-        fun createArgs(gameId: String, teams: ArrayList<String>, playerId: String): Bundle {
-            return Bundle().apply {
-                putString(GAME_ID_KEY, gameId)
-                putStringArrayList(TEAMS_KEY, teams)
-                putString(PLAYER_ID_KEY, playerId)
-            }
-        }
-    }
 }
-
-const val GAME_ID_KEY = "GAME_ID_KEY"
-const val PLAYER_ID_KEY = "PLAYER_ID_KEY"
-const val PLAYER_NAME_KEY = "PLAYER_NAME_KEY"

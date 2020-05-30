@@ -1,15 +1,29 @@
 package com.gggames.celebs.presentation
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.core.di.getAppComponent
+import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.utils.showErrorToast
 import com.google.android.material.snackbar.Snackbar
+import com.idagio.app.core.utils.share.Shareable
+import com.idagio.app.core.utils.share.createDynamicLink
+import com.idagio.app.core.utils.share.getPendingDeepLink
+import com.idagio.app.core.utils.share.share
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -17,13 +31,41 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var gameFlow: GameFlow
 
+    @Inject
+    lateinit var gamesRepository: GamesRepository
+
+    @Inject
+    lateinit var shareableFactory: Shareable.Factory
+
+    private val disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         getAppComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val playerName = gameFlow.me!!.name
-        toolbar.title = playerName
+        button_share.setOnClickListener {
+            gamesRepository.currentGame?.let { game ->
+                val uri = Uri.parse("https://gglab.page.link/joinGame/${game.id}")
+                createDynamicLink(uri).subscribe({ shortUri ->
+                    val shareable = shareableFactory.create(game.id, game.name, shortUri)
+                    share(shareable)
+                }, {
+                    Timber.e(it, "error sharing link")
+                    showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
+                })
+
+            }
+        }
         setSupportActionBar(toolbar)
+
+        getPendingDeepLink().subscribe({
+            Timber.w("found uri from deeplink: $it")
+            // TODO: 23.05.20 handle deeplink when needed. for example navigate to a game after install
+        }, {
+            Timber.e(it, "error sharing link")
+        }).let {
+            disposables.add(it)
+        }
     }
 
     private fun createSnackbar(view: View) {
@@ -31,23 +73,51 @@ class MainActivity : AppCompatActivity() {
             .setAction("Action", null).show()
     }
 
+    fun setShareVisible(visible: Boolean) {
+        button_share.isVisible = visible
+    }
+
+    fun setTitle(title: String) {
+        toolbar_title.text = title
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_logout -> {
+            R.id.menu_logout -> {
                 finish()
                 gameFlow.logout()
                 true
             }
+            R.id.menu_about -> {
+                showAbout()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showAbout() {
+        val sb = StringBuilder()
+        sb.append("This game was made with love")
+        sb.append("\n\n\n")
+        sb.append("Version: ${BuildConfig.VERSION_NAME}")
+        val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
+        }
+        val builder = AlertDialog.Builder(this)
+        builder
+            .setTitle("About")
+            .setMessage(sb.toString())
+            .setPositiveButton(getString(R.string.ok), dialogClickListener)
+            .show()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.clear()
     }
 }

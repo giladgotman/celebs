@@ -15,11 +15,10 @@
     <string name="create_game_team_2_name">Team 2 Name</string>
     <string name="create_game_team_3_name">Team 3 Name</string>
     <string name="create_game_num_cards">#cards</string>
+    <string name="create_game_password">Game password</string>
 
     <!--    Games Screen-->
     <string name="games_fragment_title">Games</string>
-    <string name="games_subtitle">Press Fetch to get the games</string>
-
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
@@ -38,10 +37,18 @@
     <string name="login_username_hint">Your name</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
+    <string name="menu_about">About</string>
     <string name="game_on_start">Start</string>
+    <string name="version_value">v%s</string>
     <string name="teams">Teams</string>
     <string name="new_round_alert_message">Are you sure you want to start a new round?</string>
     <string name="end_turn_alert_message">Are you sure you want to end your turn?</string>
     <string name="ok">OK</string>
     <string name="error_generic">Something went wrong</string>
+
+    <!--    Share-->
+    <string name="share_with_title">Share with</string>
+    <string name="share_message">Please join this cool Hourglass game(%1$s):\n%2$s</string>
+
+
 </resources>

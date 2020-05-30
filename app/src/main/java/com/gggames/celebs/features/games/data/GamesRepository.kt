@@ -8,9 +8,12 @@ import io.reactivex.Observable
 interface GamesRepository {
     fun getGames(statesQuery: List<GameState>): Observable<List<Game>>
 
-    fun setGame(game: Game, updateRemote: Boolean = true): Completable
+    fun setGame(game: Game?, updateRemote: Boolean = true): Completable
 
     fun observeGame(gameId: String): Observable<Game>
 
     var currentGame: Game?
 }
+
+
+const val MAX_CARDS = 6

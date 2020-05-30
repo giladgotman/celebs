@@ -21,6 +21,16 @@
             app:destination="@id/AddCardsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+
+        <argument
+            android:name="gameId"
+            app:argType="string" />
+
+        <deepLink
+            android:id="@+id/joinGame"
+            android:autoVerify="true"
+            app:uri="https://gglab.page.link/joinGame/{gameId}" />
+
     </fragment>
     <fragment
         android:id="@+id/CreateGameFragment"
@@ -34,6 +44,8 @@
         <action
             android:id="@+id/action_CreateGameFragment_to_AddCardsFragment"
             app:destination="@id/AddCardsFragment"
+            app:popUpTo="@+id/CreateGameFragment"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
@@ -55,6 +67,8 @@
             app:argType="string[]" />
         <action
             android:id="@+id/action_AddCardsFragment_to_chooseTeamFragment"
+            app:popUpTo="@+id/AddCardsFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/chooseTeamFragment" />
     </fragment>
 
@@ -69,6 +83,8 @@
             app:argType="string[]" />
         <action
             android:id="@+id/action_chooseTeamFragment_to_gameOnFragment"
+            app:popUpTo="@+id/chooseTeamFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/gameOnFragment" />
     </fragment>
     <fragment

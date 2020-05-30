@@ -1,54 +1,44 @@
 package com.gggames.celebs.presentation.creategame
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.features.games.domain.SetGame
-import com.gggames.celebs.features.players.domain.JoinGame
+import com.gggames.celebs.features.games.data.MAX_CARDS
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameInfo
 import com.gggames.celebs.model.GameState
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_create_game.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 
-class CreateGameFragment : Fragment() {
+class CreateGameFragment : Fragment() , CreateGamePresenter.View{
 
     private lateinit var viewComponent: ViewComponent
 
     @Inject
-    lateinit var setGame: SetGame
-    @Inject
-    lateinit var gameFlow: GameFlow
-    @Inject
-    lateinit var joinGame: JoinGame
-
-    private val disposables = CompositeDisposable()
-
-    private lateinit var playerName: String
+    lateinit var presenter: CreateGamePresenter
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_create_game, container, false)
     }
 
@@ -58,12 +48,19 @@ class CreateGameFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        view.findViewById<Button>(R.id.buttonCancel).setOnClickListener {
-            findNavController().navigate(R.id.action_CreateGame_to_GamesFragment)
-        }
 
-        arguments?.let {
-            playerName =it.getString(PLAYER_NAME_KEY)!!
+        (activity as MainActivity).setTitle(getString(R.string.create_game_fragment_title))
+        (activity as MainActivity).setShareVisible(false)
+
+        cardsAmountEditText.setOnEditorActionListener { v, actionId, _ ->
+            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE
+                || actionId == EditorInfo.IME_ACTION_GO) {
+                val imm: InputMethodManager = v.context
+                    .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                onDoneClick()
+                true
+            } else false
         }
 
         gameName.editText?.addTextChangedListener {
@@ -74,50 +71,59 @@ class CreateGameFragment : Fragment() {
             groupName1.error = null
         }
         buttonDone.setOnClickListener {
-            if (inputValid()) {
-                buttonDone.isEnabled = false
-                val now = System.currentTimeMillis()
-                val cardsCount = cardsAmount.editText?.text.toString().toInt()
-                val teams = getTeamsValue()
-                val initialScore = teams.map { it.name to 0 }.toMap()
-                val game = Game(
-                    "${gameName.editText?.text}$now",
-                    gameName.editText?.text.toString(),
-                    now,
-                    cardsCount,
-                    teams,
-                    GameState.Created,
-                    GameInfo(score = initialScore)
-                )
-
-                setGame(game)
-                    .andThen(joinGame(game, gameFlow.me!!))
-                    .subscribe(
-                        {
-                            Timber.i("${gameFlow.me!!.name} created and joined game: ${game.id}")
-                            val args = AddCardsFragment.createArgs(
-                                game.id,
-                                ArrayList(game.teams.map { it.name }),
-                                gameFlow.me!!.id
-                            )
-                            findNavController().navigate(
-                                R.id.action_CreateGameFragment_to_AddCardsFragment,
-                                args
-                            )
-                        }, {
-                            buttonDone.isEnabled = true
-                            showErrorToast(
-                                requireContext(),
-                                getString(R.string.error_generic),
-                                Toast.LENGTH_LONG
-                            )
-                            Timber.e(it, "game add and join failed.")
-                        })
-                    .let {
-                        disposables.add(it)
-                    }
-            }
+            onDoneClick()
         }
+
+        presenter.bind(this)
+    }
+
+    private fun onDoneClick() {
+        if (inputValid()) {
+            val game = getGameDetails()
+            presenter.onDoneClick(game)
+        }
+    }
+
+    private fun getGameDetails(): Game {
+        val now = System.currentTimeMillis()
+        val cardsCount = cardsAmount.editText?.text.toString().toInt()
+        val passwordText = password.editText?.text.toString()
+        val teams = getTeamsValue()
+        val initialScore = teams.map { it.name to 0 }.toMap()
+        val game = Game(
+            "${gameName.editText?.text}$now",
+            gameName.editText?.text.toString(),
+            now,
+            passwordText,
+            cardsCount,
+            teams,
+            GameState.Created,
+            GameInfo(score = initialScore)
+        )
+        return game
+    }
+
+    override fun setDoneEnabled(enabled: Boolean) {
+        buttonDone.isEnabled = enabled
+    }
+
+    override fun navigateToAddCards(gameId: String) {
+        findNavController().navigate(
+            R.id.action_CreateGameFragment_to_AddCardsFragment
+        )
+    }
+
+    override fun showGenericError() {
+        showErrorToast(
+            requireContext(),
+            getString(R.string.error_generic),
+            Toast.LENGTH_LONG
+        )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.unBind()
     }
 
     private fun getTeamsValue(): MutableList<Team> {
@@ -143,7 +149,14 @@ class CreateGameFragment : Fragment() {
             groupName1.error = "Please enter team name"
             return false
         }
-
+        if (cardsAmount.editText?.text?.isEmpty() == true) {
+            cardsAmount.error = "Please enter cards amount"
+            return false
+        }
+        if (cardsAmount.editText?.text?.toString()?.toInt() ?:0 > MAX_CARDS) {
+            cardsAmount.error = "The maximum cards amount is $MAX_CARDS"
+            return false
+        }
         return true
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -12,44 +13,27 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
-import com.gggames.celebs.features.games.domain.GetGames
-import com.gggames.celebs.features.players.domain.JoinGame
+import com.gggames.celebs.model.Game
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
-import io.reactivex.disposables.CompositeDisposable
+import com.gggames.celebs.utils.showErrorToast
+import com.gggames.celebs.utils.showInfoToast
 import kotlinx.android.synthetic.main.fragment_games.*
 import timber.log.Timber
 import javax.inject.Inject
 
-
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
-class GamesFragment : Fragment() {
+class GamesFragment : Fragment() , GamesPresenter.View {
 
     @Inject
-    lateinit var getGames : GetGames
-
-    @Inject
-    lateinit var gameFlow: GameFlow
-
-    @Inject
-    lateinit var joinGame: JoinGame
-
-    private val disposables = CompositeDisposable()
-
-    private lateinit var playerName: String
-
+    lateinit var presenter: GamesPresenter
     private lateinit var viewComponent: ViewComponent
-
     private lateinit var gamesAdapter: GamesAdapter
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_games, container, false)
     }
 
@@ -60,41 +44,29 @@ class GamesFragment : Fragment() {
         viewComponent.inject(this)
 
         createGameFab.setOnClickListener {
-            val args = Bundle()
-            args.putString(PLAYER_NAME_KEY, playerName)
-            findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment, args)
+            findNavController().navigate(R.id.action_GamesFragment_to_CreateGameFragment)
         }
 
-        playerName = gameFlow.me!!.name
+        (activity as MainActivity).setTitle(getString(R.string.games_fragment_title))
+        (activity as MainActivity).setShareVisible(false)
 
         gamesAdapter =
             GamesAdapter { game ->
-                Timber.w("game selected: ${game.name}")
-
-                joinGame(game, gameFlow.me!!)
-                    .subscribe({
-                        val args = AddCardsFragment.createArgs(
-                            game.id,
-                            ArrayList(game.teams.map { it.name }),
-                            gameFlow.me!!.id
-                        )
-                        findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment, args)
-                    }, {
-                        Timber.e(it,"error joinGame")
-                    })
-
+                presenter.onGameClick(game)
             }
 
-
-        itemsswipetorefresh.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(this.requireContext(), R.color.colorPrimary))
+        itemsswipetorefresh.setProgressBackgroundColorSchemeColor(
+            ContextCompat.getColor(
+                this.requireContext(),
+                R.color.colorPrimary
+            )
+        )
         itemsswipetorefresh.setColorSchemeColors(Color.WHITE)
 
         itemsswipetorefresh.setOnRefreshListener {
-            fetchGames()
+            presenter.onRefresh()
             itemsswipetorefresh.isRefreshing = false
         }
-
-
 
         gamesRecyclerView.setHasFixedSize(true)
 
@@ -103,30 +75,50 @@ class GamesFragment : Fragment() {
         gamesRecyclerView.itemAnimator = DefaultItemAnimator()
         gamesRecyclerView.adapter = gamesAdapter
 
+        var gameIdFromDeepLink: String? = null
 
-        fetchGames()
+        arguments?.getString("gameId")?.let { gameId ->
+            arguments?.remove("gameId")
+            gameIdFromDeepLink = gameId
+        }
+        Timber.w("ggg bind, gameIdFromDeepLink: $gameIdFromDeepLink")
+        presenter.bind(this, gameIdFromDeepLink)
     }
 
-    private fun fetchGames() {
-        Timber.d("fetching games")
-        progress.isVisible = true
-        getGames()
-            .subscribe(
-                { games ->
-                    Timber.d("fetched games: $games")
-                    progress.isVisible = false
-                    gamesAdapter.setData(games)
-                },
-                {
-                    Timber.e(it, "error fetching games")
-                    progress.isVisible = false
-                }).let { disposables.add(it) }
-
-
+    override fun show(games: List<Game>) {
+        gamesAdapter.setData(games)
     }
 
-    override fun onPause() {
-        super.onPause()
-        disposables.clear()
+    override fun showGenericError() {
+        showErrorToast(
+            requireContext(),
+            getString(R.string.error_generic),
+            Toast.LENGTH_LONG
+        )
+    }
+
+    override fun showNeedLoginInfo() {
+        showInfoToast(requireContext(),"Please login and then use the link to the game", Toast.LENGTH_LONG)
+    }
+
+    override fun showLoading(show: Boolean) {
+        progress.isVisible = show
+    }
+
+    override fun finishScreen() {
+        requireActivity().finish()
+    }
+
+    override fun showJoinedGameIsFinished(gameName: String) {
+        showInfoToast(requireContext(), "The game '$gameName' is already over")
+    }
+
+    override fun navigateToAddCards() {
+        findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.unBind()
     }
 }

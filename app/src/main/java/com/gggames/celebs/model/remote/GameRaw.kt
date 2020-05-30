@@ -8,6 +8,7 @@ data class GameRaw (
     val id: String,
     val name: String,
     val createdAt: Timestamp,
+    val password: String,
     val celebsCount: Long = 6,
     val teams: List<TeamRaw>,
     val state: String? = null,
@@ -17,6 +18,7 @@ data class GameRaw (
         EMPTY_VALUE,
         EMPTY_VALUE,
         Timestamp.now(),
+        EMPTY_VALUE,
         6,
         emptyList()
     )

@@ -38,7 +38,9 @@ class FirebaseGamesDataSource @Inject constructor(
                 .addOnSuccessListener { result ->
                     for (game in result) {
                         val gameEntity = game.toObject(GameRaw().javaClass)
-                        games.add(gameEntity.toUi())
+                        if (!filterGame(gameEntity)) {
+                            games.add(gameEntity.toUi())
+                        }
                     }
                     emitter.onSuccess(games)
                 }
@@ -48,6 +50,9 @@ class FirebaseGamesDataSource @Inject constructor(
                 }
         }
     }
+
+    // filter out games that are auto created by google
+    private fun filterGame(gameEntity: GameRaw) = gameEntity.name == "text"
 
     override fun setGame(game: Game): Completable {
         Timber.w("setGame: $game")
