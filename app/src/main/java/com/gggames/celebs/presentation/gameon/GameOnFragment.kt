@@ -270,7 +270,7 @@ class GameOnFragment : Fragment(),
     }
 
     private fun renderTeamScore(index: Int, score: Int) {
-        teamScoreTextViews[index].text = "($score) : "
+        teamScoreTextViews[index].text = "(score: $score) : "
     }
 
     private fun renderTeamMembers(index: Int, players: List<String>) {
