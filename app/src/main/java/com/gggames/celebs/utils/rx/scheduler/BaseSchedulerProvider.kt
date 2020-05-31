@@ -1,9 +1,6 @@
 package com.idagio.app.core.utils.rx.scheduler
 
-import io.reactivex.CompletableTransformer
-import io.reactivex.ObservableTransformer
-import io.reactivex.Scheduler
-import io.reactivex.SingleTransformer
+import io.reactivex.*
 
 interface BaseSchedulerProvider {
 
@@ -22,3 +19,6 @@ interface BaseSchedulerProvider {
     fun applyCompletableDefault(): CompletableTransformer =
         CompletableTransformer { it.subscribeOn(io()).observeOn(ui()) }
 }
+
+
+inline fun <reified R : Any> Observable<*>.ofType(): Observable<R> = ofType(R::class.java)

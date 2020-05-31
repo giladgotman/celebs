@@ -125,7 +125,17 @@ class GameOnFragment : Fragment(),
             renderTeams(it)
         }.let { disposables.add(it) }
 
+        presenter.gameState.subscribe{
+            renderGame(it)
+        }.let { disposables.add(it) }
+
         presenter.bind(this, _emitter)
+    }
+
+    private fun renderGame(gameState: GameScreenContract.GameUiState) {
+        correctButton.isEnabled = gameState.correctBtn.isEnabled
+        correctButton.text = gameState.correctBtn.text
+        correctButton.isVisible = gameState.correctBtn.isVisible
     }
 
     override fun onDestroyView() {

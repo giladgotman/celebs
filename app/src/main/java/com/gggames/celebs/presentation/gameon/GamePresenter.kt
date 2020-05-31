@@ -14,10 +14,13 @@ import com.gggames.celebs.model.TurnState.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
+import com.idagio.app.core.utils.rx.scheduler.ofType
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.merge
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
@@ -41,6 +44,8 @@ class GamePresenter @Inject constructor(
 
     var teamState = PublishSubject.create<TeamsState>()
 
+    val gameState = PublishRelay.create<GameUiState>()
+
     private var lastCard: Card? = null
 
     private val disposables = CompositeDisposable()
@@ -57,7 +62,8 @@ class GamePresenter @Inject constructor(
         this.view = view
         val gameId = game.id
 
-        events.subscribe(::handleUiEvent).let { disposables.add(it) }
+        val sharedEvents = events.share()
+        sharedEvents.subscribe(::handleUiEvent).let { disposables.add(it) }
 
         cardsObservable()
             .distinctUntilChanged()
@@ -65,6 +71,21 @@ class GamePresenter @Inject constructor(
 
         val sharedGame = observeGame(gameId)
             .share()
+
+
+        val results = sharedEvents.ofType<CorrectClick>().switchMap {
+            increaseScoreObs(it.time)
+                .startWith(Result.IncreaseScoreResult.Loading)
+        }
+
+        results.scan(GameUiState(), reduceGame())
+            .distinctUntilChanged()
+            .doOnNext {
+                Timber.v("GAME STATE: $it")
+            }
+            .subscribe { gameState.accept(it) }
+            .let { disposables += it }
+
 
         sharedGame
             .distinctUntilChanged()
@@ -84,38 +105,6 @@ class GamePresenter @Inject constructor(
                 }).let { disposables.add(it) }
     }
 
-    private fun reduce()  = {previous: TeamsState, result: Result ->
-        when (result) {
-            is Result.GameResult -> {
-                previous.updateNameAndScore(result.game.teams, result.game.gameInfo.score)
-            }
-            is Result.PlayersResult -> {
-                previous.updatePlayers(result.players)
-            }
-            is Result.CardsResult -> previous
-        }
-    }
-
-    private fun TeamsState.updateNameAndScore(teams: List<Team>, score: Map<String, Int>): GameScreenContract.TeamsState {
-        val newList=
-        teams.mapIndexed { i, team ->
-            TeamState(
-                name = team.name,
-                score = score[team.name] ?: 0,
-                players = this.teamsList.getOrNull(i)?.players ?: emptyList())
-        }
-        return TeamsState(newList)
-    }
-
-    private fun TeamsState.updatePlayers(players: List<Player>): TeamsState {
-        val newTeams = players.groupBy { it.team }
-        val newList = this.teamsList.map { team ->
-            TeamState(team.name, newTeams[team.name]?.map { it.name } ?: emptyList(), team.score)
-        }
-        return TeamsState(newList)
-    }
-
-
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
         when (event) {
             is RoundClick -> onNewRoundClick(event.time)
@@ -126,6 +115,52 @@ class GamePresenter @Inject constructor(
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
         }
+    }
+
+
+    private fun reduceGame() = { previous: GameUiState, result:Result ->
+        Timber.v("GAME RESULT: $result")
+        when (result) {
+            is Result.GameResult -> previous
+            is Result.PlayersResult -> previous
+            is Result.CardsResult -> previous
+            is Result.IncreaseScoreResult.Loading -> previous.copy(correctBtn = previous.correctBtn.copy(isEnabled = false))
+            is Result.IncreaseScoreResult.Completed -> previous.copy(correctBtn = previous.correctBtn.copy(isEnabled = true))
+            is Result.IncreaseScoreResult.Error -> previous
+        }
+    }
+
+
+    private fun reduce()  = {previous: TeamsState, result: Result ->
+        when (result) {
+            is Result.GameResult -> {
+                previous.updateNameAndScore(result.game.teams, result.game.gameInfo.score)
+            }
+            is Result.PlayersResult -> {
+                previous.updatePlayers(result.players)
+            }
+            is Result.CardsResult -> previous
+            else -> previous
+        }
+    }
+
+    private fun TeamsState.updateNameAndScore(teams: List<Team>, score: Map<String, Int>): GameScreenContract.TeamsState {
+        val newList=
+            teams.mapIndexed { i, team ->
+                TeamState(
+                    name = team.name,
+                    score = score[team.name] ?: 0,
+                    players = this.teamsList.getOrNull(i)?.players ?: emptyList())
+            }
+        return TeamsState(newList)
+    }
+
+    private fun TeamsState.updatePlayers(players: List<Player>): TeamsState {
+        val newTeams = players.groupBy { it.team }
+        val newList = this.teamsList.map { team ->
+            TeamState(team.name, newTeams[team.name]?.map { it.name } ?: emptyList(), team.score)
+        }
+        return TeamsState(newList)
     }
 
     private fun onFinishClick() {
@@ -328,16 +363,26 @@ class GamePresenter @Inject constructor(
             )
         )
 
-    private fun onCorrectClick(time: Long) {
-        view.setCorrectEnabled(false)
-        gameFlow.me?.team?.let {
+    private fun increaseScoreObs(time: Long): Observable<Result.IncreaseScoreResult> {
+        return gameFlow.me?.team?.let {
             increaseScore(it)
                 .andThen(handleNextCard(pickNextCard(), time))
-                .subscribe({
-                }, {
-                    Timber.e(it, "error while increaseScore")
-                }).let { disposables.add(it) }
-        }
+                .andThen(Observable.just(Result.IncreaseScoreResult.Completed))
+                .cast(Result.IncreaseScoreResult::class.java)
+        } ?: Observable.just(Result.IncreaseScoreResult.Error)
+            .cast(Result.IncreaseScoreResult::class.java)
+
+    }
+    private fun onCorrectClick(time: Long) {
+//        view.setCorrectEnabled(false)
+//        gameFlow.me?.team?.let {
+//            increaseScore(it)
+//                .andThen(handleNextCard(pickNextCard(), time))
+//                .subscribe({
+//                }, {
+//                    Timber.e(it, "error while increaseScore")
+//                }).let { disposables.add(it) }
+//        }
 
     }
 

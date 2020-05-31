@@ -59,7 +59,7 @@ dependencies {
 
 
     // rx-java
-    implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
+    implementation "io.reactivex.rxjava2:rxkotlin:2.2.0"
     implementation "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
 
     //Timber
@@ -82,5 +82,8 @@ dependencies {
 
     //analytics
 //    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.2'
+
+    // Relay
+    implementation "com.jakewharton.rxrelay2:rxrelay:2.1.1"
 
 }
