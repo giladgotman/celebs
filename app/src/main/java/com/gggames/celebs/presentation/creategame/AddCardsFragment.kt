@@ -102,16 +102,23 @@ class AddCardsFragment : Fragment() {
     }
 
     private fun onDoneClick() {
-        buttonDone.isEnabled = false
         val cardList = mutableListOf<Card>()
 
-        cardEditTextList.forEach {
-            editTextToCard(it)?.let {card->
-                cardList.add(card)
+        cardEditTextList.forEach { editText ->
+            editTextToCard(editText)?.let { card ->
+                if (cardList.none { it.name == card.name }) {
+                    cardList.add(card)
+                } else {
+                    editText?.error = "This name was already used"
+                    return
+                }
             }
         }
 
         tryToAddCards(cardList)
+            .doOnSubscribe {
+                buttonDone.isEnabled = false
+            }
             .subscribe({
                 findNavController().navigate(
                     R.id.action_AddCardsFragment_to_chooseTeamFragment
