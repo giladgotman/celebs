@@ -49,6 +49,8 @@ class GamePresenter @Inject constructor(
     private val roundState : RoundState
     get() = game.gameInfo.round.state
 
+    private var cardsFoundInTurn = mutableListOf<Card>()
+
     fun bind(view: GameView, events: Observable<GameScreenContract.UiEvent>) {
         this.view = view
         val gameId = game.id
@@ -150,7 +152,8 @@ class GamePresenter @Inject constructor(
                 Stopped -> {
                     if (lastGame?.turn?.state != turn.state) {
                         view.setStoppedState()
-                        view.showTurnEnded(lastGame?.round?.turn?.player)
+                        endTurn()
+
                     }
                 }
                 Running -> {
@@ -168,7 +171,7 @@ class GamePresenter @Inject constructor(
                 Stopped -> {
                     if (lastGame?.turn?.state != turn.state) {
                         view.setStoppedState()
-                        view.showTurnEnded(lastGame?.round?.turn?.player)
+                        endTurn()
                     }
                 }
                 Running -> {
@@ -182,6 +185,11 @@ class GamePresenter @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun endTurn() {
+        view.showTurnEnded(lastGame?.round?.turn?.player, cardsFoundInTurn)
+        cardsFoundInTurn.clear()
     }
 
     private fun onNewRoundClick(time: Long) {
@@ -291,6 +299,9 @@ class GamePresenter @Inject constructor(
 
     private fun onCorrectClick(time: Long) {
         view.setCorrectEnabled(false)
+        lastCard?.let {
+            cardsFoundInTurn.add(it)
+        }
         gameFlow.me?.team?.let {
             increaseScore(it)
                 .andThen(handleNextCard(pickNextCard(), time))
@@ -455,14 +466,14 @@ class GamePresenter @Inject constructor(
    private fun onTimerEnd() {
         if (gameFlow.isMeActivePlayer(game)) {
             audioPlayer.play("timesupyalabye")
-            view.showTurnEnded(lastGame?.round?.turn?.player)
+            endTurn()
         }
         onTurnEnded()
     }
 
     private fun onEndTurnClick() {
         if (gameFlow.isMeActivePlayer(game)) {
-            view.showTurnEnded(lastGame?.round?.turn?.player)
+            endTurn()
         }
         onTurnEnded()
     }
@@ -489,7 +500,7 @@ class GamePresenter @Inject constructor(
         fun showLastRoundToast()
         fun setScore(score: Map<String, Int>)
         fun setTeamNames(teams: List<Team>)
-        fun showTurnEnded(player: Player?)
+        fun showTurnEnded(player: Player?, cards: List<Card>)
         fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
