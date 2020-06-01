@@ -1,60 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<!--<androidx.coordinatorlayout.widget.CoordinatorLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    >-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/default_margin"
-    android:paddingTop="@dimen/default_margin"
-    android:paddingEnd="@dimen/default_margin"
-    android:paddingBottom="@dimen/default_margin">
-
-    <TextView
-        android:id="@+id/title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/bottomSheetLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Widget.MessageDialog.title"
-        tools:text="End of Gilad's turn" />
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/default_margin"
+        android:paddingTop="@dimen/default_margin"
+        android:paddingEnd="@dimen/default_margin"
+        android:paddingBottom="@dimen/default_margin"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Widget.MessageDialog.title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="End of Gilad's turn" />
 
 
-<!--    <TextView-->
-<!--        android:id="@+id/description"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/title"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textAppearance="@style/Widget.MessageDialog.description"-->
-<!--        tools:text="Good job!" />-->
+        <!--    <TextView-->
+        <!--        android:id="@+id/description"-->
+        <!--        app:layout_constraintTop_toBottomOf="@id/title"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:textAppearance="@style/Widget.MessageDialog.description"-->
+        <!--        tools:text="Good job!" />-->
 
 
-    <TextView
-        android:id="@+id/cardsAmountDescription"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_gravity="start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Widget.MessageDialog.description"
-        android:layout_marginEnd="@dimen/small_margin"
-        tools:text="7 cards found" />
+        <TextView
+            android:id="@+id/cardsAmountDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:textAppearance="@style/Widget.MessageDialog.description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="7 cards found" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cardsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardsAmountDescription" />
+
+        <Button
+            android:id="@+id/buttonDone"
+            style="@style/Widget.MessageDialog.DismissButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:text="@string/done"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardsRecyclerView" />
 
 
-    <Button
-        android:id="@+id/buttonDone"
-        style="@style/Widget.MessageDialog.DismissButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_margin"
-        android:text="@string/done"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardsAmountDescription" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
