@@ -19,7 +19,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
-import com.gggames.celebs.presentation.EndTurnDialogFragment
+import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
@@ -175,9 +175,7 @@ class GameOnFragment : Fragment(),
 
     var endTurnDialog : EndTurnDialogFragment? = null
     override fun showTurnEnded(player: Player?, cards: List<Card>) {
-//        name?.let {
-//            cardTextView.text = "$name's turn ended"
-//        }
+        cardTextView.text = ""
         player?.let {
             if (endTurnDialog?.isAdded != true) {
                 endTurnDialog = EndTurnDialogFragment.create(player, cards)
