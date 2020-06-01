@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<androidx.coordinatorlayout.widget.CoordinatorLayout-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    >-->
-
     <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -30,18 +22,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="@dimen/default_margin"
+            app:layout_goneMarginBottom="@dimen/medium_margin"
             tools:text="End of Gilad's turn" />
-
-
-        <!--    <TextView-->
-        <!--        android:id="@+id/description"-->
-        <!--        app:layout_constraintTop_toBottomOf="@id/title"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"-->
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:textAppearance="@style/Widget.MessageDialog.description"-->
-        <!--        tools:text="Good job!" />-->
 
 
         <TextView
@@ -77,4 +60,3 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->

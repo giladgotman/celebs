@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
 import timber.log.Timber
@@ -23,26 +21,6 @@ class EndTurnDialogFragment
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
 
-
-    private val mBottomSheetBehaviorCallback: BottomSheetCallback = object : BottomSheetCallback() {
-        override fun onStateChanged(
-            bottomSheet: View,
-            newState: Int
-        ) {
-            Timber.w("onStateChanged : $newState")
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                dismiss()
-            }
-        }
-
-        override fun onSlide(
-            bottomSheet: View,
-            slideOffset: Float
-        ) {
-            Timber.w("onSlide : $slideOffset")
-//            behavior.state = BottomSheetBehavior.STATE_EXPANDED;
-        }
-    }
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
 
@@ -57,22 +35,12 @@ class EndTurnDialogFragment
     private val KEY_PLAYER_NAME = "KEY_PLAYER_NAME"
     private val KEY_CARD_NAMES = "KEY_CARD_NAMES"
 
-    lateinit var behavior: BottomSheetBehavior<*>
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         cardsFoundAdapter = CardsFoundAdapter {
             Timber.w("on card click : ${it.name}")
         }
-
-//        behavior =
-//            BottomSheetBehavior.from(bottomSheetLayout)
-//        behavior.isFitToContents = true
-//        behavior.state = BottomSheetBehavior.STATE_EXPANDED;
-//
-//        behavior.addBottomSheetCallback(mBottomSheetBehaviorCallback)
-
 
         cardsRecyclerView.setHasFixedSize(true)
 
