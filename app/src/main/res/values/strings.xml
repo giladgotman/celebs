@@ -50,5 +50,9 @@
     <string name="share_with_title">Share with</string>
     <string name="share_message">Please join this cool Hourglass game(%1$s):\n%2$s</string>
 
+<!--    End of turn dialog-->
+    <string name="end_turn_title">%1$s\'s turn ended</string>
+    <string name="end_turn_cards_description">%1$d cards found</string>
+
 
 </resources>

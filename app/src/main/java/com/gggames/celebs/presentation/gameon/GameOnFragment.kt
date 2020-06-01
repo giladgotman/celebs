@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.EndTurnDialogFragment
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
@@ -171,9 +173,17 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = enabled
     }
 
-    override fun showTurnEnded(name: String?) {
-        name?.let {
-            cardTextView.text = "$name's turn ended"
+    var endTurnDialog : EndTurnDialogFragment? = null
+    override fun showTurnEnded(player: Player?) {
+//        name?.let {
+//            cardTextView.text = "$name's turn ended"
+//        }
+        player?.let {
+            if (endTurnDialog?.isAdded != true) {
+                endTurnDialog = EndTurnDialogFragment(player, emptyList())
+                endTurnDialog?.show(requireActivity() as AppCompatActivity)
+            }
+
         }
     }
 
