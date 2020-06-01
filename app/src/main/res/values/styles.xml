@@ -17,4 +17,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Widget.MessageDialog.DismissButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Widget.MessageDialog.ApproveButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Widget.MessageDialog.title" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Widget.MessageDialog.description" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>
