@@ -12,7 +12,20 @@
         android:paddingTop="@dimen/default_margin"
         android:paddingEnd="@dimen/default_margin"
         android:paddingBottom="@dimen/default_margin"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        app:layout_behavior="@string/bottom_sheet_behavior"
+    >
+
+    <ImageButton
+        android:id="@+id/buttonClose"
+        android:background="@drawable/ripple_circular_light"
+        android:padding="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_24px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
 
         <TextView
             android:id="@+id/title"
@@ -22,8 +35,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="@dimen/default_margin"
-            app:layout_goneMarginBottom="@dimen/medium_margin"
             tools:text="End of Gilad's turn" />
 
 
@@ -33,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginEnd="@dimen/small_margin"
+            android:layout_marginBottom="@dimen/default_margin"
             android:textAppearance="@style/Widget.MessageDialog.description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,21 +54,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cardsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/bottom_sheet_behavior"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cardsAmountDescription" />
-
-        <Button
-            android:id="@+id/buttonDone"
-            style="@style/Widget.MessageDialog.DismissButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:text="@string/done"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardsRecyclerView" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>

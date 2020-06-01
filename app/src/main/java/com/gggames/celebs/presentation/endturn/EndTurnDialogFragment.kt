@@ -51,29 +51,17 @@ class EndTurnDialogFragment
 
         arguments?.let {
             val name = it.getString(KEY_PLAYER_NAME) ?: ""
-            val cardsNames: ArrayList<String>? =
-                it.getStringArrayList(KEY_CARD_NAMES) as ArrayList<String>
+            val cardsNames: Array<Card>? =
+                it.getParcelableArray(KEY_CARD_NAMES) as Array<Card>
 
-//            cardsFoundAdapter.setData(cardsNames!!.map { Card(name = it, player = name) })
-            cardsFoundAdapter.setData(
-                listOf(
-                    Card(name = "1dfssd", player = ""),
-                    Card(name = "1dfsdfssd", player = ""),
-                    Card(name = "1dddfsfssd", player = ""),
-                    Card(name = "1dfddssd", player = ""),
-                    Card(name = "1dfdsfsdsd", player = ""),
-                    Card(name = "1dfddssd", player = ""),
-                    Card(name = "1df  ssd", player = ""),
-                    Card(name = "1dfs   sd", player = ""),
-                    Card(name = "1dfsdddddsd", player = "")
-                )
-            )
+            val cardsList = cardsNames?.toList() ?: emptyList()
+            cardsFoundAdapter.setData(cardsList)
             title.text = getString(R.string.end_turn_title, name)
             cardsAmountDescription.text =
                 getString(R.string.end_turn_cards_description, cardsNames?.size ?: 0)
         }
 
-        buttonDone.setOnClickListener {
+        buttonClose.setOnClickListener {
             dismiss()
         }
     }
@@ -91,7 +79,7 @@ class EndTurnDialogFragment
                 arguments =
                     Bundle().apply {
                         putString(KEY_PLAYER_NAME, player.name)
-                        putStringArrayList(KEY_CARD_NAMES, ArrayList(cards.map { it.name }))
+                        putParcelableArray(KEY_CARD_NAMES, cards.toTypedArray())
                     }
             }
         }
