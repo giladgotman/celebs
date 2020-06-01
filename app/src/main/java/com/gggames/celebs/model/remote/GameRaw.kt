@@ -40,7 +40,8 @@ data class RoundRaw(
 data class TurnRaw(
     val state: String = Turn().state.toRaw(),
     val player: PlayerRaw? = null,
-    val time: Long? = null
+    val time: Long? = null,
+    val cardsFound: List<String> = emptyList()
 )
 
 const val EMPTY_VALUE = "EMPTY_VALUE"

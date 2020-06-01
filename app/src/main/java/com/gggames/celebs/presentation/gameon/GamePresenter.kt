@@ -188,8 +188,8 @@ class GamePresenter @Inject constructor(
     }
 
     private fun endTurn() {
-        view.showTurnEnded(lastGame?.round?.turn?.player, cardsFoundInTurn)
-        cardsFoundInTurn.clear()
+        val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
+        view.showTurnEnded(lastGame?.round?.turn?.player, cards)
     }
 
     private fun onNewRoundClick(time: Long) {
@@ -224,9 +224,10 @@ class GamePresenter @Inject constructor(
             }
     }
     private fun onPlayerStarted() {
+        cardsFoundInTurn.clear()
         setGameStateStartedAndMeActive()
             .andThen(handleNextCard(pickNextCard()))
-            .andThen(setTurnState(Running))
+            .andThen(setTurnStateAndLastCards(Running, cardsFoundInTurn.mapNotNull { it.id }))
             .subscribe(
                 { Timber.d("set me as current player success") },
                 { Timber.e(it, "error while setting current player") }
@@ -304,6 +305,7 @@ class GamePresenter @Inject constructor(
         }
         gameFlow.me?.team?.let {
             increaseScore(it)
+                .andThen(setTurnLastCards(cardsFoundInTurn.mapNotNull { it.id }))
                 .andThen(handleNextCard(pickNextCard(), time))
                 .subscribe({
                 }, {
@@ -339,6 +341,17 @@ class GamePresenter @Inject constructor(
         val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state))))
         return updateGame(newGame)
     }
+
+    private fun setTurnLastCards(cardsIds: List<String>): Completable {
+        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(cardsFound = cardsIds))))
+        return updateGame(newGame)
+    }
+
+    private fun setTurnStateAndLastCards(state: TurnState, cardsIds: List<String>): Completable {
+        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state, cardsFound = cardsIds))))
+        return updateGame(newGame)
+    }
+
     private fun setTurnStoppedState(): Completable {
         val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = Stopped, time = TURN_TIME_MILLIS))))
         return updateGame(newGame)
