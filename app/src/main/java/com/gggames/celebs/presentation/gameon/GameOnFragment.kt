@@ -174,13 +174,13 @@ class GameOnFragment : Fragment(),
     }
 
     var endTurnDialog : EndTurnDialogFragment? = null
-    override fun showTurnEnded(player: Player?) {
+    override fun showTurnEnded(player: Player?, cards: List<Card>) {
 //        name?.let {
 //            cardTextView.text = "$name's turn ended"
 //        }
         player?.let {
             if (endTurnDialog?.isAdded != true) {
-                endTurnDialog = EndTurnDialogFragment(player, emptyList())
+                endTurnDialog = EndTurnDialogFragment.create(player, cards)
                 endTurnDialog?.show(requireActivity() as AppCompatActivity)
             }
 
