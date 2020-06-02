@@ -255,6 +255,7 @@ class GamePresenter @Inject constructor(
     private fun onPlayerStarted() {
         cardsFoundInTurn.clear()
         setGameStateStartedAndMeActive()
+            .andThen(setRoundState(Ready))
             .andThen(handleNextCard(pickNextCard()))
             .andThen(setTurnStateAndLastCards(Running, cardsFoundInTurn.mapNotNull { it.id }))
             .subscribe(
