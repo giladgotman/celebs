@@ -82,7 +82,14 @@ class GamePresenter @Inject constructor(
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
             is MainUiEvent.Logout -> onLogout()
+            is MainUiEvent.BackPressed -> onBackPressed()
         }
+    }
+
+    private fun onBackPressed() {
+        maybeEndMyTurn()
+            .subscribe {
+            }.let { disposables.add(it) }
     }
 
     private fun onLogout() {
@@ -93,6 +100,8 @@ class GamePresenter @Inject constructor(
                 Timber.w("logout done")
             }.let { disposables.add(it) }
     }
+
+
 
     private fun maybeEndMyTurn(): Completable {
         return if (gameFlow.isMeActivePlayer(game)) {
