@@ -6,6 +6,7 @@ import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
 import com.gggames.celebs.model.RoundState.Ended
@@ -33,6 +34,7 @@ class GamePresenter @Inject constructor(
     private val gameFlow: GameFlow,
     private val cardsRepository: CardsRepository,
     private val gamesRepository: GamesRepository,
+    private val leaveGame: LeaveGame,
     private val audioPlayer: AudioPlayer
 ) {
     private var cardDeck = mutableListOf<Card>()
@@ -79,6 +81,24 @@ class GamePresenter @Inject constructor(
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
+            is MainUiEvent.Logout -> onLogout()
+        }
+    }
+
+    private fun onLogout() {
+        val me = gameFlow.me!!
+        maybeEndMyTurn()
+            .andThen(leaveGame(game, me))
+            .subscribe {
+                Timber.w("logout done")
+            }.let { disposables.add(it) }
+    }
+
+    private fun maybeEndMyTurn(): Completable {
+        return if (gameFlow.isMeActivePlayer(game)) {
+            endMyTurn()
+        } else {
+            Completable.complete()
         }
     }
 
