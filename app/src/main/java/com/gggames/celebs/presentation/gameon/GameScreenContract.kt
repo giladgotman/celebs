@@ -10,6 +10,10 @@ interface GameScreenContract {
         data class RoundClick(val time: Long) : UiEvent()
         object TimerEnd : UiEvent()
         object FinishGameClick : UiEvent()
+
+        sealed class MainUiEvent : UiEvent(){
+            object Logout : MainUiEvent()
+        }
     }
 
     enum class ButtonState {

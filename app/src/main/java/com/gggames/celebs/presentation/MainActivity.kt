@@ -15,6 +15,7 @@ import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.core.di.getAppComponent
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.celebs.utils.showErrorToast
 import com.google.android.material.snackbar.Snackbar
 import com.idagio.app.core.utils.share.Shareable
@@ -22,6 +23,7 @@ import com.idagio.app.core.utils.share.createDynamicLink
 import com.idagio.app.core.utils.share.getPendingDeepLink
 import com.idagio.app.core.utils.share.share
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var shareableFactory: Shareable.Factory
 
     private val disposables = CompositeDisposable()
+
+    val events = PublishSubject.create<MainUiEvent>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getAppComponent(this).inject(this)
@@ -88,6 +92,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_logout -> {
+                events.onNext(MainUiEvent.Logout)
                 finish()
                 gameFlow.logout()
                 true
@@ -121,3 +126,4 @@ class MainActivity : AppCompatActivity() {
         disposables.clear()
     }
 }
+

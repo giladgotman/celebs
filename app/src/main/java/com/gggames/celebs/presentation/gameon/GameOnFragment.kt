@@ -19,12 +19,14 @@ import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
-import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
 import com.gggames.celebs.utils.showInfoToast
+import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
@@ -49,8 +51,6 @@ class GameOnFragment : Fragment(),
 
     private val _emitter = PublishSubject.create<UiEvent>()
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,7 +64,9 @@ class GameOnFragment : Fragment(),
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        presenter.bind(this, _emitter)
+        val uiEvents = merge(_emitter, (activity as MainActivity).events)
+
+        presenter.bind(this, uiEvents)
         cardTextView.text = ""
 
         endTurnButton.setOnClickListener {
