@@ -121,6 +121,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        events.onNext(MainUiEvent.BackPressed)
+        super.onBackPressed()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         disposables.clear()

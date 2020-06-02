@@ -66,7 +66,6 @@ class GameOnFragment : Fragment(),
 
         val uiEvents = merge(_emitter, (activity as MainActivity).events)
 
-        presenter.bind(this, uiEvents)
         cardTextView.text = ""
 
         endTurnButton.setOnClickListener {
@@ -110,6 +109,8 @@ class GameOnFragment : Fragment(),
         hideTeamsInfo()
         setStoppedState()
         setupTimer()
+
+        presenter.bind(this, uiEvents)
     }
 
     private fun hideTeamsInfo() {
@@ -345,6 +346,7 @@ class GameOnFragment : Fragment(),
     override fun navigateToGames() {
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
