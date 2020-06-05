@@ -87,25 +87,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gameTopSection">
 
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardCardView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/medium_margin"
-            android:elevation="5dp"
-            android:foregroundGravity="center"
-            app:layout_constraintBottom_toTopOf="@id/startButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/gilad"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/note_background"
+                app:layout_constraintBottom_toTopOf="@id/startButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginBottom="@dimen/medium_margin"
+
+                android:padding="20dp"
                 >
             <TextView
                 android:id="@+id/cardTextView"
@@ -123,7 +116,6 @@
                 tools:text="Putin the president of russia" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/endTurnButton"
@@ -131,7 +123,7 @@
             android:layout_height="64dp"
             android:text="X"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
-            app:layout_constraintStart_toStartOf="@id/cardCardView" />
+            app:layout_constraintStart_toStartOf="@id/cardLayout" />
 
         <!--            android:src="@drawable/ic_close_24px"-->
         <Button
@@ -151,7 +143,7 @@
             android:layout_height="64dp"
             android:text="V"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
-            app:layout_constraintEnd_toEndOf="@id/cardCardView" />
+            app:layout_constraintEnd_toEndOf="@id/cardLayout" />
 
         <!--            android:src="@drawable/ic_done_24px"-->
 
@@ -230,7 +222,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/team1Layout">
+            app:layout_constraintTop_toBottomOf="@id/team1Layout"
+            >
 
             <TextView
                 android:id="@+id/team2Name"
