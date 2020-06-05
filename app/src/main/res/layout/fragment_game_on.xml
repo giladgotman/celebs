@@ -222,6 +222,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@id/team1Layout"
             >
 
@@ -261,7 +262,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/team2Layout">
+            app:layout_constraintTop_toBottomOf="@id/team2Layout"
+            android:visibility="gone"
+            >
 
             <TextView
                 android:id="@+id/team3Name"
