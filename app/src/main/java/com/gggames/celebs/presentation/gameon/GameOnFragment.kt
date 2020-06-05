@@ -106,17 +106,10 @@ class GameOnFragment : Fragment(),
         cardsAmountIcon.setOnClickListener {
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
-        hideTeamsInfo()
         setStoppedState()
         setupTimer()
 
         presenter.bind(this, uiEvents)
-    }
-
-    private fun hideTeamsInfo() {
-        team1Layout.isVisible = false
-        team2Layout.isVisible = false
-        team3Layout.isVisible = false
     }
 
     override fun showNewRoundAlert(onClick: (Boolean) -> Unit) {
