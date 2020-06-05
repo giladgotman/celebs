@@ -157,7 +157,7 @@ class GameOnFragment : Fragment(),
         } else {
             ContextCompat.getColor(requireContext(), R.color.gilad)
         }
-        cardLayout.setBackgroundColor(cardColor)
+//        cardLayout.setBackgroundColor(cardColor)
     }
 
 
@@ -169,7 +169,7 @@ class GameOnFragment : Fragment(),
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
 
-        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+//        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun setCorrectEnabled(enabled: Boolean) {
@@ -340,7 +340,7 @@ class GameOnFragment : Fragment(),
         startButton.setOnClickListener {
             _emitter.onNext(UiEvent.FinishGameClick)
         }
-        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+//        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun navigateToGames() {
