@@ -9,6 +9,7 @@
     <color name="colorPrimary">@color/warm_yellow</color>
     <color name="colorPrimaryDark">@color/warm_orange</color>
     <color name="colorAccent">@color/hawaii_blue</color>
+    <color name="mainTextColor">@color/black</color>
 
     <color name="green">#39B337</color>
     <color name="black">#000000</color>
