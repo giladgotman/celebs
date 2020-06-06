@@ -14,6 +14,18 @@
         <item name="colorControlNormal">@color/mainTextColor</item>
         <!-- sets the color for the back arrow -->
         <item name="actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
+        <item name="android:textViewStyle">@style/DefaultTextViewStyle</item>
+        <item name="android:buttonStyle">@style/DefaultButtonStyle</item>
+    </style>
+
+    <style name="DefaultTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/courgette_regular</item>
+        <item name="fontFamily">@font/courgette_regular</item>
+    </style>
+
+    <style name="DefaultButtonStyle" parent="android:Widget.Material.Button">
+        <item name="android:fontFamily">@font/courgette_regular</item>
+        <item name="fontFamily">@font/courgette_regular</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
