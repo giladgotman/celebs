@@ -1,3 +1,3 @@
 package com.gggames.com.celebs.common
 
-val GAMES_PATH = "games_v2"
+val GAMES_PATH = "games_v3"
