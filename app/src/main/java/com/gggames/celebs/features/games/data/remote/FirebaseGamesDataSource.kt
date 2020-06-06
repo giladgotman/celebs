@@ -6,7 +6,7 @@ import com.gggames.celebs.model.GameState
 import com.gggames.celebs.model.remote.GameRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
-import com.gggames.com.celebs.common.GAMES_PATH
+import com.gggames.celebs.common.GAMES_PATH
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions

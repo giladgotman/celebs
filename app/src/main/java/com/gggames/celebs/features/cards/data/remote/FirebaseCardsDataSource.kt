@@ -1,11 +1,11 @@
 package com.gggames.celebs.features.cards.data.remote
 
+import com.gggames.celebs.common.GAMES_PATH
 import com.gggames.celebs.features.cards.data.CardsDataSource
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.remote.CardRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
-import com.gggames.com.celebs.common.GAMES_PATH
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore

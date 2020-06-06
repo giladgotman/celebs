@@ -5,7 +5,7 @@ import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.remote.PlayerRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
-import com.gggames.com.celebs.common.GAMES_PATH
+import com.gggames.celebs.common.GAMES_PATH
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
