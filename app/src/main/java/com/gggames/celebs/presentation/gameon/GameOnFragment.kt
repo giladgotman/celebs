@@ -103,7 +103,7 @@ class GameOnFragment : Fragment(),
             _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
         }
 
-        cardsAmountIcon.setOnClickListener {
+        cardsAmount.setOnClickListener {
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
         setStoppedState()
