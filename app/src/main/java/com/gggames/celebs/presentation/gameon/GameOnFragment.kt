@@ -2,6 +2,8 @@ package com.gggames.celebs.presentation.gameon
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -144,6 +146,7 @@ class GameOnFragment : Fragment(),
         startButton.isEnabled = true
         endTurnButton.isEnabled = meActive
         correctButton.isEnabled = meActive
+        correctButton.applyGreyScale(meActive)
 
         val cardColor = if (meActive) {
             ContextCompat.getColor(requireContext(), R.color.green)
@@ -157,10 +160,9 @@ class GameOnFragment : Fragment(),
     override fun setStoppedState() {
         mCountDownTimer?.cancel()
         updateTime(TURN_TIME_MILLIS)
-//        startButton.text = "Start"
-//        startButton.setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
         startButton.state = ButtonState.Stopped
         correctButton.isEnabled = false
+        correctButton.applyGreyScale(false)
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
 
@@ -169,6 +171,7 @@ class GameOnFragment : Fragment(),
 
     override fun setCorrectEnabled(enabled: Boolean) {
         correctButton.isEnabled = enabled
+        correctButton.applyGreyScale(enabled)
     }
 
     var endTurnDialog : EndTurnDialogFragment? = null
@@ -190,6 +193,7 @@ class GameOnFragment : Fragment(),
     override fun setPausedState(meActive: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
+        correctButton.applyGreyScale(false)
         startButton.state = ButtonState.Paused
         startButton.isEnabled = meActive
         time?.let {
@@ -331,6 +335,7 @@ class GameOnFragment : Fragment(),
         startButton.state = ButtonState.Finished
         startButton.isEnabled = true
         correctButton.isEnabled = false
+        correctButton.applyGreyScale(false)
         endTurnButton.isEnabled = false
         startButton.setOnClickListener {
             _emitter.onNext(UiEvent.FinishGameClick)
@@ -362,14 +367,13 @@ class GameOnFragment : Fragment(),
 
 }
 
-private fun ImageButton.toButtonState(): GameScreenContract.ButtonState =
-    GameScreenContract.ButtonState.Stopped
-//    when (this.text) {
-//        "Start" -> GameScreenContract.ButtonState.Stopped
-//        "Resume" -> GameScreenContract.ButtonState.Paused
-//        "Pause" -> GameScreenContract.ButtonState.Running
-//        else -> throw IllegalStateException("button state $this is unknown")
-//    }
-
-
-
+fun ImageButton.applyGreyScale(enabled: Boolean) {
+    if (enabled) {
+        this.colorFilter = null
+    } else {
+        val matrix = ColorMatrix()
+        matrix.setSaturation(0f)
+        val filter = ColorMatrixColorFilter(matrix)
+        this.colorFilter = filter
+    }
+}
