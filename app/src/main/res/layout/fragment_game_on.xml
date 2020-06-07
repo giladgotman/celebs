@@ -117,8 +117,8 @@
 
         <com.gggames.celebs.presentation.HourglassButton
             android:id="@+id/endTurnButton"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/help_button"
             android:background="@drawable/ripple_circular_dark"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
