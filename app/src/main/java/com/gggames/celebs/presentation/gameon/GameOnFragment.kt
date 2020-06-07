@@ -7,7 +7,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -140,7 +140,7 @@ class GameOnFragment : Fragment(),
             updateTime(time)
         }
         startTimer()
-        startButton.text = "Pause"
+//        startButton.text = "Pause"
         startButton.isEnabled = true
         endTurnButton.isEnabled = meActive
         correctButton.isEnabled = meActive
@@ -157,7 +157,9 @@ class GameOnFragment : Fragment(),
     override fun setStoppedState() {
         mCountDownTimer?.cancel()
         updateTime(TURN_TIME_MILLIS)
-        startButton.text = "Start"
+//        startButton.text = "Start"
+        startButton.setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
+
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
@@ -188,7 +190,7 @@ class GameOnFragment : Fragment(),
     override fun setPausedState(meActive: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
-        startButton.text = "Resume"
+//        startButton.text = "Resume"
         startButton.isEnabled = meActive
         time?.let {
             updateTime(time)
@@ -326,7 +328,7 @@ class GameOnFragment : Fragment(),
         cardTextView.text = "Game Over!"
         timerTextView?.text = ""
         mCountDownTimer?.cancel()
-        startButton.text = "FINISH"
+//        startButton.text = "FINISH"
         startButton.isEnabled = true
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
@@ -360,13 +362,14 @@ class GameOnFragment : Fragment(),
 
 }
 
-private fun Button.toButtonState(): GameScreenContract.ButtonState =
-    when (this.text) {
-        "Start" -> GameScreenContract.ButtonState.Stopped
-        "Resume" -> GameScreenContract.ButtonState.Paused
-        "Pause" -> GameScreenContract.ButtonState.Running
-        else -> throw IllegalStateException("button state $this is unknown")
-    }
+private fun ImageButton.toButtonState(): GameScreenContract.ButtonState =
+    GameScreenContract.ButtonState.Stopped
+//    when (this.text) {
+//        "Start" -> GameScreenContract.ButtonState.Stopped
+//        "Resume" -> GameScreenContract.ButtonState.Paused
+//        "Pause" -> GameScreenContract.ButtonState.Running
+//        else -> throw IllegalStateException("button state $this is unknown")
+//    }
 
 
 
