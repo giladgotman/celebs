@@ -48,8 +48,7 @@
                 tools:visibility="visible"
                 android:background="@color/transparent"
                 android:foreground="@drawable/ripple_circular_light"
-                android:src="@drawable/ic_share_white_18dp"
-
+                android:src="@drawable/ic_share_18dp"
                 tools:ignore="UnusedAttribute" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
