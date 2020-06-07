@@ -128,7 +128,7 @@
             app:layout_constraintStart_toStartOf="@id/cardLayout" />
 
         <!--            android:src="@drawable/ic_close_24px"-->
-        <ImageButton
+        <com.gggames.celebs.presentation.PlayButton
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
