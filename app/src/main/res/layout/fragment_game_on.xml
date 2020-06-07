@@ -117,33 +117,34 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/endTurnButton"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:text="X"
+            android:src="@drawable/help_button"
+            android:background="@drawable/ripple_circular_dark"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
             app:layout_constraintStart_toStartOf="@id/cardLayout" />
 
         <!--            android:src="@drawable/ic_close_24px"-->
-        <Button
+        <ImageButton
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:text="Start"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:src="@drawable/start_button"
+            android:background="@drawable/ripple_circular_dark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/correctButton"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:text="V"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/NextButtonStyle"
             app:layout_constraintBottom_toBottomOf="@id/startButton"
-            app:layout_constraintEnd_toEndOf="@id/cardLayout" />
+            app:layout_constraintEnd_toEndOf="@id/cardLayout"
+            />
 
         <!--            android:src="@drawable/ic_done_24px"-->
 
