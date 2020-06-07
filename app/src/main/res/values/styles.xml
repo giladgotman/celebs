@@ -26,6 +26,11 @@
         <item name="fontFamily">@font/roboto_light</item>
     </style>
 
+    <style name="CardTextViewStyle" parent="DefaultTextViewStyle">
+        <item name="android:fontFamily">@font/indie_flower_regular</item>
+        <item name="fontFamily">@font/indie_flower_regular</item>
+    </style>
+
     <style name="DefaultButtonStyle" parent="android:Widget.Material.Light.ImageButton">
         <item name="android:fontFamily">@font/courgette_regular</item>
         <item name="fontFamily">@font/courgette_regular</item>
