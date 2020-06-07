@@ -158,8 +158,8 @@ class GameOnFragment : Fragment(),
         mCountDownTimer?.cancel()
         updateTime(TURN_TIME_MILLIS)
 //        startButton.text = "Start"
-        startButton.setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
-
+//        startButton.setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
+        startButton.state = GameScreenContract.ButtonState.Stopped
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
