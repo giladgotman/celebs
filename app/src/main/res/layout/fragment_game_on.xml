@@ -115,7 +115,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageButton
+        <com.gggames.celebs.presentation.HourglassButton
             android:id="@+id/endTurnButton"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -135,7 +135,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageButton
+        <com.gggames.celebs.presentation.HourglassButton
             android:id="@+id/correctButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

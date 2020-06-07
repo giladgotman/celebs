@@ -1,32 +1,16 @@
 package com.gggames.celebs.presentation
 
 import android.content.Context
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatImageButton
 import com.gggames.celebs.R
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 
-class PlayButton: AppCompatImageButton {
+class PlayButton: HourglassButton {
 
     var state: ButtonState = ButtonState.Stopped
     set(value) {
         field = value
         renderState()
-    }
-
-    override fun setEnabled(enabled: Boolean) {
-        super.setEnabled(enabled)
-        if (enabled) {
-            this.colorFilter = null
-        } else {
-            val matrix = ColorMatrix()
-            matrix.setSaturation(0f)
-            val filter = ColorMatrixColorFilter(matrix)
-            this.colorFilter = filter
-        }
-
     }
 
     constructor(context: Context) : this(context, null, 0)
