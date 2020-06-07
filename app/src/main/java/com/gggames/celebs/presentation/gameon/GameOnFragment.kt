@@ -23,6 +23,7 @@ import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
+import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
 import com.gggames.celebs.utils.showInfoToast
@@ -99,8 +100,7 @@ class GameOnFragment : Fragment(),
         }
 
         startButton.setOnClickListener {
-            val buttonState = startButton.toButtonState()
-            _emitter.onNext(UiEvent.StartStopClick(buttonState, mTimeLeftInMillis))
+            _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
         }
 
         cardsAmountIcon.setOnClickListener {
@@ -140,7 +140,7 @@ class GameOnFragment : Fragment(),
             updateTime(time)
         }
         startTimer()
-//        startButton.text = "Pause"
+        startButton.state = ButtonState.Running
         startButton.isEnabled = true
         endTurnButton.isEnabled = meActive
         correctButton.isEnabled = meActive
@@ -159,7 +159,7 @@ class GameOnFragment : Fragment(),
         updateTime(TURN_TIME_MILLIS)
 //        startButton.text = "Start"
 //        startButton.setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
-        startButton.state = GameScreenContract.ButtonState.Stopped
+        startButton.state = ButtonState.Stopped
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
@@ -190,7 +190,7 @@ class GameOnFragment : Fragment(),
     override fun setPausedState(meActive: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
-//        startButton.text = "Resume"
+        startButton.state = ButtonState.Paused
         startButton.isEnabled = meActive
         time?.let {
             updateTime(time)
@@ -328,7 +328,7 @@ class GameOnFragment : Fragment(),
         cardTextView.text = "Game Over!"
         timerTextView?.text = ""
         mCountDownTimer?.cancel()
-//        startButton.text = "FINISH"
+        startButton.state = ButtonState.Finished
         startButton.isEnabled = true
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false

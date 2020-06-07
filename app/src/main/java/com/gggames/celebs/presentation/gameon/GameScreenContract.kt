@@ -20,7 +20,8 @@ interface GameScreenContract {
     enum class ButtonState {
         Stopped,
         Running,
-        Paused
+        Paused,
+        Finished
     }
 
 }
