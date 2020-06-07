@@ -27,6 +27,7 @@
     <style name="DefaultButtonStyle" parent="android:Widget.Material.Button">
         <item name="android:fontFamily">@font/courgette_regular</item>
         <item name="fontFamily">@font/courgette_regular</item>
+        <item name="android:background">@color/hawaii_blue</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
