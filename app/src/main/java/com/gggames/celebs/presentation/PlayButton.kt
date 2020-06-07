@@ -9,6 +9,10 @@ import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 class PlayButton: AppCompatImageButton {
 
     var state: ButtonState = ButtonState.Stopped
+    set(value) {
+        field = value
+        renderState()
+    }
 
     constructor(context: Context) : this(context, null, 0)
 
@@ -19,12 +23,14 @@ class PlayButton: AppCompatImageButton {
         attrs,
         defStyleAttr
     )
-    fun renderState(state: ButtonState) {
-        when (state) {
-            ButtonState.Stopped -> setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
-            ButtonState.Running -> setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
-            ButtonState.Paused -> setImageDrawable(resources.getDrawable(R.drawable.start_button, null))
+    private fun renderState() {
+        val drawable = when (state) {
+            ButtonState.Stopped -> resources.getDrawable(R.drawable.start_button, null)
+            ButtonState.Running -> resources.getDrawable(R.drawable.pasue_button, null)
+            ButtonState.Paused -> resources.getDrawable(R.drawable.start_button, null)
+            ButtonState.Finished -> resources.getDrawable(R.drawable.ic_close_24px, null)
         }
+        this.setImageDrawable(drawable)
     }
 
 }
