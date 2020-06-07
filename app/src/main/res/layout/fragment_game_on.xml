@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/colorPrimary"
     tools:context="com.gggames.celebs.presentation.creategame.GamesFragment"
     >
 
@@ -89,9 +89,9 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardLayout"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/note_background"
+                android:layout_width="250dp"
+                android:layout_height="237dp"
+                android:background="@drawable/card_blue"
                 app:layout_constraintBottom_toTopOf="@id/startButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +154,7 @@
         android:id="@+id/infoSection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/colorPrimary"
         android:padding="@dimen/default_margin"
         android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
