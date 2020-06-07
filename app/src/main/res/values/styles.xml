@@ -24,10 +24,17 @@
         <item name="fontFamily">@font/courgette_regular</item>
     </style>
 
-    <style name="DefaultButtonStyle" parent="android:Widget.Material.Button">
+    <style name="DefaultButtonStyle" parent="android:Widget.Material.Light.ImageButton">
         <item name="android:fontFamily">@font/courgette_regular</item>
         <item name="fontFamily">@font/courgette_regular</item>
         <item name="android:background">@color/hawaii_blue</item>
+    </style>
+
+    <style name="NextButtonStyle" parent="DefaultButtonStyle" >
+        <item name="android:src">@drawable/correct_button</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:foreground">@drawable/ripple_circular_dark</item>
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
