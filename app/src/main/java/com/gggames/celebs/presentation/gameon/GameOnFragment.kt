@@ -7,13 +7,14 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
@@ -50,6 +51,8 @@ class GameOnFragment : Fragment(),
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
     private val _emitter = PublishSubject.create<UiEvent>()
+
+    private var playerAdapters : List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -107,6 +110,8 @@ class GameOnFragment : Fragment(),
         }
         setStoppedState()
         setupTimer()
+
+        setupPlayers()
 
         presenter.bind(this, uiEvents)
     }
@@ -238,58 +243,54 @@ class GameOnFragment : Fragment(),
         teams.forEachIndexed { index, team ->
             when (index) {
                 0 -> updateTeam1(team.name, team.players)
-                1 -> updateTeam2(team.name, team.players)
-                2 -> updateTeam3(team.name, team.players)
+//                1 -> updateTeam2(team.name, team.players)
+//                2 -> updateTeam3(team.name, team.players)
             }
         }
+    }
+
+    private fun setupPlayers() {
+        val layoutManager = LinearLayoutManager(this.context)
+        players.layoutManager = layoutManager
+        players.itemAnimator = DefaultItemAnimator()
+        players.adapter = playerAdapters[0]
     }
 
     private fun updateTeam1(teamName: String, players: List<Player>) {
         team1Name.text = "$teamName"
         team1Layout.isVisible = true
-        setPlayersForTeam(team1Value, players)
+        playerAdapters[0].setData(players)
     }
 
-    private fun updateTeam2(teamName: String, players: List<Player>) {
-        team2Name.text = "$teamName"
-        team2Layout.isVisible = true
-        setPlayersForTeam(team2Value, players)
-    }
-
-    private fun updateTeam3(teamName: String, players: List<Player>) {
-        team3Name.text = "$teamName"
-        team3Layout.isVisible = true
-        setPlayersForTeam(team3Value, players)
-    }
-
-    private fun setPlayersForTeam(teamValue: TextView, players: List<Player>) {
-        val sb = StringBuilder()
-        players.forEachIndexed { i, player ->
-            sb.append(player.name)
-            if (i < players.lastIndex) {
-                sb.append(", ")
-            }
-        }
-        teamValue.text = sb.toString()
-    }
+//    private fun updateTeam2(teamName: String, players: List<Player>) {
+//        team2Name.text = "$teamName"
+//        team2Layout.isVisible = true
+//        setPlayersForTeam(team2Value, players)
+//    }
+//
+//    private fun updateTeam3(teamName: String, players: List<Player>) {
+//        team3Name.text = "$teamName"
+//        team3Layout.isVisible = true
+//        setPlayersForTeam(team3Value, players)
+//    }
 
     override fun setScore(score: Map<String, Int>) {
         val score1 = score[team1Name.text] ?: 0
-        val score2 = score[team2Name.text] ?: 0
-        team1Score.text = "(score: $score1) : "
-        team2Score.text = "(score: $score2) : "
-        if (score.size > 2) {
-            val score3 = score[team3Name.text] ?: 0
-            team3Score.text = "(score: $score3) : "
-        }
+        team1Score.text = "$score1"
+//        val score2 = score[team2Name.text] ?: 0
+//        team2Score.text = "(score: $score2) : "
+//        if (score.size > 2) {
+//            val score3 = score[team3Name.text] ?: 0
+//            team3Score.text = "(score: $score3) : "
+//        }
     }
 
     override fun setTeamNames(teams: List<Team>) {
         teams.forEachIndexed { index, team ->
             when (index) {
                 0 -> team1Name.text = team.name
-                1 -> team2Name.text = team.name
-                2 -> team3Name.text = team.name
+//                1 -> team2Name.text = team.name
+//                2 -> team3Name.text = team.name
             }
         }
     }

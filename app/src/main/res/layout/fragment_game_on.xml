@@ -168,137 +168,66 @@
             android:layout_width="match_parent"
             android:layout_height="5dp"/>
 
-        <TextView
-            android:id="@+id/teamsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/teams"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/teamsRuler" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/team1Layout"
+        <LinearLayout
+            android:id="@+id/teamsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/teamsTitle">
-
-            <TextView
-                android:id="@+id/team1Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Team1:" />
-
-            <TextView
-                android:id="@+id/team1Score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="@dimen/default_margin"
-                app:layout_constraintBaseline_toBaselineOf="@id/team1Name"
-                app:layout_constraintStart_toEndOf="@id/team1Name"
-                tools:text="(1)" />
-
-            <TextView
-                android:id="@+id/team1Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/default_margin"
-                app:layout_constraintBaseline_toBaselineOf="@id/team1Name"
-                app:layout_constraintStart_toEndOf="@id/team1Score"
-                tools:text="pupis, humis, gilad, jojo" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/team2Layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@id/team1Layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:padding="@dimen/small_margin"
+            android:divider="?android:dividerVertical"
+            android:showDividers="middle"
             >
-
-            <TextView
-                android:id="@+id/team2Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin"
-                android:textSize="18sp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/team1Layout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Team2:" />
+                android:layout_weight="33"
+                app:layout_constraintTop_toBottomOf="@id/teamsTitle"
+                >
 
-            <TextView
-                android:id="@+id/team2Score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="@dimen/default_margin"
-                app:layout_constraintBaseline_toBaselineOf="@id/team2Name"
-                app:layout_constraintStart_toEndOf="@id/team2Name"
-                tools:text="(1)" />
+                <TextView
+                    android:id="@+id/team1Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Team1" />
 
-            <TextView
-                android:id="@+id/team2Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/default_margin"
-                app:layout_constraintBaseline_toBaselineOf="@id/team2Name"
-                app:layout_constraintStart_toEndOf="@id/team2Score"
-                tools:text="pupis2, humis2, gilad2, jojo2" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/team1Score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBaseline_toBaselineOf="@id/team1Name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@drawable/score_bg"
+                    android:gravity="center"
+                    tools:text="1" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/team3Layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/team2Layout"
-            android:visibility="gone"
-            >
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/players"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/default_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/team1Name"
+                    />
 
-            <TextView
-                android:id="@+id/team3Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Team3:" />
 
-            <TextView
-                android:id="@+id/team3Score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="@dimen/default_margin"
-                app:layout_constraintBaseline_toBaselineOf="@id/team3Name"
-                app:layout_constraintStart_toEndOf="@id/team3Name"
-                tools:text="(1)" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/team3Value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin"
-                android:layout_marginTop="@dimen/default_margin"
-                app:layout_constraintBaseline_toBaselineOf="@id/team3Name"
-                app:layout_constraintStart_toEndOf="@id/team3Score"
-                tools:text="pupis2, humis2, gilad2, jojo2" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
