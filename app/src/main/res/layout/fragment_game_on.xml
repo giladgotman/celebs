@@ -106,6 +106,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center_horizontal|center_vertical"
                 android:textColor="@color/black"
                 android:textSize="34sp"
@@ -154,7 +155,7 @@
         android:background="@color/colorPrimary"
         android:paddingStart="@dimen/default_margin"
         android:paddingEnd="@dimen/default_margin"
-        android:elevation="5dp"
+        android:elevation="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -171,15 +172,12 @@
 
         <LinearLayout
             android:id="@+id/teamsLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:orientation="horizontal"
-            android:weightSum="100"
-            android:elevation="5dp"
-            android:padding="@dimen/small_margin"
             android:divider="?android:dividerVertical"
             android:showDividers="middle"
             >
@@ -188,7 +186,8 @@
                 android:id="@+id/team1Layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="33"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/small_margin"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
@@ -209,23 +208,67 @@
                     android:gravity="center"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/team1Name"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/team1Name"
                     app:layout_constraintTop_toTopOf="@+id/team1Name"
+                    android:layout_marginStart="@dimen/default_margin"
                     tools:text="1" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/players"
+                    android:id="@+id/team1players"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="@dimen/default_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/team1Name" />
+                    app:layout_constraintTop_toBottomOf="@id/team1Name"
+                    />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/team2Layout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/default_margin"
+                android:paddingTop="@dimen/small_margin"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:id="@+id/team2Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Team1" />
+
+                <TextView
+                    android:id="@+id/team2Score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/score_bg"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/team2Name"
+                    app:layout_constraintStart_toEndOf="@+id/team2Name"
+                    app:layout_constraintTop_toTopOf="@+id/team2Name"
+                    android:layout_marginStart="@dimen/default_margin"
+                    tools:text="1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/team2players"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/default_margin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/team2Name" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
