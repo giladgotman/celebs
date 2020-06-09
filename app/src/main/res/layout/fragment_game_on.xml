@@ -18,6 +18,7 @@
         android:paddingTop="@dimen/default_margin"
         android:paddingBottom="@dimen/default_margin"
         android:paddingStart="@dimen/default_margin"
+        android:paddingEnd="@dimen/default_margin"
         >
 
         <TextView
