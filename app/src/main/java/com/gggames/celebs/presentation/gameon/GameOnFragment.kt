@@ -54,7 +54,7 @@ class GameOnFragment : Fragment(),
     private val _emitter = PublishSubject.create<UiEvent>()
 
     private var playerAdapters : List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
-    private lateinit var playersRecycle : List<RecyclerView>
+    private var playersRecycle : MutableList<RecyclerView>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,8 +111,6 @@ class GameOnFragment : Fragment(),
         }
         setStoppedState()
         setupTimer()
-
-        setupPlayers()
 
         presenter.bind(this, uiEvents)
     }
@@ -245,15 +243,21 @@ class GameOnFragment : Fragment(),
             when (index) {
                 0 -> updateTeam1(team.name, team.players)
                 1 -> updateTeam2(team.name, team.players)
-//                2 -> updateTeam3(team.name, team.players)
+                2 -> updateTeam3(team.name, team.players)
             }
         }
     }
 
-    private fun setupPlayers() {
-        playersRecycle = listOf(team1players, team2players)
-
-        playersRecycle.forEachIndexed { index, recyclerView ->
+    private fun setupPlayers(teamsCount: Int) {
+        playersRecycle = mutableListOf(team1players)
+        if (teamsCount > 1) {
+            playersRecycle?.add(team2players)
+        }
+        if (teamsCount > 2) {
+            playersRecycle?.add(team3players)
+            team3Layout.isVisible = true
+        }
+        playersRecycle?.forEachIndexed { index, recyclerView ->
             recyclerView.layoutManager = LinearLayoutManager(this.context)
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = playerAdapters[index]
@@ -263,62 +267,50 @@ class GameOnFragment : Fragment(),
     private fun updateTeam1(teamName: String, players: List<Player>) {
         team1Name.text = "$teamName"
         team1Layout.isVisible = true
-
-        val fakePlayers = players.toMutableList()
-
-        for (i in 1..5) {
-            fakePlayers.add(
-                Player("$i", "name$i")
-            )
-        }
-
-        playerAdapters[0].setData(fakePlayers)
+        playerAdapters[0].setData(players)
     }
 
     private fun updateTeam2(teamName: String, players: List<Player>) {
         team2Name.text = "$teamName"
         team2Layout.isVisible = true
-
-        val fakePlayers = players.toMutableList()
-
-        for (i in 1..5) {
-            fakePlayers.add(
-                Player("$i", "name$i")
-            )
-        }
-
-        playerAdapters[1].setData(fakePlayers)
+        playerAdapters[1].setData(players)
     }
 
-//    private fun updateTeam2(teamName: String, players: List<Player>) {
-//        team2Name.text = "$teamName"
-//        team2Layout.isVisible = true
-//        setPlayersForTeam(team2Value, players)
-//    }
-//
-//    private fun updateTeam3(teamName: String, players: List<Player>) {
-//        team3Name.text = "$teamName"
-//        team3Layout.isVisible = true
-//        setPlayersForTeam(team3Value, players)
-//    }
+    private fun updateTeam3(teamName: String, players: List<Player>) {
+        team3Name.text = "$teamName"
+        team3Layout.isVisible = true
+        playerAdapters[2].setData(players)
+    }
 
     override fun setScore(score: Map<String, Int>) {
         val score1 = score[team1Name.text] ?: 0
         team1Score.text = "$score1"
         val score2 = score[team2Name.text] ?: 0
         team2Score.text = "$score2"
-//        if (score.size > 2) {
-//            val score3 = score[team3Name.text] ?: 0
-//            team3Score.text = "(score: $score3) : "
-//        }
+        if (score.size > 2) {
+            val score3 = score[team3Name.text] ?: 0
+            team3Score.text = "$score3"
+        }
     }
 
     override fun setTeamNames(teams: List<Team>) {
+        if (playersRecycle == null) {
+            setupPlayers(teams.size)
+        }
         teams.forEachIndexed { index, team ->
             when (index) {
-                0 -> team1Name.text = team.name
-                1 -> team2Name.text = team.name
-//                2 -> team3Name.text = team.name
+                0 -> {
+                    team1Name.text = team.name
+                    team1Name.isSelected = true
+                }
+                1 -> {
+                    team2Name.text = team.name
+                    team2Name.isSelected = true
+                }
+                2 -> {
+                    team3Name.text = team.name
+                    team3Name.isSelected = true
+                }
             }
         }
     }
