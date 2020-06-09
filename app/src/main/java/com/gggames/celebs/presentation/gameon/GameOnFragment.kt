@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
@@ -53,12 +54,12 @@ class GameOnFragment : Fragment(),
     private val _emitter = PublishSubject.create<UiEvent>()
 
     private var playerAdapters : List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
+    private lateinit var playersRecycle : List<RecyclerView>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_game_on, container, false)
     }
 
@@ -243,17 +244,20 @@ class GameOnFragment : Fragment(),
         teams.forEachIndexed { index, team ->
             when (index) {
                 0 -> updateTeam1(team.name, team.players)
-//                1 -> updateTeam2(team.name, team.players)
+                1 -> updateTeam2(team.name, team.players)
 //                2 -> updateTeam3(team.name, team.players)
             }
         }
     }
 
     private fun setupPlayers() {
-        val layoutManager = LinearLayoutManager(this.context)
-        players.layoutManager = layoutManager
-        players.itemAnimator = DefaultItemAnimator()
-        players.adapter = playerAdapters[0]
+        playersRecycle = listOf(team1players, team2players)
+
+        playersRecycle.forEachIndexed { index, recyclerView ->
+            recyclerView.layoutManager = LinearLayoutManager(this.context)
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            recyclerView.adapter = playerAdapters[index]
+        }
     }
 
     private fun updateTeam1(teamName: String, players: List<Player>) {
@@ -271,6 +275,21 @@ class GameOnFragment : Fragment(),
         playerAdapters[0].setData(fakePlayers)
     }
 
+    private fun updateTeam2(teamName: String, players: List<Player>) {
+        team2Name.text = "$teamName"
+        team2Layout.isVisible = true
+
+        val fakePlayers = players.toMutableList()
+
+        for (i in 1..5) {
+            fakePlayers.add(
+                Player("$i", "name$i")
+            )
+        }
+
+        playerAdapters[1].setData(fakePlayers)
+    }
+
 //    private fun updateTeam2(teamName: String, players: List<Player>) {
 //        team2Name.text = "$teamName"
 //        team2Layout.isVisible = true
@@ -286,8 +305,8 @@ class GameOnFragment : Fragment(),
     override fun setScore(score: Map<String, Int>) {
         val score1 = score[team1Name.text] ?: 0
         team1Score.text = "$score1"
-//        val score2 = score[team2Name.text] ?: 0
-//        team2Score.text = "(score: $score2) : "
+        val score2 = score[team2Name.text] ?: 0
+        team2Score.text = "$score2"
 //        if (score.size > 2) {
 //            val score3 = score[team3Name.text] ?: 0
 //            team3Score.text = "(score: $score3) : "
@@ -298,7 +317,7 @@ class GameOnFragment : Fragment(),
         teams.forEachIndexed { index, team ->
             when (index) {
                 0 -> team1Name.text = team.name
-//                1 -> team2Name.text = team.name
+                1 -> team2Name.text = team.name
 //                2 -> team3Name.text = team.name
             }
         }
