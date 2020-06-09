@@ -259,7 +259,16 @@ class GameOnFragment : Fragment(),
     private fun updateTeam1(teamName: String, players: List<Player>) {
         team1Name.text = "$teamName"
         team1Layout.isVisible = true
-        playerAdapters[0].setData(players)
+
+        val fakePlayers = players.toMutableList()
+
+        for (i in 1..5) {
+            fakePlayers.add(
+                Player("$i", "name$i")
+            )
+        }
+
+        playerAdapters[0].setData(fakePlayers)
     }
 
 //    private fun updateTeam2(teamName: String, players: List<Player>) {
