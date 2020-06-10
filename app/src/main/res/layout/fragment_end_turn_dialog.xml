@@ -12,6 +12,7 @@
         android:paddingTop="@dimen/default_margin"
         android:paddingEnd="@dimen/default_margin"
         android:paddingBottom="@dimen/default_margin"
+        android:background="@color/colorPrimary"
         app:layout_behavior="@string/bottom_sheet_behavior"
     >
 
