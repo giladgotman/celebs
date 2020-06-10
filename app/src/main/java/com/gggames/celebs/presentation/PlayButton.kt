@@ -27,7 +27,7 @@ class PlayButton: HourglassButton {
             ButtonState.Stopped -> resources.getDrawable(R.drawable.start_button, null)
             ButtonState.Running -> resources.getDrawable(R.drawable.pasue_button, null)
             ButtonState.Paused -> resources.getDrawable(R.drawable.start_button, null)
-            ButtonState.Finished -> resources.getDrawable(R.drawable.ic_close_24px, null)
+            ButtonState.Finished -> resources.getDrawable(R.drawable.exit_button, null)
         }
         this.setImageDrawable(drawable)
     }
