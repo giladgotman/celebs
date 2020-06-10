@@ -75,7 +75,7 @@ class EndTurnDialogFragment
         fun create(player: Player, cards: List<Card>): EndTurnDialogFragment {
             return EndTurnDialogFragment()
                 .apply {
-                isCancelable = false
+                isCancelable = true
                 arguments =
                     Bundle().apply {
                         putString(KEY_PLAYER_NAME, player.name)
