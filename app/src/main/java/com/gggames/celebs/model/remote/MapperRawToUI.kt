@@ -22,8 +22,8 @@ fun GameRaw.toUi() = Game(
     this.celebsCount.toInt(),
     this.teams.map { it.toUi() },
     GameState.fromName(this.state),
-    this.gameInfo.toUi()
-
+    this.gameInfo.toUi(),
+    this.host.toUi()
 )
 
 fun GameInfoRaw.toUi() = GameInfo(

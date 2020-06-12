@@ -12,7 +12,8 @@ data class GameRaw (
     val celebsCount: Long = 6,
     val teams: List<TeamRaw>,
     val state: String? = null,
-    val gameInfo: GameInfoRaw = GameInfoRaw()
+    val gameInfo: GameInfoRaw = GameInfoRaw(),
+    val host: PlayerRaw = PlayerRaw()
 ) {
     constructor() : this(
         EMPTY_VALUE,
