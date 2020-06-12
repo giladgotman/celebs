@@ -17,7 +17,7 @@ import javax.inject.Named
 
 
 class FirebaseCardsDataSource @Inject constructor(
-    @Named ("GameId")
+    @Named("GameId")
     private val gameId: String,
     private val firestore: FirebaseFirestore
 ) : CardsDataSource {
@@ -36,7 +36,8 @@ class FirebaseCardsDataSource @Inject constructor(
                     emitter.onError(e)
                 } else {
                     val cards =
-                        value?.documents?.map { it.toObject(CardRaw::class.java)?.copy(id = it.id) } ?: emptyList()
+                        value?.documents?.map { it.toObject(CardRaw::class.java)?.copy(id = it.id) }
+                            ?: emptyList()
                     emitter.onNext(cards.mapNotNull { it?.toUi() })
                     Timber.w("getAllCards update")
                 }
@@ -47,9 +48,8 @@ class FirebaseCardsDataSource @Inject constructor(
     override fun addCards(cards: List<Card>): Completable {
         Timber.w("addCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
         val cardsRaw = cards.map { it.toRaw() }
-        return Completable.create { emitter->
+        return Completable.create { emitter ->
             firestore.runTransaction {
-//                gameRef.update("state.myCards", cardsRaw)
                 cardsRaw.forEach {
                     cardsCollectionsRef.add(it)
                 }
@@ -57,7 +57,10 @@ class FirebaseCardsDataSource @Inject constructor(
                 Timber.i("cards added to path: ${cardsCollectionsRef.path}")
                 emitter.onComplete()
             }.addOnFailureListener { error ->
-                Timber.e(error, "error while trying to add cards to path: ${cardsCollectionsRef.path}")
+                Timber.e(
+                    error,
+                    "error while trying to add cards to path: ${cardsCollectionsRef.path}"
+                )
                 emitter.onError(error)
             }
         }
@@ -69,22 +72,25 @@ class FirebaseCardsDataSource @Inject constructor(
         if (cardRaw.id == null) {
             return Completable.error(java.lang.IllegalArgumentException("CardRaw.id can't be null"))
         }
-        return Completable.create { emitter->
-                cardsCollectionsRef.document(cardRaw.id).set(cardRaw)
-            .addOnSuccessListener {
-                Timber.i("card updated in path: ${cardsCollectionsRef.path}")
-                emitter.onComplete()
-            }.addOnFailureListener { error ->
-                Timber.e(error, "error while trying to update card in path: ${cardsCollectionsRef.path}")
-                emitter.onError(error)
-            }
+        return Completable.create { emitter ->
+            cardsCollectionsRef.document(cardRaw.id).set(cardRaw)
+                .addOnSuccessListener {
+                    Timber.i("card updated in path: ${cardsCollectionsRef.path}")
+                    emitter.onComplete()
+                }.addOnFailureListener { error ->
+                    Timber.e(
+                        error,
+                        "error while trying to update card in path: ${cardsCollectionsRef.path}"
+                    )
+                    emitter.onError(error)
+                }
         }
     }
 
-    override fun updateCards(cards: List<Card>): Completable {
-        Timber.w("updateCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
-        val cardsRaw = cards.map { it.toRaw() }
-        return Completable.create { emitter ->
+    override fun updateCards(cards: List<Card>): Completable =
+        Completable.create { emitter ->
+            Timber.w("updateCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
+            val cardsRaw = cards.map { it.toRaw() }
             firestore.runTransaction {
                 cardsRaw.forEach {
                     if (it.id == null) {
@@ -104,7 +110,6 @@ class FirebaseCardsDataSource @Inject constructor(
                 emitter.onError(error)
             }
         }
-    }
 }
 
 
