@@ -41,7 +41,9 @@ class GameFlow @Inject constructor(
         preferenceManager.savePlayer(me)
     }
 
-    fun isMeActivePlayer(game: Game) = me == game.currentPlayer
+    fun isMyslefActivePlayer(game: Game) = me == game.currentPlayer
+    
+    fun isMyselfHost(game: Game) = me == game.host
 
     fun setMyTeam(teamName: String) {
         me = me?.copy(team = teamName)

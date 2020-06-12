@@ -190,19 +190,19 @@ class GameOnFragment : Fragment(),
         cardTextView.text = "Your turn ended"
     }
 
-    override fun setPausedState(meActive: Boolean, time: Long?) {
+    override fun setPausedState(playButtonEnabled: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
         startButton.state = ButtonState.Paused
-        startButton.isEnabled = meActive
+        startButton.isEnabled = playButtonEnabled
         time?.let {
             updateTime(time)
         }
     }
 
-    override fun setNewRound(meActive: Boolean, roundNumber: Int) {
+    override fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int) {
         cardTextView.text = "Round $roundNumber is ready"
-        startButton.isEnabled = meActive
+        startButton.isEnabled = playButtonEnabled
         endTurnButton.isEnabled = false
     }
 

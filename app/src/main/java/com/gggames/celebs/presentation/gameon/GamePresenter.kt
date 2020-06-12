@@ -104,7 +104,7 @@ class GamePresenter @Inject constructor(
 
 
     private fun maybeEndMyTurn(): Completable {
-        return if (gameFlow.isMeActivePlayer(game)) {
+        return if (gameFlow.isMyslefActivePlayer(game)) {
             endMyTurn()
         } else {
             Completable.complete()
@@ -146,22 +146,18 @@ class GamePresenter @Inject constructor(
 
     private fun onRoundUpdate(newRound: Round) {
         Timber.v("UPDATE::ROUND:: newRound: $newRound}")
-        val meActive = gameFlow.isMeActivePlayer(game)
+        val meActive = gameFlow.isMyslefActivePlayer(game)
         if (newRound != lastGame?.round) {
             view.setRound(newRound.roundNumber.toString())
-            if (lastGame?.currentRound != newRound.roundNumber) {
-                if (gameFlow.isMeActivePlayer(game)) {
-                    loadNewRound()
-                }
-            }
             when (newRound.state) {
                 Ready -> {
                 }
-                RoundState.Ended -> {
+                Ended -> {
                     view.setRoundEndState(meActive, newRound.roundNumber)
                 }
                 RoundState.New -> {
-                    view.setNewRound(meActive, newRound.roundNumber)
+                    val startButtonEnabled = meActive || game.currentPlayer == null
+                    view.setNewRound(startButtonEnabled, newRound.roundNumber)
                 }
             }
             if (newRound.turn != lastGame?.turn) {
@@ -172,8 +168,9 @@ class GamePresenter @Inject constructor(
 
     private fun onTurnUpdate(turn: Turn) {
         Timber.v("UPDATE::TURN:: onTurnUpdate turn: $turn}")
-        val meActive = gameFlow.isMeActivePlayer(game)
-        if (gameFlow.isMeActivePlayer(game)) {
+        val meActive = gameFlow.isMyslefActivePlayer(game)
+        val playButtonEnabled = meActive || game.currentPlayer == null
+        if (gameFlow.isMyslefActivePlayer(game)) {
             when (turn.state) {
                 Idle -> {
                     view.setStoppedState()
@@ -189,7 +186,7 @@ class GamePresenter @Inject constructor(
                     view.setStartedState(meActive)
                 }
                 Paused -> {
-                    view.setPausedState(meActive)
+                    view.setPausedState(playButtonEnabled)
                 }
             }
         } else {
@@ -210,7 +207,7 @@ class GamePresenter @Inject constructor(
                     } ?: view.setNoCurrentPlayer()
                 }
                 Paused -> {
-                    view.setPausedState(meActive, turn.time)
+                    view.setPausedState(playButtonEnabled, turn.time)
                 }
             }
         }
@@ -226,24 +223,26 @@ class GamePresenter @Inject constructor(
             lastRound() -> {
                 view.showLastRoundToast()
             }
-            roundState == RoundState.Ended -> {
-                setNextRound(time)
+            roundState == Ended -> {
+                setNextRound()
             }
             else -> {
                 view.showNewRoundAlert { approved ->
                     if (approved) {
-                        setNextRound(time)
+                        endCurrentRound(time)
+                            .subscribe {
+                                setNextRound()
+                            }
+
                     }
                 }
             }
         }
     }
 
-    private fun setNextRound(time: Long) {
-        var gameRound = game.gameInfo.round.roundNumber
-        gameRound++
-        endCurrentRound(time)
-            .andThen(setNewRound(gameRound))
+    private fun setNextRound() {
+        resetDeck()
+            .andThen(setNewRound(game.gameInfo.round.roundNumber + 1))
             .subscribe({
                 Timber.d("set new round success")
             }, {
@@ -252,6 +251,7 @@ class GamePresenter @Inject constructor(
                 disposables.add(it)
             }
     }
+
     private fun onPlayerStarted() {
         cardsFoundInTurn.clear()
         setGameStateStartedAndMeActive()
@@ -399,14 +399,16 @@ class GamePresenter @Inject constructor(
 
 
     private fun onPlayerResumedNewRound() {
-        setRoundState(Ready)
+        setGameStateStartedAndMeActive()
+            .andThen(setRoundState(Ready))
             .andThen(handleNextCard(pickNextCard()))
             .andThen(setTurnState(Running))
             .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
     }
 
+    // TODO: 12.06.20 use isMyselfHost instead
     private fun onTurnEnded() {
-        if (gameFlow.isMeActivePlayer(game)) {
+        if (gameFlow.isMyslefActivePlayer(game)) {
             view.setStoppedState()
             setTurnStoppedState()
                 .andThen(maybeFlipLastCard())
@@ -443,23 +445,12 @@ class GamePresenter @Inject constructor(
     /*
     Load new round - only for active player
      */
-    private fun loadNewRound() {
+    private fun resetDeck(): Completable =
         setAllCardsToUnused()
-        cardsRepository.updateCards(cardDeck)
-            .subscribe({
-                setRoundState(RoundState.New).subscribe(
-                    { Timber.d("setRoundState Ready success") },
-                    { Timber.e(it, "error setRoundState Ready") }
-                ).let { disposables.add(it) }
-                Timber.d("update cards success")
-            }, {
-                Timber.e(it, "error while update card")
-            }).let {
-                disposables.add(it)
-            }
-    }
+            .andThen(cardsRepository.updateCards(cardDeck))
 
-    private fun lastRound(): Boolean  =
+
+    private fun lastRound(): Boolean =
         game.gameInfo.round.roundNumber == 3
 
     private fun endMyTurn(): Completable {
@@ -469,7 +460,14 @@ class GamePresenter @Inject constructor(
     }
 
     private fun setNewRound(round: Int): Completable =
-        setNewGameInfo(game.gameInfo.copy(round = game.gameInfo.round.copy(roundNumber = round)))
+        setNewGameInfo(
+            game.gameInfo.copy(
+                round = game.gameInfo.round.copy(
+                    roundNumber = round,
+                    state = RoundState.New
+                )
+            )
+        )
 
 
     private fun setNewGameStateAndGameInfo(state: GameState, gameInfo: GameInfo): Completable {
@@ -477,11 +475,13 @@ class GamePresenter @Inject constructor(
         return updateGame(newGame)
     }
 
-    private fun setAllCardsToUnused() {
-        cardDeck.forEachIndexed { index, item ->
-            cardDeck[index] = cardDeck[index].copy(used = false)
-        }
-    }
+    private fun setAllCardsToUnused() =
+        Completable.fromCallable {
+            cardDeck.forEachIndexed { index, item ->
+                cardDeck[index] = cardDeck[index].copy(used = false)
+            }
+        }.doOnComplete { Timber.w("flipped cards. card: ${cardDeck[0]}") }
+
 
     private fun maybeFlipLastCard(): Completable =
         lastCard?.let {
@@ -507,15 +507,15 @@ class GamePresenter @Inject constructor(
     }
 
    private fun onTimerEnd() {
-        if (gameFlow.isMeActivePlayer(game)) {
-            audioPlayer.play("timesupyalabye")
-            endTurn()
-        }
-        onTurnEnded()
-    }
+       if (gameFlow.isMyslefActivePlayer(game)) {
+           audioPlayer.play("timesupyalabye")
+           endTurn()
+       }
+       onTurnEnded()
+   }
 
     private fun onEndTurnClick() {
-        if (gameFlow.isMeActivePlayer(game)) {
+        if (gameFlow.isMyslefActivePlayer(game)) {
             endTurn()
         }
         onTurnEnded()
@@ -533,7 +533,7 @@ class GamePresenter @Inject constructor(
         fun updateCard(card: Card)
         fun showGameOver()
         fun setCurrentOtherPlayer(player: Player)
-        fun setPausedState(meActive: Boolean, time: Long? = null)
+        fun setPausedState(playButtonEnabled: Boolean, time: Long? = null)
         fun setStartedState(meActive: Boolean, time: Long? = null)
         fun setStoppedState()
         fun setRoundEndState(meActive: Boolean, roundNumber: Int)
@@ -548,6 +548,6 @@ class GamePresenter @Inject constructor(
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
         fun navigateToGames()
-        fun setNewRound(meActive: Boolean, roundNumber: Int)
+        fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
     }
 }
