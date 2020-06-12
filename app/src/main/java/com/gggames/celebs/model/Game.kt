@@ -5,7 +5,7 @@ import com.gggames.celebs.model.TurnState.Idle
 data class Game (val id: String,
                  val name: String,
                  val createdAt: Long,
-                 val password: String,
+                 val password: String? = null,
                  val celebsCount: Int = 6,
                  val teams: List<Team> = emptyList(),
                  val state: GameState? = null,
