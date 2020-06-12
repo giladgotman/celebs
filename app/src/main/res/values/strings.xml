@@ -32,8 +32,8 @@
     <string name="add_cards_card_5">Card 5</string>
     <string name="add_cards_card_6">Card 6</string>
 
-    <string name="login_welcome_title">Hi there, I am <b><i>Hourglass</i></b></string>
-    <string name="login_welcome_subtitle">Your remote <i>\"Celebs Game\"</i> companion</string>
+    <string name="login_welcome_title">Hi there, I am <i>Hourglass</i></string>
+    <string name="login_welcome_subtitle">Your remote <i>Celebs Game</i> companion</string>
     <string name="login_username_hint">Your name</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
@@ -49,6 +49,11 @@
     <!--    Share-->
     <string name="share_with_title">Share with</string>
     <string name="share_message">Please join this cool Hourglass game(%1$s):\n%2$s</string>
+
+<!--    End of turn dialog-->
+    <string name="end_turn_title">%1$s\'s turn ended</string>
+    <string name="end_turn_cards_description">%1$d cards found</string>
+    <string name="choose_team_title">Choose your team</string>
 
 
 </resources>

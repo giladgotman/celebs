@@ -14,17 +14,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/tiny_margin"
         >
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gamesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:background="@color/white"
-
-
+        android:background="@color/colorPrimary"
         />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

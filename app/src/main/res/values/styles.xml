@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,10 +10,64 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <!-- THIS is where you can color the arrow and the overflow button -->
+        <item name="colorControlNormal">@color/mainTextColor</item>
+        <!-- sets the color for the back arrow -->
+        <item name="actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
+        <item name="android:textViewStyle">@style/DefaultTextViewStyle</item>
+        <item name="android:buttonStyle">@style/DefaultButtonStyle</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="fontFamily">@font/roboto_light</item>
+    </style>
+
+    <style name="DefaultTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="fontFamily">@font/roboto_light</item>
+    </style>
+
+    <style name="CardTextViewStyle" parent="DefaultTextViewStyle">
+        <item name="android:fontFamily">@font/indie_flower_regular</item>
+        <item name="fontFamily">@font/indie_flower_regular</item>
+    </style>
+
+    <style name="DefaultButtonStyle" parent="android:Widget.Material.Light.ImageButton">
+        <item name="android:fontFamily">@font/courgette_regular</item>
+        <item name="fontFamily">@font/courgette_regular</item>
+        <item name="android:background">@color/hawaii_blue</item>
+    </style>
+
+    <style name="NextButtonStyle" parent="DefaultButtonStyle" >
+        <item name="android:src">@drawable/correct_button</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:foreground">@drawable/ripple_circular_dark</item>
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Widget.MessageDialog.DismissButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Widget.MessageDialog.ApproveButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Widget.MessageDialog.title" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Widget.MessageDialog.description" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- This style is where you define the tint color of your overflow menu button -->
+    <style name="actionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/mainTextColor</item>
+    </style>
 
 </resources>

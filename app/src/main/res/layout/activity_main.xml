@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context="com.gggames.celebs.presentation.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -28,7 +29,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:textColor="@color/white"
+                    android:textColor="@color/mainTextColor"
                     android:textSize="22sp"
                     tools:text="bla bla"
                     android:textStyle="bold"
@@ -47,8 +48,7 @@
                 tools:visibility="visible"
                 android:background="@color/transparent"
                 android:foreground="@drawable/ripple_circular_light"
-                android:src="@drawable/ic_share_white_18dp"
-
+                android:src="@drawable/ic_share_18dp"
                 tools:ignore="UnusedAttribute" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

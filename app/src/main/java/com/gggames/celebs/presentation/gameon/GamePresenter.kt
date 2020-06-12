@@ -6,6 +6,7 @@ import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
 import com.gggames.celebs.model.RoundState.Ended
@@ -33,6 +34,7 @@ class GamePresenter @Inject constructor(
     private val gameFlow: GameFlow,
     private val cardsRepository: CardsRepository,
     private val gamesRepository: GamesRepository,
+    private val leaveGame: LeaveGame,
     private val audioPlayer: AudioPlayer
 ) {
     private var cardDeck = mutableListOf<Card>()
@@ -48,6 +50,8 @@ class GamePresenter @Inject constructor(
     private var lastGame: Game? = null
     private val roundState : RoundState
     get() = game.gameInfo.round.state
+
+    private var cardsFoundInTurn = mutableListOf<Card>()
 
     fun bind(view: GameView, events: Observable<GameScreenContract.UiEvent>) {
         this.view = view
@@ -77,6 +81,33 @@ class GamePresenter @Inject constructor(
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
+            is MainUiEvent.Logout -> onLogout()
+            is MainUiEvent.BackPressed -> onBackPressed()
+        }
+    }
+
+    private fun onBackPressed() {
+        maybeEndMyTurn()
+            .subscribe {
+            }.let { disposables.add(it) }
+    }
+
+    private fun onLogout() {
+        val me = gameFlow.me!!
+        maybeEndMyTurn()
+            .andThen(leaveGame(game, me))
+            .subscribe {
+                Timber.w("logout done")
+            }.let { disposables.add(it) }
+    }
+
+
+
+    private fun maybeEndMyTurn(): Completable {
+        return if (gameFlow.isMeActivePlayer(game)) {
+            endMyTurn()
+        } else {
+            Completable.complete()
         }
     }
 
@@ -150,7 +181,8 @@ class GamePresenter @Inject constructor(
                 Stopped -> {
                     if (lastGame?.turn?.state != turn.state) {
                         view.setStoppedState()
-                        view.showTurnEndedActivePlayer()
+                        endTurn()
+
                     }
                 }
                 Running -> {
@@ -168,7 +200,7 @@ class GamePresenter @Inject constructor(
                 Stopped -> {
                     if (lastGame?.turn?.state != turn.state) {
                         view.setStoppedState()
-                        view.showTurnEnded(lastGame?.round?.turn?.player?.name)
+                        endTurn()
                     }
                 }
                 Running -> {
@@ -182,6 +214,11 @@ class GamePresenter @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun endTurn() {
+        val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
+        view.showTurnEnded(lastGame?.round?.turn?.player, cards)
     }
 
     private fun onNewRoundClick(time: Long) {
@@ -216,9 +253,11 @@ class GamePresenter @Inject constructor(
             }
     }
     private fun onPlayerStarted() {
+        cardsFoundInTurn.clear()
         setGameStateStartedAndMeActive()
+            .andThen(setRoundState(Ready))
             .andThen(handleNextCard(pickNextCard()))
-            .andThen(setTurnState(Running))
+            .andThen(setTurnStateAndLastCards(Running, cardsFoundInTurn.mapNotNull { it.id }))
             .subscribe(
                 { Timber.d("set me as current player success") },
                 { Timber.e(it, "error while setting current player") }
@@ -291,8 +330,12 @@ class GamePresenter @Inject constructor(
 
     private fun onCorrectClick(time: Long) {
         view.setCorrectEnabled(false)
+        lastCard?.let {
+            cardsFoundInTurn.add(it)
+        }
         gameFlow.me?.team?.let {
             increaseScore(it)
+                .andThen(setTurnLastCards(cardsFoundInTurn.mapNotNull { it.id }))
                 .andThen(handleNextCard(pickNextCard(), time))
                 .subscribe({
                 }, {
@@ -328,6 +371,17 @@ class GamePresenter @Inject constructor(
         val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state))))
         return updateGame(newGame)
     }
+
+    private fun setTurnLastCards(cardsIds: List<String>): Completable {
+        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(cardsFound = cardsIds))))
+        return updateGame(newGame)
+    }
+
+    private fun setTurnStateAndLastCards(state: TurnState, cardsIds: List<String>): Completable {
+        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state, cardsFound = cardsIds))))
+        return updateGame(newGame)
+    }
+
     private fun setTurnStoppedState(): Completable {
         val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = Stopped, time = TURN_TIME_MILLIS))))
         return updateGame(newGame)
@@ -455,14 +509,14 @@ class GamePresenter @Inject constructor(
    private fun onTimerEnd() {
         if (gameFlow.isMeActivePlayer(game)) {
             audioPlayer.play("timesupyalabye")
-            view.showTurnEndedActivePlayer()
+            endTurn()
         }
         onTurnEnded()
     }
 
     private fun onEndTurnClick() {
         if (gameFlow.isMeActivePlayer(game)) {
-            view.showTurnEndedActivePlayer()
+            endTurn()
         }
         onTurnEnded()
     }
@@ -489,7 +543,7 @@ class GamePresenter @Inject constructor(
         fun showLastRoundToast()
         fun setScore(score: Map<String, Int>)
         fun setTeamNames(teams: List<Team>)
-        fun showTurnEnded(name: String?)
+        fun showTurnEnded(player: Player?, cards: List<Card>)
         fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)

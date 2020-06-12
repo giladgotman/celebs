@@ -13,7 +13,7 @@
         android:id="@+id/chooseTeamDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose your team!"
+        android:text="@string/choose_team_title"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -62,18 +62,17 @@
             />
     </RadioGroup>
 
-
-    <Button
+    <ImageButton
         android:id="@+id/buttonDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/default_margin"
-        android:text="@string/done"
         android:visibility="gone"
         tools:visibility="visible"
-        android:layout_marginTop="@dimen/big_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/teamRadioGroup" />
+        android:layout_marginBottom="@dimen/default_margin"
+        style="@style/NextButtonStyle"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

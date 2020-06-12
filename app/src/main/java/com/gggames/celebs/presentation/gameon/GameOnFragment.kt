@@ -7,22 +7,28 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
+import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
 import com.gggames.celebs.utils.showInfoToast
+import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
@@ -47,13 +53,13 @@ class GameOnFragment : Fragment(),
 
     private val _emitter = PublishSubject.create<UiEvent>()
 
-
+    private var playerAdapters : List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
+    private var playersRecycle : MutableList<RecyclerView>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_game_on, container, false)
     }
 
@@ -62,7 +68,8 @@ class GameOnFragment : Fragment(),
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        presenter.bind(this, _emitter)
+        val uiEvents = merge(_emitter, (activity as MainActivity).events)
+
         cardTextView.text = ""
 
         endTurnButton.setOnClickListener {
@@ -96,22 +103,16 @@ class GameOnFragment : Fragment(),
         }
 
         startButton.setOnClickListener {
-            val buttonState = startButton.toButtonState()
-            _emitter.onNext(UiEvent.StartStopClick(buttonState, mTimeLeftInMillis))
+            _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
         }
 
-        cardsAmountIcon.setOnClickListener {
+        cardsAmount.setOnClickListener {
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
-        hideTeamsInfo()
         setStoppedState()
         setupTimer()
-    }
 
-    private fun hideTeamsInfo() {
-        team1Layout.isVisible = false
-        team2Layout.isVisible = false
-        team3Layout.isVisible = false
+        presenter.bind(this, uiEvents)
     }
 
     override fun showNewRoundAlert(onClick: (Boolean) -> Unit) {
@@ -142,9 +143,11 @@ class GameOnFragment : Fragment(),
             updateTime(time)
         }
         startTimer()
-        startButton.text = "Pause"
+        startButton.state = ButtonState.Running
         startButton.isEnabled = true
-        endTurnButton.isEnabled = meActive
+//        endTurnButton.isEnabled = meActive
+        endTurnButton.isEnabled = false
+        // TODO: 10.06.20 remove when help is implemented
         correctButton.isEnabled = meActive
 
         val cardColor = if (meActive) {
@@ -152,28 +155,34 @@ class GameOnFragment : Fragment(),
         } else {
             ContextCompat.getColor(requireContext(), R.color.gilad)
         }
-        cardLayout.setBackgroundColor(cardColor)
+//        cardLayout.setBackgroundColor(cardColor)
     }
 
 
     override fun setStoppedState() {
         mCountDownTimer?.cancel()
         updateTime(TURN_TIME_MILLIS)
-        startButton.text = "Start"
+        startButton.state = ButtonState.Stopped
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
 
-        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+//        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun setCorrectEnabled(enabled: Boolean) {
         correctButton.isEnabled = enabled
     }
 
-    override fun showTurnEnded(name: String?) {
-        name?.let {
-            cardTextView.text = "$name's turn ended"
+    var endTurnDialog : EndTurnDialogFragment? = null
+    override fun showTurnEnded(player: Player?, cards: List<Card>) {
+        cardTextView.text = ""
+        player?.let {
+            if (endTurnDialog?.isAdded != true) {
+                endTurnDialog = EndTurnDialogFragment.create(player, cards)
+                endTurnDialog?.show(requireActivity() as AppCompatActivity)
+            }
+
         }
     }
 
@@ -184,7 +193,7 @@ class GameOnFragment : Fragment(),
     override fun setPausedState(meActive: Boolean, time: Long?) {
         mCountDownTimer?.cancel()
         correctButton.isEnabled = false
-        startButton.text = "Resume"
+        startButton.state = ButtonState.Paused
         startButton.isEnabled = meActive
         time?.let {
             updateTime(time)
@@ -241,52 +250,69 @@ class GameOnFragment : Fragment(),
         }
     }
 
+    private fun setupPlayers(teamsCount: Int) {
+        playersRecycle = mutableListOf(team1players)
+        if (teamsCount > 1) {
+            playersRecycle?.add(team2players)
+        }
+        if (teamsCount > 2) {
+            playersRecycle?.add(team3players)
+            team3Layout.isVisible = true
+        }
+        playersRecycle?.forEachIndexed { index, recyclerView ->
+            recyclerView.layoutManager = LinearLayoutManager(this.context)
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            recyclerView.adapter = playerAdapters[index]
+        }
+    }
+
     private fun updateTeam1(teamName: String, players: List<Player>) {
         team1Name.text = "$teamName"
         team1Layout.isVisible = true
-        setPlayersForTeam(team1Value, players)
+        playerAdapters[0].setData(players)
     }
 
     private fun updateTeam2(teamName: String, players: List<Player>) {
         team2Name.text = "$teamName"
         team2Layout.isVisible = true
-        setPlayersForTeam(team2Value, players)
+        playerAdapters[1].setData(players)
     }
 
     private fun updateTeam3(teamName: String, players: List<Player>) {
         team3Name.text = "$teamName"
         team3Layout.isVisible = true
-        setPlayersForTeam(team3Value, players)
-    }
-
-    private fun setPlayersForTeam(teamValue: TextView, players: List<Player>) {
-        val sb = StringBuilder()
-        players.forEachIndexed { i, player ->
-            sb.append(player.name)
-            if (i < players.lastIndex) {
-                sb.append(", ")
-            }
-        }
-        teamValue.text = sb.toString()
+        playerAdapters[2].setData(players)
     }
 
     override fun setScore(score: Map<String, Int>) {
         val score1 = score[team1Name.text] ?: 0
+        team1Score.text = "$score1"
         val score2 = score[team2Name.text] ?: 0
-        team1Score.text = "(score: $score1) : "
-        team2Score.text = "(score: $score2) : "
+        team2Score.text = "$score2"
         if (score.size > 2) {
             val score3 = score[team3Name.text] ?: 0
-            team3Score.text = "(score: $score3) : "
+            team3Score.text = "$score3"
         }
     }
 
     override fun setTeamNames(teams: List<Team>) {
+        if (playersRecycle == null) {
+            setupPlayers(teams.size)
+        }
         teams.forEachIndexed { index, team ->
             when (index) {
-                0 -> team1Name.text = team.name
-                1 -> team2Name.text = team.name
-                2 -> team3Name.text = team.name
+                0 -> {
+                    team1Name.text = team.name
+                    team1Name.isSelected = true
+                }
+                1 -> {
+                    team2Name.text = team.name
+                    team2Name.isSelected = true
+                }
+                2 -> {
+                    team3Name.text = team.name
+                    team3Name.isSelected = true
+                }
             }
         }
     }
@@ -322,19 +348,20 @@ class GameOnFragment : Fragment(),
         cardTextView.text = "Game Over!"
         timerTextView?.text = ""
         mCountDownTimer?.cancel()
-        startButton.text = "FINISH"
+        startButton.state = ButtonState.Finished
         startButton.isEnabled = true
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.setOnClickListener {
             _emitter.onNext(UiEvent.FinishGameClick)
         }
-        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+//        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun navigateToGames() {
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -354,14 +381,3 @@ class GameOnFragment : Fragment(),
     }
 
 }
-
-private fun Button.toButtonState(): GameScreenContract.ButtonState =
-    when (this.text) {
-        "Start" -> GameScreenContract.ButtonState.Stopped
-        "Resume" -> GameScreenContract.ButtonState.Paused
-        "Pause" -> GameScreenContract.ButtonState.Running
-        else -> throw IllegalStateException("button state $this is unknown")
-    }
-
-
-

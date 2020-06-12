@@ -1,7 +1,7 @@
 package com.gggames.celebs.features.cards.data.remote
 
+import com.gggames.celebs.common.GAMES_PATH
 import com.gggames.celebs.features.cards.data.CardsDataSource
-import com.gggames.celebs.features.games.data.remote.GAMES_PATH
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.remote.CardRaw
 import com.gggames.celebs.model.remote.toRaw
