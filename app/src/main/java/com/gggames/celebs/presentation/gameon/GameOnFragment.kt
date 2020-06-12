@@ -109,7 +109,7 @@ class GameOnFragment : Fragment(),
         cardsAmount.setOnClickListener {
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
-        setStoppedState()
+
         setupTimer()
 
         presenter.bind(this, uiEvents)
@@ -159,15 +159,13 @@ class GameOnFragment : Fragment(),
     }
 
 
-    override fun setStoppedState() {
+    override fun setTurnStoppedState() {
         mCountDownTimer?.cancel()
         updateTime(TURN_TIME_MILLIS)
         startButton.state = ButtonState.Stopped
         correctButton.isEnabled = false
         endTurnButton.isEnabled = false
         startButton.isEnabled = true
-
-//        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     override fun setCorrectEnabled(enabled: Boolean) {
@@ -176,8 +174,8 @@ class GameOnFragment : Fragment(),
 
     var endTurnDialog : EndTurnDialogFragment? = null
     override fun showTurnEnded(player: Player?, cards: List<Card>) {
-        cardTextView.text = ""
         player?.let {
+            cardTextView.text = ""
             if (endTurnDialog?.isAdded != true) {
                 endTurnDialog = EndTurnDialogFragment.create(player, cards)
                 endTurnDialog?.show(requireActivity() as AppCompatActivity)
@@ -322,7 +320,7 @@ class GameOnFragment : Fragment(),
     }
 
     override fun setNoCurrentPlayer() {
-        setStoppedState()
+        setTurnStoppedState()
     }
 
     override fun setRound(round: String) {

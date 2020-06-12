@@ -173,12 +173,12 @@ class GamePresenter @Inject constructor(
         if (gameFlow.isMyslefActivePlayer(game)) {
             when (turn.state) {
                 Idle -> {
-                    view.setStoppedState()
+                    view.setTurnStoppedState()
                 }
                 Stopped -> {
                     if (lastGame?.turn?.state != turn.state) {
-                        view.setStoppedState()
-                        endTurn()
+                        view.setTurnStoppedState()
+                        showEndOfTurn()
 
                     }
                 }
@@ -192,12 +192,12 @@ class GamePresenter @Inject constructor(
         } else {
             when (turn.state) {
                 Idle -> {
-                    view.setStoppedState()
+                    view.setTurnStoppedState()
                 }
                 Stopped -> {
                     if (lastGame?.turn?.state != turn.state) {
-                        view.setStoppedState()
-                        endTurn()
+                        view.setTurnStoppedState()
+                        showEndOfTurn()
                     }
                 }
                 Running -> {
@@ -213,7 +213,7 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    private fun endTurn() {
+    private fun showEndOfTurn() {
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
         view.showTurnEnded(lastGame?.round?.turn?.player, cards)
     }
@@ -233,7 +233,6 @@ class GamePresenter @Inject constructor(
                             .subscribe {
                                 setNextRound()
                             }
-
                     }
                 }
             }
@@ -409,7 +408,7 @@ class GamePresenter @Inject constructor(
     // TODO: 12.06.20 use isMyselfHost instead
     private fun onTurnEnded() {
         if (gameFlow.isMyslefActivePlayer(game)) {
-            view.setStoppedState()
+            view.setTurnStoppedState()
             setTurnStoppedState()
                 .andThen(maybeFlipLastCard())
                 .andThen(endMyTurn())
@@ -509,14 +508,14 @@ class GamePresenter @Inject constructor(
    private fun onTimerEnd() {
        if (gameFlow.isMyslefActivePlayer(game)) {
            audioPlayer.play("timesupyalabye")
-           endTurn()
+           showEndOfTurn()
        }
        onTurnEnded()
    }
 
     private fun onEndTurnClick() {
         if (gameFlow.isMyslefActivePlayer(game)) {
-            endTurn()
+            showEndOfTurn()
         }
         onTurnEnded()
     }
@@ -535,7 +534,7 @@ class GamePresenter @Inject constructor(
         fun setCurrentOtherPlayer(player: Player)
         fun setPausedState(playButtonEnabled: Boolean, time: Long? = null)
         fun setStartedState(meActive: Boolean, time: Long? = null)
-        fun setStoppedState()
+        fun setTurnStoppedState()
         fun setRoundEndState(meActive: Boolean, roundNumber: Int)
         fun setNoCurrentPlayer()
         fun setRound(toString: String)
