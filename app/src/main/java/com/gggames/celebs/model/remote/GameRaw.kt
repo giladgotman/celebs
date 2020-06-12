@@ -13,7 +13,7 @@ data class GameRaw (
     val teams: List<TeamRaw>,
     val state: String? = null,
     val gameInfo: GameInfoRaw = GameInfoRaw(),
-    val host: PlayerRaw = PlayerRaw()
+    val host: PlayerRaw? = null
 ) {
     constructor() : this(
         EMPTY_VALUE,

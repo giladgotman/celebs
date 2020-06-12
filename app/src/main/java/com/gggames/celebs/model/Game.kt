@@ -10,7 +10,7 @@ data class Game (val id: String,
                  val teams: List<Team> = emptyList(),
                  val state: GameState? = null,
                  val gameInfo: GameInfo = GameInfo(),
-                 val host: Player
+                 val host: Player? = null
 ) {
     val currentPlayer: Player?
         get() = this.gameInfo.round.turn.player

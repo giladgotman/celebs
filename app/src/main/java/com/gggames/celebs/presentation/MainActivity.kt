@@ -22,6 +22,7 @@ import com.idagio.app.core.utils.share.Shareable
 import com.idagio.app.core.utils.share.createDynamicLink
 import com.idagio.app.core.utils.share.getPendingDeepLink
 import com.idagio.app.core.utils.share.share
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,6 +30,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    // TODO: 12.06.20 make it a list
+    var logoutListener: (() -> Completable) = {Completable.complete()}
 
     @Inject
     lateinit var gameFlow: GameFlow
@@ -92,9 +96,13 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_logout -> {
-                events.onNext(MainUiEvent.Logout)
-                finish()
-                gameFlow.logout()
+                logoutListener().subscribe({
+                    finish()
+                    gameFlow.logout()
+                },
+                    {
+                        Timber.e(it, "error on logout")
+                    })
                 true
             }
             R.id.menu_about -> {

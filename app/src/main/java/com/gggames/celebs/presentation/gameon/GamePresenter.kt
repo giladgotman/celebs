@@ -1,5 +1,6 @@
 package com.gggames.celebs.presentation.gameon
 
+import androidx.fragment.app.FragmentActivity
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
@@ -12,11 +13,13 @@ import com.gggames.celebs.model.*
 import com.gggames.celebs.model.RoundState.Ended
 import com.gggames.celebs.model.RoundState.Ready
 import com.gggames.celebs.model.TurnState.*
+import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -53,9 +56,17 @@ class GamePresenter @Inject constructor(
 
     private var cardsFoundInTurn = mutableListOf<Card>()
 
-    fun bind(view: GameView, events: Observable<GameScreenContract.UiEvent>) {
+    fun bind(
+        view: GameView,
+        events: Observable<GameScreenContract.UiEvent>,
+        activity: FragmentActivity
+    ) {
         this.view = view
         val gameId = game.id
+
+
+        (activity as MainActivity).logoutListener = { onLogout() }
+
 
         events.subscribe(::handleUiEvent).let { disposables.add(it) }
 
@@ -81,7 +92,6 @@ class GamePresenter @Inject constructor(
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
-            is MainUiEvent.Logout -> onLogout()
             is MainUiEvent.BackPressed -> onBackPressed()
         }
     }
@@ -92,16 +102,27 @@ class GamePresenter @Inject constructor(
             }.let { disposables.add(it) }
     }
 
-    private fun onLogout() {
-        val me = gameFlow.me!!
-        maybeEndMyTurn()
-            .andThen(leaveGame(game, me))
-            .subscribe {
-                Timber.w("logout done")
-            }.let { disposables.add(it) }
+    // TODO: 12.06.20 make it completable and call it from main activity
+    private fun onLogout(): Completable {
+        val blockingGame = game.copy()
+        val blockingMe = gameFlow.me!!.copy()
+        return maybeTransferGameHost(blockingGame)
+            .andThen(maybeFlipLastCard())
+            .andThen(maybeEndMyTurn())
+            .andThen(leaveGame(blockingGame, blockingMe))
     }
 
+    private fun maybeTransferGameHost(blockingGame: Game): Completable {
+       return Single.fromCallable { gameFlow.isMyselfHost(blockingGame) }
+            .flatMapCompletable {myselfHost->
+                Timber.w("myselfHost: $myselfHost")
+                if (myselfHost) setHost(blockingGame.teams.getNextHost()) else Completable.complete()
+            }
+    }
 
+    private fun setHost(player: Player?):Completable  {
+        Timber.w("setHost: $player")
+        return updateGame(game.copy(host = player))}
 
     private fun maybeEndMyTurn(): Completable {
         return if (gameFlow.isMyslefActivePlayer(game)) {
@@ -550,3 +571,7 @@ class GamePresenter @Inject constructor(
         fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
     }
 }
+
+private fun List<Team>.getNextHost(): Player? =
+    this.firstOrNull()?.players?.firstOrNull()
+

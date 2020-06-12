@@ -12,7 +12,6 @@ interface GameScreenContract {
         object FinishGameClick : UiEvent()
 
         sealed class MainUiEvent : UiEvent(){
-            object Logout : MainUiEvent()
             object BackPressed : MainUiEvent()
         }
     }

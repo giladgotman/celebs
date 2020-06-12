@@ -112,7 +112,7 @@ class GameOnFragment : Fragment(),
 
         setupTimer()
 
-        presenter.bind(this, uiEvents)
+        presenter.bind(this, uiEvents, requireActivity())
     }
 
     override fun showNewRoundAlert(onClick: (Boolean) -> Unit) {
