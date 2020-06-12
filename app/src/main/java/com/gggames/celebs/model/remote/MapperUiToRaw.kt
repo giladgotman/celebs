@@ -27,7 +27,8 @@ fun Game.toRaw() = GameRaw(
     this.celebsCount.toLong(),
     this.teams.map { it.toRaw() },
     this.state?.name,
-    this.gameInfo.toRaw()
+    this.gameInfo.toRaw(),
+    this.host.toRaw()
 )
 
 fun Round.toRaw() = RoundRaw(
