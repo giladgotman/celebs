@@ -12,4 +12,6 @@ interface PlayersRepository {
     fun chooseTeam(gameId: String, player: Player, teamName: String): Completable
 
     fun removePlayer(gameId: String, player: Player): Completable
+
+    var currentPlayers: List<Player>
 }

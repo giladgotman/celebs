@@ -7,6 +7,7 @@ import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.players.data.PlayersRepository
 import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
@@ -37,6 +38,7 @@ class GamePresenter @Inject constructor(
     private val gameFlow: GameFlow,
     private val cardsRepository: CardsRepository,
     private val gamesRepository: GamesRepository,
+    private val playersRepository: PlayersRepository,
     private val leaveGame: LeaveGame,
     private val audioPlayer: AudioPlayer
 ) {
@@ -102,21 +104,21 @@ class GamePresenter @Inject constructor(
             }.let { disposables.add(it) }
     }
 
-    // TODO: 12.06.20 make it completable and call it from main activity
     private fun onLogout(): Completable {
-        val blockingGame = game.copy()
-        val blockingMe = gameFlow.me!!.copy()
-        return maybeTransferGameHost(blockingGame)
+        return maybeTransferGameHost(game)
             .andThen(maybeFlipLastCard())
             .andThen(maybeEndMyTurn())
-            .andThen(leaveGame(blockingGame, blockingMe))
+            .andThen(Completable.fromCallable {
+                disposables.clear()
+            })
+            .andThen(Completable.defer { leaveGame(game, gameFlow.me!!)})
     }
 
     private fun maybeTransferGameHost(blockingGame: Game): Completable {
        return Single.fromCallable { gameFlow.isMyselfHost(blockingGame) }
             .flatMapCompletable {myselfHost->
                 Timber.w("myselfHost: $myselfHost")
-                if (myselfHost) setHost(blockingGame.teams.getNextHost()) else Completable.complete()
+                if (myselfHost) setHost(playersRepository.currentPlayers.firstOrNull { it != gameFlow.me }) else Completable.complete()
             }
     }
 

@@ -9,8 +9,10 @@ class PlayersRepositoryImpl @Inject constructor(
     private val firebasePlayersDataSource: PlayersDataSource
 ) : PlayersRepository {
 
+    override var currentPlayers: List<Player> = emptyList()
+
     override fun getAllPlayers(gameId: String): Observable<List<Player>> =
-        firebasePlayersDataSource.getAllPlayers(gameId)
+        firebasePlayersDataSource.getAllPlayers(gameId).doOnNext { currentPlayers = it }
 
     override fun addPlayer(gameId: String, player: Player): Completable =
         firebasePlayersDataSource.addPlayer(gameId, player)

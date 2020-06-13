@@ -22,6 +22,8 @@ class GamesRepositoryImpl @Inject constructor(
         return gamesDataSource.getGames(statesQuery).toObservable()
     }
 
+    // TODO: 13.06.20 don't set the game as a side effect. do it in the chain.
+    // when doing this we should fix the updateGame operations in GamePresenter.
     override fun setGame(game: Game?, updateRemote: Boolean): Completable {
         currentGame = game
         Timber.w("setGame, currentGame: $currentGame")
