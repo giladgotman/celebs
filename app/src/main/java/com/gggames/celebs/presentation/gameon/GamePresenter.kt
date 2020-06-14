@@ -99,6 +99,7 @@ class GamePresenter @Inject constructor(
     }
 
     private fun onBackPressed() {
+        // TODO: 14.06.20 flip last card
         maybeEndMyTurn()
             .subscribe {
             }.let { disposables.add(it) }
