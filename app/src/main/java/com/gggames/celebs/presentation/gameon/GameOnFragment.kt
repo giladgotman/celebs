@@ -187,10 +187,10 @@ class GameOnFragment : Fragment(),
     }
 
     var endRoundDialogFragment : EndRoundDialogFragment? = null
-    override fun showRoundEnded(round: Round, score: Map<String, Int>) {
+    override fun showRoundEnded(round: Round, teams: List<Team>) {
             cardTextView.text = ""
             if (endRoundDialogFragment?.isAdded != true) {
-                endRoundDialogFragment = EndRoundDialogFragment.create(round, score)
+                endRoundDialogFragment = EndRoundDialogFragment.create(round, teams)
                 endRoundDialogFragment?.show(requireActivity() as AppCompatActivity)
             }
     }
@@ -293,18 +293,7 @@ class GameOnFragment : Fragment(),
         playerAdapters[2].setData(players)
     }
 
-    override fun setScore(score: Map<String, Int>) {
-        val score1 = score[team1Name.text] ?: 0
-        team1Score.text = "$score1"
-        val score2 = score[team2Name.text] ?: 0
-        team2Score.text = "$score2"
-        if (score.size > 2) {
-            val score3 = score[team3Name.text] ?: 0
-            team3Score.text = "$score3"
-        }
-    }
-
-    override fun setTeamNames(teams: List<Team>) {
+    override fun setTeams(teams: List<Team>) {
         if (playersRecycle == null) {
             setupPlayers(teams.size)
         }
@@ -313,14 +302,17 @@ class GameOnFragment : Fragment(),
                 0 -> {
                     team1Name.text = team.name
                     team1Name.isSelected = true
+                    team1Score.text = team.score.toString()
                 }
                 1 -> {
                     team2Name.text = team.name
                     team2Name.isSelected = true
+                    team2Score.text = team.score.toString()
                 }
                 2 -> {
                     team3Name.text = team.name
                     team3Name.isSelected = true
+                    team3Score.text = team.score.toString()
                 }
             }
         }

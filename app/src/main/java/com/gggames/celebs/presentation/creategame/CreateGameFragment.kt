@@ -112,13 +112,13 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
     private fun getTeamsValue(): MutableList<Team> {
         val teams = mutableListOf<Team>()
         if (groupName1.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(groupName1.editText?.text.toString(), emptyList()))
+            teams.add(Team(name =groupName1.editText?.text.toString()))
         }
         if (groupName2.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(groupName2.editText?.text.toString(), emptyList()))
+            teams.add(Team(name =groupName2.editText?.text.toString()))
         }
         if (groupName3.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(groupName3.editText?.text.toString(), emptyList()))
+            teams.add(Team(name = groupName3.editText?.text.toString()))
         }
         return teams
     }
