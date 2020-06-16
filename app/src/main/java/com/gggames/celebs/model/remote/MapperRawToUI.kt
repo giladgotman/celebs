@@ -12,7 +12,7 @@ fun CardRaw.toUi() = Card(
 
 fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 
-fun TeamRaw.toUi() = Team(this.name, this.players.map { it.toUi() })
+fun TeamRaw.toUi() = Team(name = this.name, score = this.score)
 
 fun GameRaw.toUi() = Game(
     this.id,
@@ -27,7 +27,7 @@ fun GameRaw.toUi() = Game(
 )
 
 fun GameInfoRaw.toUi() = GameInfo(
-    this.score, this.totalCards, this.cardsInDeck, this.round.toUi()
+    this.totalCards, this.cardsInDeck, this.round.toUi()
 )
 
 fun RoundRaw.toUi() = Round(

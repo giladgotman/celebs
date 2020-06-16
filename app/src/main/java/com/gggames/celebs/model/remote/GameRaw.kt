@@ -26,7 +26,6 @@ data class GameRaw (
 }
 
 data class GameInfoRaw(
-    val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
     val round: RoundRaw = RoundRaw()

@@ -134,8 +134,7 @@ class GamePresenter @Inject constructor(
         if (newGame.round != lastGame?.round) {
             onRoundUpdate(newGame.gameInfo.round)
         }
-        view.setTeamNames(newGame.teams)
-        view.setScore(newGame.gameInfo.score)
+        view.setTeams(newGame.teams)
 
         if (newGame.state == GameState.Finished) {
             view.showGameOver()
@@ -154,7 +153,7 @@ class GamePresenter @Inject constructor(
                 }
                 Ended -> {
                     view.setRoundEndState(meActive, newRound.roundNumber)
-                    view.showRoundEnded(newRound, game.gameInfo.score)
+                    view.showRoundEnded(newRound, game.teams)
                 }
                 RoundState.New -> {
                     val startButtonEnabled = meActive || game.currentPlayer == null
@@ -346,11 +345,13 @@ class GamePresenter @Inject constructor(
     }
 
     private fun increaseScore(teamName: String): Completable {
-        val currScore = game.gameInfo.score[teamName]
-        currScore?.let {
-            val mutableMap = game.gameInfo.score.toMutableMap()
-            mutableMap[teamName] = currScore + 1
-            return setNewGameInfo(game.gameInfo.copy(score = mutableMap))
+        val teamIndex = game.teams.indexOfFirst { it.name == teamName }
+        if (teamIndex != -1) {
+            val currScore = game.teams[teamIndex].score
+            val mutableTeams = game.teams.toMutableList()
+            val updatedTeam = mutableTeams[teamIndex].copy(score = currScore + 1)
+            mutableTeams[teamIndex] = updatedTeam
+            return updateGame(game.copy(teams = mutableTeams))
         }
         return Completable.complete()
     }
@@ -541,8 +542,7 @@ class GamePresenter @Inject constructor(
         fun setRound(toString: String)
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)
         fun showLastRoundToast()
-        fun setScore(score: Map<String, Int>)
-        fun setTeamNames(teams: List<Team>)
+        fun setTeams(teams: List<Team>)
         fun showTurnEnded(player: Player?, cards: List<Card>)
         fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)
@@ -551,7 +551,7 @@ class GamePresenter @Inject constructor(
         fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
         fun showRoundEnded(
             round: Round,
-            score: Map<String, Int>
+            teams: List<Team>
         )
     }
 }

@@ -27,7 +27,6 @@ class CreateGamePresenter @Inject constructor(
 
     fun onDoneClick(gameDetails: GameDetails) {
         val now = System.currentTimeMillis()
-        val initialScore = gameDetails.teams.map { it.name to 0 }.toMap()
         val game = Game(
             "${gameDetails.name}$now",
             gameDetails.name,
@@ -36,7 +35,7 @@ class CreateGamePresenter @Inject constructor(
             gameDetails.cardsCount,
             gameDetails.teams,
             GameState.Created,
-            GameInfo(score = initialScore),
+            GameInfo(),
             gameFlow.me!!
         )
         joinGame(game)

@@ -8,8 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Round
-import com.gggames.celebs.utils.fromBundleInt
-import com.gggames.celebs.utils.toBundleInt
+import com.gggames.celebs.model.Team
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_round_dialog.*
 
@@ -35,12 +34,29 @@ class EndRoundDialogFragment
 
         arguments?.let {
             val roundName = it.getString(KEY_ROUND_NAME) ?: ""
-            val score: Map<String, Int> =
-                    (it.get(KEY_TEAMS) as Bundle).fromBundleInt()
+            val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
 
             title.text = getString(R.string.end_round_title, roundName)
-            team1Name.text = score.keys.toList()[0]
-            team1Score.text = score[0].toString()
+
+            teams.forEachIndexed { index, team ->
+                when (index) {
+                    0 -> {
+                        team1Name.text = team.name
+//                        team1Name.isSelected = true
+                        team1Score.text = team.score.toString()
+                    }
+//                    1 -> {
+//                        team2Name.text = team.name
+//                        team2Name.isSelected = true
+//                        team2Score.text = team.score.toString()
+//                    }
+//                    2 -> {
+//                        team3Name.text = team.name
+//                        team3Name.isSelected = true
+//                        team3Score.text = team.score.toString()
+//                    }
+                }
+            }
         }
 
         buttonClose.setOnClickListener {
@@ -54,14 +70,14 @@ class EndRoundDialogFragment
     }
 
     companion object {
-        fun create(round: Round, score: Map<String, Int>): EndRoundDialogFragment {
+        fun create(round: Round, teams: List<Team>): EndRoundDialogFragment {
             return EndRoundDialogFragment()
                 .apply {
                 isCancelable = false
                 arguments =
                     Bundle().apply {
                         putString(KEY_ROUND_NAME, round.roundNumber.toString())
-                        putParcelable(KEY_TEAMS, score.toBundleInt())
+                        putParcelableArray(KEY_TEAMS, teams.toTypedArray())
                     }
             }
         }

@@ -17,7 +17,8 @@ fun Player.toRaw() =
 
 fun Team.toRaw() = TeamRaw(
     this.name,
-    this.players.map { it.toRaw() })
+    this.score
+)
 
 fun Game.toRaw() = GameRaw(
     this.id,
@@ -44,7 +45,6 @@ fun TurnState.toRaw() = this.name
 
 
 fun GameInfo.toRaw() = GameInfoRaw(
-    this.score,
     this.totalCards,
     this.cardsInDeck,
     this.round.toRaw()
