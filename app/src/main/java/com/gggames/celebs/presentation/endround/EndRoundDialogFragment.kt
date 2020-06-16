@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
@@ -42,19 +43,18 @@ class EndRoundDialogFragment
                 when (index) {
                     0 -> {
                         team1Name.text = team.name
-//                        team1Name.isSelected = true
                         team1Score.text = team.score.toString()
                     }
-//                    1 -> {
-//                        team2Name.text = team.name
-//                        team2Name.isSelected = true
-//                        team2Score.text = team.score.toString()
-//                    }
-//                    2 -> {
-//                        team3Name.text = team.name
-//                        team3Name.isSelected = true
-//                        team3Score.text = team.score.toString()
-//                    }
+                    1 -> {
+                        team2Layout.isVisible = true
+                        team2Name.text = team.name
+                        team2Score.text = team.score.toString()
+                    }
+                    2 -> {
+                        team3Layout.isVisible = true
+                        team3Name.text = team.name
+                        team3Score.text = team.score.toString()
+                    }
                 }
             }
         }
@@ -73,7 +73,7 @@ class EndRoundDialogFragment
         fun create(round: Round, teams: List<Team>): EndRoundDialogFragment {
             return EndRoundDialogFragment()
                 .apply {
-                isCancelable = false
+                isCancelable = true
                 arguments =
                     Bundle().apply {
                         putString(KEY_ROUND_NAME, round.roundNumber.toString())
