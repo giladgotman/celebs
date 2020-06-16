@@ -47,16 +47,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="horizontal"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:gravity="center_horizontal"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/team1Layout"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             >
             <TextView
                 android:id="@+id/team1Name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:minWidth="50dp"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
@@ -88,9 +91,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

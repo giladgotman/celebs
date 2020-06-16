@@ -154,6 +154,7 @@ class GamePresenter @Inject constructor(
                 }
                 Ended -> {
                     view.setRoundEndState(meActive, newRound.roundNumber)
+                    view.showRoundEnded(newRound, game.gameInfo.score)
                 }
                 RoundState.New -> {
                     val startButtonEnabled = meActive || game.currentPlayer == null
@@ -548,5 +549,9 @@ class GamePresenter @Inject constructor(
         fun showAllCards(cardDeck: List<Card>)
         fun navigateToGames()
         fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
+        fun showRoundEnded(
+            round: Round,
+            score: Map<String, Int>
+        )
     }
 }
