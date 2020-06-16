@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
+import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
 import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
@@ -184,6 +186,15 @@ class GameOnFragment : Fragment(),
         }
     }
 
+    var endRoundDialogFragment : EndRoundDialogFragment? = null
+    override fun showRoundEnded(round: Round, score: Map<String, Int>) {
+            cardTextView.text = ""
+            if (endRoundDialogFragment?.isAdded != true) {
+                endRoundDialogFragment = EndRoundDialogFragment.create(round, score)
+                endRoundDialogFragment?.show(requireActivity() as AppCompatActivity)
+            }
+    }
+
     override fun showTurnEndedActivePlayer() {
         cardTextView.text = "Your turn ended"
     }
@@ -211,7 +222,7 @@ class GameOnFragment : Fragment(),
 
     override fun setRoundEndState(meActive: Boolean, roundNumber: Int) {
         setPausedState(meActive, null)
-        cardTextView.text = "Round $roundNumber ended"
+//        cardTextView.text = "Round $roundNumber ended"
         endTurnButton.isEnabled = false
         startButton.isEnabled = false
     }
