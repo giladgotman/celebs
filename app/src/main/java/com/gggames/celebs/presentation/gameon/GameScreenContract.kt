@@ -10,10 +10,11 @@ interface GameScreenContract {
         data class RoundClick(val time: Long) : UiEvent()
         object TimerEnd : UiEvent()
         object FinishGameClick : UiEvent()
+        object UserApprovedQuitGame : UiEvent()
+        object OnBackPressed : UiEvent()
 
         sealed class MainUiEvent : UiEvent(){
             object Logout : MainUiEvent()
-            object BackPressed : MainUiEvent()
         }
     }
 

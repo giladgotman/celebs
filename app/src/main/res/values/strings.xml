@@ -58,4 +58,6 @@
     <!--    End of round dialog-->
     <string name="end_round_title">End of round %1$s</string>
 
+    <!--    Leave game dialog-->
+    <string name="leave_game_dialog_title">Are you sure you want to quit and end your turn?</string>
 </resources>

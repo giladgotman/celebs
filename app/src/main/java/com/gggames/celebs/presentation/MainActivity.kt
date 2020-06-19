@@ -10,11 +10,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
 import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.core.di.getAppComponent
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.presentation.common.BackPressedDeligate
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.celebs.utils.showErrorToast
 import com.google.android.material.snackbar.Snackbar
@@ -122,8 +124,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        events.onNext(MainUiEvent.BackPressed)
-        super.onBackPressed()
+        val fragment = this.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+        val currentFragment = fragment?.childFragmentManager?.fragments?.get(0) as? BackPressedDeligate
+        currentFragment?.onBackPressed()?.takeIf { !it }?.let{
+            super.onBackPressed()
+        }
     }
 
     override fun onDestroy() {
