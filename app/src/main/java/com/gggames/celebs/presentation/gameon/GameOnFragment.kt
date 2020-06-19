@@ -22,6 +22,7 @@ import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.MainActivity
+import com.gggames.celebs.presentation.common.BackPressedDeligate
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
@@ -42,7 +43,7 @@ import javax.inject.Inject
  * The main fragment in which the game is happening
  */
 class GameOnFragment : Fragment(),
-    GamePresenter.GameView {
+    GamePresenter.GameView , BackPressedDeligate {
 
     private lateinit var viewComponent: ViewComponent
 
@@ -135,6 +136,8 @@ class GameOnFragment : Fragment(),
             .setNegativeButton(getString(R.string.cancel), dialogClickListener)
             .show()
     }
+
+
 
     override fun showLastRoundToast() {
         showInfoToast(requireContext(), "This is the last round", Toast.LENGTH_LONG)
@@ -363,7 +366,6 @@ class GameOnFragment : Fragment(),
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         mCountDownTimer?.cancel()
@@ -379,6 +381,29 @@ class GameOnFragment : Fragment(),
         val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
 
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+    }
+
+    override fun onBackPressed(): Boolean {
+        _emitter.onNext(UiEvent.OnBackPressed)
+        return true
+    }
+
+    override fun showLeaveGameDialog() {
+        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    _emitter.onNext(UiEvent.UserApprovedQuitGame)
+                }
+
+                DialogInterface.BUTTON_NEGATIVE -> {
+                }
+            }
+        }
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(getString(R.string.leave_game_dialog_title))
+            .setPositiveButton(getString(R.string.ok), dialogClickListener)
+            .setNegativeButton(getString(R.string.cancel), dialogClickListener)
+            .show()
     }
 
 }

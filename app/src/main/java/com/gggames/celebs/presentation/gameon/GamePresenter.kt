@@ -17,6 +17,7 @@ import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -75,21 +76,34 @@ class GamePresenter @Inject constructor(
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
         when (event) {
             is RoundClick -> onNewRoundClick(event.time)
-            is StartStopClick-> onStartButtonClick(event.buttonState, event.time)
-            is CorrectClick-> onCorrectClick(event.time)
+            is StartStopClick -> onStartButtonClick(event.buttonState, event.time)
+            is CorrectClick -> onCorrectClick(event.time)
             is EndTurnClick -> onEndTurnClick()
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
             is MainUiEvent.Logout -> onLogout()
-            is MainUiEvent.BackPressed -> onBackPressed()
+            is OnBackPressed -> onBackPressed()
+            is UserApprovedQuitGame -> onUserApprovedQuitGame()
         }
     }
 
     private fun onBackPressed() {
-        maybeEndMyTurn()
-            .subscribe {
-            }.let { disposables.add(it) }
+        if (gameFlow.isMyslefActivePlayer(game)) {
+            view.showLeaveGameDialog()
+        } else {
+            disposables.clear()
+            view.navigateToGames()
+        }
+    }
+
+    private fun onUserApprovedQuitGame() {
+        endMyTurnIfImActive()
+            .subscribe({
+                disposables.clear()
+                view.navigateToGames()
+            }, {}
+            ).let { disposables.add(it) }
     }
 
     private fun onLogout() {
@@ -105,7 +119,8 @@ class GamePresenter @Inject constructor(
 
     private fun maybeEndMyTurn(): Completable {
         return if (gameFlow.isMyslefActivePlayer(game)) {
-            endMyTurn()
+            setTurnStoppedState()
+                .andThen(setNullTurnPlayer())
         } else {
             Completable.complete()
         }
@@ -409,15 +424,28 @@ class GamePresenter @Inject constructor(
 
     // TODO: 12.06.20 use isMyselfHost instead
     private fun onTurnEnded() {
-        if (gameFlow.isMyslefActivePlayer(game)) {
-            view.setTurnStoppedState()
-            setTurnStoppedState()
-                .andThen(maybeFlipLastCard())
-                .andThen(endMyTurn())
-                .subscribe({}, { Timber.e(it, "error onTurnEnded") }).let {
-                    disposables.add(it)
-                }
+        endMyTurnIfImActive()
+            .subscribe({},
+                { Timber.e(it, "error onTurnEnded") }
+            ).let {
+                disposables.add(it)
+            }
+    }
+
+    private fun endMyTurnIfImActive(): Completable {
+        val amIactive = Single.fromCallable {
+            gameFlow.isMyslefActivePlayer(game)
         }
+        return amIactive.flatMapCompletable {
+            if (it) {
+                setTurnStoppedState()
+                    .andThen(maybeFlipLastCard())
+                    .andThen(setNullTurnPlayer())
+            } else {
+                Completable.complete()
+            }
+        }
+
     }
 
     private fun onPlayerPaused(time: Long?) {
@@ -454,9 +482,8 @@ class GamePresenter @Inject constructor(
     private fun lastRound(): Boolean =
         game.gameInfo.round.roundNumber == 3
 
-    private fun endMyTurn(): Completable {
-        val game = gameInfoWith(game.gameInfo.round.turn.copy(player = null, state = Stopped))
-        Timber.v("endMyTurn, game: $game")
+    private fun setNullTurnPlayer(): Completable {
+        val game = gameInfoWith(game.gameInfo.round.turn.copy(player = null))
         return setNewGameInfo(game)
     }
 
@@ -553,5 +580,6 @@ class GamePresenter @Inject constructor(
             round: Round,
             teams: List<Team>
         )
+        fun showLeaveGameDialog()
     }
 }
