@@ -24,6 +24,7 @@
     <style name="DefaultTextViewStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/roboto_light</item>
         <item name="fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="CardTextViewStyle" parent="DefaultTextViewStyle">
