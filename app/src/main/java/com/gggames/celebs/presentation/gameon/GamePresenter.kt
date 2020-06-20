@@ -99,10 +99,11 @@ class GamePresenter @Inject constructor(
 
     private fun onUserApprovedQuitGame() {
         endMyTurnIfImActive()
-            .subscribe({
+            .doAfterTerminate {
                 disposables.clear()
                 view.navigateToGames()
-            }, {}
+            }
+            .subscribe({}, {}
             ).let { disposables.add(it) }
     }
 
