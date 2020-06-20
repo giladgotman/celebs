@@ -8,6 +8,7 @@ import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.presentation.login.LoginActivity
 import com.gggames.celebs.utils.prefs.PreferenceManager
+import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,7 +42,11 @@ class GameFlow @Inject constructor(
         preferenceManager.savePlayer(me)
     }
 
-    fun isMyslefActivePlayer(game: Game) = me == game.currentPlayer
+    fun isMyselfActivePlayerBlocking(game: Game) = me == game.currentPlayer
+
+    fun isMyselfActivePlayer(game: Game) = Single.fromCallable {
+        isMyselfActivePlayerBlocking(game)
+    }
     
     fun isMyselfHost(game: Game) = me == game.host
 

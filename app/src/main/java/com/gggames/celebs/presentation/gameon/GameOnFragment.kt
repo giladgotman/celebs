@@ -22,7 +22,7 @@ import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.MainActivity
-import com.gggames.celebs.presentation.common.BackPressedDeligate
+import com.gggames.celebs.presentation.common.MainActivityDelegate
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
@@ -31,6 +31,7 @@ import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
 import com.gggames.celebs.utils.showInfoToast
+import io.reactivex.Completable
 import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
@@ -43,7 +44,7 @@ import javax.inject.Inject
  * The main fragment in which the game is happening
  */
 class GameOnFragment : Fragment(),
-    GamePresenter.GameView , BackPressedDeligate {
+    GamePresenter.GameView , MainActivityDelegate {
 
     private lateinit var viewComponent: ViewComponent
 
@@ -387,6 +388,10 @@ class GameOnFragment : Fragment(),
         _emitter.onNext(UiEvent.OnBackPressed)
         return true
     }
+
+    override fun onLogout(): Completable =
+        presenter.onLogout()
+
 
     override fun showLeaveGameDialog() {
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->

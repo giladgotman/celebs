@@ -17,7 +17,6 @@ import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -82,48 +81,8 @@ class GamePresenter @Inject constructor(
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
             is FinishGameClick -> onFinishClick()
-            is MainUiEvent.Logout -> onLogout()
             is OnBackPressed -> onBackPressed()
             is UserApprovedQuitGame -> onUserApprovedQuitGame()
-        }
-    }
-
-    private fun onBackPressed() {
-        if (gameFlow.isMyslefActivePlayer(game)) {
-            view.showLeaveGameDialog()
-        } else {
-            disposables.clear()
-            view.navigateToGames()
-        }
-    }
-
-    private fun onUserApprovedQuitGame() {
-        endMyTurnIfImActive()
-            .doAfterTerminate {
-                disposables.clear()
-                view.navigateToGames()
-            }
-            .subscribe({}, {}
-            ).let { disposables.add(it) }
-    }
-
-    private fun onLogout() {
-        val me = gameFlow.me!!
-        maybeEndMyTurn()
-            .andThen(leaveGame(game, me))
-            .subscribe {
-                Timber.w("logout done")
-            }.let { disposables.add(it) }
-    }
-
-
-
-    private fun maybeEndMyTurn(): Completable {
-        return if (gameFlow.isMyslefActivePlayer(game)) {
-            setTurnStoppedState()
-                .andThen(setNullTurnPlayer())
-        } else {
-            Completable.complete()
         }
     }
 
@@ -161,7 +120,7 @@ class GamePresenter @Inject constructor(
 
     private fun onRoundUpdate(newRound: Round) {
         Timber.v("UPDATE::ROUND:: newRound: $newRound}")
-        val meActive = gameFlow.isMyslefActivePlayer(game)
+        val meActive = gameFlow.isMyselfActivePlayerBlocking(game)
         if (newRound != lastGame?.round) {
             view.setRound(newRound.roundNumber.toString())
             when (newRound.state) {
@@ -184,9 +143,9 @@ class GamePresenter @Inject constructor(
 
     private fun onTurnUpdate(turn: Turn) {
         Timber.v("UPDATE::TURN:: onTurnUpdate turn: $turn}")
-        val meActive = gameFlow.isMyslefActivePlayer(game)
+        val meActive = gameFlow.isMyselfActivePlayerBlocking(game)
         val playButtonEnabled = meActive || game.currentPlayer == null
-        if (gameFlow.isMyslefActivePlayer(game)) {
+        if (gameFlow.isMyselfActivePlayerBlocking(game)) {
             when (turn.state) {
                 Idle -> {
                     view.setTurnStoppedState()
@@ -423,6 +382,30 @@ class GamePresenter @Inject constructor(
             .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
     }
 
+    private fun onBackPressed() {
+        if (gameFlow.isMyselfActivePlayerBlocking(game)) {
+            view.showLeaveGameDialog()
+        } else {
+            disposables.clear()
+            view.navigateToGames()
+        }
+    }
+
+    private fun onUserApprovedQuitGame() {
+        endMyTurnIfImActive()
+            .doAfterTerminate {
+                disposables.clear()
+                view.navigateToGames()
+            }
+            .subscribe({}, {}
+            ).let { disposables.add(it) }
+    }
+
+    fun onLogout(): Completable =
+        endMyTurnIfImActiveBlocking()
+            .andThen(leaveGame(game, gameFlow.me!!))
+
+
     // TODO: 12.06.20 use isMyselfHost instead
     private fun onTurnEnded() {
         endMyTurnIfImActive()
@@ -433,21 +416,29 @@ class GamePresenter @Inject constructor(
             }
     }
 
-    private fun endMyTurnIfImActive(): Completable {
-        val amIactive = Single.fromCallable {
-            gameFlow.isMyslefActivePlayer(game)
-        }
-        return amIactive.flatMapCompletable {
+    private fun endMyTurnIfImActive(): Completable =
+        gameFlow.isMyselfActivePlayer(game).flatMapCompletable {
             if (it) {
-                setTurnStoppedState()
-                    .andThen(maybeFlipLastCard())
-                    .andThen(setNullTurnPlayer())
+                endMyTurn()
             } else {
                 Completable.complete()
             }
         }
 
+    // TODO: 20.06.20 fix setGame side effects and make it non blocking
+    private fun endMyTurnIfImActiveBlocking(): Completable {
+        return if (gameFlow.isMyselfActivePlayerBlocking(game)) {
+            endMyTurn()
+        } else {
+            Completable.complete()
+        }
     }
+
+    private fun endMyTurn(): Completable =
+        setTurnStoppedState()
+            .andThen(maybeFlipLastCard())
+            .andThen(setNullTurnPlayer())
+
 
     private fun onPlayerPaused(time: Long?) {
         val newTurn = time?.let { game.turn.copy(state = Paused, time = it) }
@@ -536,7 +527,7 @@ class GamePresenter @Inject constructor(
     }
 
    private fun onTimerEnd() {
-       if (gameFlow.isMyslefActivePlayer(game)) {
+       if (gameFlow.isMyselfActivePlayerBlocking(game)) {
            audioPlayer.play("timesupyalabye")
            showEndOfTurn()
        }
@@ -544,7 +535,7 @@ class GamePresenter @Inject constructor(
    }
 
     private fun onEndTurnClick() {
-        if (gameFlow.isMyslefActivePlayer(game)) {
+        if (gameFlow.isMyselfActivePlayerBlocking(game)) {
             showEndOfTurn()
         }
         onTurnEnded()
