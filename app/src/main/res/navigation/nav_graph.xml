@@ -103,7 +103,9 @@
             android:id="@+id/action_gameOnFragment_to_gameOverFragment"
             app:destination="@id/gameOverFragment"
             app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:exitAnim="@android:anim/slide_out_right"
+
+            />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
@@ -114,6 +116,11 @@
             app:destination="@id/GamesFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right" />
+
+        <argument
+            android:name="gameId"
+            app:argType="string" />
+
     </fragment>
 
 </navigation>

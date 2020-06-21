@@ -368,7 +368,10 @@ class GameOnFragment : Fragment(),
     }
 
     private fun navigateToEndGame() {
-        findNavController().navigate(R.id.action_gameOnFragment_to_gameOverFragment)
+        findNavController().navigate(R.id.action_gameOnFragment_to_gameOverFragment,
+            Bundle().apply {
+                putString(GAME_ID_KEY, "dummy game id")
+        })
     }
 
     override fun navigateToGames() {
@@ -420,3 +423,5 @@ class GameOnFragment : Fragment(),
     }
 
 }
+
+val GAME_ID_KEY = "gameId"
