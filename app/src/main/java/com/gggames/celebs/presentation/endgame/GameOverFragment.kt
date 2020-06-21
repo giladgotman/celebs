@@ -68,6 +68,7 @@ class GameOverFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        disposables.clear()
         presenter.unBind()
     }
 }
