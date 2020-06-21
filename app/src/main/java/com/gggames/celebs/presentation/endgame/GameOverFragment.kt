@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.gggames.celebs.R
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_over.*
 import javax.inject.Inject
 
@@ -16,6 +17,8 @@ class GameOverFragment : Fragment() {
     @Inject
     lateinit var presenter: GameOverPresenter
     private lateinit var viewComponent: ViewComponent
+
+    private val events = PublishSubject.create<GameOverScreenContract.UiEvent>()
 
 
     override fun onCreateView(
@@ -32,7 +35,9 @@ class GameOverFragment : Fragment() {
         viewComponent.inject(this)
 
         subtitle.text = getString(R.string.game_over_subtitle, "team 1 dummy")
-        presenter.bind()
+
+        val gameId: String? = arguments?.getString("gameId")
+        presenter.bind(events, gameId!!)
     }
 
     override fun onDestroyView() {
