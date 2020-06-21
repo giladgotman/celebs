@@ -15,6 +15,7 @@ import com.gggames.celebs.model.TurnState.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
 import com.gggames.celebs.utils.media.AudioPlayer
+import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -35,7 +36,8 @@ class GamePresenter @Inject constructor(
     private val cardsRepository: CardsRepository,
     private val gamesRepository: GamesRepository,
     private val leaveGame: LeaveGame,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val schedulerProvider: BaseSchedulerProvider
 ) {
     private var cardDeck = mutableListOf<Card>()
 
@@ -61,14 +63,17 @@ class GamePresenter @Inject constructor(
 
         playersObservable(gameId)
             .distinctUntilChanged()
+            .compose(schedulerProvider.applyDefault())
             .subscribe(::onPlayersChange).let { disposables.add(it) }
 
         cardsObservable()
             .distinctUntilChanged()
+            .compose(schedulerProvider.applyDefault())
             .subscribe(::onCardsChange).let { disposables.add(it) }
 
         observeGame(gameId)
             .distinctUntilChanged()
+            .compose(schedulerProvider.applyDefault())
             .subscribe(::onGameChange).let { disposables.add(it) }
     }
 
@@ -80,15 +85,9 @@ class GamePresenter @Inject constructor(
             is EndTurnClick -> onEndTurnClick()
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
-            is FinishGameClick -> onFinishClick()
             is OnBackPressed -> onBackPressed()
             is UserApprovedQuitGame -> onUserApprovedQuitGame()
         }
-    }
-
-    private fun onFinishClick() {
-        releaseAll()
-        view.navigateToGames()
     }
 
     private fun onCardsChange(cards: List<Card>) {
@@ -112,7 +111,8 @@ class GamePresenter @Inject constructor(
         view.setTeams(newGame.teams)
 
         if (newGame.state == GameState.Finished) {
-            view.showGameOver()
+            releaseAll()
+            view.navigateToEndGame()
         }
         Timber.v("observeGame onNext: game: $newGame}")
         lastGame = newGame
@@ -551,7 +551,6 @@ class GamePresenter @Inject constructor(
         fun updateCards(cards: List<Card>)
         fun updateTeams(teams: List<Team>)
         fun updateCard(card: Card)
-        fun showGameOver()
         fun setCurrentOtherPlayer(player: Player)
         fun setPausedState(playButtonEnabled: Boolean, time: Long? = null)
         fun setStartedState(meActive: Boolean, time: Long? = null)
@@ -567,6 +566,7 @@ class GamePresenter @Inject constructor(
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
         fun navigateToGames()
+        fun navigateToEndGame()
         fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
         fun showRoundEnded(
             round: Round,

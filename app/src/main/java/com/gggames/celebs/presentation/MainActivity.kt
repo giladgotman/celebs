@@ -131,9 +131,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val currentFragment = getDelegateFragment()
-        currentFragment?.onBackPressed()?.takeIf { !it }?.let {
-            super.onBackPressed()
-        }
+        currentFragment?.onBackPressed()?.let {
+            if (!it) {
+                super.onBackPressed()
+            }
+        } ?: super.onBackPressed()
     }
 
     private fun getDelegateFragment(): MainActivityDelegate? {
