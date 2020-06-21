@@ -18,6 +18,8 @@ data class Game (val id: String,
         get() = this.gameInfo.round.roundNumber
     val round = this.gameInfo.round
     val turn = this.gameInfo.round.turn
+
+    val winningTeam : Team? get() = this.teams.maxBy { it.score }
 }
 
 data class GameInfo(

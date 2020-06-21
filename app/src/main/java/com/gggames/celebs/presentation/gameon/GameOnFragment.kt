@@ -362,12 +362,10 @@ class GameOnFragment : Fragment(),
         }
 
         navigateToEndGame()
-
-
-//        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
     }
 
     private fun navigateToEndGame() {
+        clear()
         findNavController().navigate(R.id.action_gameOnFragment_to_gameOverFragment,
             Bundle().apply {
                 putString(GAME_ID_KEY, "dummy game id")
@@ -375,11 +373,16 @@ class GameOnFragment : Fragment(),
     }
 
     override fun navigateToGames() {
+        clear()
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        clear()
+    }
+
+    private fun clear() {
         mCountDownTimer?.cancel()
         presenter.unBind()
     }
