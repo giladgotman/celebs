@@ -85,15 +85,9 @@ class GamePresenter @Inject constructor(
             is EndTurnClick -> onEndTurnClick()
             is CardsAmountClick -> onCardsAmountClick()
             is TimerEnd -> onTimerEnd()
-            is FinishGameClick -> onFinishClick()
             is OnBackPressed -> onBackPressed()
             is UserApprovedQuitGame -> onUserApprovedQuitGame()
         }
-    }
-
-    private fun onFinishClick() {
-        releaseAll()
-        view.navigateToGames()
     }
 
     private fun onCardsChange(cards: List<Card>) {
@@ -117,7 +111,8 @@ class GamePresenter @Inject constructor(
         view.setTeams(newGame.teams)
 
         if (newGame.state == GameState.Finished) {
-            view.showGameOver()
+            releaseAll()
+            view.navigateToEndGame()
         }
         Timber.v("observeGame onNext: game: $newGame}")
         lastGame = newGame
@@ -556,7 +551,6 @@ class GamePresenter @Inject constructor(
         fun updateCards(cards: List<Card>)
         fun updateTeams(teams: List<Team>)
         fun updateCard(card: Card)
-        fun showGameOver()
         fun setCurrentOtherPlayer(player: Player)
         fun setPausedState(playButtonEnabled: Boolean, time: Long? = null)
         fun setStartedState(meActive: Boolean, time: Long? = null)
@@ -572,6 +566,7 @@ class GamePresenter @Inject constructor(
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
         fun navigateToGames()
+        fun navigateToEndGame()
         fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
         fun showRoundEnded(
             round: Round,
