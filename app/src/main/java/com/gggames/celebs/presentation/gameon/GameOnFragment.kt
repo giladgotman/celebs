@@ -349,26 +349,25 @@ class GameOnFragment : Fragment(),
             .show()
     }
 
-    override fun showGameOver() {
-        cardTextView.text = "Game Over!"
-        timerTextView?.text = ""
-        mCountDownTimer?.cancel()
-        startButton.state = ButtonState.Finished
-        startButton.isEnabled = true
-        correctButton.isEnabled = false
-        endTurnButton.isEnabled = false
-        startButton.setOnClickListener {
-            _emitter.onNext(UiEvent.FinishGameClick)
-        }
-//        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+    override fun navigateToEndGame() {
+        clear()
+        findNavController().navigate(R.id.action_gameOnFragment_to_gameOverFragment,
+            Bundle().apply {
+                putString(GAME_ID_KEY, "dummy game id")
+        })
     }
 
     override fun navigateToGames() {
+        clear()
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        clear()
+    }
+
+    private fun clear() {
         mCountDownTimer?.cancel()
         presenter.unBind()
     }
@@ -412,3 +411,5 @@ class GameOnFragment : Fragment(),
     }
 
 }
+
+val GAME_ID_KEY = "gameId"

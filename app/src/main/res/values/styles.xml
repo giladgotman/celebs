@@ -35,6 +35,10 @@
         <item name="android:textSize">@dimen/big_text_size</item>
     </style>
 
+    <style name="TextViewSubTitle" parent="DefaultTextViewStyle" >
+        <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+
     <style name="TextViewBold" parent="DefaultTextViewStyle" >
         <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="fontFamily">@font/roboto_medium</item>
