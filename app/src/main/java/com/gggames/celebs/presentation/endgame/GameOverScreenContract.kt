@@ -22,8 +22,7 @@ interface GameOverScreenContract {
     }
 
     sealed class Result {
-        data class GameResult(val game: Game): Result()
-        data class CardsResult(val cards: List<Card>)
+        data class GameAndCardsResult(val game: Game, val cards: List<Card>): Result()
         object GameCleared : Result()
     }
 

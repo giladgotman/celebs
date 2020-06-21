@@ -14,6 +14,7 @@ import com.gggames.celebs.presentation.endgame.GameOverScreenContract.UiEvent.Pr
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_over.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class GameOverFragment : Fragment() {
@@ -62,6 +63,7 @@ class GameOverFragment : Fragment() {
 
     private fun render(state: GameOverScreenContract.State) {
         subtitle.text = getString(R.string.game_over_subtitle, state.winningTeam)
+        Timber.w("ggg render cards: ${state.cards.size}")
     }
 
     override fun onDestroyView() {

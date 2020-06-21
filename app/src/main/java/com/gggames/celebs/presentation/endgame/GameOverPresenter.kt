@@ -1,20 +1,23 @@
 package com.gggames.celebs.presentation.endgame
 
+import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.model.Card
+import com.gggames.celebs.model.Game
 import com.gggames.celebs.presentation.endgame.GameOverScreenContract.*
-import com.gggames.celebs.presentation.endgame.GameOverScreenContract.Result.GameResult
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Observable.just
-import io.reactivex.Observable.merge
+import io.reactivex.Observable.*
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
 class GameOverPresenter @Inject constructor(
     val gamesRepository: GamesRepository,
+    val getCards: ObserveAllCards,
     val scheduler: BaseSchedulerProvider
 ) : Presenter{
 
@@ -33,7 +36,7 @@ class GameOverPresenter @Inject constructor(
         val results = events.publish {
             merge(
                 handleUiEvent(it),
-                getCurrentGame()
+                getCardsAndGame()
             )
         }
 
@@ -49,7 +52,7 @@ class GameOverPresenter @Inject constructor(
             .compose(scheduler.applyDefault())
             .subscribe {
                 val trigger = when (it) {
-                    is GameResult -> null
+                    is Result.GameAndCardsResult -> null
                     is Result.GameCleared -> Trigger.NavigateToGames
                 }
                 if (trigger != null) {
@@ -60,9 +63,11 @@ class GameOverPresenter @Inject constructor(
 
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
-            is GameResult -> previous.copy(
+            is Result.GameAndCardsResult -> previous.copy(
                 winningTeam = result.game.winningTeam?.name ?: "",
-                teams = result.game.teams.sortedBy { it.score })
+                teams = result.game.teams.sortedBy { it.score },
+                cards = result.cards
+            )
             Result.GameCleared -> previous
         }
     }
@@ -75,9 +80,19 @@ class GameOverPresenter @Inject constructor(
     private fun finishGame(): Completable =
         Completable.complete()
 
-    private fun getCurrentGame(): Observable<GameResult> = Observable.fromCallable {
+    private fun getCurrentGame(): Observable<Game> = Observable.fromCallable {
         gamesRepository.currentGame!!
-    }.map { GameResult(it) }
+    }
+
+    private fun getCardsAndGame() = combineLatest(
+        getCurrentGame(),
+        getCards(),
+        BiFunction<Game, List<Card>, Result.GameAndCardsResult> { game, cards ->
+            Result.GameAndCardsResult(
+                game,
+                cards
+            )
+        })
 
     override fun unBind() {
         disposables.clear()
