@@ -349,22 +349,7 @@ class GameOnFragment : Fragment(),
             .show()
     }
 
-    override fun showGameOver() {
-        cardTextView.text = "Game Over!"
-        timerTextView?.text = ""
-        mCountDownTimer?.cancel()
-        startButton.state = ButtonState.Finished
-        startButton.isEnabled = true
-        correctButton.isEnabled = false
-        endTurnButton.isEnabled = false
-        startButton.setOnClickListener {
-            _emitter.onNext(UiEvent.FinishGameClick)
-        }
-
-        navigateToEndGame()
-    }
-
-    private fun navigateToEndGame() {
+    override fun navigateToEndGame() {
         clear()
         findNavController().navigate(R.id.action_gameOnFragment_to_gameOverFragment,
             Bundle().apply {

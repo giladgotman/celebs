@@ -35,7 +35,6 @@ class CardsAdapter(private val onCardInfoClick: (Card) -> Unit) :
                 onCardInfoClick(item)
             }
         }
-
     }
 
     private class TeamDiffUtil : DiffUtil.ItemCallback<Card>() {
