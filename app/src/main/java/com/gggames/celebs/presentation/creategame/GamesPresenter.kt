@@ -9,6 +9,7 @@ import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameState
 import com.gggames.celebs.presentation.creategame.GamesPresenter.Result.*
+import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -21,7 +22,8 @@ class GamesPresenter @Inject constructor(
     private val observeGame: ObserveGame,
     private val gameFlow: GameFlow,
     private val joinGame: JoinGame,
-    private val leaveGame: LeaveGame
+    private val leaveGame: LeaveGame,
+    private val schedulerProvider: BaseSchedulerProvider
 ) {
     lateinit var view: View
     private val disposables = CompositeDisposable()
@@ -65,6 +67,7 @@ class GamesPresenter @Inject constructor(
     private fun isDeepLinkExists(gameIdFromDeepLink: String?): Observable<out Result> {
         return gameIdFromDeepLink?.let {
             observeGame(it).take(1)
+                .compose(schedulerProvider.applyDefault())
                 .map { game ->
                     if (game.state == GameState.Finished) {
                         GameFinished(game.name)
