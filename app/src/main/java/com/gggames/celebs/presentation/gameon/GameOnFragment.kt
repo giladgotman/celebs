@@ -360,7 +360,15 @@ class GameOnFragment : Fragment(),
         startButton.setOnClickListener {
             _emitter.onNext(UiEvent.FinishGameClick)
         }
+
+        navigateToEndGame()
+
+
 //        cardLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gilad))
+    }
+
+    private fun navigateToEndGame() {
+        findNavController().navigate(R.id.action_gameOnFragment_to_gameOverFragment)
     }
 
     override fun navigateToGames() {

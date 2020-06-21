@@ -99,6 +99,21 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/gameOnFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_gameOnFragment_to_gameOverFragment"
+            app:destination="@id/gameOverFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameOverFragment"
+        android:name="com.gggames.celebs.presentation.endgame.GameOverFragment"
+        android:label="GameOverFragment" >
+        <action
+            android:id="@+id/action_gameOverFragment_to_GamesFragment"
+            app:destination="@id/GamesFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 
 </navigation>
