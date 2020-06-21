@@ -38,12 +38,13 @@ class GameOverPresenter @Inject constructor(
                 handleUiEvent(it),
                 getCardsAndGame()
             )
-        }
+        }.doOnNext { Timber.w("RESULT:: $it") }
 
         val states = results.scan(State.initialValue, reduce())
 
         states.distinctUntilChanged()
             .compose(scheduler.applyDefault())
+            .doOnNext { Timber.w("STATE:: $it") }
             .subscribe { _states.onNext(it) }
             .let { disposables.add(it) }
 
@@ -65,7 +66,7 @@ class GameOverPresenter @Inject constructor(
         when (result) {
             is Result.GameAndCardsResult -> previous.copy(
                 winningTeam = result.game.winningTeam?.name ?: "",
-                teams = result.game.teams.sortedBy { it.score },
+                teams = result.game.teams.sortedByDescending { it.score },
                 cards = result.cards
             )
             Result.GameCleared -> previous
