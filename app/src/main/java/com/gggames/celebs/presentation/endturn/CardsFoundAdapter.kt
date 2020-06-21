@@ -23,7 +23,7 @@ class CardsFoundAdapter(val onClick: (card: Card) -> Unit)
         viewType: Int
     ): RecyclerView.ViewHolder {
         val view: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_found_layout, parent, false)
+            .inflate(R.layout.end_turn_card_found_item, parent, false)
         return CardsViewHolder(view)
     }
 
