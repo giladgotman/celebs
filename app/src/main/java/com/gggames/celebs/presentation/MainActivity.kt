@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        Timber.w("onDestroyed")
         super.onDestroy()
         disposables.clear()
     }

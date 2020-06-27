@@ -400,7 +400,7 @@ class GamePresenter @Inject constructor(
     private fun onUserApprovedQuitGame() {
         endMyTurnIfImActive()
             .doAfterTerminate {
-                disposables.clear()
+                releaseAll()
                 view.navigateToGames()
             }
             .subscribe({}, {}
