@@ -309,6 +309,7 @@ class GamePresenter @Inject constructor(
         }
         gameFlow.me?.team?.let {
             increaseScore(it)
+                .andThen(setTurnTime(time))
                 .andThen(setTurnLastCards(cardsFoundInTurn.mapNotNull { it.id }))
                 .andThen(handleNextCard(pickNextCard(), time))
                 .subscribe({
@@ -345,6 +346,11 @@ class GamePresenter @Inject constructor(
 
     private fun setTurnState(state: TurnState): Completable {
         val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state))))
+        return updateGame(newGame)
+    }
+
+    private fun setTurnTime(time: Long): Completable {
+        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(time = time))))
         return updateGame(newGame)
     }
 
