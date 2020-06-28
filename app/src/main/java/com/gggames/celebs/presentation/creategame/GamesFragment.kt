@@ -1,5 +1,7 @@
 package com.gggames.celebs.presentation.creategame
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -99,6 +101,27 @@ class GamesFragment : Fragment() , GamesPresenter.View {
 
     override fun showNeedLoginInfo() {
         showInfoToast(requireContext(),"Please login and then use the link to the game", Toast.LENGTH_LONG)
+    }
+
+    override fun showApproveJoinGame(game: Game) {
+        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    presenter.onUserJoinGameResponse(game, true)
+                }
+
+                DialogInterface.BUTTON_NEGATIVE -> {
+                    presenter.onUserJoinGameResponse(game, false)
+                }
+            }
+        }
+        val builder = AlertDialog.Builder(context)
+        builder
+            .setTitle(R.string.games_join_game_dialog_title)
+            .setMessage(getString(R.string.games_join_game_dialog_subtitle, game.name))
+            .setPositiveButton(R.string.games_join_game_dialog_positive_button, dialogClickListener)
+            .setNegativeButton(R.string.games_join_game_dialog_negative_button, dialogClickListener)
+            .show()
     }
 
     override fun showLoading(show: Boolean) {

@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         button_share.setOnClickListener {
             gamesRepository.currentGame?.let { game ->
-                val uri = Uri.parse("https://gglab.page.link/joinGame/${game.id}")
+                val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
+                val uri = uriBuilder.appendQueryParameter("host", gameFlow.me!!.name).build()
                 createDynamicLink(uri).subscribe({ shortUri ->
                     val shareable = shareableFactory.create(game.id, game.name, shortUri)
                     share(shareable)

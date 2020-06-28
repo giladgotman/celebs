@@ -49,7 +49,7 @@ class GamesPresenter @Inject constructor(
                         fetchGames()
                     }
                     is DeepLinkExists -> {
-                        joinGameAndGoToAddCards(result.game)
+                        view.showApproveJoinGame(result.game)
                     }
                 }
             }, {
@@ -120,10 +120,19 @@ class GamesPresenter @Inject constructor(
         joinGameAndGoToAddCards(game)
     }
 
+    fun onUserJoinGameResponse(game: Game, approved: Boolean) {
+        if (approved) {
+            joinGameAndGoToAddCards(game)
+        } else {
+            fetchGames()
+        }
+    }
+
     interface View {
         fun show(games: List<Game>)
         fun showGenericError()
         fun showNeedLoginInfo()
+        fun showApproveJoinGame(game: Game)
         fun showLoading(show: Boolean)
         fun finishScreen()
         fun navigateToAddCards()
