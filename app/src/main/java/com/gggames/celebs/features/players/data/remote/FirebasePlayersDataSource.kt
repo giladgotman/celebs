@@ -1,21 +1,24 @@
 package com.gggames.celebs.features.players.data.remote
 
+import com.gggames.celebs.features.common.getGameCollectionPath
 import com.gggames.celebs.features.players.data.PlayersDataSource
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.remote.PlayerRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
-import com.gggames.celebs.common.GAMES_PATH
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 
 class FirebasePlayersDataSource @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    @Named ("baseFirebaseCollection")
+    private val baseCollection: String
 ) : PlayersDataSource {
 
     override fun getAllPlayers(gameId: String): Observable<List<Player>> {
@@ -60,7 +63,7 @@ class FirebasePlayersDataSource @Inject constructor(
         }
     }
 
-    private fun getGameRef(gameId: String) = firestore.document("$GAMES_PATH/$gameId/")
+    private fun getGameRef(gameId: String) = firestore.document(getGameCollectionPath(baseCollection, gameId))
 
     private fun getCollectionReference(gameRef: DocumentReference) =
         firestore.collection("${gameRef.path}/players/")

@@ -1,12 +1,12 @@
 package com.gggames.celebs.features.games.data.remote
 
+import com.gggames.celebs.features.common.getGamesCollectionPath
 import com.gggames.celebs.features.games.data.GamesDataSource
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameState
 import com.gggames.celebs.model.remote.GameRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
-import com.gggames.celebs.common.GAMES_PATH
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
@@ -15,18 +15,21 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 class FirebaseGamesDataSource @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    @Named("baseFirebaseCollection")
+    private val baseCollection: String
 ) : GamesDataSource {
     override fun getGames(statesQuery: List<GameState>): Single<List<Game>> {
         val games = mutableListOf<Game>()
         return Single.create { emitter ->
             val query = if (statesQuery.isNotEmpty()) {
-                firestore.collection(GAMES_PATH)
+                firestore.collection(getGamesCollectionPath(baseCollection))
                     .whereIn("state", statesQuery.map { it.toRaw() })
             } else {
-                firestore.collection(GAMES_PATH).whereIn(
+                firestore.collection(getGamesCollectionPath(baseCollection)).whereIn(
                     "state",
                     GameState.values().map { it.toRaw() }
                 )
@@ -59,7 +62,7 @@ class FirebaseGamesDataSource @Inject constructor(
         Timber.w("setGame: $game")
         val gameRaw = game.toRaw()
         return Completable.create { emitter ->
-            firestore.collection(GAMES_PATH)
+            firestore.collection(getGamesCollectionPath(baseCollection))
                 .document(gameRaw.id).set(gameRaw, SetOptions.merge()).addOnSuccessListener {
                     Timber.i("game set to firebase")
                     emitter.onComplete()
@@ -74,7 +77,7 @@ class FirebaseGamesDataSource @Inject constructor(
     override fun observeGame(gameId: String): Observable<Game> {
         Timber.w("observeGame: $gameId")
         return Observable.create { emitter ->
-            firestore.collection(GAMES_PATH)
+            firestore.collection(getGamesCollectionPath(baseCollection))
                 .document(gameId).addSnapshotListener { value, e ->
                     if (e == null) {
                         val gameRaw = value?.toObject(GameRaw::class.java)

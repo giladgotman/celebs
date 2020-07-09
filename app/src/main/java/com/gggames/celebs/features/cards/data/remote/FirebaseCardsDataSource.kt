@@ -1,7 +1,7 @@
 package com.gggames.celebs.features.cards.data.remote
 
-import com.gggames.celebs.common.GAMES_PATH
 import com.gggames.celebs.features.cards.data.CardsDataSource
+import com.gggames.celebs.features.common.getGameCollectionPath
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.remote.CardRaw
 import com.gggames.celebs.model.remote.toRaw
@@ -19,10 +19,12 @@ import javax.inject.Named
 class FirebaseCardsDataSource @Inject constructor(
     @Named("GameId")
     private val gameId: String,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    @Named("baseFirebaseCollection")
+    private val baseCollection: String
 ) : CardsDataSource {
     private val gameRef: DocumentReference
-        get() = firestore.document("$GAMES_PATH/$gameId/")
+        get() = firestore.document(getGameCollectionPath(baseCollection, gameId))
 
     private val cardsCollectionsRef: CollectionReference
         get() = firestore.collection("${gameRef.path}/cards/")

@@ -12,14 +12,10 @@ import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.features.games.data.GamesRepository
-import com.gggames.celebs.features.players.data.PlayersRepositoryImpl
-import com.gggames.celebs.features.players.data.remote.FirebasePlayersDataSource
 import com.gggames.celebs.features.players.domain.ChooseTeam
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
@@ -53,15 +49,6 @@ class ChooseTeamFragment : Fragment() {
         viewComponent.inject(this)
 
         buttonDone.isVisible = true
-
-        chooseTeam = ChooseTeam(
-            PlayersRepositoryImpl(
-                FirebasePlayersDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
 
         gamesRepository.currentGame!!.teams.forEachIndexed { index, team ->
             when (index) {
