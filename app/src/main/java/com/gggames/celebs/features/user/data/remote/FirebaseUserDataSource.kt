@@ -1,7 +1,7 @@
-package com.gggames.celebs.features.users.data.remote
+package com.gggames.celebs.features.user.data.remote
 
 import com.gggames.celebs.features.common.getUsersCollectionPath
-import com.gggames.celebs.features.users.data.UsersDataSource
+import com.gggames.celebs.features.user.data.UserDataSource
 import com.gggames.celebs.model.User
 import com.gggames.celebs.model.remote.UserRaw
 import com.gggames.celebs.model.remote.toUi
@@ -12,11 +12,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class FirebaseUsersDataSource @Inject constructor(
+class FirebaseUserDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
     @Named ("baseFirebaseCollection")
     private val baseCollection: String
-) : UsersDataSource {
+) : UserDataSource {
 
     override fun getUser(userId: String): Observable<User> {
         val users = getUsersCollectionRef()

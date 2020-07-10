@@ -1,8 +1,8 @@
-package com.gggames.celebs.features.users.data
+package com.gggames.celebs.features.user.data
 
 import com.gggames.celebs.model.User
 import io.reactivex.Observable
 
-interface UsersDataSource {
+interface UserDataSource {
     fun getUser(userId: String): Observable<User>
 }
