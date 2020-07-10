@@ -12,6 +12,11 @@ fun CardRaw.toUi() = Card(
 
 fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 
+fun UserRaw.toUi() = when (this.type) {
+    UserType.Guest -> User.Guest(this.id, this.name)
+    UserType.LoggedIn -> User.LoggedIn(this.id, this.name, this.games.map { it.toUi() })
+}
+
 fun TeamRaw.toUi() = Team(name = this.name, score = this.score)
 
 fun GameRaw.toUi() = Game(

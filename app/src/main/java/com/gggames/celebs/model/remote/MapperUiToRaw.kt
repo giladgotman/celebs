@@ -15,6 +15,11 @@ fun Card.toRaw() = CardRaw(
 fun Player.toRaw() =
     PlayerRaw(this.id, this.name, this.team)
 
+fun User.toRaw() = when (this) {
+    is User.Guest-> UserRaw(id = this.id, name = this.name, type = UserType.Guest)
+    is User.LoggedIn-> UserRaw(id = this.id, name = this.name, type = UserType.LoggedIn)
+}
+
 fun Team.toRaw() = TeamRaw(
     this.name,
     this.score
