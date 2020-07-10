@@ -13,7 +13,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.core.di.getAppComponent
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.presentation.common.MainActivityDelegate
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var gameFlow: GameFlow
+    lateinit var authenticator: Authenticator
 
     @Inject
     lateinit var gamesRepository: GamesRepository
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         button_share.setOnClickListener {
             gamesRepository.currentGame?.let { game ->
                 val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
-                val uri = uriBuilder.appendQueryParameter("host", gameFlow.me!!.name).build()
+                val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
                 createDynamicLink(uri).subscribe({ shortUri ->
                     val shareable = shareableFactory.create(game.id, game.name, shortUri)
                     share(shareable)
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 onLogoutAction
                     .doAfterTerminate {
                         finish()
-                        gameFlow.logout()
+                        authenticator.logout()
                     }
                     .subscribe {}
                 true

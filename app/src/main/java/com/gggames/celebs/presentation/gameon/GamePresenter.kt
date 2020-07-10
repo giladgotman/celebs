@@ -1,6 +1,6 @@
 package com.gggames.celebs.presentation.gameon
 
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
@@ -32,7 +32,7 @@ class GamePresenter @Inject constructor(
     private val cardsObservable: ObserveAllCards,
     private val updateGame: SetGame,
     private val observeGame: ObserveGame,
-    private val gameFlow: GameFlow,
+    private val authenticator: Authenticator,
     private val cardsRepository: CardsRepository,
     private val gamesRepository: GamesRepository,
     private val leaveGame: LeaveGame,
@@ -120,7 +120,7 @@ class GamePresenter @Inject constructor(
 
     private fun onRoundUpdate(newRound: Round) {
         Timber.v("UPDATE::ROUND:: newRound: $newRound}")
-        val meActive = gameFlow.isMyselfActivePlayerBlocking(game)
+        val meActive = authenticator.isMyselfActivePlayerBlocking(game)
         if (newRound != lastGame?.round) {
             view.setRound(newRound.roundNumber.toString())
             when (newRound.state) {
@@ -143,9 +143,9 @@ class GamePresenter @Inject constructor(
 
     private fun onTurnUpdate(turn: Turn) {
         Timber.v("UPDATE::TURN:: onTurnUpdate turn: $turn}")
-        val meActive = gameFlow.isMyselfActivePlayerBlocking(game)
+        val meActive = authenticator.isMyselfActivePlayerBlocking(game)
         val playButtonEnabled = meActive || game.currentPlayer == null
-        if (gameFlow.isMyselfActivePlayerBlocking(game)) {
+        if (authenticator.isMyselfActivePlayerBlocking(game)) {
             when (turn.state) {
                 Idle -> {
                     view.setTurnStoppedState()
@@ -274,11 +274,11 @@ class GamePresenter @Inject constructor(
             GameState.Created -> {
                 setNewGameStateAndGameInfo(
                     GameState.Started,
-                    gameInfoWith(gameFlow.me!!)
+                    gameInfoWith(authenticator.me!!)
                 )
             }
             GameState.Started -> {
-                setNewGameInfo(gameInfoWith(gameFlow.me!!))
+                setNewGameInfo(gameInfoWith(authenticator.me!!))
             }
             else -> {
                 Completable.complete()
@@ -307,7 +307,7 @@ class GamePresenter @Inject constructor(
         lastCard?.let {
             cardsFoundInTurn.add(it)
         }
-        gameFlow.me?.team?.let {
+        authenticator.me?.team?.let {
             increaseScore(it)
                 .andThen(setTurnTime(time))
                 .andThen(setTurnLastCards(cardsFoundInTurn.mapNotNull { it.id }))
@@ -389,7 +389,7 @@ class GamePresenter @Inject constructor(
     }
 
     private fun onBackPressed() {
-        if (gameFlow.isMyselfActivePlayerBlocking(game)) {
+        if (authenticator.isMyselfActivePlayerBlocking(game)) {
             view.showLeaveGameDialog()
         } else {
             disposables.clear()
@@ -409,7 +409,7 @@ class GamePresenter @Inject constructor(
 
     fun onLogout(): Completable =
         endMyTurnIfImActiveBlocking()
-            .andThen(leaveGame(game, gameFlow.me!!))
+            .andThen(leaveGame(game, authenticator.me!!))
 
 
     // TODO: 12.06.20 use isMyselfHost instead
@@ -423,7 +423,7 @@ class GamePresenter @Inject constructor(
     }
 
     private fun endMyTurnIfImActive(): Completable =
-        gameFlow.isMyselfActivePlayer(game).flatMapCompletable {
+        authenticator.isMyselfActivePlayer(game).flatMapCompletable {
             if (it) {
                 endMyTurn()
             } else {
@@ -433,7 +433,7 @@ class GamePresenter @Inject constructor(
 
     // TODO: 20.06.20 fix setGame side effects and make it non blocking
     private fun endMyTurnIfImActiveBlocking(): Completable {
-        return if (gameFlow.isMyselfActivePlayerBlocking(game)) {
+        return if (authenticator.isMyselfActivePlayerBlocking(game)) {
             endMyTurn()
         } else {
             Completable.complete()
@@ -533,7 +533,7 @@ class GamePresenter @Inject constructor(
     }
 
    private fun onTimerEnd() {
-       if (gameFlow.isMyselfActivePlayerBlocking(game)) {
+       if (authenticator.isMyselfActivePlayerBlocking(game)) {
            audioPlayer.play("timesupyalabye")
            showEndOfTurn()
        }
@@ -541,7 +541,7 @@ class GamePresenter @Inject constructor(
    }
 
     private fun onEndTurnClick() {
-        if (gameFlow.isMyselfActivePlayerBlocking(game)) {
+        if (authenticator.isMyselfActivePlayerBlocking(game)) {
             showEndOfTurn()
         }
         onTurnEnded()

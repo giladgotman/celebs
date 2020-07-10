@@ -13,7 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.cards.domain.AddCards
 import com.gggames.celebs.features.cards.domain.GetMyCards
 import com.gggames.celebs.features.games.data.GamesRepository
@@ -41,7 +41,7 @@ class AddCardsFragment : Fragment() {
     @Inject
     lateinit var gamesRepository : GamesRepository
     @Inject
-    lateinit var gameFlow : GameFlow
+    lateinit var authenticator : Authenticator
 
     private var cardEditTextList = mutableListOf<EditText?>()
 
@@ -67,7 +67,7 @@ class AddCardsFragment : Fragment() {
         (activity as MainActivity).setTitle(gamesRepository.currentGame!!.name)
         (activity as MainActivity).setShareVisible(true)
 
-        playerId = gameFlow.me!!.id
+        playerId = authenticator.me!!.id
 
         add_cards_card6_editText.setOnEditorActionListener { v, actionId, _ ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -143,7 +143,7 @@ class AddCardsFragment : Fragment() {
     }
 
     private fun tryToAddCards(cardList: MutableList<Card>): Completable {
-        return getMyCards(gameFlow.me!!)
+        return getMyCards(authenticator.me!!)
             .flatMapCompletable { myCards ->
                 if (myCards.size + cardList.size > gamesRepository.currentGame!!.celebsCount) {
                     Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))

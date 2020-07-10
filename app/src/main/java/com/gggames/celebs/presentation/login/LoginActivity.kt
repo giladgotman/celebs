@@ -8,8 +8,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.R
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.core.CelebsApplication
-import com.gggames.celebs.core.GameFlow
 import com.gggames.celebs.presentation.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class LoginActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var gameFlow: GameFlow
+    lateinit var authenticator: Authenticator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as CelebsApplication).appComponent.inject(this)
@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
     private fun onDoneClick() {
         if (loginUsername.editText?.text?.isNotEmpty() == true) {
             val name = loginUsername.editText?.text.toString()
-            gameFlow.login(name)
+            authenticator.login(name)
             goToMainActivity(name)
         } else {
             loginUsername.error = "Please enter your name"
@@ -59,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val me = gameFlow.me
+        val me = authenticator.me
         Timber.w("onResume me: $me")
         if (me != null) {
             goToMainActivity(me.name)

@@ -13,7 +13,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GameFlow @Inject constructor(
+class Authenticator @Inject constructor(
     private val preferenceManager: PreferenceManager,
     @AppContext private val appContext: Context
 

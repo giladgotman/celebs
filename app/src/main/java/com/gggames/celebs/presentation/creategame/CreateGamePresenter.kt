@@ -1,6 +1,6 @@
 package com.gggames.celebs.presentation.creategame
 
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.model.Game
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class CreateGamePresenter @Inject constructor(
     private val setGame: SetGame,
-    private val gameFlow: GameFlow,
+    private val authenticator: Authenticator,
     private val joinGame: JoinGame
 ) {
 
@@ -36,7 +36,7 @@ class CreateGamePresenter @Inject constructor(
             gameDetails.teams,
             GameState.Created,
             GameInfo(),
-            gameFlow.me!!
+            authenticator.me!!
         )
         joinGame(game)
     }
@@ -46,7 +46,7 @@ class CreateGamePresenter @Inject constructor(
             .doOnSubscribe {
                 view.setDoneEnabled(false)
             }
-            .andThen(joinGame(game, gameFlow.me!!))
+            .andThen(joinGame(game, authenticator.me!!))
             .subscribe(
                 {
                     view.navigateToAddCards(game.id)

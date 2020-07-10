@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.players.domain.ChooseTeam
 import com.gggames.celebs.presentation.di.ViewComponent
@@ -32,7 +32,7 @@ class ChooseTeamFragment : Fragment() {
     @Inject
     lateinit var chooseTeam: ChooseTeam
     @Inject
-    lateinit var gameFlow: GameFlow
+    lateinit var authenticator: Authenticator
     @Inject lateinit var gamesRepository: GamesRepository
 
     override fun onCreateView(
@@ -74,9 +74,9 @@ class ChooseTeamFragment : Fragment() {
             Timber.w("selected team: $selection, team: $teamName")
 
             gamesRepository.currentGame?.let {game->
-                chooseTeam(game.id, gameFlow.me!!, teamName)
+                chooseTeam(game.id, authenticator.me!!, teamName)
                     .subscribe({
-                        gameFlow.setMyTeam(teamName)
+                        authenticator.setMyTeam(teamName)
                         Timber.w("ggg you choose team : $teamName")
                     },{e->
                         buttonDone.isEnabled = true

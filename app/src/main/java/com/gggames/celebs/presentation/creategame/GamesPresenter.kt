@@ -1,6 +1,6 @@
 package com.gggames.celebs.presentation.creategame
 
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.GetGames
 import com.gggames.celebs.features.games.domain.ObserveGame
@@ -21,7 +21,7 @@ class GamesPresenter @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val getGames: GetGames,
     private val observeGame: ObserveGame,
-    private val gameFlow: GameFlow,
+    private val authenticator: Authenticator,
     private val joinGame: JoinGame,
     private val leaveGame: LeaveGame,
     private val schedulerProvider: BaseSchedulerProvider,
@@ -32,7 +32,7 @@ class GamesPresenter @Inject constructor(
 
     fun bind(view: View, gameIdFromDeepLink: String?) {
         this.view = view
-        val playerName = gameFlow.me?.name
+        val playerName = authenticator.me?.name
         if (playerName == null) {
             gameIdFromDeepLink?.let {
                 preferenceManager.saveGameInvitation(it)
@@ -62,7 +62,7 @@ class GamesPresenter @Inject constructor(
 
     private fun leaveGameIfNeeded(): Completable {
         return gamesRepository.currentGame?.let {
-            leaveGame(it, gameFlow.me!!)
+            leaveGame(it, authenticator.me!!)
         } ?: Completable.complete()
     }
 
@@ -84,11 +84,11 @@ class GamesPresenter @Inject constructor(
 
     private fun logout() {
         view.finishScreen()
-        gameFlow.logout()
+        authenticator.logout()
     }
 
     private fun joinGameAndGoToAddCards(game: Game) {
-        joinGame(game, gameFlow.me!!)
+        joinGame(game, authenticator.me!!)
             .subscribe({
                 view.navigateToAddCards()
             }, {
