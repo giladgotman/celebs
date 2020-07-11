@@ -22,7 +22,7 @@ class FirebaseGamesDataSource @Inject constructor(
     @Named("baseFirebaseCollection")
     private val baseCollection: String
 ) : GamesDataSource {
-    override fun getGames(statesQuery: List<GameState>): Single<List<Game>> {
+    override fun getGames(gameIds: List<String>, statesQuery: List<GameState>): Single<List<Game>> {
         val games = mutableListOf<Game>()
         return Single.create { emitter ->
             val query = if (statesQuery.isNotEmpty()) {
@@ -33,10 +33,11 @@ class FirebaseGamesDataSource @Inject constructor(
                     "state",
                     GameState.values().map { it.toRaw() }
                 )
-            }.orderBy(
-                "createdAt",
-                Query.Direction.DESCENDING
-            )
+            }.whereIn("id", gameIds)
+                .orderBy(
+                    "createdAt",
+                    Query.Direction.DESCENDING
+                )
 
             query.get()
                 .addOnSuccessListener { result ->
