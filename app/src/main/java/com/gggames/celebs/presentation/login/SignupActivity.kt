@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class LoginActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity() {
 
     @Inject
     lateinit var authenticator: Authenticator

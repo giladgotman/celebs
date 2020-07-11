@@ -6,7 +6,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.gggames.celebs.core.di.AppContext
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.Player
-import com.gggames.celebs.presentation.login.LoginActivity
+import com.gggames.celebs.presentation.login.SignupActivity
 import com.gggames.celebs.utils.prefs.PreferenceManager
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -32,7 +32,7 @@ class Authenticator @Inject constructor(
     fun logout() {
         me = null
         preferenceManager.savePlayer(null)
-        val intent = Intent(appContext, LoginActivity::class.java)
+        val intent = Intent(appContext, SignupActivity::class.java)
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
         appContext.startActivity(intent)
     }
