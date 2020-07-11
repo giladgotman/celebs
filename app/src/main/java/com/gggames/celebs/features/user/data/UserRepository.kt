@@ -8,6 +8,6 @@ import io.reactivex.Observable
 interface UserRepository {
     fun get(userId: String): Observable<UserResponse>
 
-    fun add(user: User): Completable
+    fun set(user: User): Completable
 }
 

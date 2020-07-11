@@ -13,13 +13,7 @@ class UserRepositoryImpl @Inject constructor(
     override fun get(userId: String): Observable<UserResponse>  =
         firebaseUserDataSource.getUser(userId)
 
-    override fun add(user: User): Completable =
-        get(user.id).flatMapCompletable {
-            if (it is UserResponse.NotExist) {
-                firebaseUserDataSource.addUser(user)
-            } else {
-                Completable.error(IllegalStateException("alreadyExists"))
-            }
-        }
-
+    // if the user exists it will update the existing one, if not it will create a new one
+    override fun set(user: User): Completable =
+        firebaseUserDataSource.setUser(user)
 }

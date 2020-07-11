@@ -6,10 +6,10 @@ import io.reactivex.Observable
 
 interface UserDataSource {
     fun getUser(userId: String): Observable<UserResponse>
-    fun addUser(user: User): Completable
+    fun setUser(user: User): Completable
 
     sealed class UserResponse {
-        data class Data(val user: User): UserResponse()
-        object NotExist: UserResponse()
+        data class Exists(val user: User): UserResponse()
+        object NotExists: UserResponse()
     }
 }

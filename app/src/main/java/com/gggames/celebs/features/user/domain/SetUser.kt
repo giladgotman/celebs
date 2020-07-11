@@ -4,8 +4,8 @@ import com.gggames.celebs.features.user.data.UserRepository
 import com.gggames.celebs.model.User
 import javax.inject.Inject
 
-class AddUser @Inject constructor(
+class SetUser @Inject constructor(
     private val userRepository: UserRepository
 ){
-    operator fun invoke(user: User) = userRepository.add(user)
+    operator fun invoke(user: User) = userRepository.set(user)
 }

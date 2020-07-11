@@ -8,6 +8,7 @@ import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.presentation.login.LoginActivity
 import com.gggames.celebs.utils.prefs.PreferenceManager
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,7 +18,7 @@ class Authenticator @Inject constructor(
     private val preferenceManager: PreferenceManager,
     @AppContext private val appContext: Context
 
-){
+) {
     var me: Player? = null
         private set
         get() {
@@ -25,7 +26,8 @@ class Authenticator @Inject constructor(
             else preferenceManager.loadPlayer()
         }
 
-    private fun generatePlayerId(playerName: String, now: Long) = "${playerName}_$now"
+    // at this point the user id is the same as its username
+    private fun generatePlayerId(username: String) = username
 
     fun logout() {
         me = null
@@ -35,19 +37,19 @@ class Authenticator @Inject constructor(
         appContext.startActivity(intent)
     }
 
-    fun login(playerName: String) {
-        val now = System.currentTimeMillis()
-        val id = generatePlayerId(playerName, now)
-        me = Player(id, playerName)
-        preferenceManager.savePlayer(me)
-    }
+    fun signup(username: String) =
+        Completable.fromCallable {
+            val id = generatePlayerId(username)
+            me = Player(id, username)
+            preferenceManager.savePlayer(me)
+        }
 
     fun isMyselfActivePlayerBlocking(game: Game) = me == game.currentPlayer
 
     fun isMyselfActivePlayer(game: Game) = Single.fromCallable {
         isMyselfActivePlayerBlocking(game)
     }
-    
+
     fun isMyselfHost(game: Game) = me == game.host
 
     fun setMyTeam(teamName: String) {

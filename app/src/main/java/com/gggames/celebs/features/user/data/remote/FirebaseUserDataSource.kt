@@ -27,12 +27,14 @@ class FirebaseUserDataSource @Inject constructor(
         return Observable.create { emitter ->
             users.document(userId).addSnapshotListener { value, e ->
                 if (e == null) {
-                    val userRaw = value?.toObject(UserRaw::class.java)
-                    userRaw?.let {
-                        emitter.onNext(UserResponse.Data(userRaw.toUi()))
-                    }
-                        ?: emitter.onNext(UserResponse.NotExist)
-                    Timber.w("getUser update")
+                    if (value?.exists() == true) {
+                        val userRaw = value.toObject(UserRaw::class.java)
+                        userRaw?.let {
+                            emitter.onNext(UserResponse.Exists(userRaw.toUi()))
+                        }
+                    } else {
+                        emitter.onNext(UserResponse.NotExists)
+                    } ?: emitter.onError(IllegalStateException("Error getUser, userId: $userId"))
                 } else {
                     Timber.e(e, "getUser, error")
                     emitter.onError(e)
@@ -41,7 +43,7 @@ class FirebaseUserDataSource @Inject constructor(
         }
     }
 
-    override fun addUser(user: User): Completable {
+    override fun setUser(user: User): Completable {
         val userRaw = user.toRaw()
         return Completable.create { emitter ->
             getUsersCollectionRef()

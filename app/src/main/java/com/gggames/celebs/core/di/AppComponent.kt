@@ -21,7 +21,8 @@ fun getAppComponent(context: Context): AppComponent =
     NetworkModule::class,
     GamesModule::class,
     CardsModule::class,
-    PlayersModule::class
+    PlayersModule::class,
+    UserModule::class
 ])
 interface AppComponent {
     @AppContext
