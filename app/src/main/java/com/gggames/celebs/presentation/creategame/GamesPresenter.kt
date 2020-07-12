@@ -3,6 +3,7 @@ package com.gggames.celebs.presentation.creategame
 import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.GetGames
+import com.gggames.celebs.features.games.domain.GetMyGames
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.features.players.domain.LeaveGame
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 class GamesPresenter @Inject constructor(
     private val gamesRepository: GamesRepository,
-    private val getGames: GetGames,
+    private val getGames: GetMyGames,
     private val observeGame: ObserveGame,
     private val authenticator: Authenticator,
     private val joinGame: JoinGame,
