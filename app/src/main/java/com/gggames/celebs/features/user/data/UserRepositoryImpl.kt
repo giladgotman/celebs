@@ -1,7 +1,7 @@
 package com.gggames.celebs.features.user.data
 
 import com.gggames.celebs.features.user.data.UserDataSource.UserResponse
-import com.gggames.celebs.model.User
+import com.gggames.celebs.model.Player
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -14,6 +14,6 @@ class UserRepositoryImpl @Inject constructor(
         firebaseUserDataSource.getUser(userId)
 
     // if the user exists it will update the existing one, if not it will create a new one
-    override fun set(user: User): Completable =
+    override fun set(user: Player): Completable =
         firebaseUserDataSource.setUser(user)
 }

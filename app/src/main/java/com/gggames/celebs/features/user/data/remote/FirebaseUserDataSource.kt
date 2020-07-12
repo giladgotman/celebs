@@ -3,8 +3,8 @@ package com.gggames.celebs.features.user.data.remote
 import com.gggames.celebs.features.common.getUsersCollectionPath
 import com.gggames.celebs.features.user.data.UserDataSource
 import com.gggames.celebs.features.user.data.UserDataSource.UserResponse
-import com.gggames.celebs.model.User
-import com.gggames.celebs.model.remote.UserRaw
+import com.gggames.celebs.model.Player
+import com.gggames.celebs.model.remote.PlayerRaw
 import com.gggames.celebs.model.remote.toRaw
 import com.gggames.celebs.model.remote.toUi
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,7 +28,7 @@ class FirebaseUserDataSource @Inject constructor(
             users.document(userId).addSnapshotListener { value, e ->
                 if (e == null) {
                     if (value?.exists() == true) {
-                        val userRaw = value.toObject(UserRaw::class.java)
+                        val userRaw = value.toObject(PlayerRaw::class.java)
                         userRaw?.let {
                             emitter.onNext(UserResponse.Exists(userRaw.toUi()))
                         }
@@ -43,7 +43,7 @@ class FirebaseUserDataSource @Inject constructor(
         }
     }
 
-    override fun setUser(user: User): Completable {
+    override fun setUser(user: Player): Completable {
         val userRaw = user.toRaw()
         return Completable.create { emitter ->
             getUsersCollectionRef()

@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -19,7 +18,6 @@ import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.presentation.common.MainActivityDelegate
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.celebs.utils.showErrorToast
-import com.google.android.material.snackbar.Snackbar
 import com.idagio.app.core.utils.share.Shareable
 import com.idagio.app.core.utils.share.createDynamicLink
 import com.idagio.app.core.utils.share.getPendingDeepLink
@@ -74,11 +72,6 @@ class MainActivity : AppCompatActivity() {
         }).let {
             disposables.add(it)
         }
-    }
-
-    private fun createSnackbar(view: View) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            .setAction("Action", null).show()
     }
 
     fun setShareVisible(visible: Boolean) {
