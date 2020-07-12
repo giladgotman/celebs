@@ -13,7 +13,7 @@ fun Card.toRaw() = CardRaw(
 )
 
 fun Player.toRaw() =
-    PlayerRaw(this.id, this.name, this.team)
+    PlayerRaw(this.id, this.name, this.team, this.games)
 
 fun User.toRaw() = when (this) {
     is User.Guest-> UserRaw(id = this.id, name = this.name, type = UserType.Guest)

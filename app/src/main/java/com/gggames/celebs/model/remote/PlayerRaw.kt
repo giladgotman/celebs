@@ -1,11 +1,10 @@
 package com.gggames.celebs.model.remote
 
-import com.gggames.celebs.model.remote.EMPTY_VALUE
-
 data class PlayerRaw (
     val id: String,
     val name: String,
-    val team: String? = null
+    val team: String? = null,
+    val games: List<String> = emptyList()
 ){
     constructor() : this(
         EMPTY_VALUE,

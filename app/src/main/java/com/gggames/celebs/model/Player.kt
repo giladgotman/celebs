@@ -7,5 +7,6 @@ import kotlinx.android.parcel.Parcelize
 data class Player(
     val id: String,
     val name: String,
-    val team: String? = null
+    val team: String? = null,
+    val games: List<String> = emptyList()
 ): Parcelable
