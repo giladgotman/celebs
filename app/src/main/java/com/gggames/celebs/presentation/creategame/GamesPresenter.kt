@@ -106,6 +106,7 @@ class GamesPresenter @Inject constructor(
             .subscribe(
                 { games ->
                     view.showLoading(false)
+                    view.showNoGamesView(games.isEmpty())
                     view.show(games)
                 },
                 {
@@ -144,6 +145,7 @@ class GamesPresenter @Inject constructor(
         fun finishScreen()
         fun navigateToAddCards()
         fun showJoinedGameIsFinished(gameName: String)
+        fun showNoGamesView(visible: Boolean)
     }
 
     sealed class Result {

@@ -91,6 +91,14 @@ class GamesFragment : Fragment() , GamesPresenter.View {
         gamesAdapter.setData(games)
     }
 
+    override fun showNoGamesView(visible: Boolean) {
+        if (visible) {
+            noGamesView.visibility = View.VISIBLE
+        } else {
+            noGamesView.visibility = View.GONE
+        }
+    }
+
     override fun showGenericError() {
         showErrorToast(
             requireContext(),

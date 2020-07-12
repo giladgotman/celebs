@@ -23,6 +23,7 @@
     <string name="games_join_game_dialog_subtitle">Game: %1$s </string>
     <string name="games_join_game_dialog_positive_button">Join</string>
     <string name="games_join_game_dialog_negative_button">Cancel</string>
+    <string name="games_no_active_games_title">No active games</string>
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
@@ -66,4 +67,5 @@
     <string name="leave_game_dialog_title">Are you sure you want to quit and end your turn?</string>
     <string name="game_over_title">Game Over</string>
     <string name="game_over_subtitle">%1$s won!</string>
+
 </resources>
