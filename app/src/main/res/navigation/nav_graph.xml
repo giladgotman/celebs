@@ -71,11 +71,6 @@
             app:popUpToInclusive="true"
             app:destination="@id/chooseTeamFragment" />
 
-        <action
-            android:id="@+id/action_AddCardsFragment_to_gameOnFragment"
-            app:popUpTo="@+id/AddCardsFragment"
-            app:popUpToInclusive="true"
-            app:destination="@id/gameOnFragment" />
     </fragment>
 
     <fragment

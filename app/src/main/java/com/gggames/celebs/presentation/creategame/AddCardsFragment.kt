@@ -22,7 +22,6 @@ import com.gggames.celebs.model.Card
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
-import com.gggames.celebs.presentation.gameon.GAME_ID_KEY
 import com.gggames.celebs.utils.showErrorToast
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
@@ -93,10 +92,7 @@ class AddCardsFragment : Fragment() {
         getMyCards(authenticator.me!!).subscribe(
             {
                 if (it.size >= gamesRepository.currentGame!!.celebsCount) {
-                    findNavController().navigate(
-                        R.id.action_AddCardsFragment_to_gameOnFragment,
-                        Bundle().apply { putString(GAME_ID_KEY, gamesRepository.currentGame!!.id) }
-                    )
+                    navigateToChooseTeam()
                 }
             }, {}
         ).let { disposables.add(it) }
@@ -137,9 +133,7 @@ class AddCardsFragment : Fragment() {
                 buttonDone.isEnabled = false
             }
             .subscribe({
-                findNavController().navigate(
-                    R.id.action_AddCardsFragment_to_chooseTeamFragment
-                )
+                navigateToChooseTeam()
             }, {
                 buttonDone.isEnabled = true
                 val errorMessage =
@@ -157,6 +151,12 @@ class AddCardsFragment : Fragment() {
             }).let {
                 disposables.add(it)
             }
+    }
+
+    private fun navigateToChooseTeam() {
+        findNavController().navigate(
+            R.id.action_AddCardsFragment_to_chooseTeamFragment
+        )
     }
 
     private fun tryToAddCards(cardList: MutableList<Card>): Completable {
