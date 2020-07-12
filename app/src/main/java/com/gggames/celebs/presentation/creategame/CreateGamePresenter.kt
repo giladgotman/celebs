@@ -1,19 +1,17 @@
 package com.gggames.celebs.presentation.creategame
 
-import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.JoinGame
-import com.gggames.celebs.model.Game
-import com.gggames.celebs.model.GameInfo
-import com.gggames.celebs.model.GameState
-import com.gggames.celebs.model.Team
+import com.gggames.celebs.features.user.domain.GetMyUser
+import com.gggames.celebs.model.*
+import io.reactivex.Single.just
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
 class CreateGamePresenter @Inject constructor(
     private val setGame: SetGame,
-    private val authenticator: Authenticator,
+    private val getMyUser: GetMyUser,
     private val joinGame: JoinGame
 ) {
 
@@ -26,29 +24,17 @@ class CreateGamePresenter @Inject constructor(
     }
 
     fun onDoneClick(gameDetails: GameDetails) {
-        val now = System.currentTimeMillis()
-        val game = Game(
-            "${gameDetails.name}$now",
-            gameDetails.name,
-            now,
-            gameDetails.password,
-            gameDetails.cardsCount,
-            gameDetails.teams,
-            GameState.Created,
-            GameInfo(),
-            authenticator.me!!
-        )
-        joinGame(game)
-    }
-
-    private fun joinGame(game: Game) {
-        setGame(game)
+        getMyUser().firstOrError().flatMap {
+            val game = createGame(gameDetails, it)
+            // TODO: 12.07.20 check if the setGame can be removed. it is used in joinGame (but with updateRemote = false
+            setGame(game)
+                .andThen(joinGame(game, it).andThen(just(game)))
+        }
             .doOnSubscribe {
                 view.setDoneEnabled(false)
             }
-            .andThen(joinGame(game, authenticator.me!!))
             .subscribe(
-                {
+                { game ->
                     view.navigateToAddCards(game.id)
                 }, {
                     view.setDoneEnabled(true)
@@ -57,6 +43,21 @@ class CreateGamePresenter @Inject constructor(
             .let {
                 disposables.add(it)
             }
+    }
+
+    private fun createGame(gameDetails: GameDetails, user: Player): Game {
+        val now = System.currentTimeMillis()
+        return Game(
+            "${gameDetails.name}$now",
+            gameDetails.name,
+            now,
+            gameDetails.password,
+            gameDetails.cardsCount,
+            gameDetails.teams,
+            GameState.Created,
+            GameInfo(),
+            user
+        )
     }
 
     fun unBind() {
