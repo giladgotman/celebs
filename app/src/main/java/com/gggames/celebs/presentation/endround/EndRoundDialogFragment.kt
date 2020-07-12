@@ -18,7 +18,6 @@ class EndRoundDialogFragment
 
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
-
     }
 
     override fun onCreateView(
@@ -60,7 +59,7 @@ class EndRoundDialogFragment
         }
 
         buttonClose.setOnClickListener {
-            dismiss()
+            dismissAllowingStateLoss()
         }
     }
 
