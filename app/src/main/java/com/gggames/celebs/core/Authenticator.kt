@@ -19,6 +19,7 @@ class Authenticator @Inject constructor(
     @AppContext private val appContext: Context
 
 ) {
+    // TODO: 12.07.20 move it to user repo
     var me: Player? = null
         private set
         get() {
