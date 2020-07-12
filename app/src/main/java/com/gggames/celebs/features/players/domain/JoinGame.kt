@@ -15,9 +15,9 @@ class JoinGame @Inject constructor(
     private val addGameToUser: AddGameToUser,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
-    operator fun invoke(game: Game, player: Player): Completable =
-        playersRepository.addPlayer(game.id, player)
+    operator fun invoke(game: Game, user: Player): Completable =
+        playersRepository.addPlayer(game.id, user)
             .andThen(gamesRepository.setGame(game, updateRemote = false))
-            .andThen(addGameToUser(player, game))
+            .andThen(addGameToUser(user, game))
             .compose(schedulerProvider.applyCompletableDefault())
 }

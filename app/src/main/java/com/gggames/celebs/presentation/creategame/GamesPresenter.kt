@@ -6,6 +6,7 @@ import com.gggames.celebs.features.games.domain.GetMyGames
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.features.players.domain.LeaveGame
+import com.gggames.celebs.features.user.domain.GetMyUser
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameState
 import com.gggames.celebs.presentation.creategame.GamesPresenter.Result.*
@@ -22,6 +23,7 @@ class GamesPresenter @Inject constructor(
     private val getGames: GetMyGames,
     private val observeGame: ObserveGame,
     private val authenticator: Authenticator,
+    private val getMyUser: GetMyUser,
     private val joinGame: JoinGame,
     private val leaveGame: LeaveGame,
     private val schedulerProvider: BaseSchedulerProvider,
@@ -74,12 +76,12 @@ class GamesPresenter @Inject constructor(
                 .doOnTerminate {  preferenceManager.saveGameInvitation(null) }
                 .map { game ->
                     if (game.state == GameState.Finished) {
-                        GameFinished(game.name)
+                        Result.GameFinished(game.name)
                     } else {
-                        DeepLinkExists(game)
+                        Result.DeepLinkExists(game)
                     }
                 }
-        } ?: Observable.just(NoDeepLink)
+        } ?: Observable.just(Result.NoDeepLink)
     }
 
     private fun logout() {
@@ -88,7 +90,8 @@ class GamesPresenter @Inject constructor(
     }
 
     private fun joinGameAndGoToAddCards(game: Game) {
-        joinGame(game, authenticator.me!!)
+        getMyUser().take(1)
+            .switchMapCompletable { joinGame(game, it)}
             .subscribe({
                 view.navigateToAddCards()
             }, {
