@@ -18,8 +18,8 @@ class GamesRepositoryImpl @Inject constructor(
     val gameId: String
         get() = currentGame!!.id
 
-    override fun getGames(statesQuery: List<GameState>): Observable<List<Game>> {
-        return gamesDataSource.getGames(statesQuery).toObservable()
+    override fun getGames(gameIds: List<String>, states: List<GameState>): Observable<List<Game>> {
+        return gamesDataSource.getGames(gameIds, states).toObservable()
     }
 
     override fun setGame(game: Game?, updateRemote: Boolean): Completable {

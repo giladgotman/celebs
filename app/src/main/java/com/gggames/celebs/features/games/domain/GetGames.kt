@@ -13,6 +13,7 @@ class GetGames @Inject constructor(
     private val schedulerProvider: BaseSchedulerProvider
 ){
     operator fun invoke() = gamesRepository.getGames(
+        emptyList(),
         listOf(GameState.Created, GameState.Started)
     ).compose(schedulerProvider.applyDefault())
 }

@@ -22,42 +22,40 @@ class FirebaseGamesDataSource @Inject constructor(
     @Named("baseFirebaseCollection")
     private val baseCollection: String
 ) : GamesDataSource {
-    override fun getGames(gameIds: List<String>, statesQuery: List<GameState>): Single<List<Game>> {
+    override fun getGames(gameIds: List<String>, states: List<GameState>): Single<List<Game>> {
         val games = mutableListOf<Game>()
         return Single.create { emitter ->
-            val query = if (statesQuery.isNotEmpty()) {
-                firestore.collection(getGamesCollectionPath(baseCollection))
-                    .whereIn("state", statesQuery.map { it.toRaw() })
+            val collection = firestore.collection(getGamesCollectionPath(baseCollection))
+            val query = if (gameIds.isNotEmpty()) {
+                collection.whereIn("id", gameIds)
             } else {
-                firestore.collection(getGamesCollectionPath(baseCollection)).whereIn(
-                    "state",
-                    GameState.values().map { it.toRaw() }
-                )
-            }.whereIn("id", gameIds)
-                .orderBy(
-                    "createdAt",
-                    Query.Direction.DESCENDING
-                )
-
+                collection
+            }.orderBy(
+                "createdAt",
+                Query.Direction.DESCENDING
+            )
             query.get()
                 .addOnSuccessListener { result ->
                     for (game in result) {
                         val gameEntity = game.toObject(GameRaw().javaClass)
-                        if (!filterGame(gameEntity)) {
+                        if (filterGame(gameEntity, states)) {
                             games.add(gameEntity.toUi())
                         }
                     }
                     emitter.onSuccess(games)
                 }
                 .addOnFailureListener { exception ->
-                    Timber.w(exception, "Error getting documents.")
+                    Timber.e(exception, "Error getting games.")
                     emitter.onError(exception)
                 }
         }
     }
 
-    // filter out games that are auto created by google
-    private fun filterGame(gameEntity: GameRaw) = gameEntity.name == "text"
+    // filter games that are not auto created by google and in the selected states list
+    private fun filterGame(
+        gameEntity: GameRaw,
+        states: List<GameState>
+    ) = gameEntity.name != "text" && gameEntity.state in states.map { it.toRaw() }
 
     override fun setGame(game: Game): Completable {
         Timber.w("setGame: $game")
