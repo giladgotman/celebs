@@ -22,6 +22,7 @@ import com.gggames.celebs.model.Card
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.gggames.celebs.presentation.gameon.GAME_ID_KEY
 import com.gggames.celebs.utils.showErrorToast
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
@@ -83,6 +84,22 @@ class AddCardsFragment : Fragment() {
         buttonDone.setOnClickListener {
             onDoneClick()
         }
+
+
+        navigateToGameIfCardsAreFilled()
+    }
+
+    private fun navigateToGameIfCardsAreFilled() {
+        getMyCards(authenticator.me!!).subscribe(
+            {
+                if (it.size >= gamesRepository.currentGame!!.celebsCount) {
+                    findNavController().navigate(
+                        R.id.action_AddCardsFragment_to_gameOnFragment,
+                        Bundle().apply { putString(GAME_ID_KEY, gamesRepository.currentGame!!.id) }
+                    )
+                }
+            }, {}
+        ).let { disposables.add(it) }
     }
 
     private fun setCardsInputFields() {
