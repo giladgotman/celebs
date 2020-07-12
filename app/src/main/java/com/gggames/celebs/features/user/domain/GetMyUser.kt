@@ -15,5 +15,7 @@ class GetMyUser @Inject constructor(
                 authenticator.logout()
             }
             it
-        }
+        }.filter { it is UserDataSource.UserResponse.Exists }
+            .cast(UserDataSource.UserResponse.Exists::class.java)
+            .map { it.user }
 }

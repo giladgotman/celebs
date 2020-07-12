@@ -23,31 +23,36 @@ class FirebaseGamesDataSource @Inject constructor(
     private val baseCollection: String
 ) : GamesDataSource {
     override fun getGames(gameIds: List<String>, states: List<GameState>): Single<List<Game>> {
-        val games = mutableListOf<Game>()
         return Single.create { emitter ->
-            val collection = firestore.collection(getGamesCollectionPath(baseCollection))
-            val query = if (gameIds.isNotEmpty()) {
-                collection.whereIn("id", gameIds)
+            if (gameIds.isEmpty()) {
+                emitter.onSuccess(emptyList())
             } else {
-                collection
-            }.orderBy(
-                "createdAt",
-                Query.Direction.DESCENDING
-            )
-            query.get()
-                .addOnSuccessListener { result ->
-                    for (game in result) {
-                        val gameEntity = game.toObject(GameRaw().javaClass)
-                        if (filterGame(gameEntity, states)) {
-                            games.add(gameEntity.toUi())
+                val games = mutableListOf<Game>()
+                if (gameIds.size > 10) {
+                    Timber.w("can't get more then 10 games. size is : ${gameIds.size}")
+                }
+                val query = firestore.collection(getGamesCollectionPath(baseCollection))
+                    // firebase is limited to 10 elements in a where in clause
+                    .whereIn("id", gameIds.takeLast(10))
+                    .orderBy(
+                        "createdAt",
+                        Query.Direction.DESCENDING
+                    )
+                query.get()
+                    .addOnSuccessListener { result ->
+                        for (game in result) {
+                            val gameEntity = game.toObject(GameRaw().javaClass)
+                            if (filterGame(gameEntity, states)) {
+                                games.add(gameEntity.toUi())
+                            }
                         }
+                        emitter.onSuccess(games)
                     }
-                    emitter.onSuccess(games)
-                }
-                .addOnFailureListener { exception ->
-                    Timber.e(exception, "Error getting games.")
-                    emitter.onError(exception)
-                }
+                    .addOnFailureListener { exception ->
+                        Timber.e(exception, "Error getting games.")
+                        emitter.onError(exception)
+                    }
+            }
         }
     }
 
@@ -55,7 +60,13 @@ class FirebaseGamesDataSource @Inject constructor(
     private fun filterGame(
         gameEntity: GameRaw,
         states: List<GameState>
-    ) = gameEntity.name != "text" && gameEntity.state in states.map { it.toRaw() }
+    ): Boolean {
+        if (gameEntity.name == "text") return false
+        if (states.isNotEmpty()) {
+            return gameEntity.state in states.map { it.toRaw() }
+        }
+        return true
+    }
 
     override fun setGame(game: Game): Completable {
         Timber.w("setGame: $game")

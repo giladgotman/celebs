@@ -2,7 +2,6 @@ package com.gggames.celebs.presentation.creategame
 
 import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.data.GamesRepository
-import com.gggames.celebs.features.games.domain.GetGames
 import com.gggames.celebs.features.games.domain.GetMyGames
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.JoinGame
