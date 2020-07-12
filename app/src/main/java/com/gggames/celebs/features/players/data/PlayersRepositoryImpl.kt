@@ -9,6 +9,9 @@ class PlayersRepositoryImpl @Inject constructor(
     private val firebasePlayersDataSource: PlayersDataSource
 ) : PlayersRepository {
 
+    override fun getMyPlayer(gameId: String, userId: String): Observable<Player> =
+        firebasePlayersDataSource.getPlayer(gameId, userId)
+
     override fun getAllPlayers(gameId: String): Observable<List<Player>> =
         firebasePlayersDataSource.getAllPlayers(gameId)
 

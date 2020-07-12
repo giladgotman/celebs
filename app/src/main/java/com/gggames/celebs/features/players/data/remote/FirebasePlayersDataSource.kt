@@ -44,11 +44,28 @@ class FirebasePlayersDataSource @Inject constructor(
         }
     }
 
+    override fun getPlayer(gameId: String, userId: String): Observable<Player> {
+        return Observable.create { emitter ->
+            getCollectionReference(gameId).document(userId)
+                .addSnapshotListener { value, e ->
+                    if (e != null) {
+                        Timber.e(e, "getPlayer, error")
+                        emitter.onError(e)
+                    } else {
+                        val player = value?.toObject(PlayerRaw().javaClass)
+                        player?.let {
+                            emitter.onNext(it.toUi())
+                        }
+
+                    }
+                }
+        }
+    }
 
     override fun addPlayer(gameId: String, player: Player): Completable {
         val playersCollectionsRef = getCollectionReference(gameId)
         val playersRaw = player.toRaw()
-        return Completable.create { emitter->
+        return Completable.create { emitter ->
             playersCollectionsRef.document(playersRaw.id).set(playersRaw)
                 .addOnSuccessListener {
                     Timber.i("player added to path: ${playersCollectionsRef.path}")
