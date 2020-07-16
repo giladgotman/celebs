@@ -5,11 +5,12 @@ import com.gggames.celebs.model.TurnState.Idle
 data class Game (val id: String,
                  val name: String,
                  val createdAt: Long,
-                 val password: String,
+                 val password: String? = null,
                  val celebsCount: Int = 6,
                  val teams: List<Team> = emptyList(),
                  val state: GameState? = null,
-                 val gameInfo: GameInfo = GameInfo()
+                 val gameInfo: GameInfo = GameInfo(),
+                 val host: Player
 ) {
     val currentPlayer: Player?
         get() = this.gameInfo.round.turn.player
@@ -17,10 +18,11 @@ data class Game (val id: String,
         get() = this.gameInfo.round.roundNumber
     val round = this.gameInfo.round
     val turn = this.gameInfo.round.turn
+
+    val winningTeam : Team? get() = this.teams.maxBy { it.score }
 }
 
 data class GameInfo(
-    val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
     val round: Round = Round()

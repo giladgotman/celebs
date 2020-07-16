@@ -24,6 +24,25 @@
     <style name="DefaultTextViewStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/roboto_light</item>
         <item name="fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TextViewMedium" parent="DefaultTextViewStyle" >
+        <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+
+    <style name="TextViewTitle" parent="DefaultTextViewStyle" >
+        <item name="android:textSize">@dimen/big_text_size</item>
+    </style>
+
+    <style name="TextViewSubTitle" parent="DefaultTextViewStyle" >
+        <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+
+    <style name="TextViewBold" parent="DefaultTextViewStyle" >
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
 
     <style name="CardTextViewStyle" parent="DefaultTextViewStyle">
@@ -32,8 +51,6 @@
     </style>
 
     <style name="DefaultButtonStyle" parent="android:Widget.Material.Light.ImageButton">
-        <item name="android:fontFamily">@font/courgette_regular</item>
-        <item name="fontFamily">@font/courgette_regular</item>
         <item name="android:background">@color/hawaii_blue</item>
     </style>
 

@@ -1,16 +1,19 @@
 package com.gggames.celebs.presentation.creategame
 
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.model.Game
+import com.gggames.celebs.model.GameInfo
+import com.gggames.celebs.model.GameState
+import com.gggames.celebs.model.Team
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
 class CreateGamePresenter @Inject constructor(
     private val setGame: SetGame,
-    private val gameFlow: GameFlow,
+    private val authenticator: Authenticator,
     private val joinGame: JoinGame
 ) {
 
@@ -22,7 +25,19 @@ class CreateGamePresenter @Inject constructor(
         this.view = view
     }
 
-    fun onDoneClick(game: Game) {
+    fun onDoneClick(gameDetails: GameDetails) {
+        val now = System.currentTimeMillis()
+        val game = Game(
+            "${gameDetails.name}$now",
+            gameDetails.name,
+            now,
+            gameDetails.password,
+            gameDetails.cardsCount,
+            gameDetails.teams,
+            GameState.Created,
+            GameInfo(),
+            authenticator.me!!
+        )
         joinGame(game)
     }
 
@@ -31,7 +46,7 @@ class CreateGamePresenter @Inject constructor(
             .doOnSubscribe {
                 view.setDoneEnabled(false)
             }
-            .andThen(joinGame(game, gameFlow.me!!))
+            .andThen(joinGame(game, authenticator.me!!))
             .subscribe(
                 {
                     view.navigateToAddCards(game.id)
@@ -54,3 +69,10 @@ class CreateGamePresenter @Inject constructor(
         fun showGenericError()
     }
 }
+
+data class GameDetails(
+    val name: String,
+    val teams: List<Team>,
+    val cardsCount: Int,
+    val password: String?
+)

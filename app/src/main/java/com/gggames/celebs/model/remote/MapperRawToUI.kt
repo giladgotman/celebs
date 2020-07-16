@@ -12,7 +12,12 @@ fun CardRaw.toUi() = Card(
 
 fun PlayerRaw.toUi() = Player(this.id, this.name, this.team)
 
-fun TeamRaw.toUi() = Team(this.name, this.players.map { it.toUi() })
+fun UserRaw.toUi() = when (this.type) {
+    UserType.Guest -> User.Guest(this.id, this.name)
+    UserType.LoggedIn -> User.LoggedIn(this.id, this.name, this.games.map { it.toUi() })
+}
+
+fun TeamRaw.toUi() = Team(name = this.name, score = this.score)
 
 fun GameRaw.toUi() = Game(
     this.id,
@@ -22,12 +27,12 @@ fun GameRaw.toUi() = Game(
     this.celebsCount.toInt(),
     this.teams.map { it.toUi() },
     GameState.fromName(this.state),
-    this.gameInfo.toUi()
-
+    this.gameInfo.toUi(),
+    this.host.toUi()
 )
 
 fun GameInfoRaw.toUi() = GameInfo(
-    this.score, this.totalCards, this.cardsInDeck, this.round.toUi()
+    this.totalCards, this.cardsInDeck, this.round.toUi()
 )
 
 fun RoundRaw.toUi() = Round(

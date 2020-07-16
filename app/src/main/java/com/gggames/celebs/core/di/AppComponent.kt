@@ -4,7 +4,7 @@ import android.content.Context
 import com.gggames.celebs.core.CelebsApplication
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
-import com.gggames.celebs.presentation.login.LoginActivity
+import com.gggames.celebs.presentation.login.SignupActivity
 import dagger.Component
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -21,7 +21,8 @@ fun getAppComponent(context: Context): AppComponent =
     NetworkModule::class,
     GamesModule::class,
     CardsModule::class,
-    PlayersModule::class
+    PlayersModule::class,
+    UserModule::class
 ])
 interface AppComponent {
     @AppContext
@@ -29,7 +30,7 @@ interface AppComponent {
 
     fun inject(activity: MainActivity)
 
-    fun inject(activity: LoginActivity)
+    fun inject(activity: SignupActivity)
 
     fun viewComponent(): ViewComponent.Builder
 }

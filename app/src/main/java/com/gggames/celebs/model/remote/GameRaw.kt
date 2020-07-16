@@ -8,11 +8,12 @@ data class GameRaw (
     val id: String,
     val name: String,
     val createdAt: Timestamp,
-    val password: String,
+    val password: String?,
     val celebsCount: Long = 6,
     val teams: List<TeamRaw>,
     val state: String? = null,
-    val gameInfo: GameInfoRaw = GameInfoRaw()
+    val gameInfo: GameInfoRaw = GameInfoRaw(),
+    val host: PlayerRaw = PlayerRaw()
 ) {
     constructor() : this(
         EMPTY_VALUE,
@@ -25,7 +26,6 @@ data class GameRaw (
 }
 
 data class GameInfoRaw(
-    val score: Map<String, Int> = emptyMap(),
     val totalCards: Int = 0,
     val cardsInDeck: Int = 0,
     val round: RoundRaw = RoundRaw()

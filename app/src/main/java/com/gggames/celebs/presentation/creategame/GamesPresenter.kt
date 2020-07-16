@@ -1,6 +1,6 @@
 package com.gggames.celebs.presentation.creategame
 
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.GetGames
 import com.gggames.celebs.features.games.domain.ObserveGame
@@ -9,6 +9,8 @@ import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameState
 import com.gggames.celebs.presentation.creategame.GamesPresenter.Result.*
+import com.gggames.celebs.utils.prefs.PreferenceManager
+import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -19,19 +21,21 @@ class GamesPresenter @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val getGames: GetGames,
     private val observeGame: ObserveGame,
-    private val gameFlow: GameFlow,
+    private val authenticator: Authenticator,
     private val joinGame: JoinGame,
-    private val leaveGame: LeaveGame
+    private val leaveGame: LeaveGame,
+    private val schedulerProvider: BaseSchedulerProvider,
+    private val preferenceManager: PreferenceManager
 ) {
     lateinit var view: View
     private val disposables = CompositeDisposable()
 
     fun bind(view: View, gameIdFromDeepLink: String?) {
         this.view = view
-        val playerName = gameFlow.me?.name
+        val playerName = authenticator.me?.name
         if (playerName == null) {
             gameIdFromDeepLink?.let {
-                view.showNeedLoginInfo()
+                preferenceManager.saveGameInvitation(it)
             }
             logout()
             return
@@ -47,7 +51,7 @@ class GamesPresenter @Inject constructor(
                         fetchGames()
                     }
                     is DeepLinkExists -> {
-                        joinGameAndGoToAddCards(result.game)
+                        view.showApproveJoinGame(result.game)
                     }
                 }
             }, {
@@ -58,13 +62,16 @@ class GamesPresenter @Inject constructor(
 
     private fun leaveGameIfNeeded(): Completable {
         return gamesRepository.currentGame?.let {
-            leaveGame(it, gameFlow.me!!)
+            leaveGame(it, authenticator.me!!)
         } ?: Completable.complete()
     }
 
     private fun isDeepLinkExists(gameIdFromDeepLink: String?): Observable<out Result> {
-        return gameIdFromDeepLink?.let {
+        val gameInvitation = gameIdFromDeepLink?: preferenceManager.loadGameInvitation()
+        return gameInvitation?.let {
             observeGame(it).take(1)
+                .compose(schedulerProvider.applyDefault())
+                .doOnTerminate {  preferenceManager.saveGameInvitation(null) }
                 .map { game ->
                     if (game.state == GameState.Finished) {
                         GameFinished(game.name)
@@ -77,11 +84,11 @@ class GamesPresenter @Inject constructor(
 
     private fun logout() {
         view.finishScreen()
-        gameFlow.logout()
+        authenticator.logout()
     }
 
     private fun joinGameAndGoToAddCards(game: Game) {
-        joinGame(game, gameFlow.me!!)
+        joinGame(game, authenticator.me!!)
             .subscribe({
                 view.navigateToAddCards()
             }, {
@@ -117,10 +124,19 @@ class GamesPresenter @Inject constructor(
         joinGameAndGoToAddCards(game)
     }
 
+    fun onUserJoinGameResponse(game: Game, approved: Boolean) {
+        if (approved) {
+            joinGameAndGoToAddCards(game)
+        } else {
+            fetchGames()
+        }
+    }
+
     interface View {
         fun show(games: List<Game>)
         fun showGenericError()
         fun showNeedLoginInfo()
+        fun showApproveJoinGame(game: Game)
         fun showLoading(show: Boolean)
         fun finishScreen()
         fun navigateToAddCards()

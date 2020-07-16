@@ -15,9 +15,15 @@ fun Card.toRaw() = CardRaw(
 fun Player.toRaw() =
     PlayerRaw(this.id, this.name, this.team)
 
+fun User.toRaw() = when (this) {
+    is User.Guest-> UserRaw(id = this.id, name = this.name, type = UserType.Guest)
+    is User.LoggedIn-> UserRaw(id = this.id, name = this.name, type = UserType.LoggedIn)
+}
+
 fun Team.toRaw() = TeamRaw(
     this.name,
-    this.players.map { it.toRaw() })
+    this.score
+)
 
 fun Game.toRaw() = GameRaw(
     this.id,
@@ -27,7 +33,8 @@ fun Game.toRaw() = GameRaw(
     this.celebsCount.toLong(),
     this.teams.map { it.toRaw() },
     this.state?.name,
-    this.gameInfo.toRaw()
+    this.gameInfo.toRaw(),
+    this.host.toRaw()
 )
 
 fun Round.toRaw() = RoundRaw(
@@ -43,7 +50,6 @@ fun TurnState.toRaw() = this.name
 
 
 fun GameInfo.toRaw() = GameInfoRaw(
-    this.score,
     this.totalCards,
     this.cardsInDeck,
     this.round.toRaw()

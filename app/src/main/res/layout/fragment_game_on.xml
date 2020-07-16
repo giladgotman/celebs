@@ -196,9 +196,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:ellipsize="marquee"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/team1Score"
@@ -253,10 +252,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/team2Score"
-                    android:ellipsize="marquee"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    tools:text="Team1" />
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    tools:text="Team2 which is quite long" />
 
                 <TextView
                     android:id="@+id/team2Score"
@@ -306,9 +304,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/team3Score"
-                    android:ellipsize="marquee"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     tools:text="Team3" />
 
                 <TextView

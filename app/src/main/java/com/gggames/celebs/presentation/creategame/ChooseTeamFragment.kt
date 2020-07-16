@@ -10,16 +10,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.games.data.GamesRepository
-import com.gggames.celebs.features.players.data.PlayersRepositoryImpl
-import com.gggames.celebs.features.players.data.remote.FirebasePlayersDataSource
 import com.gggames.celebs.features.players.domain.ChooseTeam
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
-import com.google.firebase.firestore.FirebaseFirestore
-import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
@@ -36,7 +32,7 @@ class ChooseTeamFragment : Fragment() {
     @Inject
     lateinit var chooseTeam: ChooseTeam
     @Inject
-    lateinit var gameFlow: GameFlow
+    lateinit var authenticator: Authenticator
     @Inject lateinit var gamesRepository: GamesRepository
 
     override fun onCreateView(
@@ -53,15 +49,6 @@ class ChooseTeamFragment : Fragment() {
         viewComponent.inject(this)
 
         buttonDone.isVisible = true
-
-        chooseTeam = ChooseTeam(
-            PlayersRepositoryImpl(
-                FirebasePlayersDataSource(
-                    FirebaseFirestore.getInstance()
-                )
-            ),
-            SchedulerProvider()
-        )
 
         gamesRepository.currentGame!!.teams.forEachIndexed { index, team ->
             when (index) {
@@ -87,9 +74,9 @@ class ChooseTeamFragment : Fragment() {
             Timber.w("selected team: $selection, team: $teamName")
 
             gamesRepository.currentGame?.let {game->
-                chooseTeam(game.id, gameFlow.me!!, teamName)
+                chooseTeam(game.id, authenticator.me!!, teamName)
                     .subscribe({
-                        gameFlow.setMyTeam(teamName)
+                        authenticator.setMyTeam(teamName)
                         Timber.w("ggg you choose team : $teamName")
                     },{e->
                         buttonDone.isEnabled = true

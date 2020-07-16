@@ -19,6 +19,10 @@
 
     <!--    Games Screen-->
     <string name="games_fragment_title">Games</string>
+    <string name="games_join_game_dialog_title">You were invited to join a game</string>
+    <string name="games_join_game_dialog_subtitle">Game: %1$s </string>
+    <string name="games_join_game_dialog_positive_button">Join</string>
+    <string name="games_join_game_dialog_negative_button">Cancel</string>
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
@@ -50,10 +54,16 @@
     <string name="share_with_title">Share with</string>
     <string name="share_message">Please join this cool Hourglass game(%1$s):\n%2$s</string>
 
-<!--    End of turn dialog-->
+    <!--    End of turn dialog-->
     <string name="end_turn_title">%1$s\'s turn ended</string>
     <string name="end_turn_cards_description">%1$d cards found</string>
     <string name="choose_team_title">Choose your team</string>
 
+    <!--    End of round dialog-->
+    <string name="end_round_title">End of round %1$s</string>
 
+    <!--    Leave game dialog-->
+    <string name="leave_game_dialog_title">Are you sure you want to quit and end your turn?</string>
+    <string name="game_over_title">Game Over</string>
+    <string name="game_over_subtitle">%1$s won!</string>
 </resources>

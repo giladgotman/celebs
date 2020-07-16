@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.gggames.celebs.R
 import javax.annotation.Nullable
 
@@ -14,6 +15,14 @@ fun showErrorToast(context: Context, message: String, length: Int = Toast.LENGTH
     showToast(
         context,
         message,
+        length,
+        R.drawable.toast_frame_background_error
+    )
+
+fun showErrorToast(context: Context, @StringRes message: Int, length: Int = Toast.LENGTH_SHORT): Toast =
+    showToast(
+        context,
+        context.getString(message),
         length,
         R.drawable.toast_frame_background_error
     )

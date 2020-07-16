@@ -1,3 +1,5 @@
 package com.gggames.celebs.common
 
-val GAMES_PATH = "games_dev"
+val USERS_PATH = "users"
+val GAMES_PATH = "games"
+val BASE_FIRE_COLLECTION = "envs/dev"

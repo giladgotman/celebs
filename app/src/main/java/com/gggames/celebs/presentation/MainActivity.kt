@@ -10,11 +10,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.NavHostFragment
 import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.R
-import com.gggames.celebs.core.GameFlow
+import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.core.di.getAppComponent
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.presentation.common.MainActivityDelegate
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.celebs.utils.showErrorToast
 import com.google.android.material.snackbar.Snackbar
@@ -22,6 +24,7 @@ import com.idagio.app.core.utils.share.Shareable
 import com.idagio.app.core.utils.share.createDynamicLink
 import com.idagio.app.core.utils.share.getPendingDeepLink
 import com.idagio.app.core.utils.share.share
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
@@ -31,7 +34,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var gameFlow: GameFlow
+    lateinit var authenticator: Authenticator
 
     @Inject
     lateinit var gamesRepository: GamesRepository
@@ -49,7 +52,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         button_share.setOnClickListener {
             gamesRepository.currentGame?.let { game ->
-                val uri = Uri.parse("https://gglab.page.link/joinGame/${game.id}")
+                val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
+                val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
                 createDynamicLink(uri).subscribe({ shortUri ->
                     val shareable = shareableFactory.create(game.id, game.name, shortUri)
                     share(shareable)
@@ -92,9 +96,14 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_logout -> {
-                events.onNext(MainUiEvent.Logout)
-                finish()
-                gameFlow.logout()
+                val currentFragment = getDelegateFragment()
+                val onLogoutAction = currentFragment?.onLogout() ?: Completable.complete()
+                onLogoutAction
+                    .doAfterTerminate {
+                        finish()
+                        authenticator.logout()
+                    }
+                    .subscribe {}
                 true
             }
             R.id.menu_about -> {
@@ -122,11 +131,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        events.onNext(MainUiEvent.BackPressed)
-        super.onBackPressed()
+        val currentFragment = getDelegateFragment()
+        currentFragment?.onBackPressed()?.let {
+            if (!it) {
+                super.onBackPressed()
+            }
+        } ?: super.onBackPressed()
+    }
+
+    private fun getDelegateFragment(): MainActivityDelegate? {
+        val fragment =
+            this.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+        return fragment?.childFragmentManager?.fragments?.get(0) as? MainActivityDelegate
     }
 
     override fun onDestroy() {
+        Timber.w("onDestroyed")
         super.onDestroy()
         disposables.clear()
     }

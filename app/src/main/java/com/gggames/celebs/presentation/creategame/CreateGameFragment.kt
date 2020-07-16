@@ -13,9 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.features.games.data.MAX_CARDS
-import com.gggames.celebs.model.Game
-import com.gggames.celebs.model.GameInfo
-import com.gggames.celebs.model.GameState
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
@@ -79,30 +76,16 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
 
     private fun onDoneClick() {
         if (inputValid()) {
-            val game = getGameDetails()
-            presenter.onDoneClick(game)
+            presenter.onDoneClick(getGameDetails())
         }
     }
 
-    private fun getGameDetails(): Game {
-        val now = System.currentTimeMillis()
+    private fun getGameDetails(): GameDetails {
         val cardsCount = cardsAmount.editText?.text.toString().toInt()
         val passwordText = password.editText?.text.toString()
         val teams = getTeamsValue()
-        val initialScore = teams.map { it.name to 0 }.toMap()
-        val game = Game(
-            "${gameName.editText?.text}$now",
-            gameName.editText?.text.toString(),
-            now,
-            passwordText,
-            cardsCount,
-            teams,
-            GameState.Created,
-            GameInfo(score = initialScore)
-        )
-        return game
+        return GameDetails(gameName.editText?.text.toString(), teams, cardsCount, passwordText)
     }
-
     override fun setDoneEnabled(enabled: Boolean) {
         buttonDone.isEnabled = enabled
     }
@@ -129,13 +112,13 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
     private fun getTeamsValue(): MutableList<Team> {
         val teams = mutableListOf<Team>()
         if (groupName1.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(groupName1.editText?.text.toString(), emptyList()))
+            teams.add(Team(name =groupName1.editText?.text.toString()))
         }
         if (groupName2.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(groupName2.editText?.text.toString(), emptyList()))
+            teams.add(Team(name =groupName2.editText?.text.toString()))
         }
         if (groupName3.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(groupName3.editText?.text.toString(), emptyList()))
+            teams.add(Team(name = groupName3.editText?.text.toString()))
         }
         return teams
     }
