@@ -105,4 +105,8 @@ dependencies {
     // Crashlytics
     implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
 
+    //Exo player
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
+
 }
