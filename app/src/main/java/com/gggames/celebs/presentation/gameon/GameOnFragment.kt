@@ -111,15 +111,14 @@ class GameOnFragment : Fragment(),
         }
 
         startButton.setOnClickListener {
-
-            videoFrameView.isVisible = true
-            videoPlayer.initializePlayer(playerView)
-//            _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
+            _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
         }
 
         cardsAmount.setOnClickListener {
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
+
+        videoPlayer.initializePlayer(playerView)
 
         setupTimer()
 
@@ -398,6 +397,17 @@ class GameOnFragment : Fragment(),
     override fun onLogout(): Completable =
         presenter.onLogout()
 
+    override fun showCorrectCard(card: Card) {
+        showCardVideo(card.videoUrl1)
+    }
+
+    private fun showCardVideo(url: String?) {
+        url?.let {
+            videoPlayer.playVideo(url)
+            videoFrameView.isVisible = true
+
+        }
+    }
 
     override fun showLeaveGameDialog() {
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->

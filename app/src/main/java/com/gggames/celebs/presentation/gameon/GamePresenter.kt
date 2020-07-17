@@ -306,7 +306,9 @@ class GamePresenter @Inject constructor(
         view.setCorrectEnabled(false)
         lastCard?.let {
             cardsFoundInTurn.add(it)
+            view.showCorrectCard(it)
         }
+
         authenticator.me?.team?.let {
             increaseScore(it)
                 .andThen(setTurnTime(time))
@@ -579,5 +581,7 @@ class GamePresenter @Inject constructor(
             teams: List<Team>
         )
         fun showLeaveGameDialog()
+        fun showCorrectCard(card: Card)
+
     }
 }

@@ -21,6 +21,7 @@ import javax.inject.Inject
 interface VideoPlayer {
     fun initializePlayer(playerView: PlayerView)
     fun releasePlayer()
+    fun playVideo(url: String)
     val events: Observable<PlayerEvent>
 }
 class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
@@ -41,11 +42,6 @@ class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
 //        val url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
 //        val url = "https://drive.google.com/uc?export=download&id=1k-6jLFqi7YO_QgeCfA_ubU22_vLY-2AO"
         val url = "https://drive.google.com/uc?export=download&id=194rl8msLR47b8No3-uuI-AmLre2wgoC9"
-        val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
-            Uri.parse(url))
-
-        player.prepare(mediaSource, false, false)
-        player.playWhenReady = playWhenReady
 
         player.addListener( object : Player.EventListener{
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
@@ -96,6 +92,14 @@ class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
         playerView.setShutterBackgroundColor(Color.TRANSPARENT)
         playerView.player = player
         playerView.requestFocus()
+    }
+
+    override fun playVideo(url: String) {
+        val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
+            Uri.parse(url))
+
+        player.prepare(mediaSource, false, false)
+        player.playWhenReady = playWhenReady
     }
 
     override fun releasePlayer() {
