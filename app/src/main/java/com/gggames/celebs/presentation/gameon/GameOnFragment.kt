@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
+import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Round
@@ -50,6 +51,9 @@ class GameOnFragment : Fragment(),
 
     @Inject
     lateinit var presenter: GamePresenter
+
+    @Inject
+    lateinit var videoPlayer: VideoPlayer
 
     private var mCountDownTimer: CountDownTimer? = null
 
@@ -107,7 +111,10 @@ class GameOnFragment : Fragment(),
         }
 
         startButton.setOnClickListener {
-            _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
+
+            videoFrameView.isVisible = true
+            videoPlayer.initializePlayer(playerView)
+//            _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
         }
 
         cardsAmount.setOnClickListener {
