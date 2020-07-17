@@ -56,7 +56,8 @@ class CreateGamePresenter @Inject constructor(
             gameDetails.teams,
             GameState.Created,
             GameInfo(),
-            user
+            user,
+            gameDetails.gameType
         )
     }
 
@@ -75,5 +76,6 @@ data class GameDetails(
     val name: String,
     val teams: List<Team>,
     val cardsCount: Int,
-    val password: String?
+    val password: String?,
+    val gameType: GameType
 )

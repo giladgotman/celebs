@@ -1,5 +1,6 @@
 package com.gggames.celebs.model.remote
 
+import com.gggames.celebs.model.GameType
 import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Turn
 import com.google.firebase.Timestamp
@@ -13,7 +14,8 @@ data class GameRaw (
     val teams: List<TeamRaw>,
     val state: String? = null,
     val gameInfo: GameInfoRaw = GameInfoRaw(),
-    val host: PlayerRaw = PlayerRaw()
+    val host: PlayerRaw = PlayerRaw(),
+    val type: String = GameType.Normal.name
 ) {
     constructor() : this(
         EMPTY_VALUE,

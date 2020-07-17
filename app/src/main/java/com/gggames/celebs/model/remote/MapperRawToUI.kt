@@ -32,8 +32,15 @@ fun GameRaw.toUi() = Game(
     this.teams.map { it.toUi() },
     GameState.fromName(this.state),
     this.gameInfo.toUi(),
-    this.host.toUi()
+    this.host.toUi(),
+    this.type.toGameTypeUi()
 )
+
+fun String.toGameTypeUi() = when (this) {
+    "Normal" -> GameType.Normal
+    "Gift" -> GameType.Gift
+    else -> GameType.Normal
+}
 
 fun GameInfoRaw.toUi() = GameInfo(
     this.totalCards, this.cardsInDeck, this.round.toUi()

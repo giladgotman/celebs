@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.features.games.data.MAX_CARDS
+import com.gggames.celebs.model.GameType
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
@@ -84,7 +85,9 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
         val cardsCount = cardsAmount.editText?.text.toString().toInt()
         val passwordText = password.editText?.text.toString()
         val teams = getTeamsValue()
-        return GameDetails(gameName.editText?.text.toString(), teams, cardsCount, passwordText)
+        val name = gameName.editText?.text.toString()
+        val gameType = if (name.contains("gift")) GameType.Gift else GameType.Normal
+        return GameDetails(name, teams, cardsCount, passwordText, gameType)
     }
     override fun setDoneEnabled(enabled: Boolean) {
         buttonDone.isEnabled = enabled

@@ -10,7 +10,8 @@ data class Game (val id: String,
                  val teams: List<Team> = emptyList(),
                  val state: GameState? = null,
                  val gameInfo: GameInfo = GameInfo(),
-                 val host: Player
+                 val host: Player,
+                 val type: GameType
 ) {
     val currentPlayer: Player?
         get() = this.gameInfo.round.turn.player
@@ -20,6 +21,11 @@ data class Game (val id: String,
     val turn = this.gameInfo.round.turn
 
     val winningTeam : Team? get() = this.teams.maxBy { it.score }
+}
+
+enum class GameType {
+    Normal,
+    Gift
 }
 
 data class GameInfo(
