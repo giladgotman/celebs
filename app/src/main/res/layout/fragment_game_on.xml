@@ -115,6 +115,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
         <com.gggames.celebs.presentation.HourglassButton
             android:id="@+id/endTurnButton"
             android:layout_width="wrap_content"
@@ -143,6 +145,38 @@
             app:layout_constraintBottom_toBottomOf="@id/startButton"
             app:layout_constraintEnd_toEndOf="@id/cardLayout"
             />
+
+        <FrameLayout
+            android:id="@+id/videoFrameView"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            android:keepScreenOn="true"
+            android:background="@color/colorPrimary"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/playerView"
+                android:focusable="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+            </com.google.android.exoplayer2.ui.PlayerView>
+        </FrameLayout>
 
         <!--            android:src="@drawable/ic_done_24px"-->
 
@@ -338,38 +372,5 @@
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <FrameLayout
-        android:id="@+id/videoFrameView"
-        android:focusable="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        android:keepScreenOn="true"
-        android:background="@color/colorPrimaryDark"
-        android:visibility="gone"
-        >
-
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/playerView"
-            android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            >
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-
-        </com.google.android.exoplayer2.ui.PlayerView>
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
