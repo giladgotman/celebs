@@ -38,7 +38,9 @@ class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
 
         mediaDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"))
 
-        val url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+//        val url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+//        val url = "https://drive.google.com/uc?export=download&id=1k-6jLFqi7YO_QgeCfA_ubU22_vLY-2AO"
+        val url = "https://drive.google.com/uc?export=download&id=194rl8msLR47b8No3-uuI-AmLre2wgoC9"
         val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
             Uri.parse(url))
 
