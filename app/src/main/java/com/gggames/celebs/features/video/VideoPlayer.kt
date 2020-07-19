@@ -24,10 +24,12 @@ interface VideoPlayer {
     fun playVideo(url: String)
     val events: Observable<PlayerEvent>
 }
-class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
-    : VideoPlayer{
 
-    private lateinit var player: SimpleExoPlayer
+class ExoVideoPlayer @Inject constructor(
+    @AppContext val context: Context,
+    val player: SimpleExoPlayer
+) : VideoPlayer {
+
     private var mediaDataSourceFactory: DefaultDataSourceFactory? = null
     private var playWhenReady = true
 
@@ -35,7 +37,6 @@ class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
 
     override fun initializePlayer(playerView: PlayerView) {
 
-        player = ExoPlayerFactory.newSimpleInstance(context)
         setupPlayerView(playerView)
 
         mediaDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"))
