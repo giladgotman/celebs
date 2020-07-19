@@ -405,8 +405,6 @@ class GameOnFragment : Fragment(),
     private fun showCardVideo(url: String?) {
         url?.let {
             videoPlayer.playVideo(url)
-            playerView.isVisible = true
-
         }
     }
 

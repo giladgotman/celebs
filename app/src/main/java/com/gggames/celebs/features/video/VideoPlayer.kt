@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.media.session.PlaybackState.STATE_BUFFERING
 import android.net.Uri
+import androidx.core.view.isVisible
 import com.gggames.celebs.core.di.AppContext
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.Player.*
@@ -11,6 +12,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.Observable
@@ -31,7 +33,6 @@ class ExoVideoPlayer @Inject constructor(
 ) : VideoPlayer {
 
     private var mediaDataSourceFactory: DefaultDataSourceFactory? = null
-    private var playWhenReady = true
 
     override val events = PublishSubject.create<PlayerEvent>()
 
@@ -61,15 +62,19 @@ class ExoVideoPlayer @Inject constructor(
                 when(playbackState){
                     STATE_BUFFERING -> {
                         events.onNext(PlayerEvent.OnBufferingState)
+                        playerView.isVisible = true
                     }
                     STATE_READY -> {
                         events.onNext(PlayerEvent.OnReadyState)
+                        playerView.isVisible = true
                     }
                     STATE_IDLE -> {
                         events.onNext(PlayerEvent.OnIdleState)
                     }
                     STATE_ENDED -> {
                         events.onNext(PlayerEvent.OnEndedState)
+                        playerView.isVisible = false
+
                     }
                 }
             }
@@ -94,7 +99,7 @@ class ExoVideoPlayer @Inject constructor(
 
     private fun setupPlayerView(playerView: PlayerView) {
         playerView.useController = false
-
+        playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING)
         playerView.setOnClickListener {
             playerView.useController = true
         }
@@ -104,8 +109,8 @@ class ExoVideoPlayer @Inject constructor(
         val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
             Uri.parse(url))
 
-        player.prepare(mediaSource, false, false)
-        player.playWhenReady = playWhenReady
+        player.prepare(mediaSource)
+        player.playWhenReady = true
     }
 
     override fun releasePlayer() {
