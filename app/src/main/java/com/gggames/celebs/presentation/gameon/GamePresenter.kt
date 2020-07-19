@@ -75,6 +75,7 @@ class GamePresenter @Inject constructor(
             .distinctUntilChanged()
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onGameChange).let { disposables.add(it) }
+
     }
 
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {

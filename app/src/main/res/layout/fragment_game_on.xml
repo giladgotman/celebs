@@ -146,27 +146,20 @@
             app:layout_constraintEnd_toEndOf="@id/cardLayout"
             />
 
-        <FrameLayout
-            android:id="@+id/videoFrameView"
-            android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            android:keepScreenOn="true"
-            android:background="@color/colorPrimary"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
-
             <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/playerView"
-                android:focusable="true"
                 android:foregroundGravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                android:keepScreenOn="true"
+                android:focusable="true"
+                android:background="@color/colorPrimary"
+                android:visibility="gone"
+                tools:visibility="visible"
                 >
 
                 <ProgressBar
@@ -177,9 +170,6 @@
                     android:visibility="gone"/>
 
             </com.google.android.exoplayer2.ui.PlayerView>
-        </FrameLayout>
-
-        <!--            android:src="@drawable/ic_done_24px"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

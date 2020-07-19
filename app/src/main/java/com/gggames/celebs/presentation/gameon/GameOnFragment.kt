@@ -374,6 +374,7 @@ class GameOnFragment : Fragment(),
     }
 
     private fun clear() {
+        videoPlayer.releasePlayer()
         mCountDownTimer?.cancel()
         presenter.unBind()
     }
@@ -404,7 +405,7 @@ class GameOnFragment : Fragment(),
     private fun showCardVideo(url: String?) {
         url?.let {
             videoPlayer.playVideo(url)
-            videoFrameView.isVisible = true
+            playerView.isVisible = true
 
         }
     }
