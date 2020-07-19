@@ -36,12 +36,9 @@ class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
     override fun initializePlayer(playerView: PlayerView) {
 
         player = ExoPlayerFactory.newSimpleInstance(context)
+        setupPlayerView(playerView)
 
         mediaDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"))
-
-//        val url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-//        val url = "https://drive.google.com/uc?export=download&id=1k-6jLFqi7YO_QgeCfA_ubU22_vLY-2AO"
-        val url = "https://drive.google.com/uc?export=download&id=194rl8msLR47b8No3-uuI-AmLre2wgoC9"
 
         player.addListener( object : Player.EventListener{
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
@@ -92,6 +89,14 @@ class ExoVideoPlayer @Inject constructor(@AppContext val context: Context)
         playerView.setShutterBackgroundColor(Color.TRANSPARENT)
         playerView.player = player
         playerView.requestFocus()
+    }
+
+    private fun setupPlayerView(playerView: PlayerView) {
+        playerView.useController = false
+
+        playerView.setOnClickListener {
+            playerView.useController = true
+        }
     }
 
     override fun playVideo(url: String) {
