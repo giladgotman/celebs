@@ -307,7 +307,8 @@ class GamePresenter @Inject constructor(
         view.setCorrectEnabled(false)
         lastCard?.let {
             cardsFoundInTurn.add(it)
-            view.showCorrectCard(it)
+            val url = if (game.round.roundNumber % 2 == 0) it.videoUrl1 else it.videoUrl2
+            view.showCorrectCard(it, url)
         }
 
         authenticator.me?.team?.let {
@@ -582,7 +583,7 @@ class GamePresenter @Inject constructor(
             teams: List<Team>
         )
         fun showLeaveGameDialog()
-        fun showCorrectCard(card: Card)
+        fun showCorrectCard(card: Card, videoUrl: String?)
 
     }
 }

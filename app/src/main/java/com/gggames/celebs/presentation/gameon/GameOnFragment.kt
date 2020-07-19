@@ -398,14 +398,14 @@ class GameOnFragment : Fragment(),
     override fun onLogout(): Completable =
         presenter.onLogout()
 
-    override fun showCorrectCard(card: Card) {
-        showCardVideo(card.videoUrl1)
+    override fun showCorrectCard(card: Card, videoUrl: String?) {
+        videoUrl?.let {
+            showCardVideo(videoUrl)
+        }
     }
 
-    private fun showCardVideo(url: String?) {
-        url?.let {
-            videoPlayer.playVideo(url)
-        }
+    private fun showCardVideo(url: String) {
+        videoPlayer.playVideo(url)
     }
 
     override fun showLeaveGameDialog() {
