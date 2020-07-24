@@ -53,8 +53,11 @@ enum class RoundState {
 }
 
 data class Turn(
-    val state: TurnState = Idle, val player: Player? = null, val time: Long? = null,
-    val cardsFound: List<String> = emptyList()
+    val state: TurnState = Idle,
+    val player: Player? = null,
+    val time: Long? = null,
+    val cardsFound: List<String> = emptyList(),
+    val lastFoundCard: Card? = null
 )
 
 

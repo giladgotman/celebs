@@ -399,9 +399,7 @@ class GameOnFragment : Fragment(),
         presenter.onLogout()
 
     override fun showCorrectCard(card: Card, videoUrl: String?) {
-        videoUrl?.let {
-            showCardVideo(videoUrl)
-        }
+        showInfoToast(requireContext(), "Celebrity found: ${card.name}")
     }
 
     private fun showCardVideo(url: String) {
