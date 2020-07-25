@@ -19,13 +19,11 @@ import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import timber.log.Timber
 import javax.inject.Inject
-
+import timber.log.Timber
 
 const val TURN_TIME_MILLIS = 60000L
-//const val TURN_TIME_MILLIS = 10000L
-
+// const val TURN_TIME_MILLIS = 10000L
 
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
@@ -50,7 +48,7 @@ class GamePresenter @Inject constructor(
         get() = gamesRepository.currentGame!!
 
     private var lastGame: Game? = null
-    private val roundState : RoundState
+    private val roundState: RoundState
     get() = game.gameInfo.round.state
 
     private var cardsFoundInTurn = mutableListOf<Card>()
@@ -75,7 +73,6 @@ class GamePresenter @Inject constructor(
             .distinctUntilChanged()
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onGameChange).let { disposables.add(it) }
-
     }
 
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
@@ -299,7 +296,6 @@ class GamePresenter @Inject constructor(
             }
         }
 
-
     private fun gameInfoWith(turn: Turn): GameInfo =
         game.gameInfo.copy(
             round = game.gameInfo.round.copy(
@@ -333,7 +329,6 @@ class GamePresenter @Inject constructor(
                     Timber.e(it, "error while increaseScore")
                 }).let { disposables.add(it) }
         }
-
     }
 
     private fun increaseScore(teamName: String): Completable {
@@ -437,8 +432,6 @@ class GamePresenter @Inject constructor(
         return updateGame(newGame)
     }
 
-
-
     private fun setNewGameState(state: GameState): Completable =
         updateGame(game.copy(state = state))
 
@@ -446,7 +439,6 @@ class GamePresenter @Inject constructor(
         updateGame(game.copy(gameInfo = gameInfo))
 
     private fun unUsedCards() = cardDeck.filter { !it.used }
-
 
     private fun onPlayerResumedNewRound() {
         setGameStateStartedAndMeActive()
@@ -478,7 +470,6 @@ class GamePresenter @Inject constructor(
     fun onLogout(): Completable =
         endMyTurnIfImActiveBlocking()
             .andThen(leaveGame(game, authenticator.me!!))
-
 
     // TODO: 12.06.20 use isMyselfHost instead
     private fun onTurnEnded() {
@@ -513,7 +504,6 @@ class GamePresenter @Inject constructor(
             .andThen(maybeFlipLastCard())
             .andThen(setNullTurnPlayer())
 
-
     private fun onPlayerPaused(time: Long?) {
         val newTurn = time?.let { game.turn.copy(state = Paused, time = it) }
             ?: game.turn.copy(state = Paused)
@@ -544,7 +534,6 @@ class GamePresenter @Inject constructor(
         setAllCardsToUnused()
             .andThen(cardsRepository.updateCards(cardDeck))
 
-
     private fun lastRound(): Boolean =
         game.gameInfo.round.roundNumber == 120
 //        game.gameInfo.round.roundNumber == 3
@@ -564,7 +553,6 @@ class GamePresenter @Inject constructor(
             )
         )
 
-
     private fun setNewGameStateAndGameInfo(state: GameState, gameInfo: GameInfo): Completable {
         val newGame = (game.copy(state = state, gameInfo = gameInfo))
         return updateGame(newGame)
@@ -576,7 +564,6 @@ class GamePresenter @Inject constructor(
                 cardDeck[index] = cardDeck[index].copy(used = false)
             }
         }.doOnComplete { Timber.w("flipped cards. card: ${cardDeck[0]}") }
-
 
     private fun maybeFlipLastCard(): Completable =
         lastCard?.let {
@@ -596,7 +583,6 @@ class GamePresenter @Inject constructor(
                 } else {
                     onPlayerResumed(time)
                 }
-
             }
         }
     }
@@ -622,7 +608,7 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    interface GameView{
+    interface GameView {
         fun updateCards(cards: List<Card>)
         fun updateTeams(teams: List<Team>)
         fun updateCard(card: Card)
@@ -649,6 +635,5 @@ class GamePresenter @Inject constructor(
         )
         fun showLeaveGameDialog()
         fun showCorrectCard(card: Card, videoUrl: String?)
-
     }
 }

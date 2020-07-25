@@ -13,9 +13,6 @@ interface GameComponent {
     }
 }
 
-
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class PerGame
-
-

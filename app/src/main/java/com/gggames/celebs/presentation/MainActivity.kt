@@ -25,9 +25,9 @@ import com.idagio.app.core.utils.share.share
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
                     Timber.e(it, "error sharing link")
                     showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
                 })
-
             }
         }
         setSupportActionBar(toolbar)
@@ -120,7 +119,6 @@ class MainActivity : AppCompatActivity() {
             .setMessage(sb.toString())
             .setPositiveButton(getString(R.string.ok), dialogClickListener)
             .show()
-
     }
 
     override fun onBackPressed() {
@@ -144,4 +142,3 @@ class MainActivity : AppCompatActivity() {
         disposables.clear()
     }
 }
-

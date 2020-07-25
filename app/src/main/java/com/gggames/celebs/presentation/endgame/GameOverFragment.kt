@@ -17,9 +17,9 @@ import com.gggames.celebs.presentation.endgame.GameOverScreenContract.Trigger
 import com.gggames.celebs.presentation.endgame.GameOverScreenContract.UiEvent.PressedFinish
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_game_over.*
 import timber.log.Timber
-import javax.inject.Inject
 
 class GameOverFragment : Fragment() {
 
@@ -33,9 +33,9 @@ class GameOverFragment : Fragment() {
         private val events = PublishSubject.create<GameOverScreenContract.UiEvent>()
     private val disposables = CompositeDisposable()
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_game_over, container, false)

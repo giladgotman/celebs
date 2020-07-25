@@ -4,9 +4,9 @@ import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameState
 import io.reactivex.Completable
 import io.reactivex.Observable
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class GamesRepositoryImpl @Inject constructor(

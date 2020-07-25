@@ -12,7 +12,6 @@ import com.gggames.celebs.presentation.gameon.GameOnFragment
 import dagger.Subcomponent
 import javax.inject.Qualifier
 
-
 fun createViewComponent(context: Context): ViewComponent =
     getAppComponent(context)
         .viewComponent().viewModule(
@@ -24,8 +23,7 @@ fun createViewComponent(context: Context): ViewComponent =
 fun createViewComponent(fragment: Fragment): ViewComponent =
     createViewComponent(fragment.requireActivity())
 
-
-@Subcomponent (modules = [ViewModule::class])
+@Subcomponent(modules = [ViewModule::class])
 interface ViewComponent {
 
     @Subcomponent.Builder
@@ -44,7 +42,6 @@ interface ViewComponent {
     fun inject(fragment: GameOnFragment)
     fun inject(fragment: GameOverFragment)
 }
-
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)

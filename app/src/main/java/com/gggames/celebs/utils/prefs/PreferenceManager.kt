@@ -3,18 +3,18 @@ package com.gggames.celebs.utils.prefs
 import android.content.SharedPreferences
 import com.gggames.celebs.model.Player
 import com.google.gson.Gson
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class PreferenceManager @Inject constructor(
-    private val defaultSharedPreferences: SharedPreferences)
-{
+    private val defaultSharedPreferences: SharedPreferences
+) {
     private val PREFS_KEY_PLAYER = "PREFS_KEY_PLAYER"
     private val PREFS_KEY_GAME_INVITATION = "PREFS_KEY_GAME_INVITATION"
 
-    private val gson  = Gson()
+    private val gson = Gson()
 
     fun savePlayer(player: Player?) {
         Timber.v("savePlayer : $player")
@@ -26,7 +26,7 @@ class PreferenceManager @Inject constructor(
 
     fun loadPlayer(): Player? {
         val playerString = defaultSharedPreferences.getString(PREFS_KEY_PLAYER, null)
-        val player = playerString?.let { gson.fromJson(playerString, Player::class.java)}
+        val player = playerString?.let { gson.fromJson(playerString, Player::class.java) }
         Timber.v("loadPlayer : $player")
         return player
     }
@@ -43,6 +43,4 @@ class PreferenceManager @Inject constructor(
         Timber.v("loadGameInvitation : $playerString")
         return playerString
     }
-
-
 }

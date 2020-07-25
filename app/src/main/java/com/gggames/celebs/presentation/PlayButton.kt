@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.gggames.celebs.R
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 
-class PlayButton: HourglassButton {
+class PlayButton : HourglassButton {
 
     var state: ButtonState = ButtonState.Stopped
     set(value) {
@@ -31,5 +31,4 @@ class PlayButton: HourglassButton {
         }
         this.setImageDrawable(drawable)
     }
-
 }

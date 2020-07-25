@@ -17,10 +17,10 @@ import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -36,8 +36,9 @@ class ChooseTeamFragment : Fragment() {
     @Inject lateinit var gamesRepository: GamesRepository
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_choose_teams, container, false)
     }
@@ -73,12 +74,12 @@ class ChooseTeamFragment : Fragment() {
             val teamName = button.text.toString()
             Timber.w("selected team: $selection, team: $teamName")
 
-            gamesRepository.currentGame?.let {game->
+            gamesRepository.currentGame?.let { game ->
                 chooseTeam(game.id, authenticator.me!!, teamName)
                     .subscribe({
                         authenticator.setMyTeam(teamName)
                         Timber.w("ggg you choose team : $teamName")
-                    },{e->
+                    }, { e ->
                         buttonDone.isEnabled = true
                         showErrorToast(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG)
                         Timber.e(e, "ggg failed to choose team : $teamName")

@@ -11,7 +11,7 @@ Gets games that are Created or Started
 class GetGames @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val schedulerProvider: BaseSchedulerProvider
-){
+) {
     operator fun invoke() = gamesRepository.getGames(
         emptyList(),
         listOf(GameState.Created, GameState.Started)

@@ -8,9 +8,8 @@ import com.gggames.celebs.R
 import com.gggames.celebs.model.Player
 import kotlinx.android.synthetic.main.game_card_layout.view.*
 
-
-class PlayersAdapter
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PlayersAdapter :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataSet: List<Player> = emptyList()
 

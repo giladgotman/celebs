@@ -5,7 +5,7 @@ import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Turn
 import com.google.firebase.Timestamp
 
-data class GameRaw (
+data class GameRaw(
     val id: String,
     val name: String,
     val createdAt: Timestamp,

@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class SetUser @Inject constructor(
     private val userRepository: UserRepository
-){
+) {
     operator fun invoke(user: Player) = userRepository.set(user)
 }

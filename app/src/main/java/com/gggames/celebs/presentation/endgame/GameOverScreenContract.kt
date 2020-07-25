@@ -22,11 +22,11 @@ interface GameOverScreenContract {
     }
 
     sealed class Result {
-        data class GameAndCardsResult(val game: Game, val cards: List<Card>): Result()
+        data class GameAndCardsResult(val game: Game, val cards: List<Card>) : Result()
         object GameCleared : Result()
     }
 
-    sealed class UiEvent{
+    sealed class UiEvent {
         object PressedFinish : UiEvent()
     }
 
@@ -36,5 +36,4 @@ interface GameOverScreenContract {
         val states: Observable<State>
         val triggers: Observable<Trigger>
     }
-
 }

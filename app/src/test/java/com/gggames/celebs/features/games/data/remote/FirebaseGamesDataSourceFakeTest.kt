@@ -7,11 +7,10 @@ import org.junit.Test
 
 class FirebaseGamesDataSourceFakeTest {
 
-    val dataSourceFake = FirebaseGamesDataSourceFake()
+    private val dataSourceFake = FirebaseGamesDataSourceFake()
 
     @Before
     fun setUp() {
-
     }
 
     @Test

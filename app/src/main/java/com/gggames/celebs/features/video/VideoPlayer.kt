@@ -17,8 +17,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 interface VideoPlayer {
     fun initializePlayer(playerView: PlayerView)
@@ -42,9 +42,9 @@ class ExoVideoPlayer @Inject constructor(
 
         mediaDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"))
 
-        player.addListener( object : Player.EventListener{
+        player.addListener(object : Player.EventListener {
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
-                Timber.d( "onPlaybackParametersChanged: ")
+                Timber.d("onPlaybackParametersChanged: ")
             }
 
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
@@ -59,7 +59,7 @@ class ExoVideoPlayer @Inject constructor(
             /** 4 playbackState exists */
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 Timber.d("onPlayerStateChanged: state: $playbackState")
-                when(playbackState){
+                when (playbackState) {
                     STATE_BUFFERING -> {
                         events.onNext(PlayerEvent.OnBufferingState)
                         playerView.isVisible = true
@@ -74,7 +74,6 @@ class ExoVideoPlayer @Inject constructor(
                     STATE_ENDED -> {
                         events.onNext(PlayerEvent.OnEndedState)
                         playerView.isVisible = false
-
                     }
                 }
             }
@@ -119,9 +118,9 @@ class ExoVideoPlayer @Inject constructor(
 }
 
 sealed class PlayerEvent {
-    object OnIdleState: PlayerEvent()
-    object OnReadyState: PlayerEvent()
-    object OnBufferingState: PlayerEvent()
-    object OnEndedState: PlayerEvent()
-    data class OnError(val error: ExoPlaybackException?): PlayerEvent()
+    object OnIdleState : PlayerEvent()
+    object OnReadyState : PlayerEvent()
+    object OnBufferingState : PlayerEvent()
+    object OnEndedState : PlayerEvent()
+    data class OnError(val error: ExoPlaybackException?) : PlayerEvent()
 }

@@ -9,7 +9,7 @@ interface UserDataSource {
     fun setUser(user: Player): Completable
 
     sealed class UserResponse {
-        data class Exists(val user: Player): UserResponse()
-        object NotExists: UserResponse()
+        data class Exists(val user: Player) : UserResponse()
+        object NotExists : UserResponse()
     }
 }

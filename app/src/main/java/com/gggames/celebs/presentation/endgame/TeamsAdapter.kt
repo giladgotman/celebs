@@ -25,8 +25,8 @@ class TeamsAdapter : ListAdapter<Team, TeamsAdapter.TeamViewHolder>(TeamDiffUtil
       return R.layout.team_score_layout
     }
 
-    inner class TeamViewHolder(itemView: View)
-        : RecyclerView.ViewHolder(itemView),
+    inner class TeamViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
 
         init {
@@ -39,7 +39,6 @@ class TeamsAdapter : ListAdapter<Team, TeamsAdapter.TeamViewHolder>(TeamDiffUtil
         }
 
         override fun onClick(v: View?) {
-
         }
     }
 

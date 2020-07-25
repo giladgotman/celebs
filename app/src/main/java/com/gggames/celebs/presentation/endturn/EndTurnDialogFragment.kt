@@ -15,15 +15,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
 import timber.log.Timber
 
-
-class EndTurnDialogFragment
-    : BottomSheetDialogFragment() {
+class EndTurnDialogFragment :
+    BottomSheetDialogFragment() {
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
 
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
-
     }
 
     override fun onCreateView(
@@ -83,6 +81,5 @@ class EndTurnDialogFragment
                     }
             }
         }
-
     }
 }

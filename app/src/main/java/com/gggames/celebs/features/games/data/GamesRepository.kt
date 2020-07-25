@@ -15,5 +15,4 @@ interface GamesRepository {
     var currentGame: Game?
 }
 
-
 const val MAX_CARDS = 6

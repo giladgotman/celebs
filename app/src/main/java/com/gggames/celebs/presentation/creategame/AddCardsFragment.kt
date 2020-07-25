@@ -25,9 +25,9 @@ import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -39,9 +39,9 @@ class AddCardsFragment : Fragment() {
     @Inject
     lateinit var getMyCards: GetMyCards
     @Inject
-    lateinit var gamesRepository : GamesRepository
+    lateinit var gamesRepository: GamesRepository
     @Inject
-    lateinit var authenticator : Authenticator
+    lateinit var authenticator: Authenticator
 
     private var cardEditTextList = mutableListOf<EditText?>()
 
@@ -52,8 +52,9 @@ class AddCardsFragment : Fragment() {
     private lateinit var playerId: String
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_add_cards, container, false)
     }
@@ -83,7 +84,6 @@ class AddCardsFragment : Fragment() {
         buttonDone.setOnClickListener {
             onDoneClick()
         }
-
 
         navigateToGameIfCardsAreFilled()
     }

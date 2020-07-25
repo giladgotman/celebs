@@ -12,8 +12,7 @@ interface GameScreenContract {
         object UserApprovedQuitGame : UiEvent()
         object OnBackPressed : UiEvent()
 
-        sealed class MainUiEvent : UiEvent(){
-        }
+        sealed class MainUiEvent : UiEvent()
     }
 
     enum class ButtonState {
@@ -22,5 +21,4 @@ interface GameScreenContract {
         Paused,
         Finished
     }
-
 }

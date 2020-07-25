@@ -9,4 +9,4 @@ data class Player(
     val name: String,
     val team: String? = null,
     val games: List<String> = emptyList()
-): Parcelable
+) : Parcelable

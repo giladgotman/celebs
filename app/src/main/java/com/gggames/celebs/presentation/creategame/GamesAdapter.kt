@@ -8,9 +8,8 @@ import com.gggames.celebs.R
 import com.gggames.celebs.model.Game
 import kotlinx.android.synthetic.main.game_card_layout.view.*
 
-
-class GamesAdapter(val onClick: (game: Game) -> Unit)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class GamesAdapter(val onClick: (game: Game) -> Unit) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataSet: List<Game> = emptyList()
 

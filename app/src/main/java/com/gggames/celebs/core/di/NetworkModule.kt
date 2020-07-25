@@ -15,5 +15,4 @@ class NetworkModule {
     @Provides
     @Named("baseFirebaseCollection")
     fun provideFirebaseBaseCollection() = BASE_FIRE_COLLECTION
-
 }

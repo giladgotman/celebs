@@ -4,7 +4,6 @@ import com.gggames.celebs.model.*
 import com.google.firebase.Timestamp
 import java.util.*
 
-
 fun Card.toRaw() = CardRaw(
     this.id,
     this.name,
@@ -20,8 +19,8 @@ fun Player.toRaw() =
     PlayerRaw(this.id, this.name, this.team, this.games)
 
 fun User.toRaw() = when (this) {
-    is User.Guest-> UserRaw(id = this.id, name = this.name, type = UserType.Guest)
-    is User.LoggedIn-> UserRaw(id = this.id, name = this.name, type = UserType.LoggedIn)
+    is User.Guest -> UserRaw(id = this.id, name = this.name, type = UserType.Guest)
+    is User.LoggedIn -> UserRaw(id = this.id, name = this.name, type = UserType.LoggedIn)
 }
 
 fun Team.toRaw() = TeamRaw(
@@ -53,7 +52,6 @@ fun RoundState.toRaw() = this.name
 
 fun TurnState.toRaw() = this.name
 
-
 fun GameInfo.toRaw() = GameInfoRaw(
     this.totalCards,
     this.cardsInDeck,
@@ -61,5 +59,3 @@ fun GameInfo.toRaw() = GameInfoRaw(
 )
 
 fun GameState.toRaw() = this.name
-
-

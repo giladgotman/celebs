@@ -12,14 +12,14 @@ import io.reactivex.Observable.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class GameOverPresenter @Inject constructor(
     val gamesRepository: GamesRepository,
     val getCards: ObserveAllCards,
     val scheduler: BaseSchedulerProvider
-) : Presenter{
+) : Presenter {
 
     private val _states = PublishSubject.create<State>()
     override val states: Observable<State> = _states
@@ -77,7 +77,6 @@ class GameOverPresenter @Inject constructor(
         events.filter { it is UiEvent.PressedFinish }
             .flatMap { finishGame().andThen(just(Result.GameCleared)) }
 
-
     private fun finishGame(): Completable =
         Completable.complete()
 
@@ -98,5 +97,4 @@ class GameOverPresenter @Inject constructor(
     override fun unBind() {
         disposables.clear()
     }
-
 }

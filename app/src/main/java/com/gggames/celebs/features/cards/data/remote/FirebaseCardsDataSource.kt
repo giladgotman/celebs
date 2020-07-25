@@ -11,10 +11,9 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Observable
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
-
+import timber.log.Timber
 
 class FirebaseCardsDataSource @Inject constructor(
     @Named("GameId")
@@ -59,8 +58,6 @@ class FirebaseCardsDataSource @Inject constructor(
             videoUrlFull = "https://drive.google.com/uc?export=download&id=1k-6jLFqi7YO_QgeCfA_ubU22_vLY-2AO"
 
         ) }
-
-
 
     override fun addCards(cards: List<Card>): Completable {
         Timber.w("addCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
@@ -128,6 +125,3 @@ class FirebaseCardsDataSource @Inject constructor(
             }
         }
 }
-
-
-

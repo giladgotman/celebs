@@ -6,8 +6,8 @@ import com.gggames.celebs.features.user.domain.GetMyUser
 import com.gggames.celebs.model.*
 import io.reactivex.Single.just
 import io.reactivex.disposables.CompositeDisposable
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class CreateGamePresenter @Inject constructor(
     private val setGame: SetGame,
@@ -17,7 +17,6 @@ class CreateGamePresenter @Inject constructor(
 
     private lateinit var view: View
     private val disposables = CompositeDisposable()
-
 
     fun bind(view: View) {
         this.view = view

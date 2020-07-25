@@ -35,17 +35,16 @@ import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.Completable
 import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.fragment_game_on.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-
+import kotlinx.android.synthetic.main.fragment_game_on.*
+import timber.log.Timber
 
 /**
  * The main fragment in which the game is happening
  */
 class GameOnFragment : Fragment(),
-    GamePresenter.GameView , MainActivityDelegate {
+    GamePresenter.GameView, MainActivityDelegate {
 
     private lateinit var viewComponent: ViewComponent
 
@@ -61,11 +60,12 @@ class GameOnFragment : Fragment(),
 
     private val _emitter = PublishSubject.create<UiEvent>()
 
-    private var playerAdapters : List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
-    private var playersRecycle : MutableList<RecyclerView>? = null
+    private var playerAdapters: List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
+    private var playersRecycle: MutableList<RecyclerView>? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_game_on, container, false)
@@ -99,7 +99,6 @@ class GameOnFragment : Fragment(),
                 .setPositiveButton(getString(R.string.ok), dialogClickListener)
                 .setNegativeButton(getString(R.string.cancel), dialogClickListener)
                 .show()
-
         }
 
         correctButton.setOnClickListener {
@@ -144,13 +143,11 @@ class GameOnFragment : Fragment(),
             .show()
     }
 
-
-
     override fun showLastRoundToast() {
         showInfoToast(requireContext(), "This is the last round", Toast.LENGTH_LONG)
     }
 
-    override fun setStartedState(meActive: Boolean, time:Long?) {
+    override fun setStartedState(meActive: Boolean, time: Long?) {
         time?.let {
             updateTime(time)
         }
@@ -170,7 +167,6 @@ class GameOnFragment : Fragment(),
 //        cardLayout.setBackgroundColor(cardColor)
     }
 
-
     override fun setTurnStoppedState() {
         mCountDownTimer?.cancel()
         updateTime(TURN_TIME_MILLIS)
@@ -184,7 +180,7 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = enabled
     }
 
-    var endTurnDialog : EndTurnDialogFragment? = null
+    var endTurnDialog: EndTurnDialogFragment? = null
     override fun showTurnEnded(player: Player?, cards: List<Card>) {
         player?.let {
             cardTextView.text = ""
@@ -192,11 +188,10 @@ class GameOnFragment : Fragment(),
                 endTurnDialog = EndTurnDialogFragment.create(player, cards)
                 endTurnDialog?.show(requireActivity() as AppCompatActivity)
             }
-
         }
     }
 
-    var endRoundDialogFragment : EndRoundDialogFragment? = null
+    var endRoundDialogFragment: EndRoundDialogFragment? = null
     override fun showRoundEnded(round: Round, teams: List<Team>) {
             cardTextView.text = ""
             if (endRoundDialogFragment?.isAdded != true) {
@@ -343,7 +338,7 @@ class GameOnFragment : Fragment(),
     override fun showAllCards(cards: List<Card>) {
         val sb = java.lang.StringBuilder()
         cards.forEachIndexed { index, card ->
-            sb.append("${index+1}: ${card.name}\n")
+            sb.append("${index + 1}: ${card.name}\n")
         }
         val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
         }
@@ -423,7 +418,6 @@ class GameOnFragment : Fragment(),
             .setNegativeButton(getString(R.string.cancel), dialogClickListener)
             .show()
     }
-
 }
 
 val GAME_ID_KEY = "gameId"

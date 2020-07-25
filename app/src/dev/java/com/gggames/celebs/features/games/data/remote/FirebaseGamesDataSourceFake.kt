@@ -10,8 +10,8 @@ import io.reactivex.Observable.just
 import io.reactivex.Observable.merge
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class FirebaseGamesDataSourceFake @Inject constructor() : GamesDataSource {
 
@@ -39,6 +39,6 @@ class FirebaseGamesDataSourceFake @Inject constructor() : GamesDataSource {
         val first = games.find { it.id == gameId }?.let {
             just(it)
         } ?: Observable.empty<Game>()
-        return merge (gamesSubject.filter { it.id == gameId }, first)
+        return merge(gamesSubject.filter { it.id == gameId }, first)
     }
 }

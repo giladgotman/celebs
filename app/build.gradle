@@ -72,6 +72,35 @@ android {
 
 }
 
+
+configurations {
+    ktlint
+}
+// Runs a lint check on all Kotlin files
+task ktlint(type: JavaExec) {
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt"
+}
+
+// Apply ktlint formatter settings to IntelliJ
+task ktlintApplyToIdeaProject(type: JavaExec) {
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "--apply-to-idea-project", "--android", "-y"
+    workingDir = rootDir
+}
+
+// Check task should run Kotlin linter as well
+check.dependsOn ktlint
+
+// Auto-formats all Kotlin files
+task ktlintFormat(type: JavaExec) {
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -122,5 +151,7 @@ dependencies {
     //Exo player
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
+
+    ktlint 'com.pinterest:ktlint:0.35.0'
 
 }

@@ -21,11 +21,11 @@ import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import com.gggames.celebs.utils.showInfoToast
+import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_games.*
 import timber.log.Timber
-import javax.inject.Inject
 
-class GamesFragment : Fragment() , GamesPresenter.View {
+class GamesFragment : Fragment(), GamesPresenter.View {
 
     @Inject
     lateinit var presenter: GamesPresenter
@@ -33,8 +33,9 @@ class GamesFragment : Fragment() , GamesPresenter.View {
     private lateinit var gamesAdapter: GamesAdapter
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_games, container, false)
     }
@@ -108,7 +109,7 @@ class GamesFragment : Fragment() , GamesPresenter.View {
     }
 
     override fun showNeedLoginInfo() {
-        showInfoToast(requireContext(),"Please login and then use the link to the game", Toast.LENGTH_LONG)
+        showInfoToast(requireContext(), "Please login and then use the link to the game", Toast.LENGTH_LONG)
     }
 
     override fun showApproveJoinGame(game: Game) {

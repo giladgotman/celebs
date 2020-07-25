@@ -10,10 +10,8 @@ import dagger.Component
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-
 fun getAppComponent(context: Context): AppComponent =
     (context.applicationContext as CelebsApplication).appComponent
-
 
 @Singleton
 @Component(modules = [
@@ -36,7 +34,6 @@ interface AppComponent {
 
     fun viewComponent(): ViewComponent.Builder
 }
-
 
 @Qualifier
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)

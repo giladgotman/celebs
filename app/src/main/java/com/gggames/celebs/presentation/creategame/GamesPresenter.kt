@@ -15,8 +15,8 @@ import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class GamesPresenter @Inject constructor(
     private val gamesRepository: GamesRepository,
@@ -69,11 +69,11 @@ class GamesPresenter @Inject constructor(
     }
 
     private fun isDeepLinkExists(gameIdFromDeepLink: String?): Observable<out Result> {
-        val gameInvitation = gameIdFromDeepLink?: preferenceManager.loadGameInvitation()
+        val gameInvitation = gameIdFromDeepLink ?: preferenceManager.loadGameInvitation()
         return gameInvitation?.let {
             observeGame(it).take(1)
                 .compose(schedulerProvider.applyDefault())
-                .doOnTerminate {  preferenceManager.saveGameInvitation(null) }
+                .doOnTerminate { preferenceManager.saveGameInvitation(null) }
                 .map { game ->
                     if (game.state == GameState.Finished) {
                         Result.GameFinished(game.name)
@@ -91,7 +91,7 @@ class GamesPresenter @Inject constructor(
 
     private fun joinGameAndGoToAddCards(game: Game) {
         getMyUser().take(1)
-            .switchMapCompletable { joinGame(game, it)}
+            .switchMapCompletable { joinGame(game, it) }
             .subscribe({
                 view.navigateToAddCards()
             }, {

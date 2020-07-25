@@ -13,9 +13,9 @@ import com.google.firebase.firestore.SetOptions
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
+import timber.log.Timber
 
 class FirebaseGamesDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -105,8 +105,3 @@ class FirebaseGamesDataSource @Inject constructor(
         }
     }
 }
-
-
-
-
-
