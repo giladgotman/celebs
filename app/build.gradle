@@ -44,6 +44,20 @@ android {
         experimental = true
     }
 
+
+    sourceSets {
+        String sharedDevDir = 'src/dev/java'
+        String sharedTestDir = 'src/sharedTests/java'
+        test {
+            java.srcDir sharedDevDir
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDirs = ['src/androidTest/java', sharedTestDir]
+            resources.srcDirs = ['src/androidTest/res']
+        }
+    }
+
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
 
