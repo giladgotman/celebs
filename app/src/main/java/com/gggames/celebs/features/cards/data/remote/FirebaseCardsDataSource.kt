@@ -40,12 +40,27 @@ class FirebaseCardsDataSource @Inject constructor(
                     val cards =
                         value?.documents?.map { it.toObject(CardRaw::class.java)?.copy(id = it.id) }
                             ?: emptyList()
-                    emitter.onNext(cards.mapNotNull { it?.toUi() })
+
+//                    emitter.onNext(cards.mapNotNull { it?.toUi() })
+                    // TODO: 24.07.20 FAKE ! remove me
+                    val fakeCards = getFakeCards(cards.filterNotNull())
+                    emitter.onNext(fakeCards.map { it.toUi() })
                     Timber.w("getAllCards update")
                 }
             }
         }
     }
+
+    private fun getFakeCards(cards: List<CardRaw>): List<CardRaw> =
+        cards.map { it.copy(
+            videoUrl1 = "https://drive.google.com/uc?export=download&id=194rl8msLR47b8No3-uuI-AmLre2wgoC9",
+            videoUrl2 = "https://drive.google.com/uc?export=download&id=147xu8GaVe25o3LhJ6xNcElqeEEHD6_vW",
+            videoUrl3 = "https://drive.google.com/uc?export=download&id=1CGIg6YgKin7m-QmHvyQ03omj6yEvWFRG",
+            videoUrlFull = "https://drive.google.com/uc?export=download&id=1k-6jLFqi7YO_QgeCfA_ubU22_vLY-2AO"
+
+        ) }
+
+
 
     override fun addCards(cards: List<Card>): Completable {
         Timber.w("addCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
