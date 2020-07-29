@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 class CardsDataSourceFake @Inject constructor() : CardsDataSource {
 
-    val cards = mutableListOf<Card>()
-    val cardsSubject = PublishSubject.create<List<Card>>()
+    private val cards = mutableListOf<Card>()
+    private val cardsSubject = PublishSubject.create<List<Card>>()
 
     override fun getAllCards(): Observable<List<Card>> =
         merge(just(cards), cardsSubject)
