@@ -4,22 +4,35 @@ import com.gggames.celebs.features.cards.data.CardsDataSource
 import com.gggames.celebs.model.Card
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Observable.just
+import io.reactivex.Observable.merge
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
-class CardsDataSourceFake @Inject constructor() : CardsDataSource{
-    override fun getAllCards(): Observable<List<Card>> {
-        TODO("Not yet implemented")
-    }
+class CardsDataSourceFake @Inject constructor() : CardsDataSource {
 
-    override fun addCards(cards: List<Card>): Completable {
-        TODO("Not yet implemented")
-    }
+    val cards = mutableListOf<Card>()
+    val cardsSubject = PublishSubject.create<List<Card>>()
 
-    override fun update(card: Card): Completable {
-        TODO("Not yet implemented")
-    }
+    override fun getAllCards(): Observable<List<Card>> =
+        merge(just(cards), cardsSubject)
 
-    override fun updateCards(cards: List<Card>): Completable {
-        TODO("Not yet implemented")
-    }
+    override fun addCards(cards: List<Card>): Completable =
+        Completable.fromCallable {
+            this.cards.addAll(cards)
+            cardsSubject.onNext(this.cards)
+        }
+
+    override fun update(card: Card): Completable =
+        Completable.fromCallable {
+            if (cards.contains(card)) {
+                cards[cards.indexOf(card)] = card
+            } else {
+                cards.add(card)
+            }
+        }
+
+    override fun updateCards(cards: List<Card>): Completable =
+        just(cards).flatMapIterable { it }
+            .flatMapCompletable { update(it) }
 }
