@@ -5,9 +5,9 @@ import com.gggames.celebs.model.GameState
 import org.junit.Before
 import org.junit.Test
 
-class FirebaseGamesDataSourceFakeTest {
+class GamesDataSourceFakeTest {
 
-    private val dataSourceFake = FirebaseGamesDataSourceFake()
+    private val dataSourceFake = GamesDataSourceFake()
 
     @Before
     fun setUp() {

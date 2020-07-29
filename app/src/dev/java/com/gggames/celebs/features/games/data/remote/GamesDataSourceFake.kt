@@ -10,10 +10,10 @@ import io.reactivex.Observable.just
 import io.reactivex.Observable.merge
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
-class FirebaseGamesDataSourceFake @Inject constructor() : GamesDataSource {
+class GamesDataSourceFake @Inject constructor() : GamesDataSource {
 
     var games = mutableListOf<Game>()
     val gamesSubject = PublishSubject.create<Game>()
