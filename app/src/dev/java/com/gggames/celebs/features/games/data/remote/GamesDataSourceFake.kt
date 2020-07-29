@@ -26,11 +26,9 @@ class GamesDataSourceFake @Inject constructor() : GamesDataSource {
     override fun setGame(game: Game): Completable =
         fromCallable {
             Timber.w("ggg setGame: id: ${game.id}")
-            if (games.contains(game)) {
-                games[games.indexOf(game)] = game
-            } else {
-                games.add(game)
-            }
+            games.indexOfFirst { it.id == game.id }.takeIf { it != -1 }?.let { index ->
+                games.set(index, game)
+            } ?: games.add(game)
             gamesSubject.onNext(game)
         }
 

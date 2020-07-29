@@ -37,17 +37,16 @@ class PlayersDataSourceFake @Inject constructor() : PlayersDataSource {
         teamName: String
     ): Completable =
         Completable.fromCallable {
-            if (players.contains(player)) {
-                players[players.indexOf(player)] = player.copy(team = teamName)
+            players.indexOfFirst { it.id == player.id }.takeIf { it != -1 }?.let { index ->
+                players.set(index, player.copy(team = teamName))
                 playersSubject.onNext(players)
             }
-
         }
 
     override fun removePlayer(gameId: String, player: Player): Completable =
         Completable.fromCallable {
-            if (players.contains(player)) {
-                players.remove(player)
+            players.indexOfFirst { it.id == player.id }.takeIf { it != -1 }?.let { index ->
+                players.removeAt(index)
                 playersSubject.onNext(players)
             }
         }

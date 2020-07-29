@@ -25,11 +25,10 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
 
     override fun update(card: Card): Completable =
         Completable.fromCallable {
-            if (cards.contains(card)) {
-                cards[cards.indexOf(card)] = card
-            } else {
-                cards.add(card)
-            }
+            cards.indexOfFirst { it.name == card.name }.takeIf { it != -1 }?.let { index ->
+                    cards.set(index, card)
+            } ?: cards.add(card)
+            cardsSubject.onNext(cards)
         }
 
     override fun updateCards(cards: List<Card>): Completable =

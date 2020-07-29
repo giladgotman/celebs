@@ -8,6 +8,7 @@ import com.gggames.celebs.features.games.data.GamesRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
+import javax.inject.Singleton
 
 // TODO: 08.05.20 use @PerGame ?
 
@@ -25,7 +26,7 @@ class CardsModule {
     ): CardsRepository = repository
 
     @Provides
-    // TODO: 08.05.20 use @PerGame ?
+    @Singleton
     fun provideCardsDataSource(
         dataSource: CardsDataSourceFake
     ): CardsDataSource = dataSource
