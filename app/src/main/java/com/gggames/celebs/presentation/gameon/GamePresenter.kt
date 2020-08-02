@@ -19,8 +19,8 @@ import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 const val TURN_TIME_MILLIS = 60000L
 // const val TURN_TIME_MILLIS = 10000L
@@ -65,7 +65,6 @@ class GamePresenter @Inject constructor(
             .subscribe(::onPlayersChange).let { disposables.add(it) }
 
         cardsObservable()
-            .distinctUntilChanged()
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onCardsChange).let { disposables.add(it) }
 
