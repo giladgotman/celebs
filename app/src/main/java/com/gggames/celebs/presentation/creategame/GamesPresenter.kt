@@ -91,6 +91,7 @@ class GamesPresenter @Inject constructor(
 
     private fun joinGameAndGoToAddCards(game: Game) {
         getMyUser().take(1)
+            .compose(schedulerProvider.applyDefault())
             .switchMapCompletable { joinGame(game, it) }
             .subscribe({
                 view.navigateToAddCards()
