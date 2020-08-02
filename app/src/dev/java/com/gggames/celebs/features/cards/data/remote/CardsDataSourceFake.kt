@@ -26,7 +26,10 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
     override fun addCards(cards: List<Card>): Completable =
         Completable.fromCallable {
             val updatedList = this.cards
-            updatedList.addAll(cards)
+            cards.forEachIndexed { i, card ->
+                val cardWithId = card.copy(id= "id_$i")
+                updatedList.add(cardWithId)
+            }
 
             this.cards = updatedList
             Unit
