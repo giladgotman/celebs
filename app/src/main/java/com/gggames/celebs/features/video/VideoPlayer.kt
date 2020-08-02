@@ -17,11 +17,12 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 interface VideoPlayer {
-    fun initializePlayer(playerView: PlayerView)
+    fun initializePlayer()
+    fun setView(playerView: PlayerView)
     fun releasePlayer()
     fun playVideo(url: String)
     val events: Observable<PlayerEvent>
@@ -34,20 +35,24 @@ class ExoVideoPlayer @Inject constructor(
 
     private var mediaDataSourceFactory: DefaultDataSourceFactory? = null
 
+    private var _playerView: PlayerView? = null
+
     override val events = PublishSubject.create<PlayerEvent>()
 
-    override fun initializePlayer(playerView: PlayerView) {
+    override fun initializePlayer() {
 
-        setupPlayerView(playerView)
-
-        mediaDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"))
+        mediaDataSourceFactory =
+            DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"))
 
         player.addListener(object : Player.EventListener {
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
                 Timber.d("onPlaybackParametersChanged: ")
             }
 
-            override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
+            override fun onTracksChanged(
+                trackGroups: TrackGroupArray?,
+                trackSelections: TrackSelectionArray?
+            ) {
                 Timber.d("onTracksChanged: ")
             }
 
@@ -62,18 +67,18 @@ class ExoVideoPlayer @Inject constructor(
                 when (playbackState) {
                     STATE_BUFFERING -> {
                         events.onNext(PlayerEvent.OnBufferingState)
-                        playerView.isVisible = true
+                        _playerView?.isVisible = true
                     }
                     STATE_READY -> {
                         events.onNext(PlayerEvent.OnReadyState)
-                        playerView.isVisible = true
+                        _playerView?.isVisible = true
                     }
                     STATE_IDLE -> {
                         events.onNext(PlayerEvent.OnIdleState)
                     }
                     STATE_ENDED -> {
                         events.onNext(PlayerEvent.OnEndedState)
-                        playerView.isVisible = false
+                        _playerView?.isVisible = false
                     }
                 }
             }
@@ -90,29 +95,37 @@ class ExoVideoPlayer @Inject constructor(
             override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
             }
         })
-
-        playerView.setShutterBackgroundColor(Color.TRANSPARENT)
-        playerView.player = player
-        playerView.requestFocus()
     }
 
-    private fun setupPlayerView(playerView: PlayerView) {
-        playerView.useController = false
-        playerView.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING)
-        playerView.setOnClickListener {
-            playerView.useController = true
+    override fun setView(playerView: PlayerView) {
+        _playerView?.player = null
+        _playerView = playerView
+        setupPlayerView()
+    }
+
+    private fun setupPlayerView() {
+        _playerView?.useController = false
+        _playerView?.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING)
+        _playerView?.setOnClickListener {
+            _playerView?.useController = true
         }
+
+        _playerView?.setShutterBackgroundColor(Color.TRANSPARENT)
+        _playerView?.player = player
+        _playerView?.requestFocus()
     }
 
     override fun playVideo(url: String) {
         val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
-            Uri.parse(url))
+            Uri.parse(url)
+        )
 
         player.prepare(mediaSource)
         player.playWhenReady = true
     }
 
     override fun releasePlayer() {
+        _playerView?.player = null
         player.release()
     }
 }

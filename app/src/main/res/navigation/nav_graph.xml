@@ -161,6 +161,10 @@
             android:name="cards"
             app:argType="com.gggames.celebs.model.Card[]"
             />
+        <action
+            android:id="@+id/action_endTurnDialogFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment"
+            app:enterAnim="@android:anim/fade_in" />
 
     </fragment>
 

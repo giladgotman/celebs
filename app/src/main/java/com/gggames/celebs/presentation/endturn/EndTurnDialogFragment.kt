@@ -8,13 +8,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
+import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
+import com.gggames.celebs.presentation.di.createViewComponent
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
-import timber.log.Timber
+import javax.inject.Inject
 
 class EndTurnDialogFragment : Fragment() {
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
+
+    @Inject
+    lateinit var videoPlayer: VideoPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,8 +31,16 @@ class EndTurnDialogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cardsFoundAdapter = CardsFoundAdapter {
-            Timber.w("ggg click url: ${it.videoUrl1}")
+        createViewComponent(this).inject(this)
+
+        videoPlayer.initializePlayer()
+
+        cardsFoundAdapter = CardsFoundAdapter {card, playerView->
+            val url = card.videoUrl1
+            url?.let {
+                videoPlayer.setView(playerView)
+                videoPlayer.playVideo(it)
+            }
         }
 
         cardsRecyclerView.setHasFixedSize(true)

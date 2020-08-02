@@ -16,6 +16,8 @@ class VideoPlayerFragment : Fragment(){
     @Inject
     lateinit var videoPlayer: VideoPlayer
 
+    lateinit var videoPlayerPresenter: VideoPlayerPresenter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,7 +31,8 @@ class VideoPlayerFragment : Fragment(){
 
         createViewComponent(this).inject(this)
 
-        videoPlayer.initializePlayer(playerView)
+        videoPlayer.initializePlayer()
+        videoPlayer.setView(playerView)
 
         arguments?.let {
             it.getString(VIDEO_URL_KEY)?.let {url->

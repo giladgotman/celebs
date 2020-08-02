@@ -8,6 +8,7 @@ import com.gggames.celebs.presentation.creategame.ChooseTeamFragment
 import com.gggames.celebs.presentation.creategame.CreateGameFragment
 import com.gggames.celebs.presentation.creategame.GamesFragment
 import com.gggames.celebs.presentation.endgame.GameOverFragment
+import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
 import com.gggames.celebs.presentation.gameon.GameOnFragment
 import com.gggames.celebs.presentation.video.VideoPlayerFragment
 import dagger.Subcomponent
@@ -43,6 +44,7 @@ interface ViewComponent {
     fun inject(fragment: GameOnFragment)
     fun inject(fragment: GameOverFragment)
     fun inject(fragment: VideoPlayerFragment)
+    fun inject(fragment: EndTurnDialogFragment)
 }
 
 @Qualifier
