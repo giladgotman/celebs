@@ -15,8 +15,8 @@ import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 class GamesPresenter @Inject constructor(
     private val gamesRepository: GamesRepository,
@@ -102,6 +102,7 @@ class GamesPresenter @Inject constructor(
 
     private fun fetchGames() {
         getGames()
+            .compose(schedulerProvider.applyDefault())
             .doOnSubscribe { view.showLoading(true) }
             .subscribe(
                 { games ->
