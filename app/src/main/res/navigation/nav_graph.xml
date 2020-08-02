@@ -115,6 +115,11 @@
             app:popUpToInclusive="true"
 
             />
+        <action
+            android:id="@+id/action_gameOnFragment_to_videoPlayerFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:destination="@id/videoPlayerFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
@@ -131,6 +136,16 @@
 
         <argument
             android:name="gameId"
+            app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.gggames.celebs.presentation.video.VideoPlayerFragment"
+        android:label="VideoPlayerFragment" >
+
+        <argument
+            android:name="videoUrl"
             app:argType="string" />
 
     </fragment>
