@@ -104,8 +104,7 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:launchSingleTop="true"
             app:popUpTo="@id/gameOnFragment"
-            app:popUpToInclusive="true"
-            />
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_gameOnFragment_to_gameOverFragment"
             app:destination="@id/gameOverFragment"
@@ -116,10 +115,10 @@
 
             />
         <action
-            android:id="@+id/action_gameOnFragment_to_videoPlayerFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:destination="@id/videoPlayerFragment" />
+            android:id="@+id/action_gameOnFragment_to_endTurnDialogFragment"
+            app:destination="@id/endTurnDialogFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
@@ -147,6 +146,21 @@
         <argument
             android:name="videoUrl"
             app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/endTurnDialogFragment"
+        android:name="com.gggames.celebs.presentation.endturn.EndTurnDialogFragment"
+        android:label="EndTurnDialogFragment" >
+
+        <argument
+            android:name="playerName"
+            app:argType="string" />
+
+        <argument
+            android:name="cards"
+            app:argType="com.gggames.celebs.model.Card[]"
+            />
 
     </fragment>
 

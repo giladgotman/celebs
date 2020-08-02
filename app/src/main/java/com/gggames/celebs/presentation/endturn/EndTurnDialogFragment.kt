@@ -1,29 +1,20 @@
 package com.gggames.celebs.presentation.endturn
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
-import com.gggames.celebs.model.Player
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
+import timber.log.Timber
 
-class EndTurnDialogFragment :
-    BottomSheetDialogFragment() {
+class EndTurnDialogFragment : Fragment() {
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
-    private lateinit var onCardClick : (card: Card) -> Unit
-
-    fun show(activity: AppCompatActivity, onCardClick: (card: Card) -> Unit) {
-        this.onCardClick = onCardClick
-        show(activity.supportFragmentManager, this.javaClass.simpleName)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,13 +22,13 @@ class EndTurnDialogFragment :
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_end_turn_dialog, container, false)
 
-    private val KEY_PLAYER_NAME = "KEY_PLAYER_NAME"
-    private val KEY_CARD_NAMES = "KEY_CARD_NAMES"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cardsFoundAdapter = CardsFoundAdapter(onCardClick)
+        cardsFoundAdapter = CardsFoundAdapter {
+            Timber.w("ggg click url: ${it.videoUrl1}")
+        }
 
         cardsRecyclerView.setHasFixedSize(true)
 
@@ -49,7 +40,7 @@ class EndTurnDialogFragment :
         arguments?.let {
             val name = it.getString(KEY_PLAYER_NAME) ?: ""
             val cardsNames: Array<Card>? =
-                it.getParcelableArray(KEY_CARD_NAMES) as Array<Card>
+                it.getParcelableArray(KEY_CARDS) as Array<Card>
 
             val cardsList = cardsNames?.toList() ?: emptyList()
             cardsFoundAdapter.setData(cardsList)
@@ -57,28 +48,9 @@ class EndTurnDialogFragment :
             cardsAmountDescription.text =
                 getString(R.string.end_turn_cards_description, cardsNames?.size ?: 0)
         }
-
-        buttonClose.setOnClickListener {
-            dismiss()
-        }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        return dialog
-    }
-
-    companion object {
-        fun create(player: Player, cards: List<Card>): EndTurnDialogFragment {
-            return EndTurnDialogFragment()
-                .apply {
-                isCancelable = false
-                arguments =
-                    Bundle().apply {
-                        putString(KEY_PLAYER_NAME, player.name)
-                        putParcelableArray(KEY_CARD_NAMES, cards.toTypedArray())
-                    }
-            }
-        }
-    }
 }
+
+const val KEY_PLAYER_NAME = "KEY_PLAYER_NAME"
+const val KEY_CARDS = "cards"

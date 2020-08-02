@@ -26,11 +26,11 @@ import com.gggames.celebs.presentation.common.MainActivityDelegate
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
-import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
+import com.gggames.celebs.presentation.endturn.KEY_CARDS
+import com.gggames.celebs.presentation.endturn.KEY_PLAYER_NAME
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
-import com.gggames.celebs.presentation.video.VIDEO_URL_KEY
 import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.Completable
 import io.reactivex.Observable.merge
@@ -73,8 +73,6 @@ class GameOnFragment : Fragment(),
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        val uiEvents = merge(_emitter, (activity as MainActivity).events)
-
         cardTextView.text = ""
 
         endTurnButton.setOnClickListener {
@@ -116,7 +114,17 @@ class GameOnFragment : Fragment(),
 
         setupTimer()
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val uiEvents = merge(_emitter, (activity as MainActivity).events)
         presenter.bind(this, uiEvents)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        clear()
     }
 
     override fun showNewRoundAlert(onClick: (Boolean) -> Unit) {
@@ -175,24 +183,16 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = enabled
     }
 
-    var endTurnDialog: EndTurnDialogFragment? = null
     override fun showTurnEnded(player: Player?, cards: List<Card>) {
         player?.let {
             cardTextView.text = ""
-            if (endTurnDialog?.isAdded != true) {
-                endTurnDialog = EndTurnDialogFragment.create(player, cards)
-                endTurnDialog?.show(requireActivity() as AppCompatActivity) { card ->
-                    Timber.w("on card clickkk name: ${it.name}")
-
-                    card.videoUrl1?.let {
-                        findNavController().navigate(R.id.action_gameOnFragment_to_videoPlayerFragment,
-                            Bundle().apply {
-                                putString(VIDEO_URL_KEY, card.videoUrl1)
-                            })
-                    }
-
+            findNavController().navigate(
+                R.id.action_gameOnFragment_to_endTurnDialogFragment,
+                Bundle().apply {
+                    putString(KEY_PLAYER_NAME, player.name)
+                    putParcelableArray(KEY_CARDS, cards.toTypedArray())
                 }
-            }
+            )
         }
     }
 
@@ -366,11 +366,6 @@ class GameOnFragment : Fragment(),
     override fun navigateToGames() {
         clear()
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        clear()
     }
 
     private fun clear() {
