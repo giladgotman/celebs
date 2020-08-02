@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
-import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Round
@@ -35,10 +34,10 @@ import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.Completable
 import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
-import java.util.*
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import timber.log.Timber
+import java.util.*
+import javax.inject.Inject
 
 /**
  * The main fragment in which the game is happening
@@ -50,9 +49,6 @@ class GameOnFragment : Fragment(),
 
     @Inject
     lateinit var presenter: GamePresenter
-
-    @Inject
-    lateinit var videoPlayer: VideoPlayer
 
     private var mCountDownTimer: CountDownTimer? = null
 
@@ -116,8 +112,6 @@ class GameOnFragment : Fragment(),
         cardsAmount.setOnClickListener {
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
-
-        videoPlayer.initializePlayer(playerView)
 
         setupTimer()
 
@@ -369,7 +363,6 @@ class GameOnFragment : Fragment(),
     }
 
     private fun clear() {
-        videoPlayer.releasePlayer()
         mCountDownTimer?.cancel()
         presenter.unBind()
     }
@@ -395,10 +388,6 @@ class GameOnFragment : Fragment(),
 
     override fun showCorrectCard(card: Card, videoUrl: String?) {
         showInfoToast(requireContext(), "Celebrity found: ${card.name}")
-    }
-
-    private fun showCardVideo(url: String) {
-        videoPlayer.playVideo(url)
     }
 
     override fun showLeaveGameDialog() {
