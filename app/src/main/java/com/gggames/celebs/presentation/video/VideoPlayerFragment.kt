@@ -32,7 +32,7 @@ class VideoPlayerFragment : Fragment(){
         videoPlayer.initializePlayer(playerView)
 
         arguments?.let {
-            it.getString("videoUrl")?.let {url->
+            it.getString(VIDEO_URL_KEY)?.let {url->
                 playVideo(url)
             }
         }
@@ -48,3 +48,5 @@ class VideoPlayerFragment : Fragment(){
         videoPlayer.releasePlayer()
     }
 }
+
+const val VIDEO_URL_KEY = "videoUrl"

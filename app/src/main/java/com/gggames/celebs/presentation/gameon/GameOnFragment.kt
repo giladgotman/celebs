@@ -30,6 +30,7 @@ import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
+import com.gggames.celebs.presentation.video.VIDEO_URL_KEY
 import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.Completable
 import io.reactivex.Observable.merge
@@ -180,8 +181,16 @@ class GameOnFragment : Fragment(),
             cardTextView.text = ""
             if (endTurnDialog?.isAdded != true) {
                 endTurnDialog = EndTurnDialogFragment.create(player, cards)
-                endTurnDialog?.show(requireActivity() as AppCompatActivity) {
+                endTurnDialog?.show(requireActivity() as AppCompatActivity) { card ->
                     Timber.w("on card clickkk name: ${it.name}")
+
+                    card.videoUrl1?.let {
+                        findNavController().navigate(R.id.action_gameOnFragment_to_videoPlayerFragment,
+                            Bundle().apply {
+                                putString(VIDEO_URL_KEY, card.videoUrl1)
+                            })
+                    }
+
                 }
             }
         }
