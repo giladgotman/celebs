@@ -30,6 +30,12 @@ class VideoPlayerFragment : Fragment(){
         createViewComponent(this).inject(this)
 
         videoPlayer.initializePlayer(playerView)
+
+        arguments?.let {
+            it.getString("videoUrl")?.let {url->
+                playVideo(url)
+            }
+        }
     }
 
     private fun playVideo(url: String) {

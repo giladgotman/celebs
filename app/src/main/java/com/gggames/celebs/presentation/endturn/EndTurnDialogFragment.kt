@@ -13,14 +13,15 @@ import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
-import timber.log.Timber
 
 class EndTurnDialogFragment :
     BottomSheetDialogFragment() {
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
+    private lateinit var onCardClick : (card: Card) -> Unit
 
-    fun show(activity: AppCompatActivity) {
+    fun show(activity: AppCompatActivity, onCardClick: (card: Card) -> Unit) {
+        this.onCardClick = onCardClick
         show(activity.supportFragmentManager, this.javaClass.simpleName)
     }
 
@@ -36,9 +37,7 @@ class EndTurnDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cardsFoundAdapter = CardsFoundAdapter {
-            Timber.w("on card click : ${it.name}")
-        }
+        cardsFoundAdapter = CardsFoundAdapter(onCardClick)
 
         cardsRecyclerView.setHasFixedSize(true)
 

@@ -180,7 +180,9 @@ class GameOnFragment : Fragment(),
             cardTextView.text = ""
             if (endTurnDialog?.isAdded != true) {
                 endTurnDialog = EndTurnDialogFragment.create(player, cards)
-                endTurnDialog?.show(requireActivity() as AppCompatActivity)
+                endTurnDialog?.show(requireActivity() as AppCompatActivity) {
+                    Timber.w("on card clickkk name: ${it.name}")
+                }
             }
         }
     }
