@@ -33,6 +33,10 @@ class EndTurnDialogFragment : Fragment() {
 
         createViewComponent(this).inject(this)
 
+
+        buttonClose.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
         videoPlayer.initializePlayer()
 
         cardsFoundAdapter = CardsFoundAdapter {card, playerView->
