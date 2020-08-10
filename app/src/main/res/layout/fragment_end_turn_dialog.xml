@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/bottomSheetLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="top"
         android:orientation="vertical"
         android:paddingStart="@dimen/default_margin"
@@ -16,19 +16,8 @@
         app:layout_behavior="@string/bottom_sheet_behavior"
     >
 
-    <ImageButton
-        android:id="@+id/buttonClose"
-        android:background="@drawable/ripple_circular_light"
-        android:padding="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_close_24px"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
 
-
-        <TextView
+    <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,14 +41,25 @@
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="7 cards found" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cardsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/default_margin"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/bottom_sheet_behavior"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardsAmountDescription" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cardsRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/finishButton"
+        app:layout_constraintTop_toBottomOf="@id/cardsAmountDescription" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageButton
+        android:id="@+id/finishButton"
+        style="@style/NextButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

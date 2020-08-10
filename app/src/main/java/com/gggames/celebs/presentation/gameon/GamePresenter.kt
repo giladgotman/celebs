@@ -534,8 +534,8 @@ class GamePresenter @Inject constructor(
             .andThen(cardsRepository.updateCards(cardDeck))
 
     private fun lastRound(): Boolean =
-        game.gameInfo.round.roundNumber == 120
-//        game.gameInfo.round.roundNumber == 3
+//        game.gameInfo.round.roundNumber == 120
+        game.gameInfo.round.roundNumber == 3
 
     private fun setNullTurnPlayer(): Completable {
         val game = gameInfoWith(game.gameInfo.round.turn.copy(player = null))

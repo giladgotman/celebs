@@ -33,8 +33,7 @@ class EndTurnDialogFragment : Fragment() {
 
         createViewComponent(this).inject(this)
 
-
-        buttonClose.setOnClickListener {
+        finishButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
         videoPlayer.initializePlayer()
@@ -60,7 +59,13 @@ class EndTurnDialogFragment : Fragment() {
                 it.getParcelableArray(KEY_CARDS) as Array<Card>
 
             val cardsList = cardsNames?.toList() ?: emptyList()
-            cardsFoundAdapter.setData(cardsList)
+            val fakeList = cardsList.toMutableList()
+            fakeList.addAll(cardsList)
+            fakeList.addAll(cardsList)
+            fakeList.addAll(cardsList)
+            fakeList.addAll(cardsList)
+            fakeList.addAll(cardsList)
+            cardsFoundAdapter.setData(fakeList)
             title.text = getString(R.string.end_turn_title, name)
             cardsAmountDescription.text =
                 getString(R.string.end_turn_cards_description, cardsNames?.size ?: 0)
