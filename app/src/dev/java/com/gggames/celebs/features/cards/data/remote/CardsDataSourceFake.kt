@@ -27,7 +27,8 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
             val updatedList = this.cards
             cards.forEachIndexed { i, card ->
                 val cardWithId = card.copy(id= "id_$i")
-                updatedList.add(cardWithId.addFakeUrls())
+                updatedList.add(cardWithId)
+//                updatedList.add(cardWithId.addFakeUrls())
             }
 
             this.cards = updatedList

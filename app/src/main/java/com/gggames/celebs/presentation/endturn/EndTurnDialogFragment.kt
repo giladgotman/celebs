@@ -59,13 +59,16 @@ class EndTurnDialogFragment : Fragment() {
                 it.getParcelableArray(KEY_CARDS) as Array<Card>
 
             val cardsList = cardsNames?.toList() ?: emptyList()
+            // FAKE
             val fakeList = cardsList.toMutableList()
             fakeList.addAll(cardsList)
             fakeList.addAll(cardsList)
             fakeList.addAll(cardsList)
             fakeList.addAll(cardsList)
             fakeList.addAll(cardsList)
-            cardsFoundAdapter.setData(fakeList)
+//            cardsFoundAdapter.setData(fakeList)
+            // ----- FAKE
+            cardsFoundAdapter.setData(cardsList)
             title.text = getString(R.string.end_turn_title, name)
             cardsAmountDescription.text =
                 getString(R.string.end_turn_cards_description, cardsNames?.size ?: 0)
