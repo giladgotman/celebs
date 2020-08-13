@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.media.session.PlaybackState.STATE_BUFFERING
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.view.isVisible
 import com.gggames.celebs.core.di.AppContext
 import com.google.android.exoplayer2.*
@@ -58,8 +59,10 @@ class ExoVideoPlayer @Inject constructor(
             }
 
             override fun onPlayerError(error: ExoPlaybackException?) {
-                Timber.d("onPlayerError: ")
+                Timber.e("onPlayerError: ${error.toString()}")
                 events.onNext(PlayerEvent.OnError(error))
+                _playerView?.isVisible = false
+                Toast.makeText(context, "Error playing video", Toast.LENGTH_LONG).show()
             }
 
             /** 4 playbackState exists */
