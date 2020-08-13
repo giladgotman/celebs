@@ -25,9 +25,9 @@ import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -159,8 +159,12 @@ class AddCardsFragment : Fragment() {
         )
     }
 
+    val giftGame = true
     private fun tryToAddCards(cardList: MutableList<Card>): Completable {
-        return getMyCards(authenticator.me!!)
+        return if (giftGame) {
+                val giftList = createAbaCards()
+                addCards(giftList)
+        } else getMyCards(authenticator.me!!)
             .flatMapCompletable { myCards ->
                 if (myCards.size + cardList.size > gamesRepository.currentGame!!.celebsCount) {
                     Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))
@@ -179,5 +183,33 @@ class AddCardsFragment : Fragment() {
         } else {
             null
         }
+    }
+
+    fun createAbaCards(): List<Card> {
+        return listOf(
+            Card(
+                "2", "שולה", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1oGsGlU5EyWIG7rSL2sBTxC_qnW4fvR7V",
+                videoUrl2 = "https://drive.google.com/file/d/1sFd1-HqZubsjv2wNtAkIRSY3uEufXug7/view?usp=sharing",
+                videoUrl3 = "https://drive.google.com/file/d/10-yyxX0JcALNyuQ4nj8EGUgjG2sVCqht/view?usp=sharing",
+                videoUrlFull = "https://drive.google.com/file/d/1-k9SzS1_J2Y5b9bj6jrLvQozPmMpQI1c/view?usp=sharing"
+            )
+            ,
+            Card(
+                "3", "רוני", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1j6epbAZJ8f-uXUveE-7dxYfJqz9hqiqA",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=1881DeQ2Hpq37a99tGzzjCnUcGr_AVif7",
+                videoUrl3 = "https://drive.google.com/uc?export=download&id=1Sl0kGMCV0JEPhxZDT29ndge4fdAoElU-",
+                videoUrlFull = "https://drive.google.com/file/d/1cn3o_DOl8VeKtRiGHVQpaXv5rK9T-6Gd/view?usp=sharing"
+            ),
+            Card(
+                "4", "יוסי ונחמה", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1AlmdQNVg8fZ7qy-qHQ68hfS5ih1aTFz0",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=17LjJIiMRy5PceGDc8Qc5hnYMoe5CSXoc",
+                videoUrl3 = "https://drive.google.com/uc?export=download&id=11Ai4ocMeLH9otGxpQ9t_uS0jGjSSPN6e",
+                videoUrlFull = "https://drive.google.com/uc?export=download&id=1-ir5S6SEbIK3D4_wc20MlrNQf-Z07_Sd"
+            )
+
+        )
     }
 }
