@@ -27,10 +27,20 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cardContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingTop="@dimen/default_margin"
             android:paddingBottom="@dimen/default_margin"
             >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                >
+
 
             <TextView
                 android:id="@+id/cardValue"
@@ -43,8 +53,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:layout_gravity="center"
                 tools:text="Putin" />
 
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/playerView"
+                android:foregroundGravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:keepScreenOn="true"
+                android:focusable="true"
+                android:layout_gravity="top"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                tools:visibility="visible"
+                >
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+            </com.google.android.exoplayer2.ui.PlayerView>
+
+            </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

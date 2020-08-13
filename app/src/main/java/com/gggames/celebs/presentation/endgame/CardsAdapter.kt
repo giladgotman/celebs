@@ -3,14 +3,16 @@ package com.gggames.celebs.presentation.endgame
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
+import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.game_over_card_item.view.*
 
-class CardsAdapter(private val onCardInfoClick: (Card) -> Unit) :
+class CardsAdapter(private val onCardInfoClick: (Card, PlayerView) -> Unit) :
     ListAdapter<Card, CardsAdapter.CardsViewHolder>(TeamDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CardsViewHolder(
@@ -26,13 +28,14 @@ class CardsAdapter(private val onCardInfoClick: (Card) -> Unit) :
         return R.layout.game_over_card_item
     }
 
-    inner class CardsViewHolder(itemView: View, onCardInfoClick: (Card) -> Unit) :
+    inner class CardsViewHolder(itemView: View, onCardInfoClick: (Card, PlayerView) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: Card) = with(itemView) {
             cardValue.text = item.name
             this.setOnClickListener {
-                onCardInfoClick(item)
+                playerView.isVisible = true
+                onCardInfoClick(item, playerView)
             }
         }
     }

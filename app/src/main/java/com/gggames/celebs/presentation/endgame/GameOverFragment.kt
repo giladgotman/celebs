@@ -10,24 +10,30 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.MergeAdapter
 import com.gggames.celebs.R
+import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endgame.GameOverScreenContract.Trigger
 import com.gggames.celebs.presentation.endgame.GameOverScreenContract.UiEvent.PressedFinish
+import com.google.android.exoplayer2.ui.PlayerView
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_game_over.*
 import timber.log.Timber
+import javax.inject.Inject
 
 class GameOverFragment : Fragment() {
 
     @Inject
     lateinit var presenter: GameOverScreenContract.Presenter
+
+    @Inject
+    lateinit var videoPlayer: VideoPlayer
+
     private lateinit var viewComponent: ViewComponent
     private val teamsAdapter = TeamsAdapter()
-    private val cardsAdapter = CardsAdapter(::onInfoClick)
+    private val cardsAdapter = CardsAdapter(::onCardClick)
     private val teamsAndCardsAdapter = MergeAdapter(teamsAdapter, cardsAdapter)
 
         private val events = PublishSubject.create<GameOverScreenContract.UiEvent>()
@@ -48,6 +54,9 @@ class GameOverFragment : Fragment() {
         viewComponent.inject(this)
 
         val gameId: String? = arguments?.getString("gameId")
+
+        videoPlayer.initializePlayer()
+
 
         presenter.states.subscribe { render(it) }.let { disposables.add(it) }
         presenter.triggers.subscribe { trigger(it) }.let { disposables.add(it) }
@@ -83,8 +92,13 @@ class GameOverFragment : Fragment() {
         cardsAdapter.submitList(state.cards)
     }
 
-    private fun onInfoClick(card: Card) {
+    private fun onCardClick(card: Card, playerView: PlayerView) {
         Timber.w("info click : ${card.name}")
+        val url = card.videoUrlFull
+        url?.let {
+            videoPlayer.setView(playerView)
+            videoPlayer.playVideo(it)
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()
