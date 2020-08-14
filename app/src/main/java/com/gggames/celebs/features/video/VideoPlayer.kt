@@ -121,6 +121,7 @@ class ExoVideoPlayer @Inject constructor(
     }
 
     override fun playVideo(url: String) {
+        Timber.d("playVideo: $url")
         val mediaSource = ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(
             Uri.parse(url)
         )
