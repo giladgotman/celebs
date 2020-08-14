@@ -12,7 +12,7 @@ import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.PlayerView.SHOW_BUFFERING_WHEN_PLAYING
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -110,7 +110,7 @@ class ExoVideoPlayer @Inject constructor(
     private fun setupPlayerView() {
         _playerView?.useController = false
         _playerView?.setShowBuffering(SHOW_BUFFERING_WHEN_PLAYING)
-        _playerView?.resizeMode = RESIZE_MODE_FIXED_WIDTH
+        _playerView?.resizeMode = RESIZE_MODE_FIXED_HEIGHT
         _playerView?.setOnClickListener {
             _playerView?.useController = true
         }
