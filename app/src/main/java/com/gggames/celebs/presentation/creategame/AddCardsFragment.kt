@@ -231,7 +231,7 @@ class AddCardsFragment : Fragment() {
                 videoUrlFull = "https://drive.google.com/uc?export=download&id=1CfGfuLZ10Figvy9zFb2Bi12hWK0bK9R9"
             ),
             Card(
-                "8", "ישארל ואילה רשף", "p",
+                "8", "ישראל ואילה רשף", "p",
                 videoUrl1 = "https://drive.google.com/uc?export=download&id=1TPeBuoM4rrMHoK2OHlijNm3u1ED1Lknl",
                 videoUrl2 = "https://drive.google.com/uc?export=download&id=1TPeBuoM4rrMHoK2OHlijNm3u1ED1Lknl",
                 videoUrl3 = "https://drive.google.com/uc?export=download&id=1zGlpWYFk9QGfBzQwAP7MobUI0vvHw0r1",
@@ -267,7 +267,7 @@ class AddCardsFragment : Fragment() {
             ),
             Card(
                 "13", "בילי", "p",
-                videoUrl1 = "https://drive.google.com/uc?export=download&id=1oqF6BD_WkbckdCrMVQ5fMRk4azpdjXjC",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1drlnGyJFU5uCPs0x6uGG4Hwubs670ePJ",
                 videoUrl2 = "https://drive.google.com/uc?export=download&id=1oqF6BD_WkbckdCrMVQ5fMRk4azpdjXjC",
                 videoUrl3 = "https://drive.google.com/uc?export=download&id=16lXMvAdxFFBXIRIzCqjsZ4ebGsQI2GGI",
                 videoUrlFull = "https://drive.google.com/uc?export=download&id=16lXMvAdxFFBXIRIzCqjsZ4ebGsQI2GGI"
@@ -280,63 +280,84 @@ class AddCardsFragment : Fragment() {
                 videoUrlFull = ""
             ),
             Card(
-                "15", "רן", "p",
-                videoUrl1 = "https://drive.google.com/uc?export=download&id=1H0zyRn7TsX2vXiBb4SaIjHu_qsF8ryi-",
-                videoUrl2 = "https://drive.google.com/uc?export=download&id=1R9EP632Ql7FxQO0h8_kilAg5ASr-6KuI",
-                videoUrl3 = "https://drive.google.com/uc?export=download&id=1hY0QSecqXlv6zPrL_ux253BUcpLMDegQ",
-                videoUrlFull = "https://drive.google.com/uc?export=download&id=1hY0QSecqXlv6zPrL_ux253BUcpLMDegQ"
+                "15", "מוריס בן זקן", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=14r8TLnj9k8NvQzmI_dlxf03RkA3sVhUH",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=1RQdsSEws8Hgc16KjYcA9UiWZs55Y9gZQ",
+                videoUrl3 = "https://drive.google.com/uc?export=download&id=1DseLXlyCktMesstAdnJo5fD-LVVXAlTQ",
+                videoUrlFull = "https://drive.google.com/uc?export=download&id=14VwIZhNM0LndRuYKciyPRgrSwKSQmGdK"
             ),
             Card(
-                "16", "ורד צלחת עם מכסה לחתול", "p",
-                videoUrl1 = "https://drive.google.com/uc?export=download&id=1QhgoOWYkVvZscFtBAjr1gMzVjyDUs2VA",
-                videoUrl2 = "https://drive.google.com/uc?export=download&id=1zFiXOGyYDNSKfojbCYxARma150OmXbbu",
-                videoUrl3 = "https://drive.google.com/uc?export=download&id=1zFiXOGyYDNSKfojbCYxARma150OmXbbu",
-                videoUrlFull = "https://drive.google.com/uc?export=download&id=16vKFmMDCYZUUyex227KpIkPhk5IBhKle"
-            ),
-            Card(
-                "17", "ערן שוורץ", "p",
-                videoUrl1 = "https://drive.google.com/uc?export=download&id=1uXjTBqX7jYDUZ9GAw_JkTSJIub58gbdT",
-                videoUrl2 = "https://drive.google.com/uc?export=download&id=1sKR-KtH45xwc5DmqyHkZ4seN7XwUdU1p",
-                videoUrl3 = "https://drive.google.com/file/d/1EUgWgwgqqG0zhJM2MNiU7AGhNLSIekqc/view?usp=sharing",
-                videoUrlFull = "https://drive.google.com/uc?export=download&id=10HVoxZdDSS1nSK2Gf77nonUQtNKLPnOq"
-            ),
-            Card(
-                "18", "נופר", "p",
-                videoUrl1 = "https://drive.google.com/uc?export=download&id=1cgLKkArQW1aSQiwRG2OEL15W2Ci7FYm5",
-                videoUrl2 = "https://drive.google.com/uc?export=download&id=1ZoIAd4zZeJMi715Pz-jRJORPp9K9d3Zw",
-                videoUrl3 = "https://drive.google.com/uc?export=download&id=1UBIXtChyAH3sMsNezDqaEkKfR_eompv1",
-                videoUrlFull = "https://drive.google.com/uc?export=download&id=17DAf6fsAmLSfLuqvsrfztKe-z76l6JWT"
-            ),
-            Card(
-                "19", "רון", "p",
-                videoUrl1 = "text",
-                videoUrl2 = "",
-                videoUrl3 = "",
-                videoUrlFull = ""
-            ),
-            Card(
-                "20", "לוסי", "p",
+                "16", "ליה", "p",
                 videoUrl1 = "",
                 videoUrl2 = "",
                 videoUrl3 = "",
                 videoUrlFull = ""
             ),
             Card(
-                "21", "אטי", "p",
+                "17", "רן", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1H0zyRn7TsX2vXiBb4SaIjHu_qsF8ryi-",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=1R9EP632Ql7FxQO0h8_kilAg5ASr-6KuI",
+                videoUrl3 = "https://drive.google.com/uc?export=download&id=1hY0QSecqXlv6zPrL_ux253BUcpLMDegQ",
+                videoUrlFull = "https://drive.google.com/uc?export=download&id=1hY0QSecqXlv6zPrL_ux253BUcpLMDegQ"
+            ),
+            Card(
+                "18", "ורד צלחת עם מכסה לחתול", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1QhgoOWYkVvZscFtBAjr1gMzVjyDUs2VA",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=1zFiXOGyYDNSKfojbCYxARma150OmXbbu",
+                videoUrl3 = "https://drive.google.com/uc?export=download&id=1zFiXOGyYDNSKfojbCYxARma150OmXbbu",
+                videoUrlFull = "https://drive.google.com/uc?export=download&id=16vKFmMDCYZUUyex227KpIkPhk5IBhKle"
+            ),
+            Card(
+                "19", "אילן גבאי", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1K7NHNVSroyfexy1ueotq3jiIn1HFmkyD",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=16Lumnf0gp32de-A-8VbTid3O-v1UTYCd",
+                videoUrl3 = "https://drive.google.com/uc?export=download&id=1Y01_NkBVaP12r7MlGT0QtUNv6RfPPvdL",
+                videoUrlFull = "https://drive.google.com/uc?export=download&id=16vKFmMDCYZUUyex227KpIkPhk5IBhKle"
+            ),
+            Card(
+                "20", "ערן שוורץ", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1uXjTBqX7jYDUZ9GAw_JkTSJIub58gbdT",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=1sKR-KtH45xwc5DmqyHkZ4seN7XwUdU1p",
+                videoUrl3 = "https://drive.google.com/file/d/1EUgWgwgqqG0zhJM2MNiU7AGhNLSIekqc/view?usp=sharing",
+                videoUrlFull = "https://drive.google.com/uc?export=download&id=10HVoxZdDSS1nSK2Gf77nonUQtNKLPnOq"
+            ),
+            Card(
+                "21", "נופר", "p",
+                videoUrl1 = "https://drive.google.com/uc?export=download&id=1cgLKkArQW1aSQiwRG2OEL15W2Ci7FYm5",
+                videoUrl2 = "https://drive.google.com/uc?export=download&id=1ZoIAd4zZeJMi715Pz-jRJORPp9K9d3Zw",
+                videoUrl3 = "https://drive.google.com/uc?export=download&id=1UBIXtChyAH3sMsNezDqaEkKfR_eompv1",
+                videoUrlFull = "https://drive.google.com/uc?export=download&id=17DAf6fsAmLSfLuqvsrfztKe-z76l6JWT"
+            ),
+            Card(
+                "22", "רון", "p",
+                videoUrl1 = "text",
+                videoUrl2 = "",
+                videoUrl3 = "",
+                videoUrlFull = ""
+            ),
+            Card(
+                "23", "לוסי", "p",
+                videoUrl1 = "",
+                videoUrl2 = "",
+                videoUrl3 = "",
+                videoUrlFull = ""
+            ),
+            Card(
+                "24", "אטי", "p",
                 videoUrl1 = "https://drive.google.com/uc?export=download&id=1uOZduEr9tAd-wg7E7874ipulYBcnJCUs",
                 videoUrl2 = "https://drive.google.com/uc?export=download&id=1uOZduEr9tAd-wg7E7874ipulYBcnJCUs",
                 videoUrl3 = "https://drive.google.com/uc?export=download&id=1LUks5pYRH0NP0unoDnUFYCQP4KfpnXMh",
                 videoUrlFull = "https://drive.google.com/uc?export=download&id=14Y-Cij8k81UUlOOOEtinsMzeWmyP99cT"
             ),
             Card(
-                "22", "נדב ולימור תירוש", "p",
+                "25", "נדב ולימור תירוש", "p",
                 videoUrl1 = "https://drive.google.com/uc?export=download&id=1DL6_b488cThfFVdU5NpcsrBf79sBm6ow",
                 videoUrl2 = "https://drive.google.com/uc?export=download&id=1TGV8qm3jNCe06N4LLDO2JKZKCBo6VOhA",
                 videoUrl3 = "https://drive.google.com/uc?export=download&id=1qNEbhC5FF7vXPuD6LVqHE5ZtRFneMJoX",
                 videoUrlFull = "https://drive.google.com/uc?export=download&id=1qNEbhC5FF7vXPuD6LVqHE5ZtRFneMJoX"
             ),
             Card(
-                "24", "טלי וגיא ויטנברג", "p",
+                "26", "טלי וגיא ויטנברג", "p",
                 videoUrl1 = "https://drive.google.com/uc?export=download&id=1amdBNrUetTqNCSNQmi4UlQdmfMHogF5N",
                 videoUrl2 = "https://drive.google.com/uc?export=download&id=1dJK5CIDiGi-XVrnxprJeE532q_iovRPJ",
                 videoUrl3 = "https://drive.google.com/uc?export=download&id=1uhqg3mzZLk-9adKGXT90TLWT_IsDubPL",
