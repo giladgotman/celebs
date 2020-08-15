@@ -22,8 +22,8 @@ import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
-const val TURN_TIME_MILLIS = 60000L
-// const val TURN_TIME_MILLIS = 10000L
+//const val TURN_TIME_MILLIS = 60000L
+const val TURN_TIME_MILLIS = 30000L
 
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
@@ -138,16 +138,10 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    var newCardFound: Card? = null
     private fun onTurnUpdate(newTurn: Turn) {
         Timber.v("UPDATE::TURN:: onTurnUpdate turn: $newTurn}")
         val meActive = authenticator.isMyselfActivePlayerBlocking(game)
         val playButtonEnabled = meActive || game.currentPlayer == null
-        Timber.w("ggg new lastFoundCard: ${newTurn.lastFoundCard?.name} old: ${newCardFound?.name} ")
-        if (lastGame?.round?.turn?.lastFoundCard != newTurn.lastFoundCard) {
-            newCardFound = newTurn.lastFoundCard
-        }
-
         if (authenticator.isMyselfActivePlayerBlocking(game)) {
             when (newTurn.state) {
                 Idle -> {
@@ -178,11 +172,6 @@ class GamePresenter @Inject constructor(
                     }
                 }
                 Running -> {
-                    newCardFound?.let { cardFound ->
-                        view.showCorrectCard(cardFound, getCardUrl(cardFound))
-                        newCardFound = null
-                    }
-
                     newTurn.player?.let {
                         view.setStartedState(meActive, newTurn.time)
                         view.setCurrentOtherPlayer(it)
@@ -194,9 +183,6 @@ class GamePresenter @Inject constructor(
             }
         }
     }
-
-    private fun getCardUrl(card: Card) =
-        if (game.round.roundNumber % 2 == 0) card.videoUrl1 else card.videoUrl2
 
     private fun showEndOfTurn() {
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
@@ -316,12 +302,10 @@ class GamePresenter @Inject constructor(
         lastCard?.let {
             cardsFoundInTurn.add(it)
         }
-
         authenticator.me?.team?.let {
             increaseScore(it)
                 .andThen(setTurnTime(time))
                 .andThen(setTurnLastCards(cardsFoundInTurn.mapNotNull { it.id }))
-                .andThen(setLastCardFound(lastCard))
                 .andThen(handleNextCard(pickNextCard(), time))
                 .subscribe({
                 }, {
@@ -393,19 +377,6 @@ class GamePresenter @Inject constructor(
         return updateGame(newGame)
     }
 
-    private fun setLastCardFound(lastFoundCard: Card?): Completable {
-        val newGame = game.copy(
-            gameInfo = game.gameInfo.copy(
-                round = game.gameInfo.round.copy(
-                    turn = game.gameInfo.round.turn.copy(
-                        lastFoundCard = lastFoundCard
-                    )
-                )
-            )
-        )
-        return updateGame(newGame)
-    }
-
     private fun setTurnStateAndLastCards(state: TurnState, cardsIds: List<String>): Completable {
         val newGame = game.copy(
             gameInfo = game.gameInfo.copy(
@@ -426,8 +397,7 @@ class GamePresenter @Inject constructor(
                 round = game.gameInfo.round.copy(
                     turn = game.gameInfo.round.turn.copy(
                         state = Stopped,
-                        time = TURN_TIME_MILLIS,
-                        lastFoundCard = null
+                        time = TURN_TIME_MILLIS
                     )
                 )
             )
@@ -538,7 +508,6 @@ class GamePresenter @Inject constructor(
             .andThen(cardsRepository.updateCards(cardDeck))
 
     private fun lastRound(): Boolean =
-//        game.gameInfo.round.roundNumber == 120
         game.gameInfo.round.roundNumber == 3
 
     private fun setNullTurnPlayer(): Completable {
