@@ -161,6 +161,10 @@
             android:name="cards"
             app:argType="com.gggames.celebs.model.Card[]"
             />
+
+        <argument
+            android:name="roundNumber"
+            app:argType="integer" />
         <action
             android:id="@+id/action_endTurnDialogFragment_to_videoPlayerFragment"
             app:destination="@id/videoPlayerFragment"
