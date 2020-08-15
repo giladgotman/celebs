@@ -56,10 +56,10 @@ fun createAbaCards(): List<Card> {
         ),
         Card(
             "9", "ויולה", "giftGenerator",
-            videoUrl1 = "https://drive.google.com/uc?export=download&id=194rl8msLR47b8No3-uuI-AmLre2wgoC9",
-            videoUrl2 = "https://drive.google.com/uc?export=download&id=147xu8GaVe25o3LhJ6xNcElqeEEHD6_vW",
-            videoUrl3 = "https://drive.google.com/uc?export=download&id=1CGIg6YgKin7m-QmHvyQ03omj6yEvWFRG",
-            videoUrlFull = "https://drive.google.com/uc?export=download&id=1k-6jLFqi7YO_QgeCfA_ubU22_vLY-2AO"
+            videoUrl1 = "https://drive.google.com/uc?export=download&id=1cT-xZOHiK_38geg89UXcMzcjpA1MUAxS",
+            videoUrl2 = "https://drive.google.com/uc?export=download&id=1Pvw9IbG4JELuWB0J1z3D5legtm70ukQv",
+            videoUrl3 = "https://drive.google.com/uc?export=download&id=1kywJt3zQQlYgWmU-nw5Uq_61TLp4wff4",
+            videoUrlFull = "https://drive.google.com/uc?export=download&id=182XVVdFtple76PVj-8OPJKVcuz-ssNlJ"
         ),
         Card(
             "10", "כרמית", "giftGenerator",
@@ -105,10 +105,10 @@ fun createAbaCards(): List<Card> {
         ),
         Card(
             "16", "ליה", "giftGenerator",
-            videoUrl1 = "",
-            videoUrl2 = "",
-            videoUrl3 = "",
-            videoUrlFull = ""
+            videoUrl1 = "https://drive.google.com/uc?export=download&id=1Wzvtibc3H4rAWj3AnNgK9QpF5-YvOJ24",
+            videoUrl2 = "https://drive.google.com/uc?export=download&id=1lZW7_Q3yXro9oxyxl4umYpU1koWRnQ0c",
+            videoUrl3 = "https://drive.google.com/uc?export=download&id=1E9DLOG6TamXQFEPdIGVssudWO-StVafc",
+            videoUrlFull = "https://drive.google.com/uc?export=download&id=188h2lskfhsL9u7M_VWEghtH6Yin8T0cg"
         ),
         Card(
             "17", "רן", "giftGenerator",
