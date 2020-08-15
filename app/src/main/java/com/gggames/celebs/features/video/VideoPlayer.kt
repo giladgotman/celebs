@@ -7,8 +7,11 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.gggames.celebs.core.di.AppContext
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player.*
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
@@ -41,12 +44,14 @@ class ExoVideoPlayer @Inject constructor(
 
     override val events = PublishSubject.create<PlayerEvent>()
 
+    private lateinit var exoPlayerListener: EventListener
+
     override fun initializePlayer() {
 
         mediaDataSourceFactory =
             DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"))
 
-        player.addListener(object : Player.EventListener {
+        exoPlayerListener = object : EventListener{
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
                 Timber.d("onPlaybackParametersChanged: ")
             }
@@ -62,6 +67,7 @@ class ExoVideoPlayer @Inject constructor(
                 Timber.e("onPlayerError: ${error.toString()}")
                 events.onNext(PlayerEvent.OnError(error))
                 _playerView?.isVisible = false
+                player.stop(true)
                 Toast.makeText(context, "Error playing video", Toast.LENGTH_LONG).show()
             }
 
@@ -98,7 +104,8 @@ class ExoVideoPlayer @Inject constructor(
 
             override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
             }
-        })
+        }
+        player.addListener(exoPlayerListener)
     }
 
     override fun setView(playerView: PlayerView) {
@@ -131,7 +138,10 @@ class ExoVideoPlayer @Inject constructor(
     }
 
     override fun releasePlayer() {
+        Timber.d("releasePlayer: this $this")
         _playerView?.player = null
+        player.removeListener(exoPlayerListener)
+        player.stop(true)
         player.release()
     }
 }

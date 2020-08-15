@@ -200,7 +200,7 @@ class GamePresenter @Inject constructor(
 
     private fun showEndOfTurn() {
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
-        view.showTurnEnded(lastGame?.round?.turn?.player, cards)
+        view.showTurnEnded(lastGame?.round?.turn?.player, cards, lastGame?.round?.roundNumber ?: 1)
     }
 
     private fun onNewRoundClick(time: Long) {
@@ -344,7 +344,11 @@ class GamePresenter @Inject constructor(
 
     private fun pickNextCard(): Card? {
         val notUsedCards = unUsedCards()
-        val card = if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
+        val card = if (game.type == GameType.Gift && game.round.roundNumber == 1) {
+            if (notUsedCards.isNotEmpty()) notUsedCards.first().copy(used = true) else null
+        } else {
+            if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
+        }
         Timber.w("pickNextCard, card: $card")
         return card
     }
@@ -621,7 +625,7 @@ class GamePresenter @Inject constructor(
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)
         fun showLastRoundToast()
         fun setTeams(teams: List<Team>)
-        fun showTurnEnded(player: Player?, cards: List<Card>)
+        fun showTurnEnded(player: Player?, cards: List<Card>, roundNumber: Int)
         fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)

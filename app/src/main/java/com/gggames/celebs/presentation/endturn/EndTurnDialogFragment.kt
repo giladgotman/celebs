@@ -12,11 +12,14 @@ import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.presentation.di.createViewComponent
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class EndTurnDialogFragment : Fragment() {
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
+
+    private var roundNumber: Int = 1
 
     @Inject
     lateinit var videoPlayer: VideoPlayer
@@ -38,8 +41,17 @@ class EndTurnDialogFragment : Fragment() {
         }
         videoPlayer.initializePlayer()
 
-        cardsFoundAdapter = CardsFoundAdapter {card, playerView->
-            val url = card.videoUrl1
+        Timber.w("onViewCreated videoPlayer: $videoPlayer")
+
+        cardsFoundAdapter = CardsFoundAdapter { card, playerView ->
+
+            val url = when (roundNumber) {
+                1 -> { card.videoUrl1 }
+                2 -> { card.videoUrl2 }
+                3 -> { card.videoUrl3 }
+                else -> { null }
+            }
+
             url?.let {
                 videoPlayer.setView(playerView)
                 videoPlayer.playVideo(it)
@@ -55,6 +67,7 @@ class EndTurnDialogFragment : Fragment() {
 
         arguments?.let {
             val name = it.getString(KEY_PLAYER_NAME) ?: ""
+            roundNumber = it.getInt(KEY_ROUND_NUMBER)
             val cardsNames: Array<Card>? =
                 it.getParcelableArray(KEY_CARDS) as Array<Card>
 
@@ -75,7 +88,13 @@ class EndTurnDialogFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Timber.w("onDestroyView videoPlayer: $videoPlayer")
+        videoPlayer.releasePlayer()
+    }
 }
 
-const val KEY_PLAYER_NAME = "KEY_PLAYER_NAME"
+const val KEY_PLAYER_NAME = "playerName"
+const val KEY_ROUND_NUMBER = "roundNumber"
 const val KEY_CARDS = "cards"

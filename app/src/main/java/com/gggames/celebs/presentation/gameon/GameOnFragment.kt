@@ -28,6 +28,7 @@ import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
 import com.gggames.celebs.presentation.endturn.KEY_CARDS
 import com.gggames.celebs.presentation.endturn.KEY_PLAYER_NAME
+import com.gggames.celebs.presentation.endturn.KEY_ROUND_NUMBER
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
@@ -183,7 +184,7 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = enabled
     }
 
-    override fun showTurnEnded(player: Player?, cards: List<Card>) {
+    override fun showTurnEnded(player: Player?, cards: List<Card>, roundNumber: Int) {
         player?.let {
             cardTextView.text = ""
             findNavController().navigate(
@@ -191,6 +192,7 @@ class GameOnFragment : Fragment(),
                 Bundle().apply {
                     putString(KEY_PLAYER_NAME, player.name)
                     putParcelableArray(KEY_CARDS, cards.toTypedArray())
+                    putInt(KEY_ROUND_NUMBER, roundNumber)
                 }
             )
         }
