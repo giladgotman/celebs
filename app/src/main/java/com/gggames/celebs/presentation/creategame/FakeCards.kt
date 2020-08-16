@@ -63,7 +63,7 @@ fun createAbaCards(): List<Card> {
         ),
         Card(
             "10", "כרמית", "giftGenerator",
-            videoUrl1 = "text",
+            videoUrl1 = "text:",
             videoUrl2 = "",
             videoUrl3 = "",
             videoUrlFull = ""
@@ -77,10 +77,10 @@ fun createAbaCards(): List<Card> {
         ),
         Card(
             "12", "גלעד", "giftGenerator",
-            videoUrl1 = "",
-            videoUrl2 = "",
-            videoUrl3 = "",
-            videoUrlFull = ""
+            videoUrl1 = "https://drive.google.com/uc?export=download&id=1se6PnU-pn9V57UmeK8_RDaNCBsMdDrRa",
+            videoUrl2 = "https://drive.google.com/uc?export=download&id=1VQjjjWEvCpRHy7hT59S3DjSEFQArCL2y",
+            videoUrl3 = "https://drive.google.com/uc?export=download&id=1XwhSqxZex268-nZWNUb0DvTB5iO6GAp1",
+            videoUrlFull = "https://drive.google.com/uc?export=download&id=1X-8Z2OASQMVpu4k1OviBGUWcRMtZeyBP"
         ),
         Card(
             "13", "בילי", "giftGenerator",
