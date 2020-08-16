@@ -20,10 +20,12 @@ import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.data.MAX_CARDS
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.GameType
+import com.gggames.celebs.model.Player
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
+import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.Completable
 import io.reactivex.Completable.complete
 import io.reactivex.disposables.CompositeDisposable
@@ -91,19 +93,26 @@ class AddCardsFragment : Fragment() {
     }
 
     private fun navigateToGameIfCardsAreFilled() {
-        getMyCards(authenticator.me!!).subscribe(
-            { myCards ->
-                val cardsAlreadyFilled =
-                    if (gamesRepository.currentGame!!.type == GameType.Gift) {
-                        gamesRepository.currentGame!!.celebsCount > 0
-                    } else {
+        if (gamesRepository.currentGame!!.type == GameType.Gift) {
+            val generatorPlayer = Player("giftGenerator", "giftGenerator")
+            getMyCards(generatorPlayer).subscribe(
+                { generatedCards ->
+                    Timber.w("ggg celebs count: ${generatedCards.size}")
+                    if (generatedCards.isNotEmpty()) navigateToChooseTeam()
+
+                }, {}).let { disposables.add(it) }
+
+        } else {
+            getMyCards(authenticator.me!!).subscribe(
+                { myCards ->
+                    val cardsAlreadyFilled =
                         myCards.size >= gamesRepository.currentGame!!.celebsCount
+                    if (cardsAlreadyFilled) {
+                        navigateToChooseTeam()
                     }
-                if (cardsAlreadyFilled) {
-                    navigateToChooseTeam()
-                }
-            }, {}
-        ).let { disposables.add(it) }
+                }, {}
+            ).let { disposables.add(it) }
+        }
     }
 
     private fun setCardsInputFields() {
@@ -169,10 +178,14 @@ class AddCardsFragment : Fragment() {
 
     private fun tryToAddCards(cardList: MutableList<Card>): Completable {
         return if (gamesRepository.currentGame!!.type == GameType.Gift) {
-            if (gamesRepository.currentGame!!.celebsCount > 0) {
+            if (gamesRepository.currentGame!!.gameInfo.totalCards > 0) {
                 complete()
             } else {
-                addCards(createAbaCards())
+                val giftCards = createAbaCards()
+                addCards(giftCards)
+                    .doOnComplete {
+                        showInfoToast(requireContext(), "${giftCards.size} gift cards added")
+                    }
             }
         } else getMyCards(authenticator.me!!)
             .flatMapCompletable { myCards ->
