@@ -23,7 +23,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 //const val TURN_TIME_MILLIS = 60000L
-const val TURN_TIME_MILLIS = 30000L
+const val TURN_TIME_MILLIS = 10000L
 
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
@@ -150,7 +150,9 @@ class GamePresenter @Inject constructor(
                 Stopped -> {
                     if (lastGame?.turn?.state != newTurn.state) {
                         view.setTurnStoppedState()
-                        showEndOfTurn()
+                        if (!quitingGame) {
+                            showEndOfTurn()
+                        }
                     }
                 }
                 Running -> {
@@ -186,9 +188,10 @@ class GamePresenter @Inject constructor(
 
     private fun showEndOfTurn() {
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
+
+        Timber.d("showEndOfTurn, lastGame.player: ${lastGame?.round?.turn?.player}, game.player: ${game.round.turn.player}")
         view.showTurnEnded(lastGame?.round?.turn?.player, cards, lastGame?.round?.roundNumber ?: 1)
     }
-
     private fun onNewRoundClick(time: Long) {
         when {
             lastRound() -> {
@@ -430,8 +433,10 @@ class GamePresenter @Inject constructor(
         }
     }
 
+    var quitingGame = false
     private fun onUserApprovedQuitGame() {
-        endMyTurnIfImActive()
+        quitingGame = true
+        endMyTurn()
             .doAfterTerminate {
                 releaseAll()
                 view.navigateToGames()
@@ -444,25 +449,6 @@ class GamePresenter @Inject constructor(
         endMyTurnIfImActiveBlocking()
             .andThen(leaveGame(game, authenticator.me!!))
 
-    // TODO: 12.06.20 use isMyselfHost instead
-    private fun onTurnEnded() {
-        endMyTurnIfImActive()
-            .subscribe({},
-                { Timber.e(it, "error onTurnEnded") }
-            ).let {
-                disposables.add(it)
-            }
-    }
-
-    private fun endMyTurnIfImActive(): Completable =
-        authenticator.isMyselfActivePlayer(game).flatMapCompletable {
-            if (it) {
-                endMyTurn()
-            } else {
-                Completable.complete()
-            }
-        }
-
     // TODO: 20.06.20 fix setGame side effects and make it non blocking
     private fun endMyTurnIfImActiveBlocking(): Completable {
         return if (authenticator.isMyselfActivePlayerBlocking(game)) {
@@ -473,8 +459,8 @@ class GamePresenter @Inject constructor(
     }
 
     private fun endMyTurn(): Completable =
-        setTurnStoppedState()
-            .andThen(maybeFlipLastCard())
+        maybeFlipLastCard()
+            .andThen(setTurnStoppedState())
             .andThen(setNullTurnPlayer())
 
     private fun onPlayerPaused(time: Long?) {
@@ -496,7 +482,7 @@ class GamePresenter @Inject constructor(
     }
 
     private fun releaseAll() {
-        audioPlayer.release()
+//        audioPlayer.release()
         disposables.clear()
     }
 
@@ -562,16 +548,16 @@ class GamePresenter @Inject constructor(
    private fun onTimerEnd() {
        if (authenticator.isMyselfActivePlayerBlocking(game)) {
            audioPlayer.play("timesupyalabye")
-           showEndOfTurn()
+           endMyTurn().subscribe(
+               {},
+               { Timber.e(it, "error onTimerEnd") }
+           ).let { disposables.add(it) }
        }
-       onTurnEnded()
+
    }
 
     private fun onEndTurnClick() {
-        if (authenticator.isMyselfActivePlayerBlocking(game)) {
-            showEndOfTurn()
-        }
-        onTurnEnded()
+        // not used - removed button
     }
 
     private fun onCardsAmountClick() {

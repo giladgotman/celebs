@@ -154,10 +154,10 @@ fun createAbaCards(): List<Card> {
         ),
         Card(
             "23", "לוסי", "giftGenerator",
-            videoUrl1 = "",
-            videoUrl2 = "",
-            videoUrl3 = "",
-            videoUrlFull = ""
+            videoUrl1 = "https://drive.google.com/uc?export=download&id=1t4w-sp-OiPToAo7XEiKxDk7hlA7SD3IS",
+            videoUrl2 = "https://drive.google.com/uc?export=download&id=1EqcfYS9C5SlO_pGXHUhBIrInocE4iaUP",
+            videoUrl3 = "https://drive.google.com/uc?export=download&id=17GU6VpqD9CDUb9I2SvAp1s7sdbmXx_gw",
+            videoUrlFull = "https://drive.google.com/uc?export=download&id=19P67pF8aHV9Z8iVNpLabAwAmLL3OEHe-"
         ),
         Card(
             "24", "אטי", "giftGenerator",
