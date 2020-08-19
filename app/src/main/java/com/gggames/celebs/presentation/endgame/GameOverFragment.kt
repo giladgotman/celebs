@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -92,12 +94,24 @@ class GameOverFragment : Fragment() {
         cardsAdapter.submitList(state.cards)
     }
 
-    private fun onCardClick(card: Card, playerView: PlayerView) {
+    private fun onCardClick(card: Card, playerView: PlayerView, giftText: TextView) {
         Timber.w("info click : ${card.name}")
         val url = card.videoUrlFull
         url?.let {
-            videoPlayer.setView(playerView)
-            videoPlayer.playVideo(it)
+
+            if (it.startsWith("text:")) {
+                if (giftText.tag != "open") {
+                    giftText.text = it.removePrefix("text:")
+                    giftText.tag = "open"
+                } else {
+                    giftText.text = card.name
+                    giftText.tag = null
+                }
+            } else {
+                videoPlayer.setView(playerView)
+                playerView.isVisible = true
+                videoPlayer.playVideo(it)
+            }
         }
     }
     override fun onDestroyView() {

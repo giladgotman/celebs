@@ -15,9 +15,9 @@ import com.gggames.celebs.features.user.domain.SignupResponse
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.utils.showErrorToast
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
+import javax.inject.Inject
 
 class SignupActivity : AppCompatActivity() {
 
@@ -48,6 +48,9 @@ class SignupActivity : AppCompatActivity() {
         }
 
         versionValue.text = getString(R.string.version_value, BuildConfig.VERSION_NAME)
+
+        //TODO TEMP!!!!
+        loginUsername.editText?.setText("ggg")
     }
 
     private fun onDoneClick() {

@@ -3,14 +3,14 @@ package com.gggames.celebs.presentation.endturn
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.end_turn_card_found_item.view.*
 
-class CardsFoundAdapter(val onClick: (card: Card, playerView: PlayerView) -> Unit) :
+class CardsFoundAdapter(val onClick: (card: Card, playerView: PlayerView, giftText: TextView) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataSet: List<Card> = emptyList()
@@ -36,8 +36,7 @@ class CardsFoundAdapter(val onClick: (card: Card, playerView: PlayerView) -> Uni
         fun bind(item: Card) {
             itemView.name.text = item.name
             itemView.setOnClickListener {
-                itemView.playerView.isVisible = true
-                onClick(item, itemView.playerView)
+                onClick(item, itemView.playerView, itemView.name)
             }
         }
     }
@@ -46,3 +45,4 @@ class CardsFoundAdapter(val onClick: (card: Card, playerView: PlayerView) -> Uni
         return(holder as CardsFoundAdapter.CardsViewHolder).bind(dataSet[position])
     }
 }
+

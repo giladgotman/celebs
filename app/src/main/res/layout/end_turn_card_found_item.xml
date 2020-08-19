@@ -35,6 +35,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="22sp"
+            android:paddingStart="@dimen/default_margin"
+            android:paddingEnd="@dimen/default_margin"
             style="@style/CardTextViewStyle"
             android:layout_gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"

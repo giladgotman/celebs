@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,7 +44,7 @@ class EndTurnDialogFragment : Fragment() {
 
         Timber.w("onViewCreated videoPlayer: $videoPlayer")
 
-        cardsFoundAdapter = CardsFoundAdapter { card, playerView ->
+        cardsFoundAdapter = CardsFoundAdapter { card, playerView, giftText ->
 
             val url = when (roundNumber) {
                 1 -> { card.videoUrl1 }
@@ -51,10 +52,21 @@ class EndTurnDialogFragment : Fragment() {
                 3 -> { card.videoUrl3 }
                 else -> { null }
             }
-
             url?.let {
-                videoPlayer.setView(playerView)
-                videoPlayer.playVideo(it)
+
+                if (it.startsWith("text:")) {
+                    if (giftText.tag != "open") {
+                        giftText.text = it.removePrefix("text:")
+                        giftText.tag = "open"
+                    } else {
+                        giftText.text = card.name
+                        giftText.tag = null
+                    }
+                } else {
+                    videoPlayer.setView(playerView)
+                    playerView.isVisible = true
+                    videoPlayer.playVideo(it)
+                }
             }
         }
 

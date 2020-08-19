@@ -19,8 +19,8 @@ import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_create_game.*
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -71,6 +71,10 @@ class CreateGameFragment : Fragment(), CreateGamePresenter.View {
         buttonDone.setOnClickListener {
             onDoneClick()
         }
+
+        // TODO TEMP !!!!!!!!!!!
+        gameName.editText?.setText("gift")
+        groupName1.editText?.setText("1")
 
         presenter.bind(this)
     }

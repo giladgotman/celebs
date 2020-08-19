@@ -48,6 +48,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="22sp"
+                android:paddingStart="@dimen/default_margin"
+                android:paddingEnd="@dimen/default_margin"
                 style="@style/CardTextViewStyle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
