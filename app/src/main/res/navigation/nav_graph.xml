@@ -21,6 +21,11 @@
             app:destination="@id/AddCardsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_GamesFragment_to_GameOverFragment"
+            app:destination="@id/gameOverFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
 
         <argument
             android:name="gameId"

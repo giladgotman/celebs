@@ -12,8 +12,8 @@ import io.reactivex.Observable.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 class GameOverPresenter @Inject constructor(
     val gamesRepository: GamesRepository,
@@ -33,6 +33,8 @@ class GameOverPresenter @Inject constructor(
         gameId: String
     ) {
         Timber.w("ggg bind, gameId: $gameId")
+        // TODO: 21.08.20 use gameId to fetch game and its cards
+
         val results = events.publish {
             merge(
                 handleUiEvent(it),

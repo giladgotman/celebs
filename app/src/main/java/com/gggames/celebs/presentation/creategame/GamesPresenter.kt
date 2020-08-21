@@ -94,7 +94,11 @@ class GamesPresenter @Inject constructor(
             .compose(schedulerProvider.applyDefault())
             .switchMapCompletable { joinGame(game, it) }
             .subscribe({
-                view.navigateToAddCards()
+                if (game.state == GameState.Finished) {
+                    view.navigateToGameOver(game.id)
+                } else {
+                    view.navigateToAddCards()
+                }
             }, {
                 Timber.e(it, "error joinGame")
                 view.showGenericError()
@@ -148,6 +152,7 @@ class GamesPresenter @Inject constructor(
         fun navigateToAddCards()
         fun showJoinedGameIsFinished(gameName: String)
         fun showNoGamesView(visible: Boolean)
+        fun navigateToGameOver(gameId: String)
     }
 
     sealed class Result {

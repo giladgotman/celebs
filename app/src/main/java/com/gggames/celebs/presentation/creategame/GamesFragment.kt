@@ -19,11 +19,12 @@ import com.gggames.celebs.model.Game
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.gggames.celebs.presentation.gameon.GAME_ID_KEY
 import com.gggames.celebs.utils.showErrorToast
 import com.gggames.celebs.utils.showInfoToast
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_games.*
 import timber.log.Timber
+import javax.inject.Inject
 
 class GamesFragment : Fragment(), GamesPresenter.View {
 
@@ -147,6 +148,12 @@ class GamesFragment : Fragment(), GamesPresenter.View {
 
     override fun navigateToAddCards() {
         findNavController().navigate(R.id.action_GamesFragment_to_AddCardsFragment)
+    }
+
+    override fun navigateToGameOver(gameId: String) {
+        findNavController().navigate(R.id.action_GamesFragment_to_GameOverFragment, Bundle().apply {
+            putString(GAME_ID_KEY, gameId)
+        })
     }
 
     override fun onDestroyView() {
