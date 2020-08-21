@@ -13,9 +13,9 @@ import com.google.firebase.firestore.SetOptions
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
-import timber.log.Timber
 
 class FirebaseGamesDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -58,23 +58,25 @@ class FirebaseGamesDataSource @Inject constructor(
 
     // filter games that are not auto created by google and in the selected states list
     private fun filterGame(
-        gameEntity: GameRaw,
+        game: GameRaw,
         states: List<GameState>
     ): Boolean {
-        if (gameEntity.name == "text") return false
-        if (states.isNotEmpty()) {
-            return gameEntity.state in states.map { it.toRaw() }
+        if (game.name == "text") return false // google test games
+        if (game.type == "Gift") {
+            return true
+        } else {
+            if (states.isNotEmpty()) {
+                return game.state in states.map { it.toRaw() }
+            }
         }
         return true
     }
 
     override fun setGame(game: Game): Completable {
-        Timber.w("setGame: $game")
         val gameRaw = game.toRaw()
         return Completable.create { emitter ->
             firestore.collection(getGamesCollectionPath(baseCollection))
                 .document(gameRaw.id).set(gameRaw, SetOptions.merge()).addOnSuccessListener {
-                    Timber.i("game set to firebase")
                     emitter.onComplete()
                 }
                 .addOnFailureListener { error ->
@@ -85,7 +87,6 @@ class FirebaseGamesDataSource @Inject constructor(
     }
 
     override fun observeGame(gameId: String): Observable<Game> {
-        Timber.w("observeGame: $gameId")
         return Observable.create { emitter ->
             firestore.collection(getGamesCollectionPath(baseCollection))
                 .document(gameId).addSnapshotListener { value, e ->
@@ -95,8 +96,6 @@ class FirebaseGamesDataSource @Inject constructor(
                             emitter.onNext(gameRaw.toUi())
                         }
                             ?: emitter.onError(IllegalStateException("GameId : $gameId could not be found"))
-
-                        Timber.w("getAllCards update")
                     } else {
                         Timber.e(e, "observeGame, error")
                         emitter.onError(e)

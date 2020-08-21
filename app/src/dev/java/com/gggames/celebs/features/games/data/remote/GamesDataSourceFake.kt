@@ -3,6 +3,7 @@ package com.gggames.celebs.features.games.data.remote
 import com.gggames.celebs.features.games.data.GamesDataSource
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.GameState
+import com.gggames.celebs.model.GameType
 import io.reactivex.Completable
 import io.reactivex.Completable.fromCallable
 import io.reactivex.Observable
@@ -20,7 +21,7 @@ class GamesDataSourceFake @Inject constructor() : GamesDataSource {
 
     override fun getGames(gameIds: List<String>, states: List<GameState>): Single<List<Game>> {
         Timber.w("ggg getGames: size: ${gameIds.size}")
-        return Single.just(games.filter { it.id in gameIds && it.state in states })
+        return Single.just(games.filter { (it.id in gameIds && ((it.state in states) || it.type == GameType.Gift)) })
     }
 
     override fun setGame(game: Game): Completable =
