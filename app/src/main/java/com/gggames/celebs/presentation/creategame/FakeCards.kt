@@ -207,6 +207,13 @@ text:
             videoUrl2 = "https://drive.google.com/uc?export=download&id=1dJK5CIDiGi-XVrnxprJeE532q_iovRPJ",
             videoUrl3 = "https://drive.google.com/uc?export=download&id=1uhqg3mzZLk-9adKGXT90TLWT_IsDubPL",
             videoUrlFull = "https://drive.google.com/uc?export=download&id=14X_HtBhI3XqCOQZIRt9atcun2iKHDL3h"
+        ),
+        Card(
+            "27", "רון וליאור תירוש", "giftGenerator",
+            videoUrl1 = "https://drive.google.com/uc?export=download&id=12C0m0oKTTANqc0PXsHqH8O7InfqgeSCf",
+            videoUrl2 = "https://drive.google.com/uc?export=download&id=1WFyPlCF-ccSmRDg2dc2LVmA-5ssCsGrl",
+            videoUrl3 = "https://drive.google.com/uc?export=download&id=1yTUM866fSLSwRUYsafEUmNrm5eEE3kM4",
+            videoUrlFull = "https://drive.google.com/uc?export=download&id=1A0QuNjxin8eCq2U_EaYQCMmsrV7ZM4Ku"
         )
     )
 }
