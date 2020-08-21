@@ -14,18 +14,21 @@
         <action
             android:id="@+id/action_GamesFragment_to_CreateGameFragment"
             app:destination="@id/CreateGameFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
         <action
             android:id="@+id/action_GamesFragment_to_AddCardsFragment"
             app:destination="@id/AddCardsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
         <action
             android:id="@+id/action_GamesFragment_to_GameOverFragment"
             app:destination="@id/gameOverFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
 
         <argument
             android:name="gameId"
@@ -56,8 +59,9 @@
             app:destination="@id/AddCardsFragment"
             app:popUpTo="@+id/CreateGameFragment"
             app:popUpToInclusive="true"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
     </fragment>
 
     <fragment
@@ -68,7 +72,10 @@
         <action
             android:id="@+id/action_AddCardsFragment_to_GamesFragment"
             app:destination="@id/GamesFragment"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+
+            />
         <argument
             android:name="gameId"
             app:argType="string" />
@@ -79,7 +86,10 @@
             android:id="@+id/action_AddCardsFragment_to_chooseTeamFragment"
             app:popUpTo="@+id/AddCardsFragment"
             app:popUpToInclusive="true"
-            app:destination="@id/chooseTeamFragment" />
+            app:destination="@id/chooseTeamFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
 
     </fragment>
 
@@ -96,7 +106,10 @@
             android:id="@+id/action_chooseTeamFragment_to_gameOnFragment"
             app:popUpTo="@+id/chooseTeamFragment"
             app:popUpToInclusive="true"
-            app:destination="@id/gameOnFragment" />
+            app:destination="@id/gameOnFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
     </fragment>
     <fragment
         android:id="@+id/gameOnFragment"
@@ -113,8 +126,8 @@
         <action
             android:id="@+id/action_gameOnFragment_to_gameOverFragment"
             app:destination="@id/gameOverFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
             app:popUpTo="@id/gameOnFragment"
             app:popUpToInclusive="true"
 
