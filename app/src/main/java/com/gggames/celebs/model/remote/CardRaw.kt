@@ -5,6 +5,7 @@ data class CardRaw(
     val name: String,
     val player: String,
     val used: Boolean = false,
+    val index: Int = 0,
     val videoUrl1: String? = null,
     val videoUrl2: String? = null,
     val videoUrl3: String? = null,

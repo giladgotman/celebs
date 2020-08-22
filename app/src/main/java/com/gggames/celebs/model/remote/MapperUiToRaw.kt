@@ -9,6 +9,7 @@ fun Card.toRaw() = CardRaw(
     this.name,
     this.player,
     this.used,
+    this.index,
     this.videoUrl1,
     this.videoUrl2,
     this.videoUrl3,
