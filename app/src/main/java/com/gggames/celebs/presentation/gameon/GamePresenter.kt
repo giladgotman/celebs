@@ -101,7 +101,7 @@ class GamePresenter @Inject constructor(
 
     private fun onGameChange(newGame: Game) {
         val newPlayer = newGame.currentPlayer
-        Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${lastGame?.currentPlayer?.name}")
+        Timber.d("observeGame onNext. newP: ${newPlayer?.name}, curP: ${lastGame?.currentPlayer?.name}")
         if (newGame.round != lastGame?.round) {
             onRoundUpdate(newGame.gameInfo.round)
         }
@@ -248,7 +248,6 @@ class GamePresenter @Inject constructor(
                     }
                 )
         } else {
-            Timber.w("no un used cards left!")
             if (lastRound()) {
                 setNewGameState(GameState.Finished)
             } else {
@@ -336,7 +335,7 @@ class GamePresenter @Inject constructor(
         } else {
             if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
         }
-        Timber.w("pickNextCard, card: $card")
+        Timber.d("pickNextCard, card: $card")
         return card
     }
 
@@ -521,7 +520,7 @@ class GamePresenter @Inject constructor(
             cardDeck.forEachIndexed { index, item ->
                 cardDeck[index] = cardDeck[index].copy(used = false)
             }
-        }.doOnComplete { Timber.w("flipped cards. card: ${cardDeck[0]}") }
+        }.doOnComplete { Timber.d("flipped cards. card: ${cardDeck[0]}") }
 
     private fun maybeFlipLastCard(): Completable =
         lastCard?.let {
