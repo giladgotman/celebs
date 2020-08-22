@@ -199,8 +199,10 @@ class AddCardsFragment : Fragment() {
 
     private fun editTextToCard(editText: EditText?): Card? {
         return if (editText?.text?.isNotEmpty() == true) {
+            val cardName = editText.text.toString()
             Card(
-                name = editText.text.toString(),
+                id = "${playerId}.$cardName",
+                name = cardName,
                 player = playerId
             )
         } else {

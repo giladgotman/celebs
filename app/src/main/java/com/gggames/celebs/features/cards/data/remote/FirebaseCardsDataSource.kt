@@ -52,7 +52,7 @@ class FirebaseCardsDataSource @Inject constructor(
         return Completable.create { emitter ->
             firestore.runTransaction {
                 cardsRaw.forEach {
-                    cardsCollectionsRef.add(it)
+                    cardsCollectionsRef.document(it.id).set(it)
                 }
             }.addOnSuccessListener {
                 Timber.i("cards added to path: ${cardsCollectionsRef.path}")

@@ -1,7 +1,7 @@
 package com.gggames.celebs.model.remote
 
 data class CardRaw(
-    val id: String? = null,
+    val id: String,
     val name: String,
     val player: String,
     val used: Boolean = false,
@@ -11,7 +11,8 @@ data class CardRaw(
     val videoUrl3: String? = null,
     val videoUrlFull: String? = null
 ) {
-    constructor() : this (null,
+    constructor() : this (
+        EMPTY_VALUE,
         EMPTY_VALUE,
         EMPTY_VALUE
     )

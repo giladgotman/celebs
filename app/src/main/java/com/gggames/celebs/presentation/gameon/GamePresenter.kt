@@ -332,7 +332,7 @@ class GamePresenter @Inject constructor(
     private fun pickNextCard(): Card? {
         val notUsedCards = unUsedCards()
         val card = if (game.type == GameType.Gift && game.round.roundNumber == 1) {
-            if (notUsedCards.isNotEmpty()) notUsedCards.first().copy(used = true) else null
+            if (notUsedCards.isNotEmpty()) notUsedCards.minBy { it.index }!!.copy(used = true) else null
         } else {
             if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
         }

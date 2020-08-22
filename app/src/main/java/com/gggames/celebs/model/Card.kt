@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Card(
-    val id: String? = null,
+    val id: String,
     val name: String,
     val player: String,
     val used: Boolean = false,
