@@ -37,7 +37,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -58,8 +57,10 @@ class GameOnFragment : Fragment(),
 
     private val _emitter = PublishSubject.create<UiEvent>()
 
-    private var playerAdapters: List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
-    private var playersRecycle: MutableList<RecyclerView>? = null
+    private var playerAdapters: List<PlayersAdapter> =
+        listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
+
+    private lateinit var playersRecycleViews: List<RecyclerView>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,8 +114,15 @@ class GameOnFragment : Fragment(),
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
 
-        setupTimer()
+        playersRecycleViews =
+            listOf(team1players, team2players, team3players)
 
+        playersRecycleViews.forEachIndexed { index, recyclerView ->
+            recyclerView.layoutManager = LinearLayoutManager(this.context)
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            recyclerView.adapter = playerAdapters[index]
+        }
+        setupTimer()
     }
 
     override fun onStart() {
@@ -234,7 +242,6 @@ class GameOnFragment : Fragment(),
 
     override fun setRoundEndState(meActive: Boolean, roundNumber: Int) {
         setPausedState(meActive, null)
-//        cardTextView.text = "Round $roundNumber ended"
         endTurnButton.isEnabled = false
         startButton.isEnabled = false
     }
@@ -257,7 +264,6 @@ class GameOnFragment : Fragment(),
     }
 
     override fun updateCard(card: Card) {
-        Timber.w("ggg update card: $card")
         cardTextView.text = card.name
     }
 
@@ -268,22 +274,6 @@ class GameOnFragment : Fragment(),
                 1 -> updateTeam2(team.name, team.players)
                 2 -> updateTeam3(team.name, team.players)
             }
-        }
-    }
-
-    private fun setupPlayers(teamsCount: Int) {
-        playersRecycle = mutableListOf(team1players)
-        if (teamsCount > 1) {
-            playersRecycle?.add(team2players)
-        }
-        if (teamsCount > 2) {
-            playersRecycle?.add(team3players)
-            team3Layout.isVisible = true
-        }
-        playersRecycle?.forEachIndexed { index, recyclerView ->
-            recyclerView.layoutManager = LinearLayoutManager(this.context)
-            recyclerView.itemAnimator = DefaultItemAnimator()
-            recyclerView.adapter = playerAdapters[index]
         }
     }
 
@@ -306,8 +296,8 @@ class GameOnFragment : Fragment(),
     }
 
     override fun setTeams(teams: List<Team>) {
-        if (playersRecycle == null) {
-            setupPlayers(teams.size)
+        if (teams.size > 2) {
+            team3Layout.isVisible = true
         }
         teams.forEachIndexed { index, team ->
             when (index) {

@@ -59,6 +59,11 @@ class GamePresenter @Inject constructor(
 
         events.subscribe(::handleUiEvent).let { disposables.add(it) }
 
+        observeGame(gameId)
+            .distinctUntilChanged()
+            .compose(schedulerProvider.applyDefault())
+            .subscribe(::onGameChange).let { disposables.add(it) }
+
         playersObservable(gameId)
             .distinctUntilChanged()
             .compose(schedulerProvider.applyDefault())
@@ -67,11 +72,6 @@ class GamePresenter @Inject constructor(
         cardsObservable()
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onCardsChange).let { disposables.add(it) }
-
-        observeGame(gameId)
-            .distinctUntilChanged()
-            .compose(schedulerProvider.applyDefault())
-            .subscribe(::onGameChange).let { disposables.add(it) }
     }
 
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
