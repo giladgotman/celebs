@@ -1,5 +1,7 @@
 package com.gggames.celebs.presentation.endgame
 
+import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +24,8 @@ import com.google.android.exoplayer2.ui.PlayerView
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_over.*
-import timber.log.Timber
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
 import javax.inject.Inject
 
 class GameOverFragment : Fragment() {
@@ -80,25 +83,15 @@ class GameOverFragment : Fragment() {
 
     private fun trigger(trigger: Trigger) {
         when (trigger) {
-            Trigger.NavigateToGames -> navigateToGames()
+            is Trigger.NavigateToGames -> navigateToGames()
+            is Trigger.StartKonffeti -> startKonffeti()
+            is Trigger.ShowVideoAndKonffeti -> showVideoAndKonffeti(trigger.card, trigger.playerView, trigger.giftText)
         }
     }
 
-    private fun navigateToGames() {
-        findNavController().navigate(R.id.action_gameOverFragment_to_GamesFragment)
-    }
-
-    private fun render(state: GameOverScreenContract.State) {
-        subtitle.text = getString(R.string.game_over_subtitle, state.winningTeam)
-        teamsAdapter.submitList(state.teams)
-        cardsAdapter.submitList(state.cards)
-    }
-
-    private fun onCardClick(card: Card, playerView: PlayerView, giftText: TextView) {
-        Timber.w("info click : ${card.name}")
+    private fun showVideoAndKonffeti(card: Card, playerView: PlayerView, giftText: TextView) {
         val url = card.videoUrlFull
         url?.let {
-
             if (it.startsWith("text:")) {
                 if (giftText.tag != "open") {
                     giftText.text = it.removePrefix("text:")
@@ -112,7 +105,52 @@ class GameOverFragment : Fragment() {
                 playerView.isVisible = true
                 videoPlayer.playVideo(it)
             }
+            val myViewRect = Rect()
+            giftText.getGlobalVisibleRect(myViewRect)
+            val x = myViewRect.left.toFloat()
+            val y = myViewRect.top.toFloat()
+            burstKonffeti(x,y)
         }
+    }
+
+    private fun startKonffeti() {
+        viewKonfetti.build()
+            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+            .setDirection(0.0, 359.0)
+            .setSpeed(1f, 5f)
+            .setFadeOutEnabled(true)
+            .setTimeToLive(2000L)
+            .addShapes(Shape.Square, Shape.Circle)
+            .addSizes(Size(12))
+            .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
+            .streamFor(300, 3000L)
+    }
+
+    private fun burstKonffeti(x: Float, y: Float) {
+        viewKonfetti.build()
+            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+            .setDirection(0.0, 359.0)
+            .setSpeed(1f, 5f)
+            .setFadeOutEnabled(true)
+            .setTimeToLive(1000L)
+            .addShapes(Shape.Circle)
+            .addSizes(Size(12), Size(16, 6f))
+            .setPosition(x,y)
+            .burst(100)
+    }
+
+    private fun navigateToGames() {
+        findNavController().navigate(R.id.action_gameOverFragment_to_GamesFragment)
+    }
+
+    private fun render(state: GameOverScreenContract.State) {
+        subtitle.text = getString(R.string.game_over_subtitle, state.winningTeam)
+        teamsAdapter.submitList(state.teams)
+        cardsAdapter.submitList(state.cards)
+    }
+
+    private fun onCardClick(card: Card, playerView: PlayerView, giftText: TextView) {
+        events.onNext(GameOverScreenContract.UiEvent.PressedCard(card, playerView, giftText))
     }
     override fun onDestroyView() {
         super.onDestroyView()

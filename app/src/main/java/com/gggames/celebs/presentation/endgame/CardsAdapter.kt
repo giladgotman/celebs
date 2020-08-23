@@ -17,7 +17,7 @@ class CardsAdapter(private val onCardInfoClick: (Card, PlayerView, TextView) -> 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CardsViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.game_over_card_item, parent, false), onCardInfoClick
+                .inflate(R.layout.game_over_card_item, parent, false)
         )
 
     override fun onBindViewHolder(holder: CardsViewHolder, position: Int) {
@@ -28,7 +28,7 @@ class CardsAdapter(private val onCardInfoClick: (Card, PlayerView, TextView) -> 
         return R.layout.game_over_card_item
     }
 
-    inner class CardsViewHolder(itemView: View, onCardInfoClick: (Card, PlayerView, TextView) -> Unit) :
+    inner class CardsViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: Card) = with(itemView) {

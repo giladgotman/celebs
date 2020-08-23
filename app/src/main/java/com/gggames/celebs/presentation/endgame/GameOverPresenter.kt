@@ -6,7 +6,6 @@ import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.presentation.endgame.GameOverScreenContract.*
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.*
 import io.reactivex.disposables.CompositeDisposable
@@ -38,7 +37,8 @@ class GameOverPresenter @Inject constructor(
         val results = events.publish {
             merge(
                 handleUiEvent(it),
-                getCardsAndGame()
+                getCardsAndGame(),
+                startKonffeti()
             )
         }.doOnNext { Timber.w("RESULT:: $it") }
 
@@ -57,11 +57,18 @@ class GameOverPresenter @Inject constructor(
                 val trigger = when (it) {
                     is Result.GameAndCardsResult -> null
                     is Result.GameCleared -> Trigger.NavigateToGames
+                    is Result.StartKonffetiResult -> Trigger.StartKonffeti
+                    is Result.CardPressedResult -> Trigger.ShowVideoAndKonffeti(it.card, it.playerView, it.giftText)
                 }
                 if (trigger != null) {
                     _triggers.onNext(trigger)
                 }
             }.let { disposables.add(it) }
+    }
+
+    private fun   startKonffeti(): Observable<Result.StartKonffetiResult> {
+
+        return just(Result.StartKonffetiResult)
     }
 
     private fun reduce() = { previous: State, result: Result ->
@@ -71,16 +78,22 @@ class GameOverPresenter @Inject constructor(
                 teams = result.game.teams.sortedByDescending { it.score },
                 cards = result.cards
             )
-            Result.GameCleared -> previous
+            is Result.GameCleared -> previous
+            is Result.StartKonffetiResult -> previous
+            is Result.CardPressedResult -> previous
         }
     }
 
     private fun handleUiEvent(events: Observable<UiEvent>): Observable<Result> =
-        events.filter { it is UiEvent.PressedFinish }
-            .flatMap { finishGame().andThen(just(Result.GameCleared)) }
 
-    private fun finishGame(): Completable =
-        Completable.complete()
+        merge(
+        events.filter { it is UiEvent.PressedFinish }
+            .flatMap { just(Result.GameCleared) },
+            events.filter { it is UiEvent.PressedCard }
+                .cast(UiEvent.PressedCard::class.java)
+                .flatMap { just(Result.CardPressedResult(it.card, it.playerView, it.giftText)) }
+            )
+
 
     private fun getCurrentGame(): Observable<Game> = Observable.fromCallable {
         gamesRepository.currentGame!!

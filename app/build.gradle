@@ -151,6 +151,7 @@ dependencies {
     //Exo player
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
+    implementation 'nl.dionsegijn:konfetti:1.2.2'
 
     ktlint 'com.pinterest:ktlint:0.35.0'
 
