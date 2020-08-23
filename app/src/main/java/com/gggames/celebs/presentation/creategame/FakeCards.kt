@@ -99,10 +99,10 @@ text:
         ),
         Card(
             "גלעד", "גלעד", "giftGenerator",
-            videoUrl1 = "https://drive.google.com/uc?export=download&id=1se6PnU-pn9V57UmeK8_RDaNCBsMdDrRa",
-            videoUrl2 = "https://drive.google.com/uc?export=download&id=1VQjjjWEvCpRHy7hT59S3DjSEFQArCL2y",
-            videoUrl3 = "https://drive.google.com/uc?export=download&id=1XwhSqxZex268-nZWNUb0DvTB5iO6GAp1",
-            videoUrlFull = "https://drive.google.com/uc?export=download&id=1X-8Z2OASQMVpu4k1OviBGUWcRMtZeyBP",
+            videoUrl1 = "https://drive.google.com/uc?export=download&id=1j7HRbO9SYWcxR1EOdicA43UTjofeNFvC",
+            videoUrl2 = "https://drive.google.com/uc?export=download&id=1jdzlE4lewY4J4XEtaG-4Cs1-daX4HIiy",
+            videoUrl3 = "https://drive.google.com/uc?export=download&id=180IIv4divK5QgXfmQOETrEtNgHfnLmPz",
+            videoUrlFull = "https://drive.google.com/uc?export=download&id=1AvDzRRbUJC9KI6TOTcK2jKTjCSUfzi3C",
             index = 11
         ),
         Card(
