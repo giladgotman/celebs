@@ -72,10 +72,6 @@ class CreateGameFragment : Fragment(), CreateGamePresenter.View {
             onDoneClick()
         }
 
-        // TODO TEMP !!!!!!!!!!!
-        gameName.editText?.setText("gift")
-        groupName1.editText?.setText("1")
-
         presenter.bind(this)
     }
 

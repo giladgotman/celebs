@@ -48,9 +48,6 @@ class SignupActivity : AppCompatActivity() {
         }
 
         versionValue.text = getString(R.string.version_value, BuildConfig.VERSION_NAME)
-
-        //TODO TEMP!!!!
-        loginUsername.editText?.setText("ggg")
     }
 
     private fun onDoneClick() {
