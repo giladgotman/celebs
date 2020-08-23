@@ -4,6 +4,7 @@ import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Game
+import com.gggames.celebs.model.GameType
 import com.gggames.celebs.presentation.endgame.GameOverScreenContract.*
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
@@ -76,7 +77,9 @@ class GameOverPresenter @Inject constructor(
             is Result.GameAndCardsResult -> previous.copy(
                 winningTeam = result.game.winningTeam?.name ?: "",
                 teams = result.game.teams.sortedByDescending { it.score },
-                cards = result.cards
+                cards = result.cards,
+                mainTitle = if (result.game.type == GameType.Gift) "מזל טוב אבא!" else null,
+                subTitle = if (result.game.type == GameType.Gift) "" else null
             )
             is Result.GameCleared -> previous
             is Result.StartKonffetiResult -> previous

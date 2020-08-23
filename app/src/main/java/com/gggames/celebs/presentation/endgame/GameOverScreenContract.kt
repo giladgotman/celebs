@@ -12,7 +12,9 @@ interface GameOverScreenContract {
     data class State(
         val winningTeam: String = "",
         val teams: List<Team> = emptyList(),
-        val cards: List<Card> = emptyList()
+        val cards: List<Card> = emptyList(),
+        val mainTitle: String? = null,
+        val subTitle: String? = null
     ) {
         companion object {
             val initialValue = State()

@@ -147,6 +147,12 @@ class GameOverFragment : Fragment() {
         subtitle.text = getString(R.string.game_over_subtitle, state.winningTeam)
         teamsAdapter.submitList(state.teams)
         cardsAdapter.submitList(state.cards)
+        state.mainTitle?.let {
+            title.text = it
+        }
+        state.subTitle?.let {
+            subtitle.text = it
+        }
     }
 
     private fun onCardClick(card: Card, playerView: PlayerView, giftText: TextView) {
