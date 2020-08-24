@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
+import com.gggames.celebs.presentation.common.MainActivityDelegate
 import com.gggames.celebs.presentation.di.createViewComponent
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class EndTurnDialogFragment : Fragment() {
+class EndTurnDialogFragment : Fragment(), MainActivityDelegate {
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
 
@@ -32,12 +33,14 @@ class EndTurnDialogFragment : Fragment() {
     ): View = inflater.inflate(R.layout.fragment_end_turn_dialog, container, false)
 
 
+    var finishPressed = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         createViewComponent(this).inject(this)
 
         finishButton.setOnClickListener {
+            finishPressed = true
             requireActivity().onBackPressed()
         }
         videoPlayer.initializePlayer()
@@ -92,6 +95,11 @@ class EndTurnDialogFragment : Fragment() {
         super.onDestroyView()
         Timber.w("onDestroyView videoPlayer: $videoPlayer")
         videoPlayer.releasePlayer()
+    }
+
+    override fun onBackPressed(): Boolean {
+        // finish only if finish pressed
+       return !finishPressed
     }
 }
 

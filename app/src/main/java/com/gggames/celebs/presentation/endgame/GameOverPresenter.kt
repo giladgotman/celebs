@@ -74,13 +74,44 @@ class GameOverPresenter @Inject constructor(
 
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
-            is Result.GameAndCardsResult -> previous.copy(
-                winningTeam = result.game.winningTeam?.name ?: "",
-                teams = result.game.teams.sortedByDescending { it.score },
-                cards = result.cards,
-                mainTitle = if (result.game.type == GameType.Gift) "מזל טוב אבא!" else null,
-                subTitle = if (result.game.type == GameType.Gift) "" else null
-            )
+            is Result.GameAndCardsResult -> {
+                val bonusCard = Card(
+                    "bonus", "בונוס", "giftGenerator",
+                    videoUrlFull = "https://drive.google.com/uc?export=download&id=1oW1niLvP52coER36I8PJPX92p-GY3818",
+                    index = 27
+                )
+
+                val bonusCard2 = Card(
+                    "bonus2", "בונוס 2", "giftGenerator",
+                    videoUrlFull = "https://drive.google.com/uc?export=download&id=15qMFIJlUYIsRB-rh8giDYc1E2ikGC_tm",
+                    index = 28
+                )
+
+                val bonusCard3 = Card(
+                    "bonus3", "בונוס 3", "giftGenerator",
+                    videoUrlFull = "https://drive.google.com/uc?export=download&id=1zoKIbpgBKMllmZynQi6NMCrb7MrE4sVP",
+                    index = 29
+                )
+
+                val bonusCard4 = Card(
+                    "bonus4", "בונוס אחרון", "giftGenerator",
+                    videoUrlFull = "https://drive.google.com/uc?export=download&id=1CNw1p6wRH-DXVV6R9b-Hl2zOr140SHqq",
+                    index = 30
+                )
+
+                previous.copy(
+                    winningTeam = result.game.winningTeam?.name ?: "",
+                    teams = result.game.teams.sortedByDescending { it.score },
+                    cards = result.cards.toMutableList().also {
+                        it.add(bonusCard)
+                        it.add(bonusCard2)
+                        it.add(bonusCard3)
+                        it.add(bonusCard4)
+                    },
+                    mainTitle = if (result.game.type == GameType.Gift) "מזל טוב אבא!" else null,
+                    subTitle = if (result.game.type == GameType.Gift) "" else null
+                )
+            }
             is Result.GameCleared -> previous
             is Result.StartKonffetiResult -> previous
             is Result.CardPressedResult -> previous
