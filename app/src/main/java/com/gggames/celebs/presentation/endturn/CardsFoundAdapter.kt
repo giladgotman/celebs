@@ -10,7 +10,8 @@ import com.gggames.celebs.model.Card
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.end_turn_card_found_item.view.*
 
-class CardsFoundAdapter(val onClick: (card: Card, playerView: PlayerView, giftText: TextView) -> Unit) :
+class CardsFoundAdapter(val onClick: (card: Card, playerView: PlayerView, giftText: TextView) -> Unit,
+                        val onClose: (PlayerView) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataSet: List<Card> = emptyList()
@@ -37,6 +38,9 @@ class CardsFoundAdapter(val onClick: (card: Card, playerView: PlayerView, giftTe
             itemView.name.text = item.name
             itemView.setOnClickListener {
                 onClick(item, itemView.playerView, itemView.name)
+            }
+            itemView.closeButton.setOnClickListener {
+                onClose(itemView.playerView)
             }
         }
     }

@@ -30,6 +30,8 @@ interface VideoPlayer {
     fun setView(playerView: PlayerView)
     fun releasePlayer()
     fun playVideo(url: String)
+    fun stop()
+
     val events: Observable<PlayerEvent>
 }
 
@@ -135,6 +137,10 @@ class ExoVideoPlayer @Inject constructor(
 
         player.prepare(mediaSource)
         player.playWhenReady = true
+    }
+
+    override fun stop() {
+        player.playWhenReady = false
     }
 
     override fun releasePlayer() {

@@ -44,7 +44,7 @@ class EndTurnDialogFragment : Fragment(), MainActivityDelegate {
             requireActivity().onBackPressed()
         }
         videoPlayer.initializePlayer()
-        cardsFoundAdapter = CardsFoundAdapter { card, playerView, giftText ->
+        cardsFoundAdapter = CardsFoundAdapter (onClick = { card, playerView, giftText ->
 
             val url = when (roundNumber) {
                 1 -> { card.videoUrl1 }
@@ -68,7 +68,10 @@ class EndTurnDialogFragment : Fragment(), MainActivityDelegate {
                     videoPlayer.playVideo(it)
                 }
             }
-        }
+        }, onClose = {playerView->
+            playerView.isVisible = false
+            videoPlayer.stop()
+        })
 
         cardsRecyclerView.setHasFixedSize(true)
 
