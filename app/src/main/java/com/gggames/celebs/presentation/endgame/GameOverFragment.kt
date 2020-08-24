@@ -38,10 +38,12 @@ class GameOverFragment : Fragment() {
 
     private lateinit var viewComponent: ViewComponent
     private val teamsAdapter = TeamsAdapter()
-    private val cardsAdapter = CardsAdapter(::onCardClick)
+    private val cardsAdapter = CardsAdapter(::onCardClick, ::onClose)
+
+
     private val teamsAndCardsAdapter = MergeAdapter(teamsAdapter, cardsAdapter)
 
-        private val events = PublishSubject.create<GameOverScreenContract.UiEvent>()
+    private val events = PublishSubject.create<GameOverScreenContract.UiEvent>()
     private val disposables = CompositeDisposable()
 
     override fun onCreateView(
@@ -158,6 +160,12 @@ class GameOverFragment : Fragment() {
     private fun onCardClick(card: Card, playerView: PlayerView, giftText: TextView) {
         events.onNext(GameOverScreenContract.UiEvent.PressedCard(card, playerView, giftText))
     }
+
+    private fun onClose(playerView: PlayerView) {
+        playerView.isVisible = false
+        videoPlayer.stop()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         disposables.clear()

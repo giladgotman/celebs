@@ -12,7 +12,10 @@ import com.gggames.celebs.model.Card
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.android.synthetic.main.game_over_card_item.view.*
 
-class CardsAdapter(private val onCardInfoClick: (Card, PlayerView, TextView) -> Unit) :
+class CardsAdapter(
+    private val onCardInfoClick: (Card, PlayerView, TextView) -> Unit,
+    private val onClose: (PlayerView) -> Unit
+) :
     ListAdapter<Card, CardsAdapter.CardsViewHolder>(TeamDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CardsViewHolder(
@@ -35,6 +38,9 @@ class CardsAdapter(private val onCardInfoClick: (Card, PlayerView, TextView) -> 
             cardValue.text = item.name
             this.setOnClickListener {
                 onCardInfoClick(item, playerView, itemView.cardValue)
+            }
+            this.closeButton.setOnClickListener {
+                onClose(this.playerView)
             }
         }
     }
