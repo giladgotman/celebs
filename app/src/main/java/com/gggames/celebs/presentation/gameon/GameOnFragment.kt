@@ -168,8 +168,9 @@ class GameOnFragment : Fragment(),
         startButton.isEnabled = true
 //        endTurnButton.isEnabled = meActive
         endTurnButton.isEnabled = false
-        // TODO: 10.06.20 remove when help is implemented
-        correctButton.isEnabled = meActive
+        if (!meActive) {
+            correctButton.isEnabled = false
+        }
 
         val cardColor = if (meActive) {
             ContextCompat.getColor(requireContext(), R.color.green)

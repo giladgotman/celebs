@@ -188,8 +188,6 @@ class GamePresenter @Inject constructor(
 
     private fun showEndOfTurn() {
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
-
-        Timber.d("showEndOfTurn, lastGame.player: ${lastGame?.round?.turn?.player}, game.player: ${game.round.turn.player}")
         view.showTurnEnded(lastGame?.round?.turn?.player, cards, lastGame?.round?.roundNumber ?: 1)
     }
     private fun onNewRoundClick(time: Long) {
