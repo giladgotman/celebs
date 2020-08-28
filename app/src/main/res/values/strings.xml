@@ -14,7 +14,7 @@
     <string name="create_game_team_1_name">Team 1 Name</string>
     <string name="create_game_team_2_name">Team 2 Name</string>
     <string name="create_game_team_3_name">Team 3 Name</string>
-    <string name="create_game_num_cards">#cards</string>
+    <string name="create_game_num_cards">Notes per player</string>
     <string name="create_game_password">Game password</string>
 
     <!--    Games Screen-->
