@@ -29,16 +29,16 @@
     <string name="cancel">Cancel</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="add_cards_description">Add your cards</string>
-    <string name="add_cards_card_1">Card 1</string>
-    <string name="add_cards_card_2">Card 2</string>
-    <string name="add_cards_card_3">Card 3</string>
-    <string name="add_cards_card_4">Card 4</string>
-    <string name="add_cards_card_5">Card 5</string>
-    <string name="add_cards_card_6">Card 6</string>
+    <string name="add_cards_description">Add your celebrities</string>
+    <string name="add_cards_card_1">Celebrity 1</string>
+    <string name="add_cards_card_2">Celebrity 2</string>
+    <string name="add_cards_card_3">Celebrity 3</string>
+    <string name="add_cards_card_4">Celebrity 4</string>
+    <string name="add_cards_card_5">Celebrity 5</string>
+    <string name="add_cards_card_6">Celebrity 6</string>
 
     <string name="login_welcome_title">Hi there, I am <i>Hourglass</i></string>
-    <string name="login_welcome_subtitle">Your remote <i>Celebs Game</i> companion</string>
+    <string name="login_welcome_subtitle">Your remote <i>Celebrity Game</i> companion</string>
     <string name="login_username_hint">Your name</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
