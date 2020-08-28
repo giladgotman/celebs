@@ -107,7 +107,10 @@ class AddCardsFragment : Fragment() {
                 { myCards ->
                     val cardsAlreadyFilled =
                         myCards.size >= gamesRepository.currentGame!!.celebsCount
-                    if (cardsAlreadyFilled) {
+                    val teamIsChosen = authenticator.me!!.team != null
+                    if (teamIsChosen && cardsAlreadyFilled) {
+                        navigateToGameOn()
+                    } else if (cardsAlreadyFilled) {
                         navigateToChooseTeam()
                     }
                 }, {}
@@ -173,6 +176,12 @@ class AddCardsFragment : Fragment() {
     private fun navigateToChooseTeam() {
         findNavController().navigate(
             R.id.action_AddCardsFragment_to_chooseTeamFragment
+        )
+    }
+
+    private fun navigateToGameOn() {
+        findNavController().navigate(
+            R.id.action_AddCardsFragment_to_gameOnFragment
         )
     }
 
