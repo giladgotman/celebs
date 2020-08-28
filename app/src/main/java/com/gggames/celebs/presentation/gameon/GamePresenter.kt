@@ -471,7 +471,9 @@ class GamePresenter @Inject constructor(
         val newTurn = time?.let { game.turn.copy(state = Running, time = it) }
             ?: game.turn.copy(state = Running)
         setNewGameInfo(gameInfoWith(newTurn))
-            .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
+            .subscribe({
+                view.setCorrectEnabled(true)
+            }, { Timber.e(it) }).let { disposables.add(it) }
     }
 
     fun unBind() {
@@ -479,7 +481,6 @@ class GamePresenter @Inject constructor(
     }
 
     private fun releaseAll() {
-//        audioPlayer.release()
         disposables.clear()
     }
 

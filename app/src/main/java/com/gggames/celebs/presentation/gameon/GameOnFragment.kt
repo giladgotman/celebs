@@ -166,11 +166,7 @@ class GameOnFragment : Fragment(),
         startTimer()
         startButton.state = ButtonState.Running
         startButton.isEnabled = true
-//        endTurnButton.isEnabled = meActive
         endTurnButton.isEnabled = false
-        if (!meActive) {
-            correctButton.isEnabled = false
-        }
 
         val cardColor = if (meActive) {
             ContextCompat.getColor(requireContext(), R.color.green)
