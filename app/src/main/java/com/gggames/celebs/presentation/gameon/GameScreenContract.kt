@@ -11,6 +11,7 @@ interface GameScreenContract {
         object TimerEnd : UiEvent()
         object UserApprovedQuitGame : UiEvent()
         object OnBackPressed : UiEvent()
+        object OnSwitchTeamPressed : UiEvent()
 
         sealed class MainUiEvent : UiEvent()
     }

@@ -4,9 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -67,7 +65,25 @@ class GameOnFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_game_on, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val item = menu.findItem(R.id.menu_switch_team)
+        item.isVisible = true
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_switch_team -> {
+                _emitter.onNext(UiEvent.OnSwitchTeamPressed)
+                true
+            }
+            else -> false
+
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -353,6 +369,10 @@ class GameOnFragment : Fragment(),
 
     override fun navigateToGames() {
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
+    }
+
+    override fun navigateToChooseTeam() {
+        findNavController().navigate(R.id.action_gameOnFragment_to_ChooseTeamFragment)
     }
 
     private fun clear() {

@@ -146,6 +146,14 @@
             app:destination="@id/endTurnDialogFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             />
+        <action
+            android:id="@+id/action_gameOnFragment_to_ChooseTeamFragment"
+            app:destination="@id/chooseTeamFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/gameOnFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"

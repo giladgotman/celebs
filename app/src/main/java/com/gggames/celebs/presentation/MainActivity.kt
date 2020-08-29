@@ -25,9 +25,9 @@ import com.idagio.app.core.utils.share.share
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -82,6 +82,8 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        val item = menu.findItem(R.id.menu_switch_team)
+        item.isVisible = false
         return true
     }
 
@@ -101,6 +103,10 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_about -> {
                 showAbout()
                 true
+            }
+            R.id.menu_switch_team -> {
+                // handled in gameOnFragment
+                false
             }
             else -> super.onOptionsItemSelected(item)
         }

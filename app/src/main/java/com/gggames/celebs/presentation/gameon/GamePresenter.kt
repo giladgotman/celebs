@@ -84,7 +84,12 @@ class GamePresenter @Inject constructor(
             is TimerEnd -> onTimerEnd()
             is OnBackPressed -> onBackPressed()
             is UserApprovedQuitGame -> onUserApprovedQuitGame()
+            is OnSwitchTeamPressed -> onUserPressedSwitchTeam()
         }
+    }
+
+    private fun onUserPressedSwitchTeam() {
+        view.navigateToChooseTeam()
     }
 
     private fun onCardsChange(cards: List<Card>) {
@@ -584,6 +589,7 @@ class GamePresenter @Inject constructor(
         fun showAllCards(cardDeck: List<Card>)
         fun navigateToGames()
         fun navigateToEndGame()
+        fun navigateToChooseTeam()
         fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
         fun showRoundEnded(
             round: Round,
