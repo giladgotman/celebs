@@ -6,7 +6,6 @@ import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.presentation.endgame.GameOverScreenContract.*
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.*
 import io.reactivex.disposables.CompositeDisposable
@@ -19,7 +18,7 @@ class GameOverPresenter @Inject constructor(
     val gamesRepository: GamesRepository,
     val getCards: ObserveAllCards,
     val scheduler: BaseSchedulerProvider
-) : Presenter{
+) : Presenter {
 
     private val _states = PublishSubject.create<State>()
     override val states: Observable<State> = _states
@@ -33,10 +32,13 @@ class GameOverPresenter @Inject constructor(
         gameId: String
     ) {
         Timber.w("ggg bind, gameId: $gameId")
+        // TODO: 21.08.20 use gameId to fetch game and its cards
+
         val results = events.publish {
             merge(
                 handleUiEvent(it),
-                getCardsAndGame()
+                getCardsAndGame(),
+                startKonffeti()
             )
         }.doOnNext { Timber.w("RESULT:: $it") }
 
@@ -55,6 +57,8 @@ class GameOverPresenter @Inject constructor(
                 val trigger = when (it) {
                     is Result.GameAndCardsResult -> null
                     is Result.GameCleared -> Trigger.NavigateToGames
+                    is Result.StartKonffetiResult -> Trigger.StartKonffeti
+                    is Result.CardPressedResult -> Trigger.ShowVideoAndKonffeti(it.card, it.playerView, it.giftText)
                 }
                 if (trigger != null) {
                     _triggers.onNext(trigger)
@@ -62,24 +66,38 @@ class GameOverPresenter @Inject constructor(
             }.let { disposables.add(it) }
     }
 
+    private fun   startKonffeti(): Observable<Result.StartKonffetiResult> {
+
+        return just(Result.StartKonffetiResult)
+    }
+
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
-            is Result.GameAndCardsResult -> previous.copy(
-                winningTeam = result.game.winningTeam?.name ?: "",
-                teams = result.game.teams.sortedByDescending { it.score },
-                cards = result.cards
-            )
-            Result.GameCleared -> previous
+            is Result.GameAndCardsResult -> {
+                previous.copy(
+                    winningTeam = result.game.winningTeam?.name ?: "",
+                    teams = result.game.teams.sortedByDescending { it.score },
+                    cards = result.cards.toMutableList()
+//                    mainTitle = if (result.game.type == GameType.Gift) "מזל טוב אבא!" else null,
+//                    subTitle = if (result.game.type == GameType.Gift) "" else null
+                )
+            }
+            is Result.GameCleared -> previous
+            is Result.StartKonffetiResult -> previous
+            is Result.CardPressedResult -> previous
         }
     }
 
     private fun handleUiEvent(events: Observable<UiEvent>): Observable<Result> =
+
+        merge(
         events.filter { it is UiEvent.PressedFinish }
-            .flatMap { finishGame().andThen(just(Result.GameCleared)) }
+            .flatMap { just(Result.GameCleared) },
+            events.filter { it is UiEvent.PressedCard }
+                .cast(UiEvent.PressedCard::class.java)
+                .flatMap { just(Result.CardPressedResult(it.card, it.playerView, it.giftText)) }
+            )
 
-
-    private fun finishGame(): Completable =
-        Completable.complete()
 
     private fun getCurrentGame(): Observable<Game> = Observable.fromCallable {
         gamesRepository.currentGame!!
@@ -98,5 +116,4 @@ class GameOverPresenter @Inject constructor(
     override fun unBind() {
         disposables.clear()
     }
-
 }

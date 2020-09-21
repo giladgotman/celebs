@@ -5,9 +5,9 @@ import android.media.MediaPlayer
 import android.net.Uri
 import com.gggames.celebs.BuildConfig
 import com.gggames.celebs.core.di.AppContext
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class AudioPlayer @Inject constructor(

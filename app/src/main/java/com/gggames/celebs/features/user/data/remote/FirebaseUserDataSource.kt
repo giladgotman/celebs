@@ -11,14 +11,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import io.reactivex.Completable
 import io.reactivex.Observable
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
-
+import timber.log.Timber
 
 class FirebaseUserDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
-    @Named ("baseFirebaseCollection")
+    @Named("baseFirebaseCollection")
     private val baseCollection: String
 ) : UserDataSource {
 
@@ -60,6 +59,3 @@ class FirebaseUserDataSource @Inject constructor(
     private fun getUsersCollectionRef() =
         firestore.collection(getUsersCollectionPath(baseCollection))
 }
-
-
-

@@ -15,7 +15,6 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
-
 class FirebaseCardsDataSource @Inject constructor(
     @Named("GameId")
     private val gameId: String,
@@ -53,7 +52,7 @@ class FirebaseCardsDataSource @Inject constructor(
         return Completable.create { emitter ->
             firestore.runTransaction {
                 cardsRaw.forEach {
-                    cardsCollectionsRef.add(it)
+                    cardsCollectionsRef.document(it.id).set(it)
                 }
             }.addOnSuccessListener {
                 Timber.i("cards added to path: ${cardsCollectionsRef.path}")
@@ -113,6 +112,3 @@ class FirebaseCardsDataSource @Inject constructor(
             }
         }
 }
-
-
-

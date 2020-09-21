@@ -12,7 +12,7 @@ class GetMyCards @Inject constructor(
     private val schedulerProvider: BaseSchedulerProvider
 ) {
     operator fun invoke(player: Player): Single<List<Card>> {
-        return cardsRepository.getAllCards().firstOrError().map { it.filter {card -> card.player == player.id } }
+        return cardsRepository.getAllCards().firstOrError().map { it.filter { card -> card.player == player.id } }
             .compose(schedulerProvider.applySingleDefault())
     }
 }

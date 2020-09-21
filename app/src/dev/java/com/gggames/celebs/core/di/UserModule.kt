@@ -3,7 +3,7 @@ package com.gggames.celebs.core.di
 import com.gggames.celebs.features.user.data.UserDataSource
 import com.gggames.celebs.features.user.data.UserRepository
 import com.gggames.celebs.features.user.data.UserRepositoryImpl
-import com.gggames.celebs.features.user.data.remote.FirebaseUserDataSource
+import com.gggames.celebs.features.user.data.remote.UserDataSourceFake
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -20,6 +20,6 @@ class UserModule {
     @Provides
     @Singleton
     fun provideUserDataSource(
-        dataSource: FirebaseUserDataSource
+        dataSource: UserDataSourceFake
     ): UserDataSource = dataSource
 }

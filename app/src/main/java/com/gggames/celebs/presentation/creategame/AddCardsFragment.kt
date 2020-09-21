@@ -19,11 +19,15 @@ import com.gggames.celebs.features.cards.domain.GetMyCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.data.MAX_CARDS
 import com.gggames.celebs.model.Card
+import com.gggames.celebs.model.GameType
+import com.gggames.celebs.model.Player
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.utils.showErrorToast
+import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.Completable
+import io.reactivex.Completable.complete
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
@@ -39,9 +43,9 @@ class AddCardsFragment : Fragment() {
     @Inject
     lateinit var getMyCards: GetMyCards
     @Inject
-    lateinit var gamesRepository : GamesRepository
+    lateinit var gamesRepository: GamesRepository
     @Inject
-    lateinit var authenticator : Authenticator
+    lateinit var authenticator: Authenticator
 
     private var cardEditTextList = mutableListOf<EditText?>()
 
@@ -52,8 +56,9 @@ class AddCardsFragment : Fragment() {
     private lateinit var playerId: String
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_add_cards, container, false)
     }
@@ -84,18 +89,33 @@ class AddCardsFragment : Fragment() {
             onDoneClick()
         }
 
-
         navigateToGameIfCardsAreFilled()
     }
 
     private fun navigateToGameIfCardsAreFilled() {
-        getMyCards(authenticator.me!!).subscribe(
-            {
-                if (it.size >= gamesRepository.currentGame!!.celebsCount) {
-                    navigateToChooseTeam()
-                }
-            }, {}
-        ).let { disposables.add(it) }
+        if (gamesRepository.currentGame!!.type == GameType.Gift) {
+            val generatorPlayer = Player("giftGenerator", "giftGenerator")
+            getMyCards(generatorPlayer).subscribe(
+                { generatedCards ->
+                    Timber.w("ggg celebs count: ${generatedCards.size}")
+                    if (generatedCards.isNotEmpty()) navigateToChooseTeam()
+
+                }, {}).let { disposables.add(it) }
+
+        } else {
+            getMyCards(authenticator.me!!).subscribe(
+                { myCards ->
+                    val cardsAlreadyFilled =
+                        myCards.size >= gamesRepository.currentGame!!.celebsCount
+                    val teamIsChosen = authenticator.me!!.team != null
+                    if (teamIsChosen && cardsAlreadyFilled) {
+                        navigateToGameOn()
+                    } else if (cardsAlreadyFilled) {
+                        navigateToChooseTeam()
+                    }
+                }, {}
+            ).let { disposables.add(it) }
+        }
     }
 
     private fun setCardsInputFields() {
@@ -159,8 +179,24 @@ class AddCardsFragment : Fragment() {
         )
     }
 
+    private fun navigateToGameOn() {
+        findNavController().navigate(
+            R.id.action_AddCardsFragment_to_gameOnFragment
+        )
+    }
+
     private fun tryToAddCards(cardList: MutableList<Card>): Completable {
-        return getMyCards(authenticator.me!!)
+        return if (gamesRepository.currentGame!!.type == GameType.Gift) {
+            if (gamesRepository.currentGame!!.gameInfo.totalCards > 0) {
+                complete()
+            } else {
+                val giftCards = createAbaCards()
+                addCards(giftCards)
+                    .doOnComplete {
+                        showInfoToast(requireContext(), "${giftCards.size} gift cards added")
+                    }
+            }
+        } else getMyCards(authenticator.me!!)
             .flatMapCompletable { myCards ->
                 if (myCards.size + cardList.size > gamesRepository.currentGame!!.celebsCount) {
                     Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))
@@ -172,8 +208,10 @@ class AddCardsFragment : Fragment() {
 
     private fun editTextToCard(editText: EditText?): Card? {
         return if (editText?.text?.isNotEmpty() == true) {
+            val cardName = editText.text.toString()
             Card(
-                name = editText.text.toString(),
+                id = "${playerId}.$cardName",
+                name = cardName,
                 player = playerId
             )
         } else {

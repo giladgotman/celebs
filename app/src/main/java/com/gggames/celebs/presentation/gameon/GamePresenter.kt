@@ -22,10 +22,8 @@ import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
-
 const val TURN_TIME_MILLIS = 60000L
 //const val TURN_TIME_MILLIS = 10000L
-
 
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
@@ -50,7 +48,7 @@ class GamePresenter @Inject constructor(
         get() = gamesRepository.currentGame!!
 
     private var lastGame: Game? = null
-    private val roundState : RoundState
+    private val roundState: RoundState
     get() = game.gameInfo.round.state
 
     private var cardsFoundInTurn = mutableListOf<Card>()
@@ -61,20 +59,19 @@ class GamePresenter @Inject constructor(
 
         events.subscribe(::handleUiEvent).let { disposables.add(it) }
 
+        observeGame(gameId)
+            .distinctUntilChanged()
+            .compose(schedulerProvider.applyDefault())
+            .subscribe(::onGameChange).let { disposables.add(it) }
+
         playersObservable(gameId)
             .distinctUntilChanged()
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onPlayersChange).let { disposables.add(it) }
 
         cardsObservable()
-            .distinctUntilChanged()
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onCardsChange).let { disposables.add(it) }
-
-        observeGame(gameId)
-            .distinctUntilChanged()
-            .compose(schedulerProvider.applyDefault())
-            .subscribe(::onGameChange).let { disposables.add(it) }
     }
 
     private fun handleUiEvent(event: GameScreenContract.UiEvent) {
@@ -87,7 +84,12 @@ class GamePresenter @Inject constructor(
             is TimerEnd -> onTimerEnd()
             is OnBackPressed -> onBackPressed()
             is UserApprovedQuitGame -> onUserApprovedQuitGame()
+            is OnSwitchTeamPressed -> onUserPressedSwitchTeam()
         }
+    }
+
+    private fun onUserPressedSwitchTeam() {
+        view.navigateToChooseTeam()
     }
 
     private fun onCardsChange(cards: List<Card>) {
@@ -104,7 +106,7 @@ class GamePresenter @Inject constructor(
 
     private fun onGameChange(newGame: Game) {
         val newPlayer = newGame.currentPlayer
-        Timber.w("observeGame onNext. newP: ${newPlayer?.name}, curP: ${lastGame?.currentPlayer?.name}")
+        Timber.d("observeGame onNext. newP: ${newPlayer?.name}, curP: ${lastGame?.currentPlayer?.name}")
         if (newGame.round != lastGame?.round) {
             onRoundUpdate(newGame.gameInfo.round)
         }
@@ -141,20 +143,21 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    private fun onTurnUpdate(turn: Turn) {
-        Timber.v("UPDATE::TURN:: onTurnUpdate turn: $turn}")
+    private fun onTurnUpdate(newTurn: Turn) {
+        Timber.v("UPDATE::TURN:: onTurnUpdate turn: $newTurn}")
         val meActive = authenticator.isMyselfActivePlayerBlocking(game)
         val playButtonEnabled = meActive || game.currentPlayer == null
         if (authenticator.isMyselfActivePlayerBlocking(game)) {
-            when (turn.state) {
+            when (newTurn.state) {
                 Idle -> {
                     view.setTurnStoppedState()
                 }
                 Stopped -> {
-                    if (lastGame?.turn?.state != turn.state) {
+                    if (lastGame?.turn?.state != newTurn.state) {
                         view.setTurnStoppedState()
-                        showEndOfTurn()
-
+                        if (!quitingGame) {
+                            showEndOfTurn()
+                        }
                     }
                 }
                 Running -> {
@@ -165,24 +168,24 @@ class GamePresenter @Inject constructor(
                 }
             }
         } else {
-            when (turn.state) {
+            when (newTurn.state) {
                 Idle -> {
                     view.setTurnStoppedState()
                 }
                 Stopped -> {
-                    if (lastGame?.turn?.state != turn.state) {
+                    if (lastGame?.turn?.state != newTurn.state) {
                         view.setTurnStoppedState()
                         showEndOfTurn()
                     }
                 }
                 Running -> {
-                    turn.player?.let {
-                        view.setStartedState(meActive, turn.time)
+                    newTurn.player?.let {
+                        view.setStartedState(meActive, newTurn.time)
                         view.setCurrentOtherPlayer(it)
                     } ?: view.setNoCurrentPlayer()
                 }
                 Paused -> {
-                    view.setPausedState(playButtonEnabled, turn.time)
+                    view.setPausedState(playButtonEnabled, newTurn.time)
                 }
             }
         }
@@ -190,9 +193,8 @@ class GamePresenter @Inject constructor(
 
     private fun showEndOfTurn() {
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
-        view.showTurnEnded(lastGame?.round?.turn?.player, cards)
+        view.showTurnEnded(lastGame?.round?.turn?.player, cards, lastGame?.round?.roundNumber ?: 1)
     }
-
     private fun onNewRoundClick(time: Long) {
         when {
             lastRound() -> {
@@ -249,7 +251,6 @@ class GamePresenter @Inject constructor(
                     }
                 )
         } else {
-            Timber.w("no un used cards left!")
             if (lastRound()) {
                 setNewGameState(GameState.Finished)
             } else {
@@ -285,7 +286,6 @@ class GamePresenter @Inject constructor(
             }
         }
 
-
     private fun gameInfoWith(turn: Turn): GameInfo =
         game.gameInfo.copy(
             round = game.gameInfo.round.copy(
@@ -317,7 +317,6 @@ class GamePresenter @Inject constructor(
                     Timber.e(it, "error while increaseScore")
                 }).let { disposables.add(it) }
         }
-
     }
 
     private fun increaseScore(teamName: String): Completable {
@@ -334,8 +333,12 @@ class GamePresenter @Inject constructor(
 
     private fun pickNextCard(): Card? {
         val notUsedCards = unUsedCards()
-        val card = if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
-        Timber.w("pickNextCard, card: $card")
+        val card = if (game.type == GameType.Gift && game.round.roundNumber == 1) {
+            if (notUsedCards.isNotEmpty()) notUsedCards.minBy { it.index }!!.copy(used = true) else null
+        } else {
+            if (notUsedCards.isNotEmpty()) notUsedCards.random().copy(used = true) else null
+        }
+        Timber.d("pickNextCard, card: $card")
         return card
     }
 
@@ -345,31 +348,67 @@ class GamePresenter @Inject constructor(
     }
 
     private fun setTurnState(state: TurnState): Completable {
-        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state))))
+        val newGame = game.copy(
+            gameInfo = game.gameInfo.copy(
+                round = game.gameInfo.round.copy(
+                    turn = game.gameInfo.round.turn.copy(state = state)
+                )
+            )
+        )
         return updateGame(newGame)
     }
 
     private fun setTurnTime(time: Long): Completable {
-        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(time = time))))
+        val newGame = game.copy(
+            gameInfo = game.gameInfo.copy(
+                round = game.gameInfo.round.copy(
+                    turn = game.gameInfo.round.turn.copy(time = time)
+                )
+            )
+        )
         return updateGame(newGame)
     }
 
     private fun setTurnLastCards(cardsIds: List<String>): Completable {
-        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(cardsFound = cardsIds))))
+        val newGame = game.copy(
+            gameInfo = game.gameInfo.copy(
+                round = game.gameInfo.round.copy(
+                    turn = game.gameInfo.round.turn.copy(
+                        cardsFound = cardsIds
+                    )
+                )
+            )
+        )
         return updateGame(newGame)
     }
 
     private fun setTurnStateAndLastCards(state: TurnState, cardsIds: List<String>): Completable {
-        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = state, cardsFound = cardsIds))))
+        val newGame = game.copy(
+            gameInfo = game.gameInfo.copy(
+                round = game.gameInfo.round.copy(
+                    turn = game.gameInfo.round.turn.copy(
+                        state = state,
+                        cardsFound = cardsIds
+                    )
+                )
+            )
+        )
         return updateGame(newGame)
     }
 
     private fun setTurnStoppedState(): Completable {
-        val newGame = game.copy(gameInfo = game.gameInfo.copy(round = game.gameInfo.round.copy(turn = game.gameInfo.round.turn.copy(state = Stopped, time = TURN_TIME_MILLIS))))
+        val newGame = game.copy(
+            gameInfo = game.gameInfo.copy(
+                round = game.gameInfo.round.copy(
+                    turn = game.gameInfo.round.turn.copy(
+                        state = Stopped,
+                        time = TURN_TIME_MILLIS
+                    )
+                )
+            )
+        )
         return updateGame(newGame)
     }
-
-
 
     private fun setNewGameState(state: GameState): Completable =
         updateGame(game.copy(state = state))
@@ -378,7 +417,6 @@ class GamePresenter @Inject constructor(
         updateGame(game.copy(gameInfo = gameInfo))
 
     private fun unUsedCards() = cardDeck.filter { !it.used }
-
 
     private fun onPlayerResumedNewRound() {
         setGameStateStartedAndMeActive()
@@ -397,8 +435,10 @@ class GamePresenter @Inject constructor(
         }
     }
 
+    var quitingGame = false
     private fun onUserApprovedQuitGame() {
-        endMyTurnIfImActive()
+        quitingGame = true
+        endMyTurn()
             .doAfterTerminate {
                 releaseAll()
                 view.navigateToGames()
@@ -411,26 +451,6 @@ class GamePresenter @Inject constructor(
         endMyTurnIfImActiveBlocking()
             .andThen(leaveGame(game, authenticator.me!!))
 
-
-    // TODO: 12.06.20 use isMyselfHost instead
-    private fun onTurnEnded() {
-        endMyTurnIfImActive()
-            .subscribe({},
-                { Timber.e(it, "error onTurnEnded") }
-            ).let {
-                disposables.add(it)
-            }
-    }
-
-    private fun endMyTurnIfImActive(): Completable =
-        authenticator.isMyselfActivePlayer(game).flatMapCompletable {
-            if (it) {
-                endMyTurn()
-            } else {
-                Completable.complete()
-            }
-        }
-
     // TODO: 20.06.20 fix setGame side effects and make it non blocking
     private fun endMyTurnIfImActiveBlocking(): Completable {
         return if (authenticator.isMyselfActivePlayerBlocking(game)) {
@@ -441,10 +461,9 @@ class GamePresenter @Inject constructor(
     }
 
     private fun endMyTurn(): Completable =
-        setTurnStoppedState()
-            .andThen(maybeFlipLastCard())
+        maybeFlipLastCard()
+            .andThen(setTurnStoppedState())
             .andThen(setNullTurnPlayer())
-
 
     private fun onPlayerPaused(time: Long?) {
         val newTurn = time?.let { game.turn.copy(state = Paused, time = it) }
@@ -457,7 +476,9 @@ class GamePresenter @Inject constructor(
         val newTurn = time?.let { game.turn.copy(state = Running, time = it) }
             ?: game.turn.copy(state = Running)
         setNewGameInfo(gameInfoWith(newTurn))
-            .subscribe({}, { Timber.e(it) }).let { disposables.add(it) }
+            .subscribe({
+                view.setCorrectEnabled(true)
+            }, { Timber.e(it) }).let { disposables.add(it) }
     }
 
     fun unBind() {
@@ -465,7 +486,6 @@ class GamePresenter @Inject constructor(
     }
 
     private fun releaseAll() {
-        audioPlayer.release()
         disposables.clear()
     }
 
@@ -475,7 +495,6 @@ class GamePresenter @Inject constructor(
     private fun resetDeck(): Completable =
         setAllCardsToUnused()
             .andThen(cardsRepository.updateCards(cardDeck))
-
 
     private fun lastRound(): Boolean =
         game.gameInfo.round.roundNumber == 3
@@ -495,7 +514,6 @@ class GamePresenter @Inject constructor(
             )
         )
 
-
     private fun setNewGameStateAndGameInfo(state: GameState, gameInfo: GameInfo): Completable {
         val newGame = (game.copy(state = state, gameInfo = gameInfo))
         return updateGame(newGame)
@@ -506,8 +524,7 @@ class GamePresenter @Inject constructor(
             cardDeck.forEachIndexed { index, item ->
                 cardDeck[index] = cardDeck[index].copy(used = false)
             }
-        }.doOnComplete { Timber.w("flipped cards. card: ${cardDeck[0]}") }
-
+        }.doOnComplete { Timber.d("flipped cards. card: ${cardDeck[0]}") }
 
     private fun maybeFlipLastCard(): Completable =
         lastCard?.let {
@@ -527,7 +544,6 @@ class GamePresenter @Inject constructor(
                 } else {
                     onPlayerResumed(time)
                 }
-
             }
         }
     }
@@ -535,16 +551,16 @@ class GamePresenter @Inject constructor(
    private fun onTimerEnd() {
        if (authenticator.isMyselfActivePlayerBlocking(game)) {
            audioPlayer.play("timesupyalabye")
-           showEndOfTurn()
+           endMyTurn().subscribe(
+               {},
+               { Timber.e(it, "error onTimerEnd") }
+           ).let { disposables.add(it) }
        }
-       onTurnEnded()
+
    }
 
     private fun onEndTurnClick() {
-        if (authenticator.isMyselfActivePlayerBlocking(game)) {
-            showEndOfTurn()
-        }
-        onTurnEnded()
+        // not used - removed button
     }
 
     private fun onCardsAmountClick() {
@@ -553,7 +569,7 @@ class GamePresenter @Inject constructor(
         }
     }
 
-    interface GameView{
+    interface GameView {
         fun updateCards(cards: List<Card>)
         fun updateTeams(teams: List<Team>)
         fun updateCard(card: Card)
@@ -567,17 +583,19 @@ class GamePresenter @Inject constructor(
         fun showNewRoundAlert(onClick: (Boolean) -> Unit)
         fun showLastRoundToast()
         fun setTeams(teams: List<Team>)
-        fun showTurnEnded(player: Player?, cards: List<Card>)
+        fun showTurnEnded(player: Player?, cards: List<Card>, roundNumber: Int)
         fun showTurnEndedActivePlayer()
         fun setCorrectEnabled(enabled: Boolean)
         fun showAllCards(cardDeck: List<Card>)
         fun navigateToGames()
         fun navigateToEndGame()
+        fun navigateToChooseTeam()
         fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int)
         fun showRoundEnded(
             round: Round,
             teams: List<Team>
         )
         fun showLeaveGameDialog()
+        fun showCorrectCard(card: Card, videoUrl: String?)
     }
 }

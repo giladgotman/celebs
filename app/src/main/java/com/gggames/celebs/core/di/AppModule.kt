@@ -16,7 +16,6 @@ class AppModule(private val application: CelebsApplication) {
     @Singleton
     fun provideApplication() = application
 
-
     @Provides
     @Singleton
     @AppContext

@@ -8,10 +8,11 @@ import com.gggames.celebs.presentation.creategame.ChooseTeamFragment
 import com.gggames.celebs.presentation.creategame.CreateGameFragment
 import com.gggames.celebs.presentation.creategame.GamesFragment
 import com.gggames.celebs.presentation.endgame.GameOverFragment
+import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
 import com.gggames.celebs.presentation.gameon.GameOnFragment
+import com.gggames.celebs.presentation.video.VideoPlayerFragment
 import dagger.Subcomponent
 import javax.inject.Qualifier
-
 
 fun createViewComponent(context: Context): ViewComponent =
     getAppComponent(context)
@@ -24,8 +25,7 @@ fun createViewComponent(context: Context): ViewComponent =
 fun createViewComponent(fragment: Fragment): ViewComponent =
     createViewComponent(fragment.requireActivity())
 
-
-@Subcomponent (modules = [ViewModule::class])
+@Subcomponent(modules = [ViewModule::class])
 interface ViewComponent {
 
     @Subcomponent.Builder
@@ -43,8 +43,9 @@ interface ViewComponent {
     fun inject(fragment: CreateGameFragment)
     fun inject(fragment: GameOnFragment)
     fun inject(fragment: GameOverFragment)
+    fun inject(fragment: VideoPlayerFragment)
+    fun inject(fragment: EndTurnDialogFragment)
 }
-
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)

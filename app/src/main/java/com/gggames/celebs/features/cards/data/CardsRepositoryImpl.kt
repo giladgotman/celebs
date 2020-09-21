@@ -15,7 +15,7 @@ class CardsRepositoryImpl @Inject constructor(
     override fun addCards(cards: List<Card>): Completable =
         firebaseCardsDataSource.addCards(cards)
 
-    override fun updateCard(card: Card) : Completable =
+    override fun updateCard(card: Card): Completable =
         firebaseCardsDataSource.update(card)
 
     override fun updateCards(cards: List<Card>): Completable =

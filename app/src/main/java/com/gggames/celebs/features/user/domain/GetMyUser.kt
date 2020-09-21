@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetMyUser @Inject constructor(
     private val userRepository: UserRepository,
     private val authenticator: Authenticator
-){
+) {
     operator fun invoke() =
         userRepository.get(authenticator.me!!.id).map {
             if (it is UserDataSource.UserResponse.NotExists) {

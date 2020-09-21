@@ -4,20 +4,24 @@ import com.gggames.celebs.model.*
 import com.google.firebase.Timestamp
 import java.util.*
 
-
 fun Card.toRaw() = CardRaw(
     this.id,
     this.name,
     this.player,
-    this.used
+    this.used,
+    this.index,
+    this.videoUrl1,
+    this.videoUrl2,
+    this.videoUrl3,
+    this.videoUrlFull
 )
 
 fun Player.toRaw() =
     PlayerRaw(this.id, this.name, this.team, this.games)
 
 fun User.toRaw() = when (this) {
-    is User.Guest-> UserRaw(id = this.id, name = this.name, type = UserType.Guest)
-    is User.LoggedIn-> UserRaw(id = this.id, name = this.name, type = UserType.LoggedIn)
+    is User.Guest -> UserRaw(id = this.id, name = this.name, type = UserType.Guest)
+    is User.LoggedIn -> UserRaw(id = this.id, name = this.name, type = UserType.LoggedIn)
 }
 
 fun Team.toRaw() = TeamRaw(
@@ -34,7 +38,8 @@ fun Game.toRaw() = GameRaw(
     this.teams.map { it.toRaw() },
     this.state?.name,
     this.gameInfo.toRaw(),
-    this.host.toRaw()
+    this.host.toRaw(),
+    this.type.name
 )
 
 fun Round.toRaw() = RoundRaw(
@@ -42,12 +47,11 @@ fun Round.toRaw() = RoundRaw(
 )
 
 fun Turn.toRaw() = TurnRaw(
-    this.state.toRaw(), this.player?.toRaw(), this.time, this.cardsFound
+    this.state.toRaw(), this.player?.toRaw(), this.time, this.cardsFound, this.lastFoundCard?.toRaw()
 )
 fun RoundState.toRaw() = this.name
 
 fun TurnState.toRaw() = this.name
-
 
 fun GameInfo.toRaw() = GameInfoRaw(
     this.totalCards,
@@ -56,5 +60,3 @@ fun GameInfo.toRaw() = GameInfoRaw(
 )
 
 fun GameState.toRaw() = this.name
-
-

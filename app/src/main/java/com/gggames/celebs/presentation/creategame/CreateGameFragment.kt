@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.features.games.data.MAX_CARDS
+import com.gggames.celebs.model.GameType
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
@@ -25,7 +26,7 @@ import javax.inject.Inject
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 
-class CreateGameFragment : Fragment() , CreateGamePresenter.View{
+class CreateGameFragment : Fragment(), CreateGamePresenter.View {
 
     private lateinit var viewComponent: ViewComponent
 
@@ -33,8 +34,9 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
     lateinit var presenter: CreateGamePresenter
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_create_game, container, false)
     }
@@ -45,13 +47,12 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-
         (activity as MainActivity).setTitle(getString(R.string.create_game_fragment_title))
         (activity as MainActivity).setShareVisible(false)
 
         cardsAmountEditText.setOnEditorActionListener { v, actionId, _ ->
-            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE
-                || actionId == EditorInfo.IME_ACTION_GO) {
+            return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE ||
+                actionId == EditorInfo.IME_ACTION_GO) {
                 val imm: InputMethodManager = v.context
                     .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
@@ -84,7 +85,9 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
         val cardsCount = cardsAmount.editText?.text.toString().toInt()
         val passwordText = password.editText?.text.toString()
         val teams = getTeamsValue()
-        return GameDetails(gameName.editText?.text.toString(), teams, cardsCount, passwordText)
+        val name = gameName.editText?.text.toString()
+        val gameType = if (name.contains("gift")) GameType.Gift else GameType.Normal
+        return GameDetails(name, teams, cardsCount, passwordText, gameType)
     }
     override fun setDoneEnabled(enabled: Boolean) {
         buttonDone.isEnabled = enabled
@@ -112,10 +115,10 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
     private fun getTeamsValue(): MutableList<Team> {
         val teams = mutableListOf<Team>()
         if (groupName1.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(name =groupName1.editText?.text.toString()))
+            teams.add(Team(name = groupName1.editText?.text.toString()))
         }
         if (groupName2.editText?.text?.isNotEmpty() == true) {
-            teams.add(Team(name =groupName2.editText?.text.toString()))
+            teams.add(Team(name = groupName2.editText?.text.toString()))
         }
         if (groupName3.editText?.text?.isNotEmpty() == true) {
             teams.add(Team(name = groupName3.editText?.text.toString()))
@@ -136,7 +139,7 @@ class CreateGameFragment : Fragment() , CreateGamePresenter.View{
             cardsAmount.error = "Please enter cards amount"
             return false
         }
-        if (cardsAmount.editText?.text?.toString()?.toInt() ?:0 > MAX_CARDS) {
+        if (cardsAmount.editText?.text?.toString()?.toInt() ?: 0 > MAX_CARDS) {
             cardsAmount.error = "The maximum cards amount is $MAX_CARDS"
             return false
         }

@@ -13,8 +13,8 @@ import com.gggames.celebs.model.Team
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_round_dialog.*
 
-class EndRoundDialogFragment
-    : BottomSheetDialogFragment() {
+class EndRoundDialogFragment :
+    BottomSheetDialogFragment() {
 
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
@@ -80,6 +80,5 @@ class EndRoundDialogFragment
                     }
             }
         }
-
     }
 }

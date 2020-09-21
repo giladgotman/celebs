@@ -15,5 +15,4 @@ class ViewModule(private val context: Context) {
 
     @Provides
     fun provideGameOverPresenter(presenter: GameOverPresenter): GameOverScreenContract.Presenter = presenter
-
 }

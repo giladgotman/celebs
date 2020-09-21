@@ -5,4 +5,4 @@ import com.gggames.celebs.presentation.di.ViewComponent
 import dagger.Module
 
 @Module(subcomponents = [ViewComponent::class, GameComponent::class])
-class SubComponentsModule {}
+class SubComponentsModule

@@ -10,7 +10,7 @@ class UserRepositoryImpl @Inject constructor(
     private val firebaseUserDataSource: UserDataSource
 ) : UserRepository {
 
-    override fun get(userId: String): Observable<UserResponse>  =
+    override fun get(userId: String): Observable<UserResponse> =
         firebaseUserDataSource.getUser(userId)
 
     // if the user exists it will update the existing one, if not it will create a new one

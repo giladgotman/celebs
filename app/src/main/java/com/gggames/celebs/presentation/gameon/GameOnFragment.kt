@@ -4,9 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -26,7 +24,9 @@ import com.gggames.celebs.presentation.common.MainActivityDelegate
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
-import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
+import com.gggames.celebs.presentation.endturn.KEY_CARDS
+import com.gggames.celebs.presentation.endturn.KEY_PLAYER_NAME
+import com.gggames.celebs.presentation.endturn.KEY_ROUND_NUMBER
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
@@ -35,16 +35,14 @@ import io.reactivex.Completable
 import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-
 
 /**
  * The main fragment in which the game is happening
  */
 class GameOnFragment : Fragment(),
-    GamePresenter.GameView , MainActivityDelegate {
+    GamePresenter.GameView, MainActivityDelegate {
 
     private lateinit var viewComponent: ViewComponent
 
@@ -57,22 +55,41 @@ class GameOnFragment : Fragment(),
 
     private val _emitter = PublishSubject.create<UiEvent>()
 
-    private var playerAdapters : List<PlayersAdapter> = listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
-    private var playersRecycle : MutableList<RecyclerView>? = null
+    private var playerAdapters: List<PlayersAdapter> =
+        listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
+
+    private lateinit var playersRecycleViews: List<RecyclerView>
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_game_on, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val item = menu.findItem(R.id.menu_switch_team)
+        item.isVisible = true
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_switch_team -> {
+                _emitter.onNext(UiEvent.OnSwitchTeamPressed)
+                true
+            }
+            else -> false
+
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
-
-        val uiEvents = merge(_emitter, (activity as MainActivity).events)
 
         cardTextView.text = ""
 
@@ -95,7 +112,6 @@ class GameOnFragment : Fragment(),
                 .setPositiveButton(getString(R.string.ok), dialogClickListener)
                 .setNegativeButton(getString(R.string.cancel), dialogClickListener)
                 .show()
-
         }
 
         correctButton.setOnClickListener {
@@ -114,9 +130,26 @@ class GameOnFragment : Fragment(),
             _emitter.onNext(UiEvent.CardsAmountClick)
         }
 
-        setupTimer()
+        playersRecycleViews =
+            listOf(team1players, team2players, team3players)
 
+        playersRecycleViews.forEachIndexed { index, recyclerView ->
+            recyclerView.layoutManager = LinearLayoutManager(this.context)
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            recyclerView.adapter = playerAdapters[index]
+        }
+        setupTimer()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val uiEvents = merge(_emitter, (activity as MainActivity).events)
         presenter.bind(this, uiEvents)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        clear()
     }
 
     override fun showNewRoundAlert(onClick: (Boolean) -> Unit) {
@@ -138,23 +171,18 @@ class GameOnFragment : Fragment(),
             .show()
     }
 
-
-
     override fun showLastRoundToast() {
         showInfoToast(requireContext(), "This is the last round", Toast.LENGTH_LONG)
     }
 
-    override fun setStartedState(meActive: Boolean, time:Long?) {
+    override fun setStartedState(meActive: Boolean, time: Long?) {
         time?.let {
             updateTime(time)
         }
         startTimer()
         startButton.state = ButtonState.Running
         startButton.isEnabled = true
-//        endTurnButton.isEnabled = meActive
         endTurnButton.isEnabled = false
-        // TODO: 10.06.20 remove when help is implemented
-        correctButton.isEnabled = meActive
 
         val cardColor = if (meActive) {
             ContextCompat.getColor(requireContext(), R.color.green)
@@ -163,7 +191,6 @@ class GameOnFragment : Fragment(),
         }
 //        cardLayout.setBackgroundColor(cardColor)
     }
-
 
     override fun setTurnStoppedState() {
         mCountDownTimer?.cancel()
@@ -178,19 +205,21 @@ class GameOnFragment : Fragment(),
         correctButton.isEnabled = enabled
     }
 
-    var endTurnDialog : EndTurnDialogFragment? = null
-    override fun showTurnEnded(player: Player?, cards: List<Card>) {
+    override fun showTurnEnded(player: Player?, cards: List<Card>, roundNumber: Int) {
         player?.let {
             cardTextView.text = ""
-            if (endTurnDialog?.isAdded != true) {
-                endTurnDialog = EndTurnDialogFragment.create(player, cards)
-                endTurnDialog?.show(requireActivity() as AppCompatActivity)
-            }
-
+            findNavController().navigate(
+                R.id.action_gameOnFragment_to_endTurnDialogFragment,
+                Bundle().apply {
+                    putString(KEY_PLAYER_NAME, player.name)
+                    putParcelableArray(KEY_CARDS, cards.toTypedArray())
+                    putInt(KEY_ROUND_NUMBER, roundNumber)
+                }
+            )
         }
     }
 
-    var endRoundDialogFragment : EndRoundDialogFragment? = null
+    var endRoundDialogFragment: EndRoundDialogFragment? = null
     override fun showRoundEnded(round: Round, teams: List<Team>) {
             cardTextView.text = ""
             if (endRoundDialogFragment?.isAdded != true) {
@@ -226,7 +255,6 @@ class GameOnFragment : Fragment(),
 
     override fun setRoundEndState(meActive: Boolean, roundNumber: Int) {
         setPausedState(meActive, null)
-//        cardTextView.text = "Round $roundNumber ended"
         endTurnButton.isEnabled = false
         startButton.isEnabled = false
     }
@@ -249,7 +277,6 @@ class GameOnFragment : Fragment(),
     }
 
     override fun updateCard(card: Card) {
-        Timber.w("ggg update card: $card")
         cardTextView.text = card.name
     }
 
@@ -260,22 +287,6 @@ class GameOnFragment : Fragment(),
                 1 -> updateTeam2(team.name, team.players)
                 2 -> updateTeam3(team.name, team.players)
             }
-        }
-    }
-
-    private fun setupPlayers(teamsCount: Int) {
-        playersRecycle = mutableListOf(team1players)
-        if (teamsCount > 1) {
-            playersRecycle?.add(team2players)
-        }
-        if (teamsCount > 2) {
-            playersRecycle?.add(team3players)
-            team3Layout.isVisible = true
-        }
-        playersRecycle?.forEachIndexed { index, recyclerView ->
-            recyclerView.layoutManager = LinearLayoutManager(this.context)
-            recyclerView.itemAnimator = DefaultItemAnimator()
-            recyclerView.adapter = playerAdapters[index]
         }
     }
 
@@ -298,8 +309,8 @@ class GameOnFragment : Fragment(),
     }
 
     override fun setTeams(teams: List<Team>) {
-        if (playersRecycle == null) {
-            setupPlayers(teams.size)
+        if (teams.size > 2) {
+            team3Layout.isVisible = true
         }
         teams.forEachIndexed { index, team ->
             when (index) {
@@ -337,7 +348,7 @@ class GameOnFragment : Fragment(),
     override fun showAllCards(cards: List<Card>) {
         val sb = java.lang.StringBuilder()
         cards.forEachIndexed { index, card ->
-            sb.append("${index+1}: ${card.name}\n")
+            sb.append("${index + 1}: ${card.name}\n")
         }
         val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
         }
@@ -350,7 +361,6 @@ class GameOnFragment : Fragment(),
     }
 
     override fun navigateToEndGame() {
-        clear()
         findNavController().navigate(R.id.action_gameOnFragment_to_gameOverFragment,
             Bundle().apply {
                 putString(GAME_ID_KEY, "dummy game id")
@@ -358,13 +368,11 @@ class GameOnFragment : Fragment(),
     }
 
     override fun navigateToGames() {
-        clear()
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        clear()
+    override fun navigateToChooseTeam() {
+        findNavController().navigate(R.id.action_gameOnFragment_to_ChooseTeamFragment)
     }
 
     private fun clear() {
@@ -391,6 +399,9 @@ class GameOnFragment : Fragment(),
     override fun onLogout(): Completable =
         presenter.onLogout()
 
+    override fun showCorrectCard(card: Card, videoUrl: String?) {
+        showInfoToast(requireContext(), "Celebrity found: ${card.name}")
+    }
 
     override fun showLeaveGameDialog() {
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -409,7 +420,6 @@ class GameOnFragment : Fragment(),
             .setNegativeButton(getString(R.string.cancel), dialogClickListener)
             .show()
     }
-
 }
 
 val GAME_ID_KEY = "gameId"

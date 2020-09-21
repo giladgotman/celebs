@@ -10,4 +10,3 @@ interface UserRepository {
 
     fun set(user: Player): Completable
 }
-

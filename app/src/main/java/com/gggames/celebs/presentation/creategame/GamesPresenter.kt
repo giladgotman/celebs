@@ -69,11 +69,11 @@ class GamesPresenter @Inject constructor(
     }
 
     private fun isDeepLinkExists(gameIdFromDeepLink: String?): Observable<out Result> {
-        val gameInvitation = gameIdFromDeepLink?: preferenceManager.loadGameInvitation()
+        val gameInvitation = gameIdFromDeepLink ?: preferenceManager.loadGameInvitation()
         return gameInvitation?.let {
             observeGame(it).take(1)
                 .compose(schedulerProvider.applyDefault())
-                .doOnTerminate {  preferenceManager.saveGameInvitation(null) }
+                .doOnTerminate { preferenceManager.saveGameInvitation(null) }
                 .map { game ->
                     if (game.state == GameState.Finished) {
                         Result.GameFinished(game.name)
@@ -91,9 +91,14 @@ class GamesPresenter @Inject constructor(
 
     private fun joinGameAndGoToAddCards(game: Game) {
         getMyUser().take(1)
-            .switchMapCompletable { joinGame(game, it)}
+            .compose(schedulerProvider.applyDefault())
+            .switchMapCompletable { joinGame(game, it) }
             .subscribe({
-                view.navigateToAddCards()
+                if (game.state == GameState.Finished) {
+                    view.navigateToGameOver(game.id)
+                } else {
+                    view.navigateToAddCards()
+                }
             }, {
                 Timber.e(it, "error joinGame")
                 view.showGenericError()
@@ -102,6 +107,7 @@ class GamesPresenter @Inject constructor(
 
     private fun fetchGames() {
         getGames()
+            .compose(schedulerProvider.applyDefault())
             .doOnSubscribe { view.showLoading(true) }
             .subscribe(
                 { games ->
@@ -146,6 +152,7 @@ class GamesPresenter @Inject constructor(
         fun navigateToAddCards()
         fun showJoinedGameIsFinished(gameName: String)
         fun showNoGamesView(visible: Boolean)
+        fun navigateToGameOver(gameId: String)
     }
 
     sealed class Result {

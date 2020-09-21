@@ -6,7 +6,7 @@ import android.graphics.ColorMatrixColorFilter
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageButton
 
-open class HourglassButton: AppCompatImageButton {
+open class HourglassButton : AppCompatImageButton {
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
@@ -15,7 +15,6 @@ open class HourglassButton: AppCompatImageButton {
         } else {
             appyGreyScale()
         }
-
     }
 
     constructor(context: Context) : this(context, null, 0)

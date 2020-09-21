@@ -30,8 +30,6 @@ class CelebsApplication : Application() {
         Timber.i("onCreate")
     }
 
-
-
     private fun initTimber() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

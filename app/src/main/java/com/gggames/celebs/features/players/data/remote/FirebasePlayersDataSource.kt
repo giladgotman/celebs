@@ -10,14 +10,13 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Completable
 import io.reactivex.Observable
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
-
+import timber.log.Timber
 
 class FirebasePlayersDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
-    @Named ("baseFirebaseCollection")
+    @Named("baseFirebaseCollection")
     private val baseCollection: String
 ) : PlayersDataSource {
 
@@ -56,7 +55,6 @@ class FirebasePlayersDataSource @Inject constructor(
                         player?.let {
                             emitter.onNext(it.toUi())
                         }
-
                     }
                 }
         }
@@ -90,7 +88,7 @@ class FirebasePlayersDataSource @Inject constructor(
 
     override fun chooseTeam(gameId: String, player: Player, teamName: String): Completable {
         val playersCollectionsRef = getCollectionReference(gameId)
-        return Completable.create { emitter->
+        return Completable.create { emitter ->
             playersCollectionsRef.document(player.id).update("team", teamName)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -106,7 +104,7 @@ class FirebasePlayersDataSource @Inject constructor(
     override fun removePlayer(gameId: String, player: Player): Completable {
         val playersCollectionsRef = getCollectionReference(gameId)
         val playersRaw = player.toRaw()
-        return Completable.create { emitter->
+        return Completable.create { emitter ->
             playersCollectionsRef.document(playersRaw.id).delete()
                 .addOnSuccessListener {
                     Timber.i("player removed. path: ${playersCollectionsRef.path}")
@@ -121,6 +119,3 @@ class FirebasePlayersDataSource @Inject constructor(
         }
     }
 }
-
-
-

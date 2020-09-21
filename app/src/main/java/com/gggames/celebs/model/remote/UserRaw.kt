@@ -1,12 +1,12 @@
 package com.gggames.celebs.model.remote
 
-data class UserRaw (
+data class UserRaw(
     val id: String,
     val name: String,
     val games: List<GameRaw> = emptyList(),
     val type: UserType = UserType.Guest
 
-){
+) {
     constructor() : this(
         id = EMPTY_VALUE,
         name = EMPTY_VALUE

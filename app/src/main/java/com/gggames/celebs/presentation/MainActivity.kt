@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
                     Timber.e(it, "error sharing link")
                     showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
                 })
-
             }
         }
         setSupportActionBar(toolbar)
@@ -83,6 +82,8 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        val item = menu.findItem(R.id.menu_switch_team)
+        item.isVisible = false
         return true
     }
 
@@ -103,6 +104,10 @@ class MainActivity : AppCompatActivity() {
                 showAbout()
                 true
             }
+            R.id.menu_switch_team -> {
+                // handled in gameOnFragment
+                false
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -120,7 +125,6 @@ class MainActivity : AppCompatActivity() {
             .setMessage(sb.toString())
             .setPositiveButton(getString(R.string.ok), dialogClickListener)
             .show()
-
     }
 
     override fun onBackPressed() {
@@ -144,4 +148,3 @@ class MainActivity : AppCompatActivity() {
         disposables.clear()
     }
 }
-

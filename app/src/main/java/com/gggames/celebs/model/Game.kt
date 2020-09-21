@@ -2,15 +2,17 @@ package com.gggames.celebs.model
 
 import com.gggames.celebs.model.TurnState.Idle
 
-data class Game (val id: String,
-                 val name: String,
-                 val createdAt: Long,
-                 val password: String? = null,
-                 val celebsCount: Int = 6,
-                 val teams: List<Team> = emptyList(),
-                 val state: GameState? = null,
-                 val gameInfo: GameInfo = GameInfo(),
-                 val host: Player
+data class Game(
+    val id: String,
+    val name: String,
+    val createdAt: Long,
+    val password: String? = null,
+    val celebsCount: Int = 6,
+    val teams: List<Team> = emptyList(),
+    val state: GameState? = null,
+    val gameInfo: GameInfo = GameInfo(),
+    val host: Player,
+    val type: GameType
 ) {
     val currentPlayer: Player?
         get() = this.gameInfo.round.turn.player
@@ -19,7 +21,12 @@ data class Game (val id: String,
     val round = this.gameInfo.round
     val turn = this.gameInfo.round.turn
 
-    val winningTeam : Team? get() = this.teams.maxBy { it.score }
+    val winningTeam: Team? get() = this.teams.maxBy { it.score }
+}
+
+enum class GameType {
+    Normal,
+    Gift
 }
 
 data class GameInfo(
@@ -47,10 +54,12 @@ enum class RoundState {
 }
 
 data class Turn(
-    val state: TurnState = Idle, val player: Player? = null, val time: Long? = null,
-    val cardsFound: List<String> = emptyList()
+    val state: TurnState = Idle,
+    val player: Player? = null,
+    val time: Long? = null,
+    val cardsFound: List<String> = emptyList(),
+    val lastFoundCard: Card? = null
 )
-
 
 enum class TurnState {
     Idle,
@@ -84,5 +93,4 @@ enum class GameState {
                 else -> throw IllegalArgumentException("Unknown game state name: $name")
             }
     }
-
 }

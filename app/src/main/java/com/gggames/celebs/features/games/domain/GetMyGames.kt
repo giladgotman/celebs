@@ -11,8 +11,7 @@ Gets games that are included in my user
 class GetMyGames @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val getMyUser: GetMyUser
-){
+) {
     operator fun invoke() = getMyUser()
         .switchMap { gamesRepository.getGames(it.games, listOf(GameState.Created, GameState.Started)) }
-
 }

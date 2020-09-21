@@ -2,6 +2,7 @@ package com.gggames.celebs.core.di
 
 import android.content.Context
 import com.gggames.celebs.core.CelebsApplication
+import com.gggames.celebs.features.video.VideoModule
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.login.SignupActivity
@@ -9,10 +10,8 @@ import dagger.Component
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-
 fun getAppComponent(context: Context): AppComponent =
     (context.applicationContext as CelebsApplication).appComponent
-
 
 @Singleton
 @Component(modules = [
@@ -22,7 +21,8 @@ fun getAppComponent(context: Context): AppComponent =
     GamesModule::class,
     CardsModule::class,
     PlayersModule::class,
-    UserModule::class
+    UserModule::class,
+    VideoModule::class
 ])
 interface AppComponent {
     @AppContext
@@ -34,7 +34,6 @@ interface AppComponent {
 
     fun viewComponent(): ViewComponent.Builder
 }
-
 
 @Qualifier
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)

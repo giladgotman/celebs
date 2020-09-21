@@ -83,8 +83,8 @@
         app:layout_constraintBottom_toTopOf="@id/infoSection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gameTopSection">
-
+        app:layout_constraintTop_toBottomOf="@id/gameTopSection"
+        >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardLayout"
                 android:layout_width="250dp"
@@ -115,6 +115,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
         <com.gggames.celebs.presentation.HourglassButton
             android:id="@+id/endTurnButton"
             android:layout_width="wrap_content"
@@ -143,8 +145,6 @@
             app:layout_constraintBottom_toBottomOf="@id/startButton"
             app:layout_constraintEnd_toEndOf="@id/cardLayout"
             />
-
-        <!--            android:src="@drawable/ic_done_24px"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -338,6 +338,5 @@
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
