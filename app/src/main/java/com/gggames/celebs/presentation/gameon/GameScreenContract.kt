@@ -30,8 +30,9 @@ interface GameScreenContract {
         val currentCard: Card? = null,
         val teams: List<Team> = emptyList(),
         val round: String = "1",
+        val playButtonState: PlayButtonState = PlayButtonState(),
         val isTimerRunning: Boolean = false,
-        val startTimer: Boolean = false
+        val meActive: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -44,10 +45,15 @@ interface GameScreenContract {
                 teamsSize:          ${teams.size}
                 round:              $round
                 isTimerRunning:     $isTimerRunning
-                startTimer:         $startTimer
+                playButtonState     $playButtonState
                 """.trimIndent()
 
     }
+
+    data class PlayButtonState(
+        val isEnabled: Boolean = false,
+        val state: ButtonState = ButtonState.Stopped
+    )
 
     sealed class Result {
         data class GameUpdate(val game: Game) : Result()

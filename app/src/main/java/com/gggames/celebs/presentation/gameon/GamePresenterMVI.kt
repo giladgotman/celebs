@@ -100,10 +100,16 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is Result.GameUpdate -> {
                 lastGame = result.game
+                val meActive = authenticator.isMyselfActivePlayerBlocking(game)
+                val turnState = result.game.gameInfo.round.turn.state
                 previous.copy(
                     teams = result.game.teams,
                     round = result.game.round.roundNumber.toString(),
-                    isTimerRunning = result.game.gameInfo.round.turn.state == TurnState.Running
+                    isTimerRunning = turnState == TurnState.Running,
+                    playButtonState = PlayButtonState(
+                        isEnabled = meActive || result.game.currentPlayer == null,
+                        state = turnState.toPlayButtonState()
+                    )
 
 
                 )
@@ -112,7 +118,8 @@ class GamePresenterMVI @Inject constructor(
                 val updatedTeams = previous.teams.map { team ->
                     team.copy(players = result.players.filter { it.team == team.name })
                 }
-                previous.copy(teams = updatedTeams)}
+                previous.copy(teams = updatedTeams)
+            }
             is Result.CardsUpdate -> {
                 cardDeck = result.cards.toMutableList()
                 previous.copy(cardsInDeck = result.cards.size)
@@ -157,3 +164,12 @@ class GamePresenterMVI @Inject constructor(
         disposables.clear()
     }
 }
+
+private fun TurnState.toPlayButtonState() =
+    when (this) {
+        TurnState.Idle -> ButtonState.Stopped
+        TurnState.Stopped -> ButtonState.Stopped
+        TurnState.Running -> ButtonState.Running
+        TurnState.Paused -> ButtonState.Paused
+    }
+
