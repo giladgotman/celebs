@@ -24,6 +24,7 @@ import com.gggames.celebs.utils.rx.ofType
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Observable.just
+import io.reactivex.Observable.merge
 import io.reactivex.ObservableSource
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -65,9 +66,18 @@ class GamePresenterMVI @Inject constructor(
     fun bind(events: Observable<UiEvent>) {
         val gameId = game.id
 
-        val shared = events.share()
+        val uiEvent = events
+            .doOnNext { Timber.d("USER:: $it") }
 
-        shared.toResult()
+        val dataInput = merge(
+            observeGame(gameId),
+            playersObservable(gameId),
+            cardsObservable()
+        )
+
+        val allInput = merge(uiEvent.toResult(), dataInput)
+
+        allInput
             .subscribeOn(schedulerProvider.io())
             .doOnNext { Timber.d("RESULT:: $it") }
             .scan(State.initialState, reduce())
@@ -79,13 +89,6 @@ class GamePresenterMVI @Inject constructor(
             }) { Timber.e("Unhandled exception in the main stream") }
             .let { disposables.add(it) }
 
-        observeGame(gameId)
-            .distinctUntilChanged()
-
-        playersObservable(gameId)
-            .distinctUntilChanged()
-
-        cardsObservable()
     }
 
     private fun reduce() = { previous: State, result: Result ->
@@ -94,6 +97,15 @@ class GamePresenterMVI @Inject constructor(
             is Found -> previous.copy(currentCard = result.card)
             is Result.CardsUpdateResult -> previous
             is NoOp -> previous
+            is Result.GameUpdate -> {
+                lastGame = result.game
+                previous
+            }
+            is Result.PlayersUpdate -> previous
+            is Result.CardsUpdate -> {
+                cardDeck = result.cards.toMutableList()
+                previous.copy(cardsInDeck = result.cards.size)
+            }
         }
     }
 

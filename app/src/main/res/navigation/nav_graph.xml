@@ -122,7 +122,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameOnFragment"
-        android:name="com.gggames.celebs.presentation.gameon.GameOnFragment"
+        android:name="com.gggames.celebs.presentation.gameon.GameOnFragmentMVI"
         android:label="GameOnFragment" >
         <action
             android:id="@+id/action_gameOnFragment_to_GamesFragment"

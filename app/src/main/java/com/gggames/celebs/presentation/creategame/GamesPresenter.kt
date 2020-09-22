@@ -74,11 +74,11 @@ class GamesPresenter @Inject constructor(
             observeGame(it).take(1)
                 .compose(schedulerProvider.applyDefault())
                 .doOnTerminate { preferenceManager.saveGameInvitation(null) }
-                .map { game ->
-                    if (game.state == GameState.Finished) {
-                        Result.GameFinished(game.name)
+                .map { gameUpdate ->
+                    if (gameUpdate.game.state == GameState.Finished) {
+                        Result.GameFinished(gameUpdate.game.name)
                     } else {
-                        Result.DeepLinkExists(game)
+                        Result.DeepLinkExists(gameUpdate.game)
                     }
                 }
         } ?: Observable.just(Result.NoDeepLink)

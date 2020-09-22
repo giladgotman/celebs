@@ -49,7 +49,7 @@ class GamePresenter @Inject constructor(
 
     private var lastGame: Game? = null
     private val roundState: RoundState
-    get() = game.gameInfo.round.state
+        get() = game.gameInfo.round.state
 
     private var cardsFoundInTurn = mutableListOf<Card>()
 
@@ -60,16 +60,17 @@ class GamePresenter @Inject constructor(
         events.subscribe(::handleUiEvent).let { disposables.add(it) }
 
         observeGame(gameId)
-            .distinctUntilChanged()
+            .map { it.game }
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onGameChange).let { disposables.add(it) }
 
         playersObservable(gameId)
-            .distinctUntilChanged()
+            .map { it.players }
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onPlayersChange).let { disposables.add(it) }
 
         cardsObservable()
+            .map { it.cards }
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onCardsChange).let { disposables.add(it) }
     }
@@ -195,6 +196,7 @@ class GamePresenter @Inject constructor(
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
         view.showTurnEnded(lastGame?.round?.turn?.player, cards, lastGame?.round?.roundNumber ?: 1)
     }
+
     private fun onNewRoundClick(time: Long) {
         when {
             lastRound() -> {
@@ -537,8 +539,7 @@ class GamePresenter @Inject constructor(
         when (buttonState) {
             ButtonState.Stopped -> onPlayerStarted()
             ButtonState.Running -> onPlayerPaused(time)
-            ButtonState.Paused ->
-            {
+            ButtonState.Paused -> {
                 if (roundState == RoundState.New) {
                     onPlayerResumedNewRound()
                 } else {
@@ -548,16 +549,16 @@ class GamePresenter @Inject constructor(
         }
     }
 
-   private fun onTimerEnd() {
-       if (authenticator.isMyselfActivePlayerBlocking(game)) {
-           audioPlayer.play("timesupyalabye")
-           endMyTurn().subscribe(
-               {},
-               { Timber.e(it, "error onTimerEnd") }
-           ).let { disposables.add(it) }
-       }
+    private fun onTimerEnd() {
+        if (authenticator.isMyselfActivePlayerBlocking(game)) {
+            audioPlayer.play("timesupyalabye")
+            endMyTurn().subscribe(
+                {},
+                { Timber.e(it, "error onTimerEnd") }
+            ).let { disposables.add(it) }
+        }
 
-   }
+    }
 
     private fun onEndTurnClick() {
         // not used - removed button
@@ -595,6 +596,7 @@ class GamePresenter @Inject constructor(
             round: Round,
             teams: List<Team>
         )
+
         fun showLeaveGameDialog()
         fun showCorrectCard(card: Card, videoUrl: String?)
     }
