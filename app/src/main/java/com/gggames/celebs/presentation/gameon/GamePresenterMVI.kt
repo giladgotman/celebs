@@ -4,6 +4,7 @@ import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.gameon.PickNextCard
+import com.gggames.celebs.features.gameon.StartGame
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
@@ -14,7 +15,6 @@ import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.RoundState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.NoOp
-import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PickNextCardResult
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PickNextCardResult.Found
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PickNextCardResult.NoCardsLeft
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.CorrectClick
@@ -24,6 +24,7 @@ import com.gggames.celebs.utils.rx.ofType
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Observable.just
+import io.reactivex.ObservableSource
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
@@ -39,6 +40,7 @@ class GamePresenterMVI @Inject constructor(
     private val cardsRepository: CardsRepository,
     private val gamesRepository: GamesRepository,
     private val pickNextCard: PickNextCard,
+    private val startGame: StartGame,
     private val leaveGame: LeaveGame,
     private val audioPlayer: AudioPlayer,
     private val schedulerProvider: BaseSchedulerProvider
@@ -68,7 +70,7 @@ class GamePresenterMVI @Inject constructor(
         shared.toResult()
             .subscribeOn(schedulerProvider.io())
             .doOnNext { Timber.d("RESULT:: $it") }
-            .scan(GameScreenContract.State.initialState, reduce())
+            .scan(State.initialState, reduce())
             .distinctUntilChanged()
             .doOnNext { Timber.d("STATE:: $it") }
             .observeOn(schedulerProvider.ui())
@@ -98,21 +100,33 @@ class GamePresenterMVI @Inject constructor(
     private fun Observable<UiEvent>.toResult(): Observable<Result> =
         publish { o ->
             Observable.mergeArray(
-                o.ofType<CorrectClick>().flatMap { pickNextCard(cardDeck, game.type, game.round, it.time) },
-                o.ofType<StartStopClick>().flatMap { just(NoOp) }
+                o.ofType<CorrectClick>().flatMap { pickNextCardWrap(it.time) },
+                o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
+                o.ofType<UiEvent.EndTurnClick>().flatMap { just(NoOp) }
+
             )
         }
 
-    private fun pickNextCardNew(): Observable<PickNextCardResult> {
-        return Observable.fromCallable {
-            pickNextCard()?.let {
-                Found(it)
-            } ?: NoCardsLeft(game.round, null)
+    private fun handleStartStopClick(
+        buttonState: ButtonState,
+        time: Long?
+    ) =
+        when (buttonState) {
+            ButtonState.Stopped -> startGame(authenticator.me!!, game)
+                .andThen(pickNextCardWrap(time))
+            ButtonState.Running -> pickNextCardWrap(time)
+            ButtonState.Paused -> just(NoOp)
+            ButtonState.Finished -> just(NoOp)
         }
-    }
 
-    private fun pickNextCard(): Card? {
-        return null
+
+    private fun pickNextCardWrap(time: Long?): ObservableSource<Result.PickNextCardResult> {
+        return pickNextCard(
+            cardDeck,
+            game.type,
+            game.round,
+            time
+        )
     }
 
     fun unBind() {

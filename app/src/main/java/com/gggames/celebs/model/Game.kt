@@ -35,7 +35,11 @@ data class GameInfo(
     val round: Round = Round()
 )
 
-data class Round(val state: RoundState = RoundState.Ready, val roundNumber: Int = 1, val turn: Turn = Turn())
+data class Round(
+    val state: RoundState = RoundState.Ready,
+    val roundNumber: Int = 1,
+    val turn: Turn = Turn()
+)
 
 enum class RoundState {
     Ready,
@@ -78,6 +82,7 @@ enum class TurnState {
             }
     }
 }
+
 enum class GameState {
     Created,
     Started,
@@ -94,3 +99,40 @@ enum class GameState {
             }
     }
 }
+
+fun Game.setGameState(state: GameState) = this.copy(state = state)
+
+fun Game.setRoundState(state: RoundState) =
+    this.copy(gameInfo = this.gameInfo.copy(round = this.gameInfo.round.copy(state = state)))
+
+fun Game.setTurnState(state: TurnState) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(state = state)
+        )
+    )
+)
+
+fun Game.setTurnPlayer(player: Player?) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(player = player)
+        )
+    )
+)
+
+fun Game.setTurnTime(time: Long?) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(time = time)
+        )
+    )
+)
+
+fun Game.setTurnLastCards(cardsIds: List<String>) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(cardsFound = cardsIds)
+        )
+    )
+)
