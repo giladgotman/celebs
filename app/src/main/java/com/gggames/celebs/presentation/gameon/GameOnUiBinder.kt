@@ -16,6 +16,7 @@ class GameOnUiBinder @Inject constructor() {
 
     fun render(state: GameScreenContract.State) {
         view?.cardTextView?.text = state.currentCard?.name ?: ""
+        view?.cardsAmount?.text = state.cardsInDeck.toString()
     }
 
     fun setFragment(fragment: GameOnFragmentMVI) {
