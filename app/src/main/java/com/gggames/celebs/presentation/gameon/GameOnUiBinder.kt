@@ -78,6 +78,9 @@ class GameOnUiBinder @Inject constructor() {
             } else {
                 mCountDownTimer?.cancel()
             }
+            if (state.resetTime) {
+                updateTime(TURN_TIME_MILLIS)
+            }
             startButton.state = state.playButtonState.state
             startButton.isEnabled = state.playButtonState.isEnabled
         }

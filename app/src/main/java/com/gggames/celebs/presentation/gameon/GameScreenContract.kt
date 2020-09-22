@@ -32,7 +32,8 @@ interface GameScreenContract {
         val round: String = "1",
         val playButtonState: PlayButtonState = PlayButtonState(),
         val isTimerRunning: Boolean = false,
-        val meActive: Boolean = false
+        val meActive: Boolean = false,
+        val resetTime: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -46,6 +47,7 @@ interface GameScreenContract {
                 round:              $round
                 isTimerRunning:     $isTimerRunning
                 playButtonState     $playButtonState
+                resetTime           $resetTime
                 """.trimIndent()
 
     }

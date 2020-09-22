@@ -3,6 +3,8 @@ package com.gggames.celebs.presentation.gameon
 import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
+import com.gggames.celebs.features.gameon.EndTurn
+import com.gggames.celebs.features.gameon.FlipLastCard
 import com.gggames.celebs.features.gameon.PickNextCard
 import com.gggames.celebs.features.gameon.StartGame
 import com.gggames.celebs.features.games.data.GamesRepository
@@ -43,6 +45,8 @@ class GamePresenterMVI @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val pickNextCard: PickNextCard,
     private val startGame: StartGame,
+    private val endTurn: EndTurn,
+    private val flipLastCard: FlipLastCard,
     private val leaveGame: LeaveGame,
     private val audioPlayer: AudioPlayer,
     private val schedulerProvider: BaseSchedulerProvider
@@ -109,8 +113,8 @@ class GamePresenterMVI @Inject constructor(
                     playButtonState = PlayButtonState(
                         isEnabled = meActive || result.game.currentPlayer == null,
                         state = turnState.toPlayButtonState()
-                    )
-
+                    ),
+                    resetTime = (previous.isTimerRunning && turnState != TurnState.Running)
 
                 )
             }
@@ -132,7 +136,7 @@ class GamePresenterMVI @Inject constructor(
             Observable.mergeArray(
                 o.ofType<CorrectClick>().flatMap { pickNextCardWrap(it.time) },
                 o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
-                o.ofType<UiEvent.EndTurnClick>().flatMap { just(NoOp) }
+                o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() }
 
             )
         }
@@ -149,6 +153,18 @@ class GamePresenterMVI @Inject constructor(
             ButtonState.Paused -> just(NoOp)
             ButtonState.Finished -> just(NoOp)
         }
+
+    private fun onTimerEnd(): Observable<NoOp> {
+        return if (authenticator.isMyselfActivePlayerBlocking(game)) {
+            audioPlayer.play("timesupyalabye")
+            flipLastCard(lastCard)
+                .andThen(endTurn(game))
+                .andThen(just(NoOp))
+        } else {
+            just(NoOp)
+        }
+
+    }
 
 
     private fun pickNextCardWrap(time: Long?): ObservableSource<Result.PickNextCardResult> {
