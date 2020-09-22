@@ -69,6 +69,7 @@ class GameOnUiBinder @Inject constructor() {
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeams(state.teams)
             updateTeams(state.teams)
+            roundTextView.text = state.round
         }
 
     }

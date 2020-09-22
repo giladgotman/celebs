@@ -28,7 +28,8 @@ interface GameScreenContract {
     data class State(
         val cardsInDeck: Int = 0,
         val currentCard: Card? = null,
-        val teams: List<Team> = emptyList()
+        val teams: List<Team> = emptyList(),
+        val round: String = "1"
     ) {
         companion object {
             val initialState = State()
@@ -39,6 +40,7 @@ interface GameScreenContract {
                 cardsInDeck: $cardsInDeck
                 currentCard: $currentCard
                 teamsSize:   ${teams.size}
+                round:       $round
                 """.trimIndent()
         }
     }

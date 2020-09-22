@@ -99,7 +99,11 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is Result.GameUpdate -> {
                 lastGame = result.game
-                previous.copy(teams = result.game.teams)
+                previous.copy(
+                    teams = result.game.teams,
+                    round = result.game.round.roundNumber.toString()
+
+                )
             }
             is Result.PlayersUpdate -> {
                 val updatedTeams = previous.teams.map { team ->
