@@ -13,6 +13,7 @@ import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.RoundState
+import com.gggames.celebs.model.TurnState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.NoOp
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PickNextCardResult.Found
@@ -101,7 +102,9 @@ class GamePresenterMVI @Inject constructor(
                 lastGame = result.game
                 previous.copy(
                     teams = result.game.teams,
-                    round = result.game.round.roundNumber.toString()
+                    round = result.game.round.roundNumber.toString(),
+                    isTimerRunning = result.game.gameInfo.round.turn.state == TurnState.Running
+
 
                 )
             }
@@ -127,6 +130,7 @@ class GamePresenterMVI @Inject constructor(
             )
         }
 
+
     private fun handleStartStopClick(
         buttonState: ButtonState,
         time: Long?
@@ -134,7 +138,7 @@ class GamePresenterMVI @Inject constructor(
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!, game)
                 .andThen(pickNextCardWrap(time))
-            ButtonState.Running -> pickNextCardWrap(time)
+            ButtonState.Running -> just(NoOp)
             ButtonState.Paused -> just(NoOp)
             ButtonState.Finished -> just(NoOp)
         }

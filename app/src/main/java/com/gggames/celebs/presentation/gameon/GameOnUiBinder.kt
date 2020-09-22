@@ -32,8 +32,9 @@ class GameOnUiBinder @Inject constructor() {
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
     private val _emitter = PublishSubject.create<GameScreenContract.UiEvent>()
+    val events = _emitter
 
-    fun setup() {
+    private fun setup() {
         view?.apply {
             correctButton.setOnClickListener {
                 _emitter.onNext(GameScreenContract.UiEvent.CorrectClick(mTimeLeftInMillis))
@@ -70,6 +71,13 @@ class GameOnUiBinder @Inject constructor() {
             setTeams(state.teams)
             updateTeams(state.teams)
             roundTextView.text = state.round
+            if (state.isTimerRunning) {
+                if (mCountDownTimer == null) {
+                    startTimer()
+                }
+            } else {
+                mCountDownTimer?.cancel()
+            }
         }
 
     }
@@ -133,6 +141,20 @@ class GameOnUiBinder @Inject constructor() {
                 }
             }
         }
+    }
+
+    private fun startTimer() {
+        mCountDownTimer?.cancel()
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+            override fun onFinish() {
+                mCountDownTimer = null
+                _emitter.onNext(GameScreenContract.UiEvent.TimerEnd)
+            }
+
+            override fun onTick(millis: Long) {
+                updateTime(millis)
+            }
+        }.start()
     }
 
     private fun setupTimer() {

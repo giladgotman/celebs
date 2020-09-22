@@ -29,20 +29,24 @@ interface GameScreenContract {
         val cardsInDeck: Int = 0,
         val currentCard: Card? = null,
         val teams: List<Team> = emptyList(),
-        val round: String = "1"
+        val round: String = "1",
+        val isTimerRunning: Boolean = false,
+        val startTimer: Boolean = false
     ) {
         companion object {
             val initialState = State()
         }
 
-        override fun toString(): String {
-            return """
-                cardsInDeck: $cardsInDeck
-                currentCard: $currentCard
-                teamsSize:   ${teams.size}
-                round:       $round
+        override fun toString() =
+            '\n' + """
+                cardsInDeck:        $cardsInDeck
+                currentCard:        $currentCard
+                teamsSize:          ${teams.size}
+                round:              $round
+                isTimerRunning:     $isTimerRunning
+                startTimer:         $startTimer
                 """.trimIndent()
-        }
+
     }
 
     sealed class Result {
