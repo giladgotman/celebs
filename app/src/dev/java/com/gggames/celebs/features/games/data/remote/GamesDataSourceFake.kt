@@ -13,13 +13,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GamesDataSourceFake @Inject constructor() : GamesDataSource {
-    val fakeGame= createGame()
+    val fakeGame = createGame(teams = listOf(createTeam()))
     var games = mutableListOf<Game>(fakeGame)
     val gamesSubject = PublishSubject.create<Game>()
 
     override fun getGames(gameIds: List<String>, states: List<GameState>): Single<List<Game>> {
         Timber.w("ggg getGames: size: ${gameIds.size}")
-        return Single.just(games.filter { (it.id in gameIds && ((it.state in states) || it.type == GameType.Gift)) || it.id == "id"})
+        return Single.just(games.filter { (it.id in gameIds && ((it.state in states) || it.type == GameType.Gift)) || it.id == "id" })
     }
 
     override fun setGame(game: Game): Completable =
@@ -62,4 +62,14 @@ fun createGame(
     gameInfo,
     host,
     type
+)
+
+fun createTeam(
+    name: String = "Team1",
+    players: List<Player> = emptyList(),
+    score: Int = 0
+) = Team(
+    name = name,
+    players = players,
+    score = score
 )
