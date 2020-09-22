@@ -5,34 +5,23 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
-import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
-import com.gggames.celebs.model.Round
-import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.common.MainActivityDelegate
 import com.gggames.celebs.presentation.di.ViewComponent
 import com.gggames.celebs.presentation.di.createViewComponent
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
-import com.gggames.celebs.presentation.endturn.KEY_CARDS
-import com.gggames.celebs.presentation.endturn.KEY_PLAYER_NAME
-import com.gggames.celebs.presentation.endturn.KEY_ROUND_NUMBER
-import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.RoundClick
-import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.Completable
 import io.reactivex.Observable.merge
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.*
 import java.util.*
@@ -49,6 +38,9 @@ class GameOnFragmentMVI : Fragment(),
     @Inject
     lateinit var presenter: GamePresenterMVI
 
+    @Inject
+    lateinit var uiBinder: GameOnUiBinder
+
     private var mCountDownTimer: CountDownTimer? = null
 
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
@@ -59,6 +51,8 @@ class GameOnFragmentMVI : Fragment(),
         listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
 
     private lateinit var playersRecycleViews: List<RecyclerView>
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -139,15 +133,14 @@ class GameOnFragmentMVI : Fragment(),
             recyclerView.adapter = playerAdapters[index]
         }
         setupTimer()
+
+        uiBinder.setFragment(this)
     }
 
     override fun onStart() {
         super.onStart()
         val uiEvents = merge(_emitter, (activity as MainActivity).events)
-        presenter.states.subscribe({
-            render(it)
-        },
-            {})
+        presenter.states.subscribe { uiBinder.render(it) }.let { disposables.add(it) }
 
         presenter.bind(uiEvents)
     }
