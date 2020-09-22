@@ -4,8 +4,6 @@ import android.content.SharedPreferences
 import com.gggames.celebs.model.Player
 import com.google.gson.Gson
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Singleton
 
 interface PreferenceManager {
     fun savePlayer(player: Player?)
@@ -14,8 +12,7 @@ interface PreferenceManager {
     fun loadGameInvitation(): String?
 }
 
-@Singleton
-class PreferenceManagerReal @Inject constructor(
+class PreferenceManagerReal constructor(
     private val defaultSharedPreferences: SharedPreferences
 ): PreferenceManager {
     private val PREFS_KEY_PLAYER = "PREFS_KEY_PLAYER"

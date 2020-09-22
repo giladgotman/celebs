@@ -8,13 +8,15 @@ import io.reactivex.Observable.merge
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
+val fakePlayer = Player("fakeId", "fakeName")
+
 class UserDataSourceFake @Inject constructor() : UserDataSource {
-    private var users = mutableListOf<Player>()
+    private var users = mutableListOf(fakePlayer)
     private val userSubject = PublishSubject.create<Player>()
 
     override fun getUser(userId: String): Observable<UserDataSource.UserResponse> {
         val current = Observable.fromCallable {
-            users.firstOrNull { it.id == userId }
+            users.firstOrNull { it.id == userId || it.id == "fakeId" }
                 ?.let { UserDataSource.UserResponse.Exists(it) }
                 ?: UserDataSource.UserResponse.NotExists
         }
