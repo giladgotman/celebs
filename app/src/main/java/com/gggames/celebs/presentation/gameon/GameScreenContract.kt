@@ -1,9 +1,6 @@
 package com.gggames.celebs.presentation.gameon
 
-import com.gggames.celebs.model.Card
-import com.gggames.celebs.model.Game
-import com.gggames.celebs.model.Player
-import com.gggames.celebs.model.Round
+import com.gggames.celebs.model.*
 
 interface GameScreenContract {
 
@@ -30,7 +27,8 @@ interface GameScreenContract {
 
     data class State(
         val cardsInDeck: Int = 0,
-        val currentCard: Card? = null
+        val currentCard: Card? = null,
+        val teams: List<Team> = emptyList()
     ) {
         companion object {
             val initialState = State()
@@ -40,14 +38,15 @@ interface GameScreenContract {
             return """
                 cardsInDeck: $cardsInDeck
                 currentCard: $currentCard
+                teamsSize:   ${teams.size}
                 """.trimIndent()
         }
     }
 
     sealed class Result {
-        data class GameUpdate(val game: Game): Result()
-        data class PlayersUpdate(val players: List<Player>): Result()
-        data class CardsUpdate(val cards: List<Card>): Result()
+        data class GameUpdate(val game: Game) : Result()
+        data class PlayersUpdate(val players: List<Player>) : Result()
+        data class CardsUpdate(val cards: List<Card>) : Result()
 
         sealed class PickNextCardResult : Result() {
             data class Found(val card: Card) : PickNextCardResult()

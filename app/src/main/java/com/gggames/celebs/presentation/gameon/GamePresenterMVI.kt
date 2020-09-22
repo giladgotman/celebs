@@ -99,9 +99,13 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is Result.GameUpdate -> {
                 lastGame = result.game
-                previous
+                previous.copy(teams = result.game.teams)
             }
-            is Result.PlayersUpdate -> previous
+            is Result.PlayersUpdate -> {
+                val updatedTeams = previous.teams.map { team ->
+                    team.copy(players = result.players.filter { it.team == team.name })
+                }
+                previous.copy(teams = updatedTeams)}
             is Result.CardsUpdate -> {
                 cardDeck = result.cards.toMutableList()
                 previous.copy(cardsInDeck = result.cards.size)
