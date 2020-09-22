@@ -25,3 +25,16 @@ fun createGame(
     host,
     type
 )
+
+
+
+fun createGameInfo(
+    totalCards: Int = 0,
+    cardsInDeck: Int = 0,
+    round: Round = Round()
+
+) = GameInfo(
+    totalCards = totalCards,
+    cardsInDeck = cardsInDeck,
+    round = round
+)
