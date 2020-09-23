@@ -92,6 +92,7 @@ class GameOnUiBinder @Inject constructor() {
             }
 
             correctButton.isEnabled = state.correctButtonEnabled
+            helpButton.isEnabled = state.helpButtonEnabled
         }
 
     }
