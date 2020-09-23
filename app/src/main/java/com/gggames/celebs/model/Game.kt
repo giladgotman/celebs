@@ -124,6 +124,22 @@ fun Game.setCurrentCard(card: Card?) = this.copy(
     )
 )
 
+fun Game.addCardsFoundInTurn(card: Card) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(cardsFound = this.turn.cardsFound + card.id)
+        )
+    )
+)
+
+fun Game.resetCardsFoundInTurn() = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(cardsFound = emptyList())
+        )
+    )
+)
+
 fun Game.setTurnPlayer(player: Player?) = this.copy(
     gameInfo = this.gameInfo.copy(
         round = this.gameInfo.round.copy(

@@ -61,6 +61,7 @@ interface GameScreenContract {
                 resetTime                       $resetTime
                 showEndOfTurn                   $showEndOfTurn
                 lastPlayer                      ${lastPlayer?.name}
+                cardsFoundInTurnSize            ${cardsFoundInTurn.size}
                 """.trimIndent()
 
     }

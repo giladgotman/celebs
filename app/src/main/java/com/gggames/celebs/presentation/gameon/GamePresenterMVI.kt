@@ -3,10 +3,7 @@ package com.gggames.celebs.presentation.gameon
 import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
-import com.gggames.celebs.features.gameon.EndTurn
-import com.gggames.celebs.features.gameon.FlipLastCard
-import com.gggames.celebs.features.gameon.HandleNextCard
-import com.gggames.celebs.features.gameon.StartGame
+import com.gggames.celebs.features.gameon.*
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
@@ -42,6 +39,7 @@ class GamePresenterMVI @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val handleNextCard: HandleNextCard,
     private val startGame: StartGame,
+    private val setCorrectCard: SetCorrectCard,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
     private val leaveGame: LeaveGame,
@@ -117,8 +115,8 @@ class GamePresenterMVI @Inject constructor(
                     showEndOfTurn = turnOver,
                     currentCard = game.turn.currentCard,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
-                    lastPlayer = game.currentPlayer ?: previous.lastPlayer
-
+                    lastPlayer = game.currentPlayer ?: previous.lastPlayer,
+                    cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound }
                 )
             }
             is Result.PlayersUpdate -> {
@@ -134,7 +132,7 @@ class GamePresenterMVI @Inject constructor(
                     totalCardsInGame = result.cards.size
                 )
             }
-            is Result.HandleNextCardResult.NewCard ->{
+            is Result.HandleNextCardResult.NewCard -> {
                 previous
 //                previous.copy(currentCard = result.newCard)
             }
@@ -146,12 +144,17 @@ class GamePresenterMVI @Inject constructor(
     private fun Observable<UiEvent>.toResult(): Observable<Result> =
         publish { o ->
             Observable.mergeArray(
-                o.ofType<CorrectClick>().flatMap { handleNextCardWrap(it.time) },
+                o.ofType<CorrectClick>().flatMap { onCorrectClick(it.time) },
                 o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
                 o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() }
 
             )
         }
+
+    private fun onCorrectClick(time: Long): Observable<out Result> =
+        lastCard?.let {
+            setCorrectCard(it, game).andThen(handleNextCardWrap(time))
+        } ?: just(NoOp)
 
 
     private fun handleStartStopClick(
