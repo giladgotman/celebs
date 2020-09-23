@@ -26,6 +26,7 @@ interface GameScreenContract {
     }
 
     data class State(
+        val totalCardsInGame: Int = 0,
         val cardsInDeck: Int = 0,
         val currentCard: Card? = null,
         val teamsWithScore: List<Team> = emptyList(),
@@ -41,7 +42,8 @@ interface GameScreenContract {
         }
 
         override fun toString() =
-                """
+            """
+                totalCardsInGame:               $totalCardsInGame
                 cardsInDeck:                    $cardsInDeck
                 currentCard:                    $currentCard
                 teamsWithPlayers:               ${teamsWithPlayers.map { it.players }}
@@ -64,9 +66,10 @@ interface GameScreenContract {
         data class PlayersUpdate(val players: List<Player>) : Result()
         data class CardsUpdate(val cards: List<Card>) : Result()
 
-        sealed class PickNextCardResult : Result() {
-            data class Found(val card: Card) : PickNextCardResult()
-            data class NoCardsLeft(val round: Round, val time: Long?) : PickNextCardResult()
+        sealed class HandleNextCardResult : Result() {
+            data class NewCard(val newCard: Card, val time: Long?) : HandleNextCardResult()
+            data class RoundOver(val round: Round, val newRound: Round, val time: Long?) : HandleNextCardResult()
+            object GameOver : HandleNextCardResult()
         }
 
         data class CardsUpdateResult(val currentCard: Card? = null) : Result()

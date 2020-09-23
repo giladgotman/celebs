@@ -10,6 +10,5 @@ class ObserveAllCards @Inject constructor(
 ) {
     operator fun invoke(): Observable<CardsUpdate> =
         cardsRepository.getAllCards()
-            .distinctUntilChanged()
             .map { CardsUpdate(it) }
 }

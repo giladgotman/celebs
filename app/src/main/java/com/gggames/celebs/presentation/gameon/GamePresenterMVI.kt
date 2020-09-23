@@ -5,7 +5,7 @@ import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.gameon.EndTurn
 import com.gggames.celebs.features.gameon.FlipLastCard
-import com.gggames.celebs.features.gameon.PickNextCard
+import com.gggames.celebs.features.gameon.HandleNextCard
 import com.gggames.celebs.features.gameon.StartGame
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
@@ -18,8 +18,6 @@ import com.gggames.celebs.model.RoundState
 import com.gggames.celebs.model.TurnState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.NoOp
-import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PickNextCardResult.Found
-import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PickNextCardResult.NoCardsLeft
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.CorrectClick
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.StartStopClick
 import com.gggames.celebs.utils.media.AudioPlayer
@@ -28,7 +26,6 @@ import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Observable.just
 import io.reactivex.Observable.merge
-import io.reactivex.ObservableSource
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
@@ -43,7 +40,7 @@ class GamePresenterMVI @Inject constructor(
     private val authenticator: Authenticator,
     private val cardsRepository: CardsRepository,
     private val gamesRepository: GamesRepository,
-    private val pickNextCard: PickNextCard,
+    private val handleNextCard: HandleNextCard,
     private val startGame: StartGame,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
@@ -51,7 +48,7 @@ class GamePresenterMVI @Inject constructor(
     private val audioPlayer: AudioPlayer,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
-    private var cardDeck = mutableListOf<Card>()
+    private var cardDeck = listOf<Card>()
 
     private var lastCard: Card? = null
     private val disposables = CompositeDisposable()
@@ -85,6 +82,7 @@ class GamePresenterMVI @Inject constructor(
         allInput
             .subscribeOn(schedulerProvider.io())
             .doOnNext { Timber.d("RESULT:: \n$it") }
+            .share()
             .scan(State.initialState, reduce())
             .distinctUntilChanged()
             .doOnNext { Timber.d("STATE:: \n$it") }
@@ -98,8 +96,6 @@ class GamePresenterMVI @Inject constructor(
 
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
-            is NoCardsLeft -> previous
-            is Found -> previous.copy(currentCard = result.card)
             is Result.CardsUpdateResult -> previous
             is NoOp -> previous
             is Result.GameUpdate -> {
@@ -125,16 +121,22 @@ class GamePresenterMVI @Inject constructor(
                 previous.copy(teamsWithPlayers = updatedTeams)
             }
             is Result.CardsUpdate -> {
-                cardDeck = result.cards.toMutableList()
-                previous.copy(cardsInDeck = result.cards.size)
+                cardDeck = result.cards
+                previous.copy(
+                    cardsInDeck = result.cards.filter { !it.used }.size,
+                    totalCardsInGame = result.cards.size
+                )
             }
+            is Result.HandleNextCardResult.NewCard -> previous.copy(currentCard = result.newCard)
+            is Result.HandleNextCardResult.RoundOver -> previous
+            is Result.HandleNextCardResult.GameOver -> previous
         }
     }
 
     private fun Observable<UiEvent>.toResult(): Observable<Result> =
         publish { o ->
             Observable.mergeArray(
-                o.ofType<CorrectClick>().flatMap { pickNextCardWrap(it.time) },
+                o.ofType<CorrectClick>().flatMap { handleNextCardWrap(it.time) },
                 o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
                 o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() }
 
@@ -148,7 +150,7 @@ class GamePresenterMVI @Inject constructor(
     ) =
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!, game)
-                .andThen(pickNextCardWrap(time))
+                .andThen(handleNextCardWrap(time))
             ButtonState.Running -> just(NoOp)
             ButtonState.Paused -> just(NoOp)
             ButtonState.Finished -> just(NoOp)
@@ -166,15 +168,13 @@ class GamePresenterMVI @Inject constructor(
 
     }
 
-
-    private fun pickNextCardWrap(time: Long?): ObservableSource<Result.PickNextCardResult> {
-        return pickNextCard(
+    private fun handleNextCardWrap(time: Long?) =
+        handleNextCard(
             cardDeck,
-            game.type,
-            game.round,
+            game,
             time
         )
-    }
+
 
     fun unBind() {
         disposables.clear()
