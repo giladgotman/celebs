@@ -14,10 +14,8 @@ import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
 import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
-import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -82,11 +80,9 @@ class GameOnUiBinder @Inject constructor() {
             setTeamPlayers(state.teamsWithPlayers)
             roundTextView.text = state.round.toString()
             if (state.isTimerRunning) {
-                if (mCountDownTimer == null) {
-                    startTimer()
-                }
+                startResumeTimer()
             } else {
-                mCountDownTimer?.cancel()
+                pauseTimer()
             }
             if (state.resetTime) {
                 updateTime(TURN_TIME_MILLIS)
@@ -95,9 +91,7 @@ class GameOnUiBinder @Inject constructor() {
             startButton.isEnabled = state.playButtonState.isEnabled
 
             if (state.showEndOfTurn) {
-                Timber.w("::showEndOfTurn")
-                showInfoToast(context, "End Of Turn")
-                state.lastPlayer?.let {player->
+                state.lastPlayer?.let { player ->
                     showEndTurn(player, state.cardsFoundInTurn, state.round)
                 }
 
@@ -107,6 +101,17 @@ class GameOnUiBinder @Inject constructor() {
             helpButton.isEnabled = state.helpButtonEnabled
         }
 
+    }
+
+    private fun startResumeTimer() {
+        if (!isTimerRunning) {
+            startTimer()
+        }
+    }
+
+    private fun pauseTimer() {
+        mCountDownTimer?.cancel()
+        isTimerRunning = false
     }
 
     fun setFragment(fragment: GameOnFragmentMVI) {
@@ -170,10 +175,12 @@ class GameOnUiBinder @Inject constructor() {
         }
     }
 
+    var isTimerRunning = false
     private fun startTimer() {
         mCountDownTimer?.cancel()
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
+                isTimerRunning = false
                 mCountDownTimer = null
                 _emitter.onNext(GameScreenContract.UiEvent.TimerEnd)
             }
@@ -182,6 +189,7 @@ class GameOnUiBinder @Inject constructor() {
                 updateTime(millis)
             }
         }.start()
+        isTimerRunning = true
     }
 
 

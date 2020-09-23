@@ -39,6 +39,8 @@ class GamePresenterMVI @Inject constructor(
     private val gamesRepository: GamesRepository,
     private val handleNextCard: HandleNextCard,
     private val startGame: StartGame,
+    private val pauseTurn: PauseTurn,
+    private val resumeTurn: ResumeTurn,
     private val setCorrectCard: SetCorrectCard,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
@@ -111,7 +113,7 @@ class GamePresenterMVI @Inject constructor(
                         isEnabled = meActive || result.game.currentPlayer == null,
                         state = turnState.toPlayButtonState()
                     ),
-                    resetTime = (previous.isTimerRunning && turnState != TurnState.Running),
+                    resetTime = !turnState.isTurnOn(),
                     showEndOfTurn = turnOver,
                     currentCard = game.turn.currentCard,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
@@ -164,8 +166,8 @@ class GamePresenterMVI @Inject constructor(
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!, game)
                 .andThen(handleNextCardWrap(time))
-            ButtonState.Running -> just(NoOp)
-            ButtonState.Paused -> just(NoOp)
+            ButtonState.Running -> pauseTurn(game).andThen(just(NoOp))
+            ButtonState.Paused -> resumeTurn(game).andThen(just(NoOp))
             ButtonState.Finished -> just(NoOp)
         }
 
@@ -193,6 +195,8 @@ class GamePresenterMVI @Inject constructor(
         disposables.clear()
     }
 }
+
+private fun TurnState.isTurnOn(): Boolean = this == TurnState.Running || this == TurnState.Paused
 
 private fun TurnState.toPlayButtonState() =
     when (this) {
