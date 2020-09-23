@@ -108,6 +108,9 @@ fun Game.setGameState(state: GameState) = this.copy(state = state)
 fun Game.setRoundState(state: RoundState) =
     this.copy(gameInfo = this.gameInfo.copy(round = this.gameInfo.round.copy(state = state)))
 
+fun Game.setRoundNumber(roundNumber: Int) =
+    this.copy(gameInfo = this.gameInfo.copy(round = this.gameInfo.round.copy(roundNumber = roundNumber)))
+
 fun Game.setTurnState(state: TurnState) = this.copy(
     gameInfo = this.gameInfo.copy(
         round = this.gameInfo.round.copy(

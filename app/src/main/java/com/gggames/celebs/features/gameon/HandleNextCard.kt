@@ -25,12 +25,19 @@ class HandleNextCard @Inject constructor(
                     setGame(game.setGameState(GameState.Finished))
                         .andThen(just(HandleNextCardResult.GameOver))
                 } else {
-                    val updatedGame = time?.let {
-                        game.setTurnTime(it)
-                    } ?: game
-                        .setTurnState(TurnState.Paused)
-                        .setRoundState(RoundState.Ended)
-                    setGame(updatedGame).andThen(just(HandleNextCardResult.RoundOver(game.round, game.round, time)))
+
+                    val resetCards =
+                        cardsRepository.updateCards(cardDeck.map { it.copy(used = false) })
+
+                    setGame(
+                        game
+                            .setTurnState(TurnState.Paused)
+                            .setRoundNumber(game.round.roundNumber + 1)
+                            .setRoundState(RoundState.New)
+                            .setTurnTime(time ?: game.turn.time)
+                    )
+                        .andThen(resetCards)
+                        .andThen(just(HandleNextCardResult.RoundOver(game.round, game.round, time)))
                 }
                 //todo check if need to check if round already in Ended state and then not doing anything
             }

@@ -6,7 +6,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.just
 import io.reactivex.subjects.BehaviorSubject
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.properties.Delegates
@@ -27,9 +26,7 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
     private val cardsSubject = BehaviorSubject.createDefault<List<Card>>(cards)
 
     override fun getAllCards(): Observable<List<Card>> =
-        cardsSubject.doOnNext {
-            Timber.w("CardsUpdate getAllCards onNext: $it")
-        }
+        cardsSubject
 
     override fun addCards(cards: List<Card>): Completable =
         Completable.fromCallable {

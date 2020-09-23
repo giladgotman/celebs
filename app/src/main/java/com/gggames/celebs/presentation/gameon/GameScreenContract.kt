@@ -31,7 +31,7 @@ interface GameScreenContract {
         val currentCard: Card? = null,
         val teamsWithScore: List<Team> = emptyList(),
         val teamsWithPlayers: List<Team> = emptyList(),
-        val round: Int = 1,
+        val round: Round = Round(),
         val playButtonState: PlayButtonState = PlayButtonState(),
         val correctButtonEnabled: Boolean = false,
         val helpButtonEnabled: Boolean = false,
@@ -39,6 +39,7 @@ interface GameScreenContract {
         val meActive: Boolean = false,
         val resetTime: Boolean = false,
         val showEndOfTurn: Boolean = false,
+        val showEndOfRound: Boolean = false,
         val lastPlayer: Player? = null,
         val cardsFoundInTurn: List<Card> = emptyList()
     ) {
@@ -60,6 +61,7 @@ interface GameScreenContract {
                 helpButtonEnabled               $helpButtonEnabled
                 resetTime                       $resetTime
                 showEndOfTurn                   $showEndOfTurn
+                showEndOfRound                  $showEndOfRound
                 lastPlayer                      ${lastPlayer?.name}
                 cardsFoundInTurnSize            ${cardsFoundInTurn.size}
                 """.trimIndent()

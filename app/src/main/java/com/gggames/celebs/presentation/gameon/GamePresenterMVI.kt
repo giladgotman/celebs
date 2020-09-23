@@ -105,9 +105,10 @@ class GamePresenterMVI @Inject constructor(
                 val turnState = result.game.gameInfo.round.turn.state
                 val turnOver = result.game.turn.state == TurnState.Stopped &&
                         result.game.round.state == RoundState.Started
+                val newRound = result.game.round.state == RoundState.New
                 previous.copy(
                     teamsWithScore = result.game.teams,
-                    round = result.game.round.roundNumber,
+                    round = result.game.round,
                     isTimerRunning = turnState == TurnState.Running,
                     playButtonState = PlayButtonState(
                         isEnabled = meActive || result.game.currentPlayer == null,
@@ -115,6 +116,7 @@ class GamePresenterMVI @Inject constructor(
                     ),
                     resetTime = !turnState.isTurnOn(),
                     showEndOfTurn = turnOver,
+                    showEndOfRound = newRound,
                     currentCard = game.turn.currentCard,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
                     lastPlayer = game.currentPlayer ?: previous.lastPlayer,

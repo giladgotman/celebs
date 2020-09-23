@@ -78,7 +78,7 @@ class GameOnUiBinder @Inject constructor() {
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
             setTeamPlayers(state.teamsWithPlayers)
-            roundTextView.text = state.round.toString()
+            roundTextView.text = state.round.roundNumber.toString()
             if (state.isTimerRunning) {
                 startResumeTimer()
             } else {
@@ -92,11 +92,12 @@ class GameOnUiBinder @Inject constructor() {
 
             if (state.showEndOfTurn) {
                 state.lastPlayer?.let { player ->
-                    showEndTurn(player, state.cardsFoundInTurn, state.round)
+                    showEndTurn(player, state.cardsFoundInTurn, state.round.roundNumber)
                 }
-
             }
-
+            if (state.showEndOfRound) {
+                showEndRound(state.round, state.teamsWithScore)
+            }
             correctButton.isEnabled = state.correctButtonEnabled
             helpButton.isEnabled = state.helpButtonEnabled
         }
