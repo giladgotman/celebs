@@ -3,12 +3,17 @@ package com.gggames.celebs.presentation.gameon
 import android.content.Context
 import android.os.CountDownTimer
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
+import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
+import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
 import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
@@ -30,6 +35,9 @@ class GameOnUiBinder @Inject constructor() {
     private lateinit var playersRecycleViews: List<RecyclerView>
 
     private var mCountDownTimer: CountDownTimer? = null
+
+    var endRoundDialogFragment: EndRoundDialogFragment? = null
+    var endTurnDialogFragment: EndTurnDialogFragment? = null
 
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
@@ -72,7 +80,7 @@ class GameOnUiBinder @Inject constructor() {
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
             setTeamPlayers(state.teamsWithPlayers)
-            roundTextView.text = state.round
+            roundTextView.text = state.round.toString()
             if (state.isTimerRunning) {
                 if (mCountDownTimer == null) {
                     startTimer()
@@ -89,6 +97,10 @@ class GameOnUiBinder @Inject constructor() {
             if (state.showEndOfTurn) {
                 Timber.w("::showEndOfTurn")
                 showInfoToast(context, "End Of Turn")
+                state.lastPlayer?.let {player->
+                    showEndTurn(player, state.cardsFoundInTurn, state.round)
+                }
+
             }
 
             correctButton.isEnabled = state.correctButtonEnabled
@@ -173,6 +185,19 @@ class GameOnUiBinder @Inject constructor() {
     }
 
 
+    fun showEndRound(round: Round, teams: List<Team>) {
+        if (endRoundDialogFragment?.isAdded != true) {
+            endRoundDialogFragment = EndRoundDialogFragment.create(round, teams)
+            endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
+        }
+    }
+
+    fun showEndTurn(player: Player, cards: List<Card>, roundNumber: Int) {
+        if (endTurnDialogFragment?.isAdded != true) {
+            endTurnDialogFragment = EndTurnDialogFragment.create(player, cards, roundNumber)
+            endTurnDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
+        }
+    }
 
     private fun setupTimer() {
         updateTime(TURN_TIME_MILLIS)

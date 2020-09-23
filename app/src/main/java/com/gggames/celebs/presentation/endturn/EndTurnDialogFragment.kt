@@ -1,27 +1,34 @@
 package com.gggames.celebs.presentation.endturn
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gggames.celebs.R
 import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
-import com.gggames.celebs.presentation.common.MainActivityDelegate
+import com.gggames.celebs.model.Player
 import com.gggames.celebs.presentation.di.createViewComponent
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class EndTurnDialogFragment : Fragment(), MainActivityDelegate {
+class EndTurnDialogFragment : BottomSheetDialogFragment() {
 
     private lateinit var cardsFoundAdapter: CardsFoundAdapter
 
     private var roundNumber: Int = 1
+
+
+    fun show(activity: AppCompatActivity) {
+        show(activity.supportFragmentManager, this.javaClass.simpleName)
+    }
 
     @Inject
     lateinit var videoPlayer: VideoPlayer
@@ -92,6 +99,15 @@ class EndTurnDialogFragment : Fragment(), MainActivityDelegate {
             cardsAmountDescription.text =
                 getString(R.string.end_turn_cards_description, cardsNames?.size ?: 0)
         }
+
+        finishButton.setOnClickListener {
+            dismissAllowingStateLoss()
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        return dialog
     }
 
     override fun onDestroyView() {
@@ -100,9 +116,19 @@ class EndTurnDialogFragment : Fragment(), MainActivityDelegate {
         videoPlayer.releasePlayer()
     }
 
-    override fun onBackPressed(): Boolean {
-        // finish only if finish pressed
-       return !finishPressed
+    companion object {
+        fun create(player: Player, cards: List<Card>, roundNumber: Int): EndTurnDialogFragment {
+            return EndTurnDialogFragment()
+                .apply {
+                    isCancelable = true
+                    arguments =
+                        Bundle().apply {
+                            putString(KEY_PLAYER_NAME, player.name)
+                            putParcelableArray(KEY_CARDS, cards.toTypedArray())
+                            putInt(KEY_ROUND_NUMBER, roundNumber)
+                        }
+                }
+        }
     }
 }
 

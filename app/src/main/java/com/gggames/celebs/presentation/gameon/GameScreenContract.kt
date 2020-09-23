@@ -31,14 +31,16 @@ interface GameScreenContract {
         val currentCard: Card? = null,
         val teamsWithScore: List<Team> = emptyList(),
         val teamsWithPlayers: List<Team> = emptyList(),
-        val round: String = "1",
+        val round: Int = 1,
         val playButtonState: PlayButtonState = PlayButtonState(),
         val correctButtonEnabled: Boolean = false,
         val helpButtonEnabled: Boolean = false,
         val isTimerRunning: Boolean = false,
         val meActive: Boolean = false,
         val resetTime: Boolean = false,
-        val showEndOfTurn: Boolean = false
+        val showEndOfTurn: Boolean = false,
+        val lastPlayer: Player? = null,
+        val cardsFoundInTurn: List<Card> = emptyList()
     ) {
         companion object {
             val initialState = State()
@@ -58,6 +60,7 @@ interface GameScreenContract {
                 helpButtonEnabled               $helpButtonEnabled
                 resetTime                       $resetTime
                 showEndOfTurn                   $showEndOfTurn
+                lastPlayer                      ${lastPlayer?.name}
                 """.trimIndent()
 
     }
