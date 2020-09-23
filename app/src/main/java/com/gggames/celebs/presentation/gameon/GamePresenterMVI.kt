@@ -72,7 +72,7 @@ class GamePresenterMVI @Inject constructor(
         val gameId = game.id
 
         val uiEvent = events
-            .doOnNext { Timber.d("USER:: $it") }
+            .doOnNext { Timber.d("USER:: \n$it") }
 
         val dataInput = merge(
             observeGame(gameId),
@@ -84,10 +84,10 @@ class GamePresenterMVI @Inject constructor(
 
         allInput
             .subscribeOn(schedulerProvider.io())
-            .doOnNext { Timber.d("RESULT:: $it") }
+            .doOnNext { Timber.d("RESULT:: \n$it") }
             .scan(State.initialState, reduce())
             .distinctUntilChanged()
-            .doOnNext { Timber.d("STATE:: $it") }
+            .doOnNext { Timber.d("STATE:: \n$it") }
             .observeOn(schedulerProvider.ui())
             .subscribe({
                 _states.onNext(it)
@@ -107,7 +107,7 @@ class GamePresenterMVI @Inject constructor(
                 val meActive = authenticator.isMyselfActivePlayerBlocking(game)
                 val turnState = result.game.gameInfo.round.turn.state
                 previous.copy(
-                    teams = result.game.teams,
+                    teamsWithScore = result.game.teams,
                     round = result.game.round.roundNumber.toString(),
                     isTimerRunning = turnState == TurnState.Running,
                     playButtonState = PlayButtonState(
@@ -119,10 +119,10 @@ class GamePresenterMVI @Inject constructor(
                 )
             }
             is Result.PlayersUpdate -> {
-                val updatedTeams = previous.teams.map { team ->
+                val updatedTeams = previous.teamsWithScore.map { team ->
                     team.copy(players = result.players.filter { it.team == team.name })
                 }
-                previous.copy(teams = updatedTeams)
+                previous.copy(teamsWithPlayers = updatedTeams)
             }
             is Result.CardsUpdate -> {
                 cardDeck = result.cards.toMutableList()

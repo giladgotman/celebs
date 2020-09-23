@@ -68,8 +68,8 @@ class GameOnUiBinder @Inject constructor() {
         view?.apply {
             cardTextView?.text = state.currentCard?.name ?: ""
             cardsAmount?.text = state.cardsInDeck.toString()
-            setTeams(state.teams)
-            updateTeams(state.teams)
+            setTeamNamesAndScore(state.teamsWithScore)
+            setTeamPlayers(state.teamsWithPlayers)
             roundTextView.text = state.round
             if (state.isTimerRunning) {
                 if (mCountDownTimer == null) {
@@ -95,7 +95,7 @@ class GameOnUiBinder @Inject constructor() {
     }
 
 
-    private fun updateTeams(teams: List<Team>) {
+    private fun setTeamPlayers(teams: List<Team>) {
         teams.forEachIndexed { index, team ->
             when (index) {
                 0 -> updateTeam1(team.name, team.players)
@@ -123,7 +123,7 @@ class GameOnUiBinder @Inject constructor() {
         playerAdapters[2].setData(players)
     }
 
-    fun setTeams(teams: List<Team>) {
+    private fun setTeamNamesAndScore(teams: List<Team>) {
         if (teams.size > 2) {
             view?.team3Layout?.isVisible = true
         }

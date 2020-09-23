@@ -28,7 +28,8 @@ interface GameScreenContract {
     data class State(
         val cardsInDeck: Int = 0,
         val currentCard: Card? = null,
-        val teams: List<Team> = emptyList(),
+        val teamsWithScore: List<Team> = emptyList(),
+        val teamsWithPlayers: List<Team> = emptyList(),
         val round: String = "1",
         val playButtonState: PlayButtonState = PlayButtonState(),
         val isTimerRunning: Boolean = false,
@@ -40,14 +41,15 @@ interface GameScreenContract {
         }
 
         override fun toString() =
-            '\n' + """
-                cardsInDeck:        $cardsInDeck
-                currentCard:        $currentCard
-                teamsSize:          ${teams.size}
-                round:              $round
-                isTimerRunning:     $isTimerRunning
-                playButtonState     $playButtonState
-                resetTime           $resetTime
+                """
+                cardsInDeck:                    $cardsInDeck
+                currentCard:                    $currentCard
+                teamsWithPlayers:               ${teamsWithPlayers.map { it.players }}
+                teamsWithScore:                 ${teamsWithScore.map { Pair(it.name, it.score) }}
+                round:                          $round
+                isTimerRunning:                 $isTimerRunning
+                playButtonState                 $playButtonState
+                resetTime                       $resetTime
                 """.trimIndent()
 
     }
