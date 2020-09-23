@@ -110,7 +110,9 @@ class GamePresenterMVI @Inject constructor(
                         isEnabled = meActive || result.game.currentPlayer == null,
                         state = turnState.toPlayButtonState()
                     ),
-                    resetTime = (previous.isTimerRunning && turnState != TurnState.Running)
+                    resetTime = (previous.isTimerRunning && turnState != TurnState.Running),
+                    showEndOfTurn = result.game.turn.state == TurnState.Stopped &&
+                            result.game.round.state == RoundState.Started
 
                 )
             }
@@ -127,7 +129,10 @@ class GamePresenterMVI @Inject constructor(
                     totalCardsInGame = result.cards.size
                 )
             }
-            is Result.HandleNextCardResult.NewCard -> previous.copy(currentCard = result.newCard)
+            is Result.HandleNextCardResult.NewCard ->{
+                lastCard = result.newCard
+                previous.copy(currentCard = result.newCard)
+            }
             is Result.HandleNextCardResult.RoundOver -> previous
             is Result.HandleNextCardResult.GameOver -> previous
         }

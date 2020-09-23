@@ -12,7 +12,7 @@ class StartGame @Inject constructor(
         return setGame(
             game
                 .setGameState(GameState.Started)
-                .setRoundState(RoundState.Ready)
+                .setRoundState(RoundState.Started)
                 .setTurnState(TurnState.Running)
                 .setTurnPlayer(player)
                 .setTurnLastCards(emptyList())

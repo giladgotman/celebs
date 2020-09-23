@@ -35,7 +35,8 @@ interface GameScreenContract {
         val playButtonState: PlayButtonState = PlayButtonState(),
         val isTimerRunning: Boolean = false,
         val meActive: Boolean = false,
-        val resetTime: Boolean = false
+        val resetTime: Boolean = false,
+        val showEndOfTurn: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -52,6 +53,7 @@ interface GameScreenContract {
                 isTimerRunning:                 $isTimerRunning
                 playButtonState                 $playButtonState
                 resetTime                       $resetTime
+                showEndOfTurn                   $showEndOfTurn
                 """.trimIndent()
 
     }

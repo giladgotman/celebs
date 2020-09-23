@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.utils.showInfoToast
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -83,6 +85,11 @@ class GameOnUiBinder @Inject constructor() {
             }
             startButton.state = state.playButtonState.state
             startButton.isEnabled = state.playButtonState.isEnabled
+
+            if (state.showEndOfTurn) {
+                Timber.w("::showEndOfTurn")
+                showInfoToast(context, "End Of Turn")
+            }
         }
 
     }
@@ -161,6 +168,8 @@ class GameOnUiBinder @Inject constructor() {
             }
         }.start()
     }
+
+
 
     private fun setupTimer() {
         updateTime(TURN_TIME_MILLIS)

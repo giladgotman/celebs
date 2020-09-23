@@ -9,8 +9,7 @@ import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
-import com.gggames.celebs.model.RoundState.Ended
-import com.gggames.celebs.model.RoundState.Ready
+import com.gggames.celebs.model.RoundState.*
 import com.gggames.celebs.model.TurnState.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
@@ -128,6 +127,8 @@ class GamePresenter @Inject constructor(
             view.setRound(newRound.roundNumber.toString())
             when (newRound.state) {
                 Ready -> {
+                }
+                Started -> {
                 }
                 Ended -> {
                     view.setRoundEndState(meActive, newRound.roundNumber)

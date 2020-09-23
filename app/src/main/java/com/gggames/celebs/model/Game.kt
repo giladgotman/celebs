@@ -43,6 +43,7 @@ data class Round(
 
 enum class RoundState {
     Ready,
+    Started,
     Ended,
     New;
 
@@ -50,6 +51,7 @@ enum class RoundState {
         fun fromName(name: String?): RoundState =
             when (name) {
                 "Ready" -> Ready
+                "Started" -> Started
                 "Ended" -> Ended
                 "New" -> New
                 else -> throw IllegalArgumentException("Unknown round state name: $name")
