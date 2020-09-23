@@ -90,6 +90,8 @@ class GameOnUiBinder @Inject constructor() {
                 Timber.w("::showEndOfTurn")
                 showInfoToast(context, "End Of Turn")
             }
+
+            correctButton.isEnabled = state.correctButtonEnabled
         }
 
     }
