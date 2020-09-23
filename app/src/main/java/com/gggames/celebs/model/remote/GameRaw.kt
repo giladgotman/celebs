@@ -44,7 +44,8 @@ data class TurnRaw(
     val player: PlayerRaw? = null,
     val time: Long? = null,
     val cardsFound: List<String> = emptyList(),
-    val lastFoundCard: CardRaw? = null
+    val lastFoundCard: CardRaw? = null,
+    val currentCard: CardRaw? = null
 )
 
 const val EMPTY_VALUE = "EMPTY_VALUE"

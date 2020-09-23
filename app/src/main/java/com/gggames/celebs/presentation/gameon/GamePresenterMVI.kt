@@ -100,8 +100,11 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is Result.GameUpdate -> {
                 lastGame = result.game
+                lastCard = result.game.turn.currentCard
                 val meActive = authenticator.isMyselfActivePlayerBlocking(game)
                 val turnState = result.game.gameInfo.round.turn.state
+                val turnOver = result.game.turn.state == TurnState.Stopped &&
+                        result.game.round.state == RoundState.Started
                 previous.copy(
                     teamsWithScore = result.game.teams,
                     round = result.game.round.roundNumber.toString(),
@@ -111,8 +114,8 @@ class GamePresenterMVI @Inject constructor(
                         state = turnState.toPlayButtonState()
                     ),
                     resetTime = (previous.isTimerRunning && turnState != TurnState.Running),
-                    showEndOfTurn = result.game.turn.state == TurnState.Stopped &&
-                            result.game.round.state == RoundState.Started
+                    showEndOfTurn = turnOver,
+                    currentCard = game.turn.currentCard
 
                 )
             }
@@ -130,8 +133,8 @@ class GamePresenterMVI @Inject constructor(
                 )
             }
             is Result.HandleNextCardResult.NewCard ->{
-                lastCard = result.newCard
-                previous.copy(currentCard = result.newCard)
+                previous
+//                previous.copy(currentCard = result.newCard)
             }
             is Result.HandleNextCardResult.RoundOver -> previous
             is Result.HandleNextCardResult.GameOver -> previous

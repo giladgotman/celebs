@@ -17,6 +17,7 @@ class HandleNextCard @Inject constructor(
         pickNextCard(cardDeck, game.type, game.round, time).switchMap { pickNextCardResult ->
             if (pickNextCardResult is PickNextCardResult.Found) {
                 cardsRepository.updateCard(pickNextCardResult.card)
+                    .andThen(setGame(game.setCurrentCard(pickNextCardResult.card)))
                     .andThen(just(HandleNextCardResult.NewCard(pickNextCardResult.card, time)))
             } else {
                 val isLastRound: Boolean = (game.gameInfo.round.roundNumber == 3)

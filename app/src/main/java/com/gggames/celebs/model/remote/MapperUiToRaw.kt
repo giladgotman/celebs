@@ -47,7 +47,12 @@ fun Round.toRaw() = RoundRaw(
 )
 
 fun Turn.toRaw() = TurnRaw(
-    this.state.toRaw(), this.player?.toRaw(), this.time, this.cardsFound, this.lastFoundCard?.toRaw()
+    this.state.toRaw(),
+    this.player?.toRaw(),
+    this.time,
+    this.cardsFound,
+    this.lastFoundCard?.toRaw(),
+    this.currentCard?.toRaw()
 )
 fun RoundState.toRaw() = this.name
 

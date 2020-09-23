@@ -64,7 +64,8 @@ data class Turn(
     val player: Player? = null,
     val time: Long? = null,
     val cardsFound: List<String> = emptyList(),
-    val lastFoundCard: Card? = null
+    val lastFoundCard: Card? = null,
+    val currentCard: Card? = null
 )
 
 enum class TurnState {
@@ -111,6 +112,14 @@ fun Game.setTurnState(state: TurnState) = this.copy(
     gameInfo = this.gameInfo.copy(
         round = this.gameInfo.round.copy(
             turn = this.gameInfo.round.turn.copy(state = state)
+        )
+    )
+)
+
+fun Game.setCurrentCard(card: Card?) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(currentCard = card)
         )
     )
 )

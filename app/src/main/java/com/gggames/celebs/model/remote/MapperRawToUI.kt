@@ -51,5 +51,10 @@ fun RoundRaw.toUi() = Round(
 )
 
 fun TurnRaw.toUi() = Turn(
-    TurnState.fromName(this.state), this.player?.toUi(), this.time, this.cardsFound, this.lastFoundCard?.toUi()
+    TurnState.fromName(this.state),
+    this.player?.toUi(),
+    this.time,
+    this.cardsFound,
+    this.lastFoundCard?.toUi(),
+    this.currentCard?.toUi()
 )
