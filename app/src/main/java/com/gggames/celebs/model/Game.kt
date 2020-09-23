@@ -1,6 +1,7 @@
 package com.gggames.celebs.model
 
 import com.gggames.celebs.model.TurnState.Idle
+import com.gggames.celebs.presentation.gameon.GameScreenContract
 
 data class Game(
     val id: String,
@@ -85,6 +86,16 @@ enum class TurnState {
             }
     }
 }
+
+fun TurnState.isTurnOn(): Boolean = this == TurnState.Running || this == TurnState.Paused
+
+fun TurnState.toPlayButtonState() =
+    when (this) {
+        TurnState.Idle -> GameScreenContract.ButtonState.Stopped
+        TurnState.Stopped -> GameScreenContract.ButtonState.Stopped
+        TurnState.Running -> GameScreenContract.ButtonState.Running
+        TurnState.Paused -> GameScreenContract.ButtonState.Paused
+    }
 
 enum class GameState {
     Created,

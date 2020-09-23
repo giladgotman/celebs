@@ -9,10 +9,7 @@ import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
-import com.gggames.celebs.model.Card
-import com.gggames.celebs.model.Game
-import com.gggames.celebs.model.RoundState
-import com.gggames.celebs.model.TurnState
+import com.gggames.celebs.model.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.NoOp
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.CorrectClick
@@ -197,14 +194,3 @@ class GamePresenterMVI @Inject constructor(
         disposables.clear()
     }
 }
-
-private fun TurnState.isTurnOn(): Boolean = this == TurnState.Running || this == TurnState.Paused
-
-private fun TurnState.toPlayButtonState() =
-    when (this) {
-        TurnState.Idle -> ButtonState.Stopped
-        TurnState.Stopped -> ButtonState.Stopped
-        TurnState.Running -> ButtonState.Running
-        TurnState.Paused -> ButtonState.Paused
-    }
-
