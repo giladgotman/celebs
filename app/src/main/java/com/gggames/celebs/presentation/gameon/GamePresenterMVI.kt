@@ -11,7 +11,7 @@ import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.*
-import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.NoOp
+import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.CorrectClick
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.StartStopClick
 import com.gggames.celebs.utils.media.AudioPlayer
@@ -39,6 +39,7 @@ class GamePresenterMVI @Inject constructor(
     private val pauseTurn: PauseTurn,
     private val resumeTurn: ResumeTurn,
     private val handleCorrectCard: HandleCorrectCard,
+    private val handleBackPressed: HandleBackPressed,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
     private val leaveGame: LeaveGame,
@@ -93,9 +94,7 @@ class GamePresenterMVI @Inject constructor(
 
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
-            is Result.CardsUpdateResult -> previous
-            is NoOp -> previous
-            is Result.GameUpdate -> {
+            is GameUpdate -> {
                 val meActive = authenticator.isMyselfActivePlayerBlocking(game)
                 val turnState = result.game.gameInfo.round.turn.state
                 val turnOver = result.game.turn.state == TurnState.Stopped &&
@@ -124,25 +123,25 @@ class GamePresenterMVI @Inject constructor(
 
                 newState
             }
-            is Result.PlayersUpdate -> {
+            is PlayersUpdate -> {
                 val updatedTeams = previous.teamsWithScore.map { team ->
                     team.copy(players = result.players.filter { it.team == team.name })
                 }
                 previous.copy(teamsWithPlayers = updatedTeams)
             }
-            is Result.CardsUpdate -> {
+            is CardsUpdate -> {
                 cardDeck = result.cards
                 previous.copy(
                     cardsInDeck = result.cards.filter { !it.used }.size,
                     totalCardsInGame = result.cards.size
                 )
             }
-            is Result.HandleNextCardResult.NewCard -> {
-                previous
-//                previous.copy(currentCard = result.newCard)
-            }
-            is Result.HandleNextCardResult.RoundOver -> previous
-            is Result.HandleNextCardResult.GameOver -> previous
+            is HandleNextCardResult.NewCard -> previous
+            is HandleNextCardResult.RoundOver -> previous
+            is HandleNextCardResult.GameOver -> previous
+            is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
+            is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = true)
+            is NoOp -> previous
         }
     }
 
@@ -151,8 +150,10 @@ class GamePresenterMVI @Inject constructor(
             Observable.mergeArray(
                 o.ofType<CorrectClick>().flatMap { onCorrectClick(it.time) },
                 o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
-                o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() }
-
+                o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() },
+                o.ofType<UiEvent.OnBackPressed>().flatMap { handleBackPressed(game) },
+                o.ofType<UiEvent.UserApprovedQuitGame>()
+                    .flatMap { endTurn(game).andThen(just(BackPressedResult.NavigateToGames)) }
             )
         }
 

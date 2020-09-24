@@ -1,6 +1,8 @@
 package com.gggames.celebs.presentation.gameon
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -110,6 +112,13 @@ class GameOnUiBinder @Inject constructor() {
             if (state.showGameOver) {
                 navigateToEndGame()
             }
+            if (state.navigateToGames) {
+                fragment.findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
+            }
+            if (state.showLeaveGameConfirmation) {
+                showLeaveGameDialog()
+            }
+
             correctButton.isEnabled = state.correctButtonEnabled
             helpButton.isEnabled = state.helpButtonEnabled
         }
@@ -203,6 +212,27 @@ class GameOnUiBinder @Inject constructor() {
             Bundle().apply {
                 putString(GAME_ID_KEY, "dummy game id")
             })
+    }
+
+    fun showLeaveGameDialog() {
+        context?.let { ctx ->
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        _emitter.onNext(GameScreenContract.UiEvent.UserApprovedQuitGame)
+                    }
+
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                    }
+                }
+            }
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(ctx.getString(R.string.leave_game_dialog_title))
+                .setPositiveButton(ctx.getString(R.string.ok), dialogClickListener)
+                .setNegativeButton(ctx.getString(R.string.cancel), dialogClickListener)
+                .show()
+        }
+
     }
 
     private fun showEndRound(endedRoundName: String, teams: List<Team>) {

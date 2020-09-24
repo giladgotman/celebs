@@ -64,18 +64,16 @@ class GameOnFragmentMVI : Fragment(),
         viewComponent.inject(this)
 
         uiBinder.setFragment(this)
-    }
 
-    override fun onStart() {
-        super.onStart()
         val uiEvents = merge(_emitter, (activity as MainActivity).events)
         presenter.states.subscribe { uiBinder.render(it) }.let { disposables.add(it) }
 
         presenter.bind(merge(uiEvents, uiBinder.events))
     }
 
-    override fun onStop() {
-        super.onStop()
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         disposables.clear()
         presenter.unBind()
     }

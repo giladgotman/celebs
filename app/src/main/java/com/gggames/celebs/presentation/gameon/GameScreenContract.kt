@@ -43,7 +43,9 @@ interface GameScreenContract {
         val showEndOfRound: Boolean = false,
         val showGameOver: Boolean = false,
         val lastPlayer: Player? = null,
-        val cardsFoundInTurn: List<Card> = emptyList()
+        val cardsFoundInTurn: List<Card> = emptyList(),
+        val showLeaveGameConfirmation: Boolean = false,
+        val navigateToGames: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -68,6 +70,8 @@ interface GameScreenContract {
                 showGameOver                    $showGameOver
                 lastPlayer                      ${lastPlayer?.name}
                 cardsFoundInTurnSize            ${cardsFoundInTurn.size}
+                showLeaveGameConfirmation       $showLeaveGameConfirmation
+                navigateToGames                 $navigateToGames
                 """.trimIndent()
 
     }
@@ -88,7 +92,10 @@ interface GameScreenContract {
             object GameOver : HandleNextCardResult()
         }
 
-        data class CardsUpdateResult(val currentCard: Card? = null) : Result()
+        sealed class BackPressedResult: Result() {
+            data class ShowLeaveGameConfirmation(val showDialog: Boolean): BackPressedResult()
+            object NavigateToGames : BackPressedResult()
+        }
 
         object NoOp : Result()
     }
