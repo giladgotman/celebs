@@ -140,7 +140,7 @@ class GamePresenterMVI @Inject constructor(
             is HandleNextCardResult.RoundOver -> previous
             is HandleNextCardResult.GameOver -> previous
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
-            is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = true)
+            is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
         }
     }
@@ -152,10 +152,18 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
                 o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() },
                 o.ofType<UiEvent.OnBackPressed>().flatMap { handleBackPressed(game) },
-                o.ofType<UiEvent.UserApprovedQuitGame>()
-                    .flatMap { endTurn(game).andThen(just(BackPressedResult.NavigateToGames)) }
+                o.ofType<UiEvent.UserApprovedQuitGame>().flatMap { quitGame() }
             )
         }
+
+    private fun quitGame(): Observable<BackPressedResult.NavigateToGames> {
+        return endTurn(game).andThen(
+            just(
+                BackPressedResult.NavigateToGames(true),
+                BackPressedResult.NavigateToGames(false)
+            )
+        )
+    }
 
     private fun onCorrectClick(time: Long): Observable<out Result> =
         lastCard?.let { card ->

@@ -94,7 +94,7 @@ interface GameScreenContract {
 
         sealed class BackPressedResult: Result() {
             data class ShowLeaveGameConfirmation(val showDialog: Boolean): BackPressedResult()
-            object NavigateToGames : BackPressedResult()
+            data class NavigateToGames(val navigate: Boolean) : BackPressedResult()
         }
 
         object NoOp : Result()

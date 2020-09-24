@@ -13,6 +13,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable.merge
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -71,9 +72,9 @@ class GameOnFragmentMVI : Fragment(),
         presenter.bind(merge(uiEvents, uiBinder.events))
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
+        Timber.d("onDestroyView")
         disposables.clear()
         presenter.unBind()
     }

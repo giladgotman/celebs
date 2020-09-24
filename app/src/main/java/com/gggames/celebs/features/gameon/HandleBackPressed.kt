@@ -17,7 +17,10 @@ class HandleBackPressed @Inject constructor(
                 BackPressedResult.ShowLeaveGameConfirmation(false)
             )
         } else {
-            just(BackPressedResult.NavigateToGames)
+            just(
+                BackPressedResult.NavigateToGames(true),
+                BackPressedResult.NavigateToGames(false)
+            )
         }
 }
 

@@ -89,7 +89,7 @@ class GameOnUiBinder @Inject constructor() {
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
             setTeamPlayers(state.teamsWithPlayers)
-            roundTextView.text = state.round.roundNumber.toString()
+            roundTextView?.text = state.round.roundNumber.toString()
             if (state.isTimerRunning) {
                 startResumeTimer()
             } else {
@@ -98,8 +98,8 @@ class GameOnUiBinder @Inject constructor() {
             if (state.resetTime) {
                 updateTime(TURN_TIME_MILLIS)
             }
-            startButton.state = state.playButtonState.state
-            startButton.isEnabled = state.playButtonState.isEnabled
+            startButton?.state = state.playButtonState.state
+            startButton?.isEnabled = state.playButtonState.isEnabled
 
             if (state.showEndOfTurn) {
                 state.lastPlayer?.let { player ->
@@ -119,8 +119,8 @@ class GameOnUiBinder @Inject constructor() {
                 showLeaveGameDialog()
             }
 
-            correctButton.isEnabled = state.correctButtonEnabled
-            helpButton.isEnabled = state.helpButtonEnabled
+            correctButton?.isEnabled = state.correctButtonEnabled
+            helpButton?.isEnabled = state.helpButtonEnabled
         }
     }
 
