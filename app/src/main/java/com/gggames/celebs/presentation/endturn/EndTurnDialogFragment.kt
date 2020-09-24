@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.gggames.celebs.R
 import com.gggames.celebs.features.video.VideoPlayer
 import com.gggames.celebs.model.Card
@@ -82,7 +83,7 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
 
         cardsRecyclerView.setHasFixedSize(true)
 
-        val layoutManager = LinearLayoutManager(this.context)
+        val layoutManager = LinearLayoutManager(this.context, HORIZONTAL, false)
         cardsRecyclerView.layoutManager = layoutManager
         cardsRecyclerView.itemAnimator = DefaultItemAnimator()
         cardsRecyclerView.adapter = cardsFoundAdapter
