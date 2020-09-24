@@ -38,6 +38,7 @@ class GamePresenterMVI @Inject constructor(
     private val startGame: StartGame,
     private val pauseTurn: PauseTurn,
     private val resumeTurn: ResumeTurn,
+    private val startRound: StartRound,
     private val handleCorrectCard: HandleCorrectCard,
     private val handleBackPressed: HandleBackPressed,
     private val endTurn: EndTurn,
@@ -138,6 +139,7 @@ class GamePresenterMVI @Inject constructor(
                     totalCardsInGame = result.cards.size
                 )
             }
+            is RoundOverDialogDismissedResult -> previous.copy(showEndOfRound = false)
             is HandleNextCardResult.InProgress -> previous.copy(correctButtonEnabled = false)
             is HandleNextCardResult.NewCard -> previous
             is HandleNextCardResult.RoundOver -> previous
@@ -155,7 +157,8 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
                 o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() },
                 o.ofType<UiEvent.OnBackPressed>().flatMap { handleBackPressed(game) },
-                o.ofType<UiEvent.UserApprovedQuitGame>().flatMap { quitGame() }
+                o.ofType<UiEvent.UserApprovedQuitGame>().flatMap { quitGame() },
+                o.ofType<UiEvent.RoundOverDialogDismissed>().flatMap { just(RoundOverDialogDismissedResult) }
             )
         }
 
@@ -185,7 +188,16 @@ class GamePresenterMVI @Inject constructor(
             ButtonState.Stopped -> startGame(authenticator.me!!, game)
                 .andThen(handleNextCardWrap(time))
             ButtonState.Running -> pauseTurn(game).andThen(just(NoOp))
-            ButtonState.Paused -> resumeTurn(game).andThen(just(NoOp))
+            ButtonState.Paused -> {
+                if (game.round.state == RoundState.New) {
+                    startRound(game)
+                        .andThen(handleNextCardWrap(time))
+                        .flatMapCompletable { resumeTurn(game) }
+                        .andThen(just(NoOp))
+                } else {
+                    resumeTurn(game).andThen(just(NoOp))
+                }
+            }
             ButtonState.Finished -> just(NoOp)
         }
 

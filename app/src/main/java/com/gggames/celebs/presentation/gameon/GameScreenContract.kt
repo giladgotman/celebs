@@ -14,6 +14,7 @@ interface GameScreenContract {
         object UserApprovedQuitGame : UiEvent()
         object OnBackPressed : UiEvent()
         object OnSwitchTeamPressed : UiEvent()
+        object RoundOverDialogDismissed : UiEvent()
 
         sealed class MainUiEvent : UiEvent()
     }
@@ -101,6 +102,8 @@ interface GameScreenContract {
             data class ShowLeaveGameConfirmation(val showDialog: Boolean): BackPressedResult()
             data class NavigateToGames(val navigate: Boolean) : BackPressedResult()
         }
+
+        object RoundOverDialogDismissedResult : Result()
 
         object NoOp : Result()
     }

@@ -1,6 +1,7 @@
 package com.gggames.celebs.presentation.endturn
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.gameon.GameScreenContract
+import com.gggames.celebs.utils.rx.EventEmitter
+import com.gggames.celebs.utils.rx.ViewEventEmitter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_round_dialog.*
 
 class EndRoundDialogFragment :
-    BottomSheetDialogFragment() {
+    BottomSheetDialogFragment(), EventEmitter<GameScreenContract.UiEvent> by ViewEventEmitter() {
 
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
@@ -62,6 +66,10 @@ class EndRoundDialogFragment :
         }
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        GameScreenContract.UiEvent.RoundOverDialogDismissed.emit()
+    }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         return dialog

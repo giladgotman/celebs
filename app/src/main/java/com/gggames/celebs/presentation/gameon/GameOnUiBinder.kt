@@ -18,6 +18,8 @@ import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
 import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
+import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
 import java.util.*
@@ -43,25 +45,25 @@ class GameOnUiBinder @Inject constructor() {
 
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
-    private val _emitter = PublishSubject.create<GameScreenContract.UiEvent>()
-    val events = _emitter
+    private val _emitter = PublishSubject.create<UiEvent>()
+    val events: Observable<UiEvent> = _emitter
 
     private fun setup() {
         view?.apply {
             correctButton.setOnClickListener {
-                _emitter.onNext(GameScreenContract.UiEvent.CorrectClick(mTimeLeftInMillis))
+                _emitter.onNext(UiEvent.CorrectClick(mTimeLeftInMillis))
             }
 
             roundTextView.setOnClickListener {
-                _emitter.onNext(GameScreenContract.UiEvent.RoundClick(mTimeLeftInMillis))
+                _emitter.onNext(UiEvent.RoundClick(mTimeLeftInMillis))
             }
 
             startButton.setOnClickListener {
-                _emitter.onNext(GameScreenContract.UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
+                _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
             }
 
             cardsAmount.setOnClickListener {
-                _emitter.onNext(GameScreenContract.UiEvent.CardsAmountClick)
+                _emitter.onNext(UiEvent.CardsAmountClick)
             }
 
             playersRecycleViews =
@@ -201,7 +203,7 @@ class GameOnUiBinder @Inject constructor() {
             override fun onFinish() {
                 isTimerRunning = false
                 mCountDownTimer = null
-                _emitter.onNext(GameScreenContract.UiEvent.TimerEnd)
+                _emitter.onNext(UiEvent.TimerEnd)
             }
 
             override fun onTick(millis: Long) {
@@ -220,12 +222,12 @@ class GameOnUiBinder @Inject constructor() {
             })
     }
 
-    fun showLeaveGameDialog() {
+    private fun showLeaveGameDialog() {
         context?.let { ctx ->
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        _emitter.onNext(GameScreenContract.UiEvent.UserApprovedQuitGame)
+                        _emitter.onNext(UiEvent.UserApprovedQuitGame)
                     }
 
                     DialogInterface.BUTTON_NEGATIVE -> {
@@ -244,6 +246,7 @@ class GameOnUiBinder @Inject constructor() {
     private fun showEndRound(endedRoundName: String, teams: List<Team>) {
         if (endRoundDialogFragment?.isAdded != true) {
             endRoundDialogFragment = EndRoundDialogFragment.create(endedRoundName, teams)
+            endRoundDialogFragment?.events()?.subscribe(_emitter)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
         }
     }
