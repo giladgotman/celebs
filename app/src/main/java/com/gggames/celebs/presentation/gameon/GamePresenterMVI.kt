@@ -38,7 +38,7 @@ class GamePresenterMVI @Inject constructor(
     private val startGame: StartGame,
     private val pauseTurn: PauseTurn,
     private val resumeTurn: ResumeTurn,
-    private val setCorrectCard: SetCorrectCard,
+    private val handleCorrectCard: HandleCorrectCard,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
     private val leaveGame: LeaveGame,
@@ -157,8 +157,11 @@ class GamePresenterMVI @Inject constructor(
         }
 
     private fun onCorrectClick(time: Long): Observable<out Result> =
-        lastCard?.let {
-            setCorrectCard(it, game).andThen(handleNextCardWrap(time))
+        lastCard?.let { card ->
+            authenticator.me?.team?.let { teamName ->
+                handleCorrectCard(card, game, teamName)
+                    .andThen(handleNextCardWrap(time))
+            }
         } ?: just(NoOp)
 
 

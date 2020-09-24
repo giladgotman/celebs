@@ -177,3 +177,16 @@ fun Game.setTurnLastCards(cardsIds: List<String>) = this.copy(
         )
     )
 )
+
+fun Game.increaseScore(teamName: String): Game {
+    val teamIndex = this.teams.indexOfFirst { it.name == teamName }
+    if (teamIndex != -1) {
+        val currScore = this.teams[teamIndex].score
+        val currTeam = this.teams[teamIndex]
+        val mutableTeams = this.teams.toMutableList()
+        mutableTeams[teamIndex] = currTeam.copy(score = currScore + 1)
+        return this.copy(teams = mutableTeams)
+    } else {
+        throw java.lang.IllegalArgumentException("Can't find teamName: $teamName")
+    }
+}
