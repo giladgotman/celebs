@@ -114,6 +114,8 @@ class GamePresenterMVI @Inject constructor(
                     previousRoundName = lastGame?.round?.roundNumber?.toString() ?: previous.previousRoundName,
                     showGameOver = game.state == GameState.Finished,
                     currentCard = game.turn.currentCard,
+                    currentPlayer = game.turn.player,
+                    revealCurrentCard = meActive,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
                     lastPlayer = game.currentPlayer ?: previous.lastPlayer,
                     cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound }
@@ -136,6 +138,7 @@ class GamePresenterMVI @Inject constructor(
                     totalCardsInGame = result.cards.size
                 )
             }
+            is HandleNextCardResult.InProgress -> previous.copy(correctButtonEnabled = false)
             is HandleNextCardResult.NewCard -> previous
             is HandleNextCardResult.RoundOver -> previous
             is HandleNextCardResult.GameOver -> previous

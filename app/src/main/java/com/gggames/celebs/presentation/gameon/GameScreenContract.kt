@@ -29,6 +29,8 @@ interface GameScreenContract {
         val totalCardsInGame: Int = 0,
         val cardsInDeck: Int = 0,
         val currentCard: Card? = null,
+        val currentPlayer: Player? = null,
+        val revealCurrentCard: Boolean = false,
         val teamsWithScore: List<Team> = emptyList(),
         val teamsWithPlayers: List<Team> = emptyList(),
         val round: Round = Round(),
@@ -56,6 +58,8 @@ interface GameScreenContract {
                 totalCardsInGame:               $totalCardsInGame
                 cardsInDeck:                    $cardsInDeck
                 currentCard:                    $currentCard
+                currentPlayer:                  $currentPlayer
+                revealCurrentCard:              $revealCurrentCard
                 teamsWithPlayers:               ${teamsWithPlayers.map { it.players }}
                 teamsWithScore:                 ${teamsWithScore.map { Pair(it.name, it.score) }}
                 previousRoundName:              $previousRoundName
@@ -87,6 +91,7 @@ interface GameScreenContract {
         data class CardsUpdate(val cards: List<Card>) : Result()
 
         sealed class HandleNextCardResult : Result() {
+            object InProgress: HandleNextCardResult()
             data class NewCard(val newCard: Card, val time: Long?) : HandleNextCardResult()
             data class RoundOver(val round: Round, val newRound: Round, val time: Long?) : HandleNextCardResult()
             object GameOver : HandleNextCardResult()

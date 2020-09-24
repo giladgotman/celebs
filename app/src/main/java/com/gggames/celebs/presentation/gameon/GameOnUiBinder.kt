@@ -85,7 +85,13 @@ class GameOnUiBinder @Inject constructor() {
 
     fun render(state: GameScreenContract.State) {
         view?.apply {
-            cardTextView?.text = state.currentCard?.name ?: ""
+
+            if (state.revealCurrentCard) {
+                cardTextView?.text = state.currentCard?.name ?: ""
+            } else {
+                cardTextView?.text = state.currentPlayer?.name ?: ""
+            }
+
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
             setTeamPlayers(state.teamsWithPlayers)
