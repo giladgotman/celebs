@@ -223,7 +223,7 @@ class GameOnFragment : Fragment(),
     override fun showRoundEnded(round: Round, teams: List<Team>) {
             cardTextView.text = ""
             if (endRoundDialogFragment?.isAdded != true) {
-                endRoundDialogFragment = EndRoundDialogFragment.create(round, teams)
+                endRoundDialogFragment = EndRoundDialogFragment.create(round.roundNumber.toString(), teams)
                 endRoundDialogFragment?.show(requireActivity() as AppCompatActivity)
             }
     }

@@ -32,6 +32,7 @@ interface GameScreenContract {
         val teamsWithScore: List<Team> = emptyList(),
         val teamsWithPlayers: List<Team> = emptyList(),
         val round: Round = Round(),
+        val previousRoundName: String = "1",
         val playButtonState: PlayButtonState = PlayButtonState(),
         val correctButtonEnabled: Boolean = false,
         val helpButtonEnabled: Boolean = false,
@@ -55,6 +56,7 @@ interface GameScreenContract {
                 currentCard:                    $currentCard
                 teamsWithPlayers:               ${teamsWithPlayers.map { it.players }}
                 teamsWithScore:                 ${teamsWithScore.map { Pair(it.name, it.score) }}
+                previousRoundName:              $previousRoundName
                 round:                          $round
                 isTimerRunning:                 $isTimerRunning
                 playButtonState                 $playButtonState

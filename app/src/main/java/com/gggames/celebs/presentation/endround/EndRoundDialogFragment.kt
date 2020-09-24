@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.gggames.celebs.R
-import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_round_dialog.*
@@ -69,13 +68,13 @@ class EndRoundDialogFragment :
     }
 
     companion object {
-        fun create(round: Round, teams: List<Team>): EndRoundDialogFragment {
+        fun create(endedRoundName: String, teams: List<Team>): EndRoundDialogFragment {
             return EndRoundDialogFragment()
                 .apply {
                 isCancelable = true
                 arguments =
                     Bundle().apply {
-                        putString(KEY_ROUND_NAME, round.roundNumber.toString())
+                        putString(KEY_ROUND_NAME, endedRoundName)
                         putParcelableArray(KEY_TEAMS, teams.toTypedArray())
                     }
             }

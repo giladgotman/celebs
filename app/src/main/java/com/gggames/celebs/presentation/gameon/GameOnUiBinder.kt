@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
-import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
 import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
@@ -106,7 +105,7 @@ class GameOnUiBinder @Inject constructor() {
                 }
             }
             if (state.showEndOfRound) {
-                showEndRound(state.round, state.teamsWithScore)
+                showEndRound(state.previousRoundName, state.teamsWithScore)
             }
             if (state.showGameOver) {
                 navigateToEndGame()
@@ -206,9 +205,9 @@ class GameOnUiBinder @Inject constructor() {
             })
     }
 
-    private fun showEndRound(round: Round, teams: List<Team>) {
+    private fun showEndRound(endedRoundName: String, teams: List<Team>) {
         if (endRoundDialogFragment?.isAdded != true) {
-            endRoundDialogFragment = EndRoundDialogFragment.create(round, teams)
+            endRoundDialogFragment = EndRoundDialogFragment.create(endedRoundName, teams)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
         }
     }
