@@ -40,6 +40,7 @@ interface GameScreenContract {
         val resetTime: Boolean = false,
         val showEndOfTurn: Boolean = false,
         val showEndOfRound: Boolean = false,
+        val showGameOver: Boolean = false,
         val lastPlayer: Player? = null,
         val cardsFoundInTurn: List<Card> = emptyList()
     ) {
@@ -62,6 +63,7 @@ interface GameScreenContract {
                 resetTime                       $resetTime
                 showEndOfTurn                   $showEndOfTurn
                 showEndOfRound                  $showEndOfRound
+                showGameOver                    $showGameOver
                 lastPlayer                      ${lastPlayer?.name}
                 cardsFoundInTurnSize            ${cardsFoundInTurn.size}
                 """.trimIndent()

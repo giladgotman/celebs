@@ -114,6 +114,7 @@ class GamePresenterMVI @Inject constructor(
                     resetTime = !turnState.isTurnOn(),
                     showEndOfTurn = turnOver,
                     showEndOfRound = newRound,
+                    showGameOver = game.state == GameState.Finished,
                     currentCard = game.turn.currentCard,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
                     lastPlayer = game.currentPlayer ?: previous.lastPlayer,

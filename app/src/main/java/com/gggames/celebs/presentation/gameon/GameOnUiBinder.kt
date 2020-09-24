@@ -1,13 +1,16 @@
 package com.gggames.celebs.presentation.gameon
 
 import android.content.Context
+import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.Round
@@ -72,6 +75,13 @@ class GameOnUiBinder @Inject constructor() {
         setupTimer()
     }
 
+    fun setFragment(fragment: GameOnFragmentMVI) {
+        this.fragment = fragment
+        view = fragment.activity?.window?.decorView
+        context = view?.context
+        setup()
+    }
+
     fun render(state: GameScreenContract.State) {
         view?.apply {
             cardTextView?.text = state.currentCard?.name ?: ""
@@ -98,10 +108,12 @@ class GameOnUiBinder @Inject constructor() {
             if (state.showEndOfRound) {
                 showEndRound(state.round, state.teamsWithScore)
             }
+            if (state.showGameOver) {
+                navigateToEndGame()
+            }
             correctButton.isEnabled = state.correctButtonEnabled
             helpButton.isEnabled = state.helpButtonEnabled
         }
-
     }
 
     private fun startResumeTimer() {
@@ -114,14 +126,6 @@ class GameOnUiBinder @Inject constructor() {
         mCountDownTimer?.cancel()
         isTimerRunning = false
     }
-
-    fun setFragment(fragment: GameOnFragmentMVI) {
-        this.fragment = fragment
-        view = fragment.activity?.window?.decorView
-        context = view?.context
-        setup()
-    }
-
 
     private fun setTeamPlayers(teams: List<Team>) {
         teams.forEachIndexed { index, team ->
@@ -194,14 +198,22 @@ class GameOnUiBinder @Inject constructor() {
     }
 
 
-    fun showEndRound(round: Round, teams: List<Team>) {
+    private fun navigateToEndGame() {
+        fragment.findNavController().navigate(
+            R.id.action_gameOnFragment_to_gameOverFragment,
+            Bundle().apply {
+                putString(GAME_ID_KEY, "dummy game id")
+            })
+    }
+
+    private fun showEndRound(round: Round, teams: List<Team>) {
         if (endRoundDialogFragment?.isAdded != true) {
             endRoundDialogFragment = EndRoundDialogFragment.create(round, teams)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
         }
     }
 
-    fun showEndTurn(player: Player, cards: List<Card>, roundNumber: Int) {
+    private fun showEndTurn(player: Player, cards: List<Card>, roundNumber: Int) {
         if (endTurnDialogFragment?.isAdded != true) {
             endTurnDialogFragment = EndTurnDialogFragment.create(player, cards, roundNumber)
             endTurnDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
@@ -223,5 +235,4 @@ class GameOnUiBinder @Inject constructor() {
 
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
     }
-
 }
