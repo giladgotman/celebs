@@ -54,14 +54,18 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
 
     override fun update(card: Card): Completable =
         Completable.fromCallable {
-            val updatedList = this.cards
-            updatedList.indexOfFirst { it.name == card.name }.takeIf { it != -1 }?.let { index ->
-                updatedList.set(index, card)
-            } ?: updatedList.add(card)
-
+            val updatedList = getUpdatedList(card)
             cards = updatedList
             Unit
         }
+
+    private fun getUpdatedList(card: Card): MutableList<Card> {
+        val updatedList = this.cards
+        updatedList.indexOfFirst { it.id == card.id }.takeIf { it != -1 }?.let { index ->
+            updatedList.set(index, card)
+        } ?: updatedList.add(card)
+        return updatedList
+    }
 
     override fun updateCards(cards: List<Card>): Completable =
         just(cards).flatMapIterable { it }
