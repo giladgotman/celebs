@@ -100,7 +100,7 @@ class GamePresenterMVI @Inject constructor(
                 val turnState = result.game.gameInfo.round.turn.state
                 val turnOver = result.game.turn.state == TurnState.Stopped &&
                         result.game.round.state == RoundState.Started
-                val newRound = result.game.round.state == RoundState.New
+                val newRound = result.game.round.state == RoundState.New && previous.round.state != RoundState.New
                 val newState = previous.copy(
                     teamsWithScore = result.game.teams,
                     round = result.game.round,
@@ -139,7 +139,7 @@ class GamePresenterMVI @Inject constructor(
                     totalCardsInGame = result.cards.size
                 )
             }
-            is RoundOverDialogDismissedResult -> previous.copy(showEndOfRound = false)
+            is RoundOverDialogDismissedResult -> previous
             is HandleNextCardResult.InProgress -> previous.copy(correctButtonEnabled = false)
             is HandleNextCardResult.NewCard -> previous
             is HandleNextCardResult.RoundOver -> previous
