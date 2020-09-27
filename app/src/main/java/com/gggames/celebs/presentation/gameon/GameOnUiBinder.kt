@@ -49,7 +49,6 @@ class GameOnUiBinder @Inject constructor() {
     private fun setup() {
         view?.apply {
             correctButton.setOnClickListener {
-                it.isEnabled = false
                 _emitter.onNext(UiEvent.CorrectClick(mTimeLeftInMillis))
             }
 
