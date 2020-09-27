@@ -69,6 +69,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildToolsVersion '30.0.2'
 
 }
 
@@ -154,5 +155,9 @@ dependencies {
     implementation 'nl.dionsegijn:konfetti:1.2.2'
 
     ktlint 'com.pinterest:ktlint:0.35.0'
+
+    androidTestImplementation(
+            "com.google.truth:truth:$versions.truth"
+    )
 
 }
