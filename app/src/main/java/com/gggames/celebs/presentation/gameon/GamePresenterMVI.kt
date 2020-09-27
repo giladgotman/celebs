@@ -140,10 +140,13 @@ class GamePresenterMVI @Inject constructor(
                 )
             }
             is RoundOverDialogDismissedResult -> previous
-            is HandleNextCardResult.InProgress -> previous.copy(correctButtonEnabled = false)
-            is HandleNextCardResult.NewCard -> previous
-            is HandleNextCardResult.RoundOver -> previous
-            is HandleNextCardResult.GameOver -> previous
+            is HandleNextCardResult -> {
+                if (result is HandleNextCardResult.InProgress) {
+                    previous.copy(inProgress = true)
+                } else {
+                    previous.copy(inProgress = false)
+                }
+            }
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous

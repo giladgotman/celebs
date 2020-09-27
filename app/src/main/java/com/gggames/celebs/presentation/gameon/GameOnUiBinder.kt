@@ -3,12 +3,10 @@ package com.gggames.celebs.presentation.gameon
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -98,7 +96,7 @@ class GameOnUiBinder @Inject constructor() {
             setTeamNamesAndScore(state.teamsWithScore)
             setTeamPlayers(state.teamsWithPlayers)
             roundTextView?.text = state.round.roundNumber.toString()
-            if (state.isTimerRunning) {
+            if (state.isTimerRunning && !state.inProgress) {
                 startResumeTimer()
             } else {
                 pauseTimer()
@@ -118,16 +116,16 @@ class GameOnUiBinder @Inject constructor() {
                 showEndRound(state.previousRoundName, state.teamsWithScore)
             }
             if (state.showGameOver) {
-                navigateToEndGame()
+                fragment.navigateToEndGame()
             }
             if (state.navigateToGames) {
-                fragment.findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
+                fragment.navigateToGames()
             }
             if (state.showLeaveGameConfirmation) {
                 showLeaveGameDialog()
             }
 
-            correctButton?.isEnabled = state.correctButtonEnabled
+            correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
             helpButton?.isEnabled = state.helpButtonEnabled
         }
     }
@@ -211,15 +209,6 @@ class GameOnUiBinder @Inject constructor() {
             }
         }.start()
         isTimerRunning = true
-    }
-
-
-    private fun navigateToEndGame() {
-        fragment.findNavController().navigate(
-            R.id.action_gameOnFragment_to_gameOverFragment,
-            Bundle().apply {
-                putString(GAME_ID_KEY, "dummy game id")
-            })
     }
 
     private fun showLeaveGameDialog() {

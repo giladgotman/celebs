@@ -37,9 +37,10 @@ interface GameScreenContract {
         val round: Round = Round(),
         val previousRoundName: String = "1",
         val playButtonState: PlayButtonState = PlayButtonState(),
-        val correctButtonEnabled: Boolean = false,
+        val correctButtonEnabled: Boolean = false, // also affected by inProgress
+        val inProgress: Boolean = false,
         val helpButtonEnabled: Boolean = false,
-        val isTimerRunning: Boolean = false,
+        val isTimerRunning: Boolean = false, // also affected by inProgress
         val meActive: Boolean = false,
         val resetTime: Boolean = false,
         val showEndOfTurn: Boolean = false,
@@ -68,6 +69,7 @@ interface GameScreenContract {
                 isTimerRunning:                 $isTimerRunning
                 playButtonState                 $playButtonState
                 correctButtonEnabled            $correctButtonEnabled
+                inProgress                      $inProgress
                 helpButtonEnabled               $helpButtonEnabled
                 resetTime                       $resetTime
                 showEndOfTurn                   $showEndOfTurn
