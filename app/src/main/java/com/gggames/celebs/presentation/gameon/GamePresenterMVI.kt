@@ -146,12 +146,12 @@ class GamePresenterMVI @Inject constructor(
     private fun Observable<UiEvent>.toResult(): Observable<Result> =
         publish { o ->
             Observable.mergeArray(
-                o.ofType<CorrectClick>().flatMap { onCorrectClick(it.time) },
-                o.ofType<StartStopClick>().flatMap { handleStartStopClick(it.buttonState, it.time) },
-                o.ofType<UiEvent.TimerEnd>().flatMap { onTimerEnd() },
-                o.ofType<UiEvent.OnBackPressed>().flatMap { handleBackPressed(game) },
-                o.ofType<UiEvent.UserApprovedQuitGame>().flatMap { quitGame() },
-                o.ofType<UiEvent.RoundOverDialogDismissed>().flatMap { just(RoundOverDialogDismissedResult) }
+                o.ofType<CorrectClick>().switchMap { onCorrectClick(it.time) },
+                o.ofType<StartStopClick>().switchMap { handleStartStopClick(it.buttonState, it.time) },
+                o.ofType<UiEvent.TimerEnd>().switchMap { onTimerEnd() },
+                o.ofType<UiEvent.OnBackPressed>().switchMap { handleBackPressed(game) },
+                o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
+                o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) }
             )
         }
 
@@ -167,8 +167,9 @@ class GamePresenterMVI @Inject constructor(
     private fun onCorrectClick(time: Long): Observable<out Result> =
         lastCard?.let { card ->
             authenticator.me?.team?.let { teamName ->
+                merge(just(HandleNextCardResult.InProgress),
                 handleCorrectCard(card, game, teamName)
-                    .andThen(handleNextCardWrap(time))
+                    .andThen(handleNextCardWrap(time)))
             }
         } ?: just(NoOp)
 
@@ -185,7 +186,7 @@ class GamePresenterMVI @Inject constructor(
                 if (game.round.state == RoundState.New) {
                     startRound(game)
                         .andThen(handleNextCardWrap(time))
-                        .flatMapCompletable { resumeTurn(game) }
+                        .switchMapCompletable { resumeTurn(game) }
                         .andThen(just(NoOp))
                 } else {
                     resumeTurn(game).andThen(just(NoOp))
