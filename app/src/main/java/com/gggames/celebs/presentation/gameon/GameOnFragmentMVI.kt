@@ -3,6 +3,7 @@ package com.gggames.celebs.presentation.gameon
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.gggames.celebs.R
 import com.gggames.celebs.presentation.MainActivity
 import com.gggames.celebs.presentation.common.MainActivityDelegate
@@ -77,6 +78,21 @@ class GameOnFragmentMVI : Fragment(),
         Timber.d("onDestroyView")
         disposables.clear()
         presenter.unBind()
+    }
+
+
+    fun navigateToEndGame() {
+        disposables.clear()
+        findNavController().navigate(
+            R.id.action_gameOnFragment_to_gameOverFragment,
+            Bundle().apply {
+                putString(GAME_ID_KEY, "dummy game id")
+            })
+    }
+
+    fun navigateToGames() {
+        disposables.clear()
+        findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
     override fun onBackPressed(): Boolean {
