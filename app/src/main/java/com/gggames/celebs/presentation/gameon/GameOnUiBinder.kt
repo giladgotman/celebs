@@ -85,11 +85,10 @@ class GameOnUiBinder @Inject constructor() {
 
     fun render(state: GameScreenContract.State) {
         view?.apply {
-
             if (state.revealCurrentCard) {
                 cardTextView?.text = state.currentCard?.name ?: ""
             } else {
-                cardTextView?.text = state.currentPlayer?.name ?: ""
+                cardTextView?.text = state.currentPlayer?.name?.let { "$it is playing" } ?: ""
             }
 
             cardsAmount?.text = state.cardsInDeck.toString()
