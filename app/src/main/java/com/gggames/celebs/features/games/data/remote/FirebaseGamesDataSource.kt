@@ -10,6 +10,7 @@ import com.gggames.celebs.model.remote.toUi
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestoreSettings
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -31,6 +32,11 @@ class FirebaseGamesDataSource @Inject constructor(
                 if (gameIds.size > 10) {
                     Timber.w("can't get more then 10 games. size is : ${gameIds.size}")
                 }
+                val settings = firestoreSettings {
+                    isPersistenceEnabled = true
+                }
+
+                firestore.firestoreSettings = settings
                 val query = firestore.collection(getGamesCollectionPath(baseCollection))
                     // firebase is limited to 10 elements in a where in clause
                     .whereIn("id", gameIds.takeLast(10))
