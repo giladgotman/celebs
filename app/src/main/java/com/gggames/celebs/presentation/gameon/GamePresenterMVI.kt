@@ -142,6 +142,7 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is StartGameResult-> previous
             is PauseTurnResult-> previous
+            is ResumeTurnResult-> previous
         }
     }
 
@@ -188,10 +189,9 @@ class GamePresenterMVI @Inject constructor(
                 if (game.round.state == RoundState.New) {
                     startRound(game)
                         .andThen(handleNextCardWrap(time))
-                        .switchMapCompletable { resumeTurn(game) }
-                        .andThen(just(NoOp))
+                        .switchMap { resumeTurn(game) }
                 } else {
-                    resumeTurn(game).andThen(just(NoOp))
+                    resumeTurn(game)
                 }
             }
             ButtonState.Finished -> just(NoOp)
