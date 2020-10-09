@@ -4,6 +4,8 @@ import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.model.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.HandleNextCardResult
+import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.HandleNextCardResult.NewCard
+import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.SetGameResult.Done
 import io.reactivex.Observable
 import io.reactivex.Observable.just
 import javax.inject.Inject
@@ -18,11 +20,13 @@ class HandleNextCard @Inject constructor(
             if (pickNextCardResult is PickNextCardResult.Found) {
                 cardsRepository.updateCard(pickNextCardResult.card)
                     .andThen(setGame(game.setCurrentCard(pickNextCardResult.card)))
-                    .switchMap { just(HandleNextCardResult.NewCard(pickNextCardResult.card, time)) }
+                    .filter { it is Done }
+                    .switchMap { just(NewCard(pickNextCardResult.card, time)) }
             } else {
                 val isLastRound: Boolean = (game.gameInfo.round.roundNumber == 3)
                 if (isLastRound) {
                     setGame(game.setGameState(GameState.Finished))
+                        .filter { it is Done }
                         .switchMap { just(HandleNextCardResult.GameOver) }
                 } else {
 
@@ -39,6 +43,7 @@ class HandleNextCard @Inject constructor(
                     )
 
                     startNewRound
+                        .filter { it is Done }
                         .switchMapCompletable { resetCards }
                         .andThen(just(HandleNextCardResult.RoundOver(game.round, game.round, time)))
                 }
