@@ -58,7 +58,7 @@ class GamePresenterMVI @Inject constructor(
         val gameId = game.id
 
         val uiEvent = events
-            .doOnNext { Timber.d("USER:: \n$it") }
+            .doOnNext { Timber.d("USER:: $it") }
 
         val dataInput = merge(
             observeGame(gameId),
@@ -70,7 +70,7 @@ class GamePresenterMVI @Inject constructor(
 
         allInput
             .subscribeOn(schedulerProvider.io())
-            .doOnNext { Timber.d("RESULT:: \n$it") }
+            .doOnNext { Timber.d("RESULT:: $it") }
             .share()
             .scan(State.initialState, reduce())
             .distinctUntilChanged()
@@ -141,6 +141,7 @@ class GamePresenterMVI @Inject constructor(
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
             is StartGameResult-> previous
+            is PauseTurnResult-> previous
         }
     }
 
@@ -182,7 +183,7 @@ class GamePresenterMVI @Inject constructor(
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!, game)
                 .switchMap { handleNextCardWrap(time) }
-            ButtonState.Running -> pauseTurn(game).andThen(just(NoOp))
+            ButtonState.Running -> pauseTurn(game)
             ButtonState.Paused -> {
                 if (game.round.state == RoundState.New) {
                     startRound(game)

@@ -101,8 +101,20 @@ interface GameScreenContract {
         }
 
         sealed class StartGameResult: Result() {
+            object InProgress : StartGameResult()
             object Done : StartGameResult()
+            override fun toString(): String {
+                return "StartGameResult.${this.javaClass.simpleName}"
+            }
+        }
 
+        sealed class PauseTurnResult: Result() {
+            object InProgress : PauseTurnResult()
+            object Done : PauseTurnResult()
+
+            override fun toString(): String {
+                return "PauseTurnResult.${this.javaClass.simpleName}"
+            }
         }
         sealed class BackPressedResult: Result() {
             data class ShowLeaveGameConfirmation(val showDialog: Boolean): BackPressedResult()

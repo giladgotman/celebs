@@ -19,7 +19,9 @@ class StartGame @Inject constructor(
                 .resetCardsFoundInTurn()
                 .setTurnPlayer(player)
                 .setTurnLastCards(emptyList())
-        ).andThen(just(StartGameResult.Done))
+        )
+            .andThen(just<StartGameResult>(StartGameResult.Done))
+            .startWith(StartGameResult.InProgress)
     }
 }
 
