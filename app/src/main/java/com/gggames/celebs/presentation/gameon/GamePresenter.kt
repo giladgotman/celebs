@@ -5,7 +5,7 @@ import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
-import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.games.domain.UpdateGame
 import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
@@ -27,7 +27,7 @@ const val TURN_TIME_MILLIS = 10000L
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
     private val cardsObservable: ObserveAllCards,
-    private val updateGame: SetGame,
+    private val updateGame: UpdateGame,
     private val observeGame: ObserveGame,
     private val authenticator: Authenticator,
     private val cardsRepository: CardsRepository,

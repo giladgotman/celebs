@@ -140,10 +140,7 @@ class GamePresenterMVI @Inject constructor(
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
-            is StartGameResult -> previous
-            is PauseTurnResult -> previous
-            is ResumeTurnResult -> previous
-            is StartRoundResult -> previous
+            is SetGameResult -> previous
         }
     }
 
@@ -160,21 +157,22 @@ class GamePresenterMVI @Inject constructor(
         }
 
     private fun quitGame(): Observable<BackPressedResult.NavigateToGames> {
-        return endTurn(game).andThen(
+        return endTurn(game).switchMap {
             just(
                 BackPressedResult.NavigateToGames(true),
                 BackPressedResult.NavigateToGames(false)
             )
-        )
+        }
     }
 
     private fun onCorrectClick(time: Long): Observable<out Result> =
         lastCard?.let { card ->
             authenticator.me?.team?.let { teamName ->
+                // TODO: 09.10.20 check if the InProgress can be removed cause the SetGame will start with InProgress
                 merge(
                     just(HandleNextCardResult.InProgress),
                     handleCorrectCard(card, game, teamName)
-                        .andThen(handleNextCardWrap(time))
+                        .switchMap { handleNextCardWrap(time) }
                 )
             }
         } ?: just(NoOp)
@@ -205,7 +203,7 @@ class GamePresenterMVI @Inject constructor(
             audioPlayer.play("timesupyalabye")
             flipLastCard(lastCard)
                 .andThen(endTurn(game))
-                .andThen(just(NoOp))
+                .switchMap { just(NoOp) }
         } else {
             just(NoOp)
         }

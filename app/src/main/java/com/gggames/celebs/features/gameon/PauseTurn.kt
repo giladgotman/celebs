@@ -4,22 +4,15 @@ import com.gggames.celebs.features.games.domain.SetGame
 import com.gggames.celebs.model.Game
 import com.gggames.celebs.model.TurnState
 import com.gggames.celebs.model.setTurnState
-import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PauseTurnResult
-import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PauseTurnResult.Done
-import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.PauseTurnResult.InProgress
-import io.reactivex.Observable
-import io.reactivex.Observable.just
 import javax.inject.Inject
 
 class PauseTurn @Inject constructor(
     private val setGame: SetGame
 ) {
-    operator fun invoke(game: Game): Observable<out PauseTurnResult> {
-        return setGame(
-            game.setTurnState(TurnState.Paused)
+    operator fun invoke(game: Game) =
+        setGame(
+            game.setTurnState(TurnState.Paused),
+            this.javaClass.simpleName
         )
-            .andThen(just<PauseTurnResult>(Done))
-            .startWith(InProgress)
-    }
 }
 

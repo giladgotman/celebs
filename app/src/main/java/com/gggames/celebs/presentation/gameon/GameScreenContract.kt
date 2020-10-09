@@ -100,48 +100,20 @@ interface GameScreenContract {
             object GameOver : HandleNextCardResult()
         }
 
-        sealed class StartGameResult : Result() {
-            object InProgress : StartGameResult()
-            object Done : StartGameResult()
-
-            override fun toString(): String {
-                return "StartGameResult.${this.javaClass.simpleName}"
-            }
-        }
-
-        sealed class PauseTurnResult : Result() {
-            object InProgress : PauseTurnResult()
-            object Done : PauseTurnResult()
-
-            override fun toString(): String {
-                return "PauseTurnResult.${this.javaClass.simpleName}"
-            }
-        }
-
-        sealed class ResumeTurnResult : Result() {
-            object InProgress : ResumeTurnResult()
-            object Done : ResumeTurnResult()
-
-            override fun toString(): String {
-                return "ResumeTurnResult.${this.javaClass.simpleName}"
-            }
-        }
-
-        sealed class StartRoundResult : Result() {
-            object InProgress : StartRoundResult()
-            object Done : StartRoundResult()
-
-            override fun toString(): String {
-                return "StartRoundResult.${this.javaClass.simpleName}"
-            }
-        }
-
         sealed class SetGameResult(open val label: String) : Result() {
-            data class InProgress(override val label: String) : SetGameResult(label)
-            data class Done(override val label: String) : SetGameResult(label)
+            data class InProgress(override val label: String) : SetGameResult(label) {
+                override fun toString(): String {
+                    return super.toString()
+                }
+            }
+            data class Done(override val label: String) : SetGameResult(label) {
+                override fun toString(): String {
+                    return super.toString()
+                }
+            }
 
             override fun toString(): String {
-                return "${this.javaClass.simpleName}.$label"
+                return "SetGameResult.${this.javaClass.simpleName}.$label"
             }
         }
 

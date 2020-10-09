@@ -18,18 +18,18 @@ class HandleNextCard @Inject constructor(
             if (pickNextCardResult is PickNextCardResult.Found) {
                 cardsRepository.updateCard(pickNextCardResult.card)
                     .andThen(setGame(game.setCurrentCard(pickNextCardResult.card)))
-                    .andThen(just(HandleNextCardResult.NewCard(pickNextCardResult.card, time)))
+                    .switchMap { just(HandleNextCardResult.NewCard(pickNextCardResult.card, time)) }
             } else {
                 val isLastRound: Boolean = (game.gameInfo.round.roundNumber == 3)
                 if (isLastRound) {
                     setGame(game.setGameState(GameState.Finished))
-                        .andThen(just(HandleNextCardResult.GameOver))
+                        .switchMap { just(HandleNextCardResult.GameOver) }
                 } else {
 
                     val resetCards =
                         cardsRepository.updateCards(cardDeck.map { it.copy(used = false) })
 
-                   val startNewRound = setGame(
+                    val startNewRound = setGame(
                         game
                             .setTurnState(TurnState.Paused)
                             .setRoundNumber(game.round.roundNumber + 1)
@@ -39,7 +39,7 @@ class HandleNextCard @Inject constructor(
                     )
 
                     startNewRound
-                        .andThen(resetCards)
+                        .switchMapCompletable { resetCards }
                         .andThen(just(HandleNextCardResult.RoundOver(game.round, game.round, time)))
                 }
                 //todo check if need to check if round already in Ended state and then not doing anything

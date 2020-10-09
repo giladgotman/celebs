@@ -17,12 +17,12 @@ class HandleBackPressed @Inject constructor(
     operator fun invoke(game: Game): Observable<out BackPressedResult> =
         if (authenticator.isMyselfActivePlayerBlocking(game)) {
             setGame(game.setTurnState(TurnState.Paused))
-                .andThen(
+                .switchMap {
                     just(
                         BackPressedResult.ShowLeaveGameConfirmation(true),
                         BackPressedResult.ShowLeaveGameConfirmation(false)
                     )
-                )
+                }
         } else {
             just(
                 BackPressedResult.NavigateToGames(true),

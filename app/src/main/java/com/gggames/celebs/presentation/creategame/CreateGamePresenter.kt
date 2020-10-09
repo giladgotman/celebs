@@ -1,6 +1,6 @@
 package com.gggames.celebs.presentation.creategame
 
-import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.games.domain.UpdateGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.features.user.domain.GetMyUser
 import com.gggames.celebs.model.*
@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class CreateGamePresenter @Inject constructor(
-    private val updateGame: SetGame,
+    private val updateGame: UpdateGame,
     private val getMyUser: GetMyUser,
     private val joinGame: JoinGame
 ) {
