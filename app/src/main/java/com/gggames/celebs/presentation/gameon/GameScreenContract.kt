@@ -94,21 +94,22 @@ interface GameScreenContract {
         data class CardsUpdate(val cards: List<Card>) : Result()
 
         sealed class HandleNextCardResult : Result() {
-            object InProgress: HandleNextCardResult()
+            object InProgress : HandleNextCardResult()
             data class NewCard(val newCard: Card, val time: Long?) : HandleNextCardResult()
             data class RoundOver(val round: Round, val newRound: Round, val time: Long?) : HandleNextCardResult()
             object GameOver : HandleNextCardResult()
         }
 
-        sealed class StartGameResult: Result() {
+        sealed class StartGameResult : Result() {
             object InProgress : StartGameResult()
             object Done : StartGameResult()
+
             override fun toString(): String {
                 return "StartGameResult.${this.javaClass.simpleName}"
             }
         }
 
-        sealed class PauseTurnResult: Result() {
+        sealed class PauseTurnResult : Result() {
             object InProgress : PauseTurnResult()
             object Done : PauseTurnResult()
 
@@ -117,7 +118,7 @@ interface GameScreenContract {
             }
         }
 
-        sealed class ResumeTurnResult: Result() {
+        sealed class ResumeTurnResult : Result() {
             object InProgress : ResumeTurnResult()
             object Done : ResumeTurnResult()
 
@@ -126,7 +127,7 @@ interface GameScreenContract {
             }
         }
 
-        sealed class StartRoundResult: Result() {
+        sealed class StartRoundResult : Result() {
             object InProgress : StartRoundResult()
             object Done : StartRoundResult()
 
@@ -134,8 +135,18 @@ interface GameScreenContract {
                 return "StartRoundResult.${this.javaClass.simpleName}"
             }
         }
-        sealed class BackPressedResult: Result() {
-            data class ShowLeaveGameConfirmation(val showDialog: Boolean): BackPressedResult()
+
+        sealed class SetGameResult(open val label: String) : Result() {
+            data class InProgress(override val label: String) : SetGameResult(label)
+            data class Done(override val label: String) : SetGameResult(label)
+
+            override fun toString(): String {
+                return "${this.javaClass.simpleName}.$label"
+            }
+        }
+
+        sealed class BackPressedResult : Result() {
+            data class ShowLeaveGameConfirmation(val showDialog: Boolean) : BackPressedResult()
             data class NavigateToGames(val navigate: Boolean) : BackPressedResult()
         }
 
