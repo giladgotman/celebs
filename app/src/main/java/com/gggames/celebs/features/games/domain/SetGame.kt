@@ -12,8 +12,8 @@ import javax.inject.Inject
 class SetGame @Inject constructor(
     private val gamesRepository: GamesRepository
 ) {
-    operator fun invoke(game: Game, label: String = ""): Observable<out SetGameResult> =
+    operator fun invoke(game: Game, label: String? = null): Observable<out SetGameResult> =
         gamesRepository.setGame(game)
             .andThen(just<SetGameResult>(Done(label)))
-            .doOnSubscribe { Timber.d("INTERNAL::$label") }
+            .doOnSubscribe { label?.let { Timber.d("INTERNAL::$it") } }
 }

@@ -17,6 +17,10 @@ interface GameScreenContract {
         object RoundOverDialogDismissed : UiEvent()
 
         sealed class MainUiEvent : UiEvent()
+
+        override fun toString(): String {
+            return this.javaClass.simpleName
+        }
     }
 
     enum class ButtonState {
@@ -100,13 +104,13 @@ interface GameScreenContract {
             object GameOver : HandleNextCardResult()
         }
 
-        sealed class SetGameResult(open val label: String) : Result() {
-            data class InProgress(override val label: String) : SetGameResult(label) {
+        sealed class SetGameResult(open val label: String?) : Result() {
+            data class InProgress(override val label: String?) : SetGameResult(label) {
                 override fun toString(): String {
                     return super.toString()
                 }
             }
-            data class Done(override val label: String) : SetGameResult(label) {
+            data class Done(override val label: String?) : SetGameResult(label) {
                 override fun toString(): String {
                     return super.toString()
                 }
