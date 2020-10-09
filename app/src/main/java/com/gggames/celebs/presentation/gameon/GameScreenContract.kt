@@ -100,6 +100,10 @@ interface GameScreenContract {
             object GameOver : HandleNextCardResult()
         }
 
+        sealed class StartGameResult: Result() {
+            object Done : StartGameResult()
+
+        }
         sealed class BackPressedResult: Result() {
             data class ShowLeaveGameConfirmation(val showDialog: Boolean): BackPressedResult()
             data class NavigateToGames(val navigate: Boolean) : BackPressedResult()

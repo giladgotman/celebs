@@ -140,6 +140,7 @@ class GamePresenterMVI @Inject constructor(
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
+            is StartGameResult-> previous
         }
     }
 
@@ -180,7 +181,7 @@ class GamePresenterMVI @Inject constructor(
     ) =
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!, game)
-                .andThen(handleNextCardWrap(time))
+                .switchMap { handleNextCardWrap(time) }
             ButtonState.Running -> pauseTurn(game).andThen(just(NoOp))
             ButtonState.Paused -> {
                 if (game.round.state == RoundState.New) {
