@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Player
-import kotlinx.android.synthetic.main.game_card_layout.view.*
+import com.gggames.celebs.model.PlayerTurnState
+import com.gggames.celebs.presentation.common.State
+import kotlinx.android.synthetic.main.player_item_layout.view.*
 
 class PlayersAdapter :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -32,7 +34,7 @@ class PlayersAdapter :
 
     inner class PlayersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Player) {
-            itemView.name.text = item.name
+            itemView.nameBadge.state = State(name = item.name, turnState = item.playerTurnState ?: PlayerTurnState.Idle)
         }
     }
 

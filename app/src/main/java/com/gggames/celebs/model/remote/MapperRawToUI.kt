@@ -14,7 +14,7 @@ fun CardRaw.toUi() = Card(
     this.videoUrlFull
 )
 
-fun PlayerRaw.toUi() = Player(this.id, this.name, this.team, this.games)
+fun PlayerRaw.toUi() = Player(this.id, this.name, this.team, this.games, PlayerTurnState.fromName(this.playerTurnState))
 
 fun UserRaw.toUi() = when (this.type) {
     UserType.Guest -> User.Guest(this.id, this.name)
