@@ -56,7 +56,10 @@ enum class RoundState {
                 "Started" -> Started
                 "Ended" -> Ended
                 "New" -> New
-                else -> throw IllegalArgumentException("Unknown round state name: $name")
+                else -> {
+                    Timber.w("Unknown round state name: $name , setting state to Ready")
+                    Ready
+                }
             }
     }
 }
@@ -113,7 +116,10 @@ enum class GameState {
                 "Started" -> Started
                 "Finished" -> Finished
                 null -> null
-                else -> throw IllegalArgumentException("Unknown game state name: $name")
+                else -> {
+                    Timber.w("Unknown game state name: $name , setting state to Created")
+                    Created
+                }
             }
     }
 }
