@@ -84,6 +84,7 @@ class GameOnUiBinder @Inject constructor() {
     }
 
     fun render(state: GameScreenContract.State) {
+        val isFragmentVisible = fragment.isResumed
         view?.apply {
             if (state.revealCurrentCard) {
                 cardTextView?.text = state.currentCard?.name ?: ""
@@ -108,11 +109,15 @@ class GameOnUiBinder @Inject constructor() {
 
             if (state.showEndOfTurn) {
                 state.lastPlayer?.let { player ->
-                    showEndTurn(player, state.cardsFoundInTurn, state.round.roundNumber)
+                    if (isFragmentVisible) {
+                        showEndTurn(player, state.cardsFoundInTurn, state.round.roundNumber)
+                    }
                 }
             }
             if (state.showEndOfRound) {
-                showEndRound(state.previousRoundName, state.teamsWithScore)
+                if (isFragmentVisible) {
+                    showEndRound(state.previousRoundName, state.teamsWithScore)
+                }
             }
             if (state.showGameOver) {
                 fragment.navigateToEndGame()
@@ -126,139 +131,139 @@ class GameOnUiBinder @Inject constructor() {
 
             correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
             helpButton?.isEnabled = state.helpButtonEnabled
+    }
+}
+
+private fun startResumeTimer() {
+    if (!isTimerRunning) {
+        startTimer()
+    }
+}
+
+private fun pauseTimer() {
+    mCountDownTimer?.cancel()
+    isTimerRunning = false
+}
+
+private fun setTeamPlayers(teams: List<Team>) {
+    teams.forEachIndexed { index, team ->
+        when (index) {
+            0 -> updateTeam1(team.name, team.players)
+            1 -> updateTeam2(team.name, team.players)
+            2 -> updateTeam3(team.name, team.players)
         }
     }
+}
 
-    private fun startResumeTimer() {
-        if (!isTimerRunning) {
-            startTimer()
-        }
-    }
+private fun updateTeam1(teamName: String, players: List<Player>) {
+    view?.team1Name?.text = "$teamName"
+    view?.team1Layout?.isVisible = true
+    playerAdapters[0].setData(players)
+}
 
-    private fun pauseTimer() {
-        mCountDownTimer?.cancel()
-        isTimerRunning = false
-    }
+private fun updateTeam2(teamName: String, players: List<Player>) {
+    view?.team2Name?.text = "$teamName"
+    view?.team2Layout?.isVisible = true
+    playerAdapters[1].setData(players)
+}
 
-    private fun setTeamPlayers(teams: List<Team>) {
-        teams.forEachIndexed { index, team ->
-            when (index) {
-                0 -> updateTeam1(team.name, team.players)
-                1 -> updateTeam2(team.name, team.players)
-                2 -> updateTeam3(team.name, team.players)
-            }
-        }
-    }
+private fun updateTeam3(teamName: String, players: List<Player>) {
+    view?.team3Name?.text = "$teamName"
+    view?.team3Layout?.isVisible = true
+    playerAdapters[2].setData(players)
+}
 
-    private fun updateTeam1(teamName: String, players: List<Player>) {
-        view?.team1Name?.text = "$teamName"
-        view?.team1Layout?.isVisible = true
-        playerAdapters[0].setData(players)
-    }
-
-    private fun updateTeam2(teamName: String, players: List<Player>) {
-        view?.team2Name?.text = "$teamName"
-        view?.team2Layout?.isVisible = true
-        playerAdapters[1].setData(players)
-    }
-
-    private fun updateTeam3(teamName: String, players: List<Player>) {
-        view?.team3Name?.text = "$teamName"
+private fun setTeamNamesAndScore(teams: List<Team>) {
+    if (teams.size > 2) {
         view?.team3Layout?.isVisible = true
-        playerAdapters[2].setData(players)
     }
-
-    private fun setTeamNamesAndScore(teams: List<Team>) {
-        if (teams.size > 2) {
-            view?.team3Layout?.isVisible = true
-        }
-        teams.forEachIndexed { index, team ->
-            when (index) {
-                0 -> {
-                    view?.team1Name?.text = team.name
-                    view?.team1Name?.isSelected = true
-                    view?.team1Score?.text = team.score.toString()
-                }
-                1 -> {
-                    view?.team2Name?.text = team.name
-                    view?.team2Name?.isSelected = true
-                    view?.team2Score?.text = team.score.toString()
-                }
-                2 -> {
-                    view?.team3Name?.text = team.name
-                    view?.team3Name?.isSelected = true
-                    view?.team3Score?.text = team.score.toString()
-                }
+    teams.forEachIndexed { index, team ->
+        when (index) {
+            0 -> {
+                view?.team1Name?.text = team.name
+                view?.team1Name?.isSelected = true
+                view?.team1Score?.text = team.score.toString()
+            }
+            1 -> {
+                view?.team2Name?.text = team.name
+                view?.team2Name?.isSelected = true
+                view?.team2Score?.text = team.score.toString()
+            }
+            2 -> {
+                view?.team3Name?.text = team.name
+                view?.team3Name?.isSelected = true
+                view?.team3Score?.text = team.score.toString()
             }
         }
     }
+}
 
-    var isTimerRunning = false
-    private fun startTimer() {
-        mCountDownTimer?.cancel()
-        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
-            override fun onFinish() {
-                isTimerRunning = false
-                mCountDownTimer = null
-                _emitter.onNext(UiEvent.TimerEnd)
-            }
+var isTimerRunning = false
+private fun startTimer() {
+    mCountDownTimer?.cancel()
+    mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+        override fun onFinish() {
+            isTimerRunning = false
+            mCountDownTimer = null
+            _emitter.onNext(UiEvent.TimerEnd)
+        }
 
-            override fun onTick(millis: Long) {
-                updateTime(millis)
-            }
-        }.start()
-        isTimerRunning = true
-    }
+        override fun onTick(millis: Long) {
+            updateTime(millis)
+        }
+    }.start()
+    isTimerRunning = true
+}
 
-    private fun showLeaveGameDialog() {
-        context?.let { ctx ->
-            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                when (which) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        _emitter.onNext(UiEvent.UserApprovedQuitGame)
-                    }
+private fun showLeaveGameDialog() {
+    context?.let { ctx ->
+        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    _emitter.onNext(UiEvent.UserApprovedQuitGame)
+                }
 
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                    }
+                DialogInterface.BUTTON_NEGATIVE -> {
                 }
             }
-            val builder = AlertDialog.Builder(context)
-            builder.setMessage(ctx.getString(R.string.leave_game_dialog_title))
-                .setPositiveButton(ctx.getString(R.string.ok), dialogClickListener)
-                .setNegativeButton(ctx.getString(R.string.cancel), dialogClickListener)
-                .show()
         }
-
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(ctx.getString(R.string.leave_game_dialog_title))
+            .setPositiveButton(ctx.getString(R.string.ok), dialogClickListener)
+            .setNegativeButton(ctx.getString(R.string.cancel), dialogClickListener)
+            .show()
     }
 
-    private fun showEndRound(endedRoundName: String, teams: List<Team>) {
-        if (endRoundDialogFragment == null) {
-            endRoundDialogFragment = EndRoundDialogFragment.create(endedRoundName, teams)
-            endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
-            endRoundDialogFragment?.setOnDismiss{ endRoundDialogFragment = null }
-        }
-    }
+}
 
-    private fun showEndTurn(player: Player, cards: List<Card>, roundNumber: Int) {
-        if (endTurnDialogFragment?.isAdded != true) {
-            endTurnDialogFragment = EndTurnDialogFragment.create(player, cards, roundNumber)
-            endTurnDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
-        }
+private fun showEndRound(endedRoundName: String, teams: List<Team>) {
+    if (endRoundDialogFragment == null) {
+        endRoundDialogFragment = EndRoundDialogFragment.create(endedRoundName, teams)
+        endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
+        endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
     }
+}
 
-    private fun setupTimer() {
-        updateTime(TURN_TIME_MILLIS)
+private fun showEndTurn(player: Player, cards: List<Card>, roundNumber: Int) {
+    if (endTurnDialogFragment?.isAdded != true) {
+        endTurnDialogFragment = EndTurnDialogFragment.create(player, cards, roundNumber)
+        endTurnDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
     }
+}
 
-    private fun updateTime(time: Long) {
-        mTimeLeftInMillis = time
-        view?.timerTextView?.text = getFormattedTime()
-    }
+private fun setupTimer() {
+    updateTime(TURN_TIME_MILLIS)
+}
 
-    private fun getFormattedTime(): String {
-        val minutes = (mTimeLeftInMillis / 1000).toInt() / 60
-        val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
+private fun updateTime(time: Long) {
+    mTimeLeftInMillis = time
+    view?.timerTextView?.text = getFormattedTime()
+}
 
-        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-    }
+private fun getFormattedTime(): String {
+    val minutes = (mTimeLeftInMillis / 1000).toInt() / 60
+    val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
+
+    return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+}
 }
