@@ -3,6 +3,7 @@ package com.gggames.celebs.presentation.di
 import android.content.Context
 import androidx.fragment.app.Fragment
 import com.gggames.celebs.core.di.getAppComponent
+import com.gggames.celebs.presentation.common.NameBadge
 import com.gggames.celebs.presentation.creategame.AddCardsFragment
 import com.gggames.celebs.presentation.creategame.ChooseTeamFragment
 import com.gggames.celebs.presentation.creategame.CreateGameFragment
@@ -47,6 +48,7 @@ interface ViewComponent {
     fun inject(fragment: GameOverFragment)
     fun inject(fragment: VideoPlayerFragment)
     fun inject(fragment: EndTurnDialogFragment)
+    fun inject(layout: NameBadge)
 }
 
 @Qualifier
