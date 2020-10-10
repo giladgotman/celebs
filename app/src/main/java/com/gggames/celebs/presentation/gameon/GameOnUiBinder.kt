@@ -232,10 +232,10 @@ class GameOnUiBinder @Inject constructor() {
     }
 
     private fun showEndRound(endedRoundName: String, teams: List<Team>) {
-        if (endRoundDialogFragment?.isAdded != true) {
+        if (endRoundDialogFragment == null) {
             endRoundDialogFragment = EndRoundDialogFragment.create(endedRoundName, teams)
-            endRoundDialogFragment?.events()?.subscribe(_emitter)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
+            endRoundDialogFragment?.setOnDismiss{ endRoundDialogFragment = null }
         }
     }
 

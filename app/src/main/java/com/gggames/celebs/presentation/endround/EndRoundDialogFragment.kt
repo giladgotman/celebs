@@ -29,6 +29,7 @@ class EndRoundDialogFragment :
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_end_round_dialog, container, false)
 
+    private lateinit var onDismissBlock: () -> Unit
     private val KEY_ROUND_NAME = "KEY_ROUND_NAME"
     private val KEY_TEAMS = "KEY_TEAMS"
 
@@ -69,10 +70,15 @@ class EndRoundDialogFragment :
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         GameScreenContract.UiEvent.RoundOverDialogDismissed.emit()
+        onDismissBlock()
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         return dialog
+    }
+
+    fun setOnDismiss(block: () -> Unit) {
+        onDismissBlock = block
     }
 
     companion object {
