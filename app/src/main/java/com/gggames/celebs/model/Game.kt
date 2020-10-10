@@ -2,6 +2,7 @@ package com.gggames.celebs.model
 
 import com.gggames.celebs.model.TurnState.Idle
 import com.gggames.celebs.presentation.gameon.GameScreenContract
+import timber.log.Timber
 
 data class Game(
     val id: String,
@@ -71,7 +72,7 @@ data class Turn(
 
 enum class TurnState {
     Idle,
-    Stopped,
+    Over,
     Running,
     Paused;
 
@@ -79,10 +80,13 @@ enum class TurnState {
         fun fromName(name: String?): TurnState =
             when (name) {
                 "Idle" -> Idle
-                "Stopped" -> Stopped
+                "Over" -> Over
                 "Running" -> Running
                 "Paused" -> Paused
-                else -> throw IllegalArgumentException("Unknown turn state name: $name")
+                else -> {
+                    Timber.w("Unknown turn state name: $name , setting state to Idle")
+                    Idle
+                }
             }
     }
 }
@@ -92,7 +96,7 @@ fun TurnState.isTurnOn(): Boolean = this == TurnState.Running || this == TurnSta
 fun TurnState.toPlayButtonState() =
     when (this) {
         TurnState.Idle -> GameScreenContract.ButtonState.Stopped
-        TurnState.Stopped -> GameScreenContract.ButtonState.Stopped
+        TurnState.Over -> GameScreenContract.ButtonState.Stopped
         TurnState.Running -> GameScreenContract.ButtonState.Running
         TurnState.Paused -> GameScreenContract.ButtonState.Paused
     }

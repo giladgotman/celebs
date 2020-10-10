@@ -88,7 +88,7 @@ class GamePresenterMVI @Inject constructor(
             is GameUpdate -> {
                 val meActive = authenticator.isMyselfActivePlayerBlocking(game)
                 val turnState = result.game.gameInfo.round.turn.state
-                val turnOver = result.game.turn.state == TurnState.Stopped &&
+                val turnOver = result.game.turn.state == TurnState.Over &&
                         result.game.round.state == RoundState.Started
                 val roundOver = result.game.round.state == RoundState.Ended && previous.round.state != RoundState.Ended
                 val newState = previous.copy(

@@ -134,7 +134,7 @@ class GamePresenter @Inject constructor(
                     view.setRoundEndState(meActive, newRound.roundNumber)
                     view.showRoundEnded(newRound, game.teams)
                 }
-                RoundState.New -> {
+                New -> {
                     val startButtonEnabled = meActive || game.currentPlayer == null
                     view.setNewRound(startButtonEnabled, newRound.roundNumber)
                 }
@@ -154,7 +154,7 @@ class GamePresenter @Inject constructor(
                 Idle -> {
                     view.setTurnStoppedState()
                 }
-                Stopped -> {
+                TurnState.Over -> {
                     if (lastGame?.turn?.state != newTurn.state) {
                         view.setTurnStoppedState()
                         if (!quitingGame) {
@@ -174,7 +174,7 @@ class GamePresenter @Inject constructor(
                 Idle -> {
                     view.setTurnStoppedState()
                 }
-                Stopped -> {
+                TurnState.Over -> {
                     if (lastGame?.turn?.state != newTurn.state) {
                         view.setTurnStoppedState()
                         showEndOfTurn()
@@ -404,7 +404,7 @@ class GamePresenter @Inject constructor(
             gameInfo = game.gameInfo.copy(
                 round = game.gameInfo.round.copy(
                     turn = game.gameInfo.round.turn.copy(
-                        state = Stopped,
+                        state = TurnState.Over,
                         time = TURN_TIME_MILLIS
                     )
                 )
