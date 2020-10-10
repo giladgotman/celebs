@@ -90,7 +90,7 @@ class GamePresenterMVI @Inject constructor(
                 val turnState = result.game.gameInfo.round.turn.state
                 val turnOver = result.game.turn.state == TurnState.Stopped &&
                         result.game.round.state == RoundState.Started
-                val newRound = result.game.round.state == RoundState.New && previous.round.state != RoundState.New
+                val roundOver = result.game.round.state == RoundState.Ended && previous.round.state != RoundState.Ended
                 val newState = previous.copy(
                     teamsWithScore = result.game.teams,
                     round = result.game.round,
@@ -101,7 +101,7 @@ class GamePresenterMVI @Inject constructor(
                     ),
                     resetTime = !turnState.isTurnOn(),
                     showEndOfTurn = turnOver,
-                    showEndOfRound = newRound,
+                    showEndOfRound = roundOver,
                     previousRoundName = lastGame?.round?.roundNumber?.toString() ?: previous.previousRoundName,
                     showGameOver = game.state == GameState.Finished,
                     currentCard = game.turn.currentCard,

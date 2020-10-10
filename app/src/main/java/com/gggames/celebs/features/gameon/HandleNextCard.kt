@@ -33,16 +33,22 @@ class HandleNextCard @Inject constructor(
                     val resetCards =
                         cardsRepository.updateCards(cardDeck.map { it.copy(used = false) })
 
+                    val endedRoundGame = game
+                        .setRoundState(RoundState.Ended)
+                        .setTurnState(TurnState.Paused)
+                        .setTurnTime(time ?: game.turn.time)
+                        .setCurrentCard(null)
+
+                    val endRound = setGame(endedRoundGame)
+
                     val startNewRound = setGame(
-                        game
-                            .setTurnState(TurnState.Paused)
+                        endedRoundGame.setRoundState(RoundState.New)
                             .setRoundNumber(game.round.roundNumber + 1)
-                            .setRoundState(RoundState.New)
-                            .setTurnTime(time ?: game.turn.time)
-                            .setCurrentCard(null)
                     )
 
-                    startNewRound
+                    endRound
+                        .filter { it is Done }
+                        .switchMap { startNewRound }
                         .filter { it is Done }
                         .switchMapCompletable { resetCards }
                         .andThen(just(HandleNextCardResult.RoundOver(game.round, game.round, time)))
