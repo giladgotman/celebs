@@ -46,6 +46,12 @@ class NameBadge : ConstraintLayout {
     fun render(state: State) {
         Timber.w("render: $state")
         name.text = state.name
+
+        when (state.turnState) {
+            PlayerTurnState.Idle -> name.background = context.getDrawable(R.drawable.name_badge_bg_idle)
+            PlayerTurnState.Playing -> name.background = context.getDrawable(R.drawable.name_badge_bg_playing)
+            PlayerTurnState.UpNext -> name.background = context.getDrawable(R.drawable.name_badge_bg_upnext)
+        }
     }
 }
 
