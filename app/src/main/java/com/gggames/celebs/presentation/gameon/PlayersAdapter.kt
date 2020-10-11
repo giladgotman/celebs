@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Player
 import com.gggames.celebs.model.PlayerTurnState
-import com.gggames.celebs.presentation.common.State
+import com.gggames.celebs.presentation.common.NameBadge.State
 import kotlinx.android.synthetic.main.player_item_layout.view.*
 
 class PlayersAdapter :
@@ -42,3 +42,8 @@ class PlayersAdapter :
         return(holder as PlayersAdapter.PlayersViewHolder).bind(dataSet[position])
     }
 }
+
+data class PlayersDataSet(
+    val players: List<Player> = emptyList(),
+    val currentPlayer: Player? = null
+)

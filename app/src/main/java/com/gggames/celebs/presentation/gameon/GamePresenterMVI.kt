@@ -198,12 +198,11 @@ class GamePresenterMVI @Inject constructor(
             ButtonState.Finished -> just(NoOp)
         }
 
-    private fun onTimerEnd(): Observable<NoOp> {
+    private fun onTimerEnd(): Observable<out Result> {
         return if (authenticator.isMyselfActivePlayerBlocking(game)) {
             audioPlayer.play("timesupyalabye")
             flipLastCard(lastCard)
                 .andThen(endTurn(game))
-                .switchMap { just(NoOp) }
         } else {
             just(NoOp)
         }

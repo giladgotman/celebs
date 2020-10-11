@@ -53,9 +53,10 @@ class NameBadge : ConstraintLayout {
             PlayerTurnState.UpNext -> name.background = context.getDrawable(R.drawable.name_badge_bg_upnext)
         }
     }
+
+    data class State(
+        val name: String ="",
+        val turnState: PlayerTurnState = PlayerTurnState.Idle
+    )
 }
 
-data class State(
-    val name: String ="",
-    val turnState: PlayerTurnState = PlayerTurnState.Idle
-)

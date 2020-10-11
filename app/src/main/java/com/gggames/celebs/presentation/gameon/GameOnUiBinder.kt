@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gggames.celebs.R
 import com.gggames.celebs.model.Card
 import com.gggames.celebs.model.Player
+import com.gggames.celebs.model.PlayerTurnState
 import com.gggames.celebs.model.Team
 import com.gggames.celebs.presentation.endturn.EndRoundDialogFragment
 import com.gggames.celebs.presentation.endturn.EndTurnDialogFragment
@@ -94,7 +95,8 @@ class GameOnUiBinder @Inject constructor() {
 
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
-            setTeamPlayers(state.teamsWithPlayers)
+            val updatedTeams = updateTeamsWithPlayingState(state.teamsWithPlayers, state.currentPlayer)
+            setTeamPlayers(updatedTeams)
             roundTextView?.text = state.round.roundNumber.toString()
             if (state.isTimerRunning && !state.inProgress) {
                 startResumeTimer()
@@ -134,7 +136,24 @@ class GameOnUiBinder @Inject constructor() {
     }
 }
 
-private fun startResumeTimer() {
+    // update the player.playerTurnState in each team based on the currentPlayer
+    private fun updateTeamsWithPlayingState(teamsWithPlayers: List<Team>, currentPlayer: Player?): List<Team> {
+        val teams = mutableListOf<Team>()
+        teamsWithPlayers.forEachIndexed { index, team ->
+            val players = mutableListOf<Player>()
+            team.players.forEachIndexed { pIndex, player ->
+                if (currentPlayer?.id == player.id) {
+                    players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = PlayerTurnState.Playing))
+                } else {
+                    players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = PlayerTurnState.Idle))
+                }
+            }
+            teams.add(team.copy(players = players))
+        }
+        return teams
+    }
+
+    private fun startResumeTimer() {
     if (!isTimerRunning) {
         startTimer()
     }
@@ -156,19 +175,19 @@ private fun setTeamPlayers(teams: List<Team>) {
 }
 
 private fun updateTeam1(teamName: String, players: List<Player>) {
-    view?.team1Name?.text = "$teamName"
+    view?.team1Name?.text = teamName
     view?.team1Layout?.isVisible = true
     playerAdapters[0].setData(players)
 }
 
 private fun updateTeam2(teamName: String, players: List<Player>) {
-    view?.team2Name?.text = "$teamName"
+    view?.team2Name?.text = teamName
     view?.team2Layout?.isVisible = true
     playerAdapters[1].setData(players)
 }
 
 private fun updateTeam3(teamName: String, players: List<Player>) {
-    view?.team3Name?.text = "$teamName"
+    view?.team3Name?.text = teamName
     view?.team3Layout?.isVisible = true
     playerAdapters[2].setData(players)
 }
