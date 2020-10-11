@@ -86,7 +86,7 @@ class GamePresenterMVI @Inject constructor(
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
             is GameUpdate -> {
-                val meActive = authenticator.isMyselfActivePlayerBlocking(game)
+                val meActive = authenticator.isMyselfActivePlayerBlocking(result.game)
                 val turnState = result.game.gameInfo.round.turn.state
                 val turnOver = result.game.turn.state == TurnState.Over &&
                         result.game.round.state == RoundState.Started
@@ -103,12 +103,12 @@ class GamePresenterMVI @Inject constructor(
                     showEndOfTurn = turnOver,
                     showEndOfRound = roundOver,
                     previousRoundName = lastGame?.round?.roundNumber?.toString() ?: previous.previousRoundName,
-                    showGameOver = game.state == GameState.Finished,
-                    currentCard = game.turn.currentCard,
-                    currentPlayer = game.turn.player,
+                    showGameOver = result.game.state == GameState.Finished,
+                    currentCard = result.game.turn.currentCard,
+                    currentPlayer = result.game.turn.player,
                     revealCurrentCard = meActive,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
-                    lastPlayer = game.currentPlayer ?: previous.lastPlayer,
+                    lastPlayer = result.game.currentPlayer ?: previous.lastPlayer,
                     cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound }
                 )
                 lastGame = result.game
