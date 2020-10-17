@@ -78,7 +78,7 @@ class GamePresenterMVI @Inject constructor(
             .observeOn(schedulerProvider.ui())
             .subscribe({
                 _states.onNext(it)
-            }) { Timber.e("Unhandled exception in the main stream") }
+            }) { Timber.e(it, "Unhandled exception in the main stream") }
             .let { disposables.add(it) }
 
     }
@@ -120,7 +120,10 @@ class GamePresenterMVI @Inject constructor(
                 val updatedTeams = previous.teamsWithScore.map { team ->
                     team.copy(players = result.players.filter { it.team == team.name })
                 }
-                previous.copy(teamsWithPlayers = updatedTeams)
+                previous.copy(
+                    teamsWithPlayers = updatedTeams,
+                    nextPlayer = calculateNextPlayer(updatedTeams, previous.lastPlayer?.team)
+                )
             }
             is CardsUpdate -> {
                 cardDeck = result.cards
@@ -141,6 +144,28 @@ class GamePresenterMVI @Inject constructor(
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
             is SetGameResult -> previous
+        }
+    }
+
+
+    private fun calculateNextPlayer(teams: List<Team>, lastTeamName: String?): Player? {
+        return if (lastTeamName == null) {
+            if (teams.first().players.isNotEmpty()) {
+                teams.first().players.random()
+            } else {
+                null
+            }
+        } else {
+            val lastTeamIdx = teams.indexOfFirst { it.name == lastTeamName }
+            val nextTeam = teams[(lastTeamIdx + 1) % teams.size]
+            if (nextTeam.players.isNotEmpty()) {
+                val lastPlayerIdx = nextTeam.players.indexOfFirst { it.id == nextTeam.lastPlayerId }
+                val nextPlayer = nextTeam.players[(lastPlayerIdx + 1) % nextTeam.players.size]
+                nextPlayer
+            } else {
+                null
+            }
+
         }
     }
 

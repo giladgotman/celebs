@@ -95,7 +95,7 @@ class GameOnUiBinder @Inject constructor() {
 
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
-            val updatedTeams = updateTeamsWithPlayingState(state.teamsWithPlayers, state.currentPlayer)
+            val updatedTeams = updateTeamsWithPlayingState(state.teamsWithPlayers, state.currentPlayer, state.nextPlayer)
             setTeamPlayers(updatedTeams)
             roundTextView?.text = state.round.roundNumber.toString()
             if (state.isTimerRunning && !state.inProgress) {
@@ -137,16 +137,24 @@ class GameOnUiBinder @Inject constructor() {
 }
 
     // update the player.playerTurnState in each team based on the currentPlayer
-    private fun updateTeamsWithPlayingState(teamsWithPlayers: List<Team>, currentPlayer: Player?): List<Team> {
+    private fun updateTeamsWithPlayingState(teamsWithPlayers: List<Team>, currentPlayer: Player?, nextPlayer: Player?): List<Team> {
         val teams = mutableListOf<Team>()
         teamsWithPlayers.forEachIndexed { index, team ->
             val players = mutableListOf<Player>()
             team.players.forEachIndexed { pIndex, player ->
-                if (currentPlayer?.id == player.id) {
-                    players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = PlayerTurnState.Playing))
-                } else {
-                    players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = PlayerTurnState.Idle))
+                val playerTurnState = when {
+                    currentPlayer?.id == player.id -> {
+                        PlayerTurnState.Playing
+                    }
+                    nextPlayer?.id == player.id -> {
+                        PlayerTurnState.UpNext
+                    }
+                    else -> {
+                        PlayerTurnState.Idle
+                    }
                 }
+                players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = playerTurnState))
+
             }
             teams.add(team.copy(players = players))
         }

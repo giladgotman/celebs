@@ -51,6 +51,7 @@ interface GameScreenContract {
         val showEndOfRound: Boolean = false,
         val showGameOver: Boolean = false,
         val lastPlayer: Player? = null,
+        val nextPlayer: Player? = null,
         val cardsFoundInTurn: List<Card> = emptyList(),
         val showLeaveGameConfirmation: Boolean = false,
         val navigateToGames: Boolean = false
@@ -80,6 +81,7 @@ interface GameScreenContract {
                 showEndOfRound                  $showEndOfRound
                 showGameOver                    $showGameOver
                 lastPlayer                      ${lastPlayer?.name}
+                nextPlayer                      ${nextPlayer?.name}
                 cardsFoundInTurnSize            ${cardsFoundInTurn.size}
                 showLeaveGameConfirmation       $showLeaveGameConfirmation
                 navigateToGames                 $navigateToGames

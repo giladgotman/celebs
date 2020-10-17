@@ -13,7 +13,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GamesDataSourceFake @Inject constructor() : GamesDataSource {
-    val fakeGame = createGame(teams = listOf(createTeam()))
+    val fakeGame = createGame(teams = listOf(createTeam("Team1"), createTeam("Team2")))
     var games = mutableListOf<Game>(fakeGame)
     val gamesSubject = PublishSubject.create<Game>()
 
@@ -42,7 +42,7 @@ class GamesDataSourceFake @Inject constructor() : GamesDataSource {
 
 fun createGame(
     id: String = "id",
-    name: String = "name",
+    name: String = "Sunday fun",
     createdAt: Long = 0,
     password: String? = null,
     celebsCount: Int = 6,
