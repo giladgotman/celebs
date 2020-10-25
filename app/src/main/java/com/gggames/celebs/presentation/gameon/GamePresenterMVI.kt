@@ -65,7 +65,7 @@ class GamePresenterMVI @Inject constructor(
             playersObservable(gameId).doOnNext { Timber.d("PlayersUpdate") },
             cardsObservable().doOnNext { Timber.d("CardsUpdate") },
             Function3 { game: GameUpdate, players: PlayersUpdate, cards: CardsUpdate ->
-                FullGameUpdate(game.game, players.players, cards.cards)
+                CombinedGameUpdate(game.game, players.players, cards.cards)
             }
         )
 
@@ -88,7 +88,7 @@ class GamePresenterMVI @Inject constructor(
 
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
-            is FullGameUpdate -> {
+            is CombinedGameUpdate -> {
                 val meActive = authenticator.isMyselfActivePlayerBlocking(result.game)
                 val turnState = result.game.gameInfo.round.turn.state
                 val turnOver = result.game.turn.state == TurnState.Over &&
@@ -126,6 +126,7 @@ class GamePresenterMVI @Inject constructor(
                     cardsInDeck = result.cards.filter { !it.used }.size,
                     totalCardsInGame = result.cards.size
                 )
+                // TODO: 25.10.20 remove from here and make it a pure function
                 lastGame = result.game
                 lastCard = result.game.turn.currentCard
                 cardDeck = result.cards
