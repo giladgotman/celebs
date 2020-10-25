@@ -4,6 +4,7 @@ import com.gggames.celebs.core.Authenticator
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.gameon.*
 import com.gggames.celebs.features.games.data.GamesRepository
+import com.gggames.celebs.features.games.domain.CalculateNextPlayer
 import com.gggames.celebs.features.games.domain.ObserveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
@@ -38,6 +39,7 @@ class GamePresenterMVI @Inject constructor(
     private val handleBackPressed: HandleBackPressed,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
+    private val calculateNextPlayer: CalculateNextPlayer,
     private val audioPlayer: AudioPlayer,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
@@ -154,27 +156,6 @@ class GamePresenterMVI @Inject constructor(
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
             is SetGameResult -> previous
-        }
-    }
-
-
-    private fun calculateNextPlayer(teams: List<Team>, lastTeamName: String?): Player? {
-        return if (lastTeamName == null) {
-            if (teams.first().players.isNotEmpty()) {
-                teams.first().players.random()
-            } else {
-                null
-            }
-        } else {
-            val lastTeamIdx = teams.indexOfFirst { it.name == lastTeamName }
-            val nextTeam = teams[(lastTeamIdx + 1) % teams.size]
-            if (nextTeam.players.isNotEmpty()) {
-                val lastPlayerIdx = nextTeam.players.indexOfFirst { it.id == nextTeam.lastPlayerId }
-                val nextPlayer = nextTeam.players[(lastPlayerIdx + 1) % nextTeam.players.size]
-                nextPlayer
-            } else {
-                null
-            }
         }
     }
 

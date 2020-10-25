@@ -160,4 +160,8 @@ dependencies {
             "com.google.truth:truth:$versions.truth"
     )
 
+    testImplementation(
+            "com.google.truth:truth:$versions.truth"
+    )
+
 }
