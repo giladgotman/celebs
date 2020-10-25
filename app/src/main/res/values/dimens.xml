@@ -9,6 +9,8 @@
     <dimen name="big_margin">64dp</dimen>
     <dimen name="big_text_size">32sp</dimen>
     <dimen name="huge_margin">128dp</dimen>
+    <dimen name="name_badge_radius">5dp</dimen>
+    <dimen name="name_badge_padding">7dp</dimen>
 
 
 </resources>
