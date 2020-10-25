@@ -50,7 +50,7 @@ class NameBadge : ConstraintLayout {
         when (state.turnState) {
             PlayerTurnState.Idle -> name.background = context.getDrawable(R.drawable.name_badge_bg_idle)
             PlayerTurnState.Playing -> name.background = context.getDrawable(R.drawable.name_badge_bg_playing)
-            PlayerTurnState.UpNext -> name.background = context.getDrawable(R.drawable.name_badge_bg_upnext)
+            PlayerTurnState.UpNext -> name.background = context.getDrawable(R.drawable.name_badge_bg_idle)
         }
     }
 
