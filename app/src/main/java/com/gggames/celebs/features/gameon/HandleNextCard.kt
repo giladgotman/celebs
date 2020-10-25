@@ -21,6 +21,7 @@ class HandleNextCard @Inject constructor(
                 cardsRepository.updateCard(pickNextCardResult.card)
                     .andThen(setGame(game
                         .setCurrentCard(pickNextCardResult.card)
+                        .setTurnTime(time ?: game.turn.time)
                     ))
                     .filter { it is Done }
                     .switchMap { just(NewCard(pickNextCardResult.card, time)) }

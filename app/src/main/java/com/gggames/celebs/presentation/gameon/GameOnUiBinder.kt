@@ -99,10 +99,12 @@ class GameOnUiBinder @Inject constructor() {
             val updatedTeams = updateTeamsWithPlayingState(state.teamsWithPlayers, state.currentPlayer, state.nextPlayer)
             setTeamPlayers(updatedTeams)
             roundTextView?.text = state.round.roundNumber.toString()
-            if (state.isTimerRunning && !state.inProgress) {
-                startResumeTimer()
-            } else {
-                pauseTimer()
+            if (state.useLocalTimer) {
+                if (state.isTimerRunning && !state.inProgress) {
+                    startResumeTimer()
+                } else {
+                    pauseTimer()
+                }
             }
             if (state.resetTime) {
                 updateTime(TURN_TIME_MILLIS)

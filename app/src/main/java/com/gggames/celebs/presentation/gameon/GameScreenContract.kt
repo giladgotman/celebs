@@ -45,7 +45,6 @@ interface GameScreenContract {
         val inProgress: Boolean = false,
         val helpButtonEnabled: Boolean = false,
         val isTimerRunning: Boolean = false, // also affected by inProgress
-        val meActive: Boolean = false,
         val time: Long? = null,
         val resetTime: Boolean = false,
         val showEndOfTurn: Boolean = false,
@@ -56,7 +55,8 @@ interface GameScreenContract {
         val cardsFoundInTurn: List<Card> = emptyList(),
         val showLeaveGameConfirmation: Boolean = false,
         val navigateToGames: Boolean = false,
-        val navigateToTeams: Boolean = false
+        val navigateToTeams: Boolean = false,
+        val useLocalTimer: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -74,7 +74,6 @@ interface GameScreenContract {
                 previousRoundName:              $previousRoundName
                 round:                          $round
                 isTimerRunning:                 $isTimerRunning
-                meActive:                       $meActive
                 time:                           $time
                 playButtonState                 $playButtonState
                 correctButtonEnabled            $correctButtonEnabled
@@ -90,6 +89,7 @@ interface GameScreenContract {
                 showLeaveGameConfirmation       $showLeaveGameConfirmation
                 navigateToGames                 $navigateToGames
                 navigateToTeams                 $navigateToTeams
+                useLocalTimer                   $useLocalTimer
                 """.trimIndent()
 
     }
