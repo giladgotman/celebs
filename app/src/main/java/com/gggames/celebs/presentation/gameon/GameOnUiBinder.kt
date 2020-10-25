@@ -73,6 +73,7 @@ class GameOnUiBinder @Inject constructor() {
                 recyclerView.itemAnimator = DefaultItemAnimator()
                 recyclerView.adapter = playerAdapters[index]
             }
+
         }
         setupTimer()
     }
@@ -134,6 +135,8 @@ class GameOnUiBinder @Inject constructor() {
             if (state.showLeaveGameConfirmation) {
                 showLeaveGameDialog()
             }
+
+            state.time?.let { updateTime(it) }
 
             correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
             helpButton?.isEnabled = state.helpButtonEnabled

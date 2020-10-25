@@ -100,7 +100,7 @@ class GamePresenterMVI @Inject constructor(
                 val updatedTeams = result.game.teams.map { team ->
                     team.copy(players = result.players.filter { it.team == team.name })
                 }
-
+                val updatedTime = result.game.turn.time?.takeIf { !meActive }
                 val newState = previous.copy(
                     // Game
                     teamsWithScore = result.game.teams,
@@ -121,6 +121,7 @@ class GamePresenterMVI @Inject constructor(
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
                     lastPlayer = result.game.currentPlayer ?: previous.lastPlayer,
                     cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound },
+                    time = updatedTime,
                     // Players
                     teamsWithPlayers = updatedTeams,
                     nextPlayer = calculateNextPlayer(updatedTeams, previous.lastPlayer?.team),
@@ -146,10 +147,17 @@ class GamePresenterMVI @Inject constructor(
             }
             is RoundOverDialogDismissedResult -> previous
             is HandleNextCardResult -> {
-                if (result is HandleNextCardResult.InProgress) {
-                    previous.copy(inProgress = true)
-                } else {
-                    previous.copy(inProgress = false)
+                when (result) {
+                    is HandleNextCardResult.InProgress -> {
+                        previous.copy(inProgress = true)
+                    }
+                    is HandleNextCardResult.NewCard -> {
+                        previous.copy(
+                            inProgress = false
+                        )
+                    }
+                    is HandleNextCardResult.RoundOver -> previous.copy(inProgress = false)
+                    is HandleNextCardResult.GameOver -> previous
                 }
             }
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
@@ -208,14 +216,14 @@ class GamePresenterMVI @Inject constructor(
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!, game)
                 .switchMap { handleNextCardWrap(time) }
-            ButtonState.Running -> pauseTurn(game)
+            ButtonState.Running -> pauseTurn(game, time)
             ButtonState.Paused -> {
                 if (game.round.state == RoundState.New) {
                     startRound(game)
-                        .switchMap { resumeTurn(game) }
+                        .switchMap { resumeTurn(game, time) }
                         .switchMap { handleNextCardWrap(time) }
                 } else {
-                    resumeTurn(game)
+                    resumeTurn(game, time)
                 }
             }
             ButtonState.Finished -> just(NoOp)

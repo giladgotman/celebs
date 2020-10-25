@@ -19,7 +19,9 @@ class HandleNextCard @Inject constructor(
         pickNextCard(cardDeck, game.type, game.round, time).switchMap { pickNextCardResult ->
             if (pickNextCardResult is PickNextCardResult.Found) {
                 cardsRepository.updateCard(pickNextCardResult.card)
-                    .andThen(setGame(game.setCurrentCard(pickNextCardResult.card)))
+                    .andThen(setGame(game
+                        .setCurrentCard(pickNextCardResult.card)
+                    ))
                     .filter { it is Done }
                     .switchMap { just(NewCard(pickNextCardResult.card, time)) }
             } else {
