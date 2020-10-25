@@ -93,7 +93,7 @@ class GameOnFragment : Fragment(),
 
         cardTextView.text = ""
 
-        endTurnButton.setOnClickListener {
+        helpButton.setOnClickListener {
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
@@ -182,7 +182,7 @@ class GameOnFragment : Fragment(),
         startTimer()
         startButton.state = ButtonState.Running
         startButton.isEnabled = true
-        endTurnButton.isEnabled = false
+        helpButton.isEnabled = false
 
         val cardColor = if (meActive) {
             ContextCompat.getColor(requireContext(), R.color.green)
@@ -197,7 +197,7 @@ class GameOnFragment : Fragment(),
         updateTime(TURN_TIME_MILLIS)
         startButton.state = ButtonState.Stopped
         correctButton.isEnabled = false
-        endTurnButton.isEnabled = false
+        helpButton.isEnabled = false
         startButton.isEnabled = true
     }
 
@@ -223,7 +223,7 @@ class GameOnFragment : Fragment(),
     override fun showRoundEnded(round: Round, teams: List<Team>) {
             cardTextView.text = ""
             if (endRoundDialogFragment?.isAdded != true) {
-                endRoundDialogFragment = EndRoundDialogFragment.create(round, teams)
+                endRoundDialogFragment = EndRoundDialogFragment.create(round.roundNumber.toString(), teams)
                 endRoundDialogFragment?.show(requireActivity() as AppCompatActivity)
             }
     }
@@ -245,7 +245,7 @@ class GameOnFragment : Fragment(),
     override fun setNewRound(playButtonEnabled: Boolean, roundNumber: Int) {
         cardTextView.text = "Round $roundNumber is ready"
         startButton.isEnabled = playButtonEnabled
-        endTurnButton.isEnabled = false
+        helpButton.isEnabled = false
     }
 
     private fun updateTime(time: Long) {
@@ -255,7 +255,7 @@ class GameOnFragment : Fragment(),
 
     override fun setRoundEndState(meActive: Boolean, roundNumber: Int) {
         setPausedState(meActive, null)
-        endTurnButton.isEnabled = false
+        helpButton.isEnabled = false
         startButton.isEnabled = false
     }
 

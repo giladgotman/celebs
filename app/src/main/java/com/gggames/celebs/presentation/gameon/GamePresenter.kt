@@ -5,12 +5,11 @@ import com.gggames.celebs.features.cards.data.CardsRepository
 import com.gggames.celebs.features.cards.domain.ObserveAllCards
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.features.games.domain.ObserveGame
-import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.games.domain.UpdateGame
 import com.gggames.celebs.features.players.domain.LeaveGame
 import com.gggames.celebs.features.players.domain.ObservePlayers
 import com.gggames.celebs.model.*
-import com.gggames.celebs.model.RoundState.Ended
-import com.gggames.celebs.model.RoundState.Ready
+import com.gggames.celebs.model.RoundState.*
 import com.gggames.celebs.model.TurnState.*
 import com.gggames.celebs.presentation.gameon.GameScreenContract.ButtonState
 import com.gggames.celebs.presentation.gameon.GameScreenContract.UiEvent.*
@@ -22,13 +21,13 @@ import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
 
-const val TURN_TIME_MILLIS = 60000L
-//const val TURN_TIME_MILLIS = 10000L
+//const val TURN_TIME_MILLIS = 30000L
+const val TURN_TIME_MILLIS = 10000L
 
 class GamePresenter @Inject constructor(
     private val playersObservable: ObservePlayers,
     private val cardsObservable: ObserveAllCards,
-    private val updateGame: SetGame,
+    private val updateGame: UpdateGame,
     private val observeGame: ObserveGame,
     private val authenticator: Authenticator,
     private val cardsRepository: CardsRepository,
@@ -49,7 +48,7 @@ class GamePresenter @Inject constructor(
 
     private var lastGame: Game? = null
     private val roundState: RoundState
-    get() = game.gameInfo.round.state
+        get() = game.gameInfo.round.state
 
     private var cardsFoundInTurn = mutableListOf<Card>()
 
@@ -60,16 +59,17 @@ class GamePresenter @Inject constructor(
         events.subscribe(::handleUiEvent).let { disposables.add(it) }
 
         observeGame(gameId)
-            .distinctUntilChanged()
+            .map { it.game }
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onGameChange).let { disposables.add(it) }
 
         playersObservable(gameId)
-            .distinctUntilChanged()
+            .map { it.players }
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onPlayersChange).let { disposables.add(it) }
 
         cardsObservable()
+            .map { it.cards }
             .compose(schedulerProvider.applyDefault())
             .subscribe(::onCardsChange).let { disposables.add(it) }
     }
@@ -128,11 +128,13 @@ class GamePresenter @Inject constructor(
             when (newRound.state) {
                 Ready -> {
                 }
+                Started -> {
+                }
                 Ended -> {
                     view.setRoundEndState(meActive, newRound.roundNumber)
                     view.showRoundEnded(newRound, game.teams)
                 }
-                RoundState.New -> {
+                New -> {
                     val startButtonEnabled = meActive || game.currentPlayer == null
                     view.setNewRound(startButtonEnabled, newRound.roundNumber)
                 }
@@ -152,7 +154,7 @@ class GamePresenter @Inject constructor(
                 Idle -> {
                     view.setTurnStoppedState()
                 }
-                Stopped -> {
+                TurnState.Over -> {
                     if (lastGame?.turn?.state != newTurn.state) {
                         view.setTurnStoppedState()
                         if (!quitingGame) {
@@ -172,7 +174,7 @@ class GamePresenter @Inject constructor(
                 Idle -> {
                     view.setTurnStoppedState()
                 }
-                Stopped -> {
+                TurnState.Over -> {
                     if (lastGame?.turn?.state != newTurn.state) {
                         view.setTurnStoppedState()
                         showEndOfTurn()
@@ -195,6 +197,7 @@ class GamePresenter @Inject constructor(
         val cards = cardDeck.filter { it.id in lastGame?.round?.turn?.cardsFound ?: emptyList() }
         view.showTurnEnded(lastGame?.round?.turn?.player, cards, lastGame?.round?.roundNumber ?: 1)
     }
+
     private fun onNewRoundClick(time: Long) {
         when {
             lastRound() -> {
@@ -401,7 +404,7 @@ class GamePresenter @Inject constructor(
             gameInfo = game.gameInfo.copy(
                 round = game.gameInfo.round.copy(
                     turn = game.gameInfo.round.turn.copy(
-                        state = Stopped,
+                        state = TurnState.Over,
                         time = TURN_TIME_MILLIS
                     )
                 )
@@ -537,8 +540,7 @@ class GamePresenter @Inject constructor(
         when (buttonState) {
             ButtonState.Stopped -> onPlayerStarted()
             ButtonState.Running -> onPlayerPaused(time)
-            ButtonState.Paused ->
-            {
+            ButtonState.Paused -> {
                 if (roundState == RoundState.New) {
                     onPlayerResumedNewRound()
                 } else {
@@ -548,16 +550,16 @@ class GamePresenter @Inject constructor(
         }
     }
 
-   private fun onTimerEnd() {
-       if (authenticator.isMyselfActivePlayerBlocking(game)) {
-           audioPlayer.play("timesupyalabye")
-           endMyTurn().subscribe(
-               {},
-               { Timber.e(it, "error onTimerEnd") }
-           ).let { disposables.add(it) }
-       }
+    private fun onTimerEnd() {
+        if (authenticator.isMyselfActivePlayerBlocking(game)) {
+            audioPlayer.play("timesupyalabye")
+            endMyTurn().subscribe(
+                {},
+                { Timber.e(it, "error onTimerEnd") }
+            ).let { disposables.add(it) }
+        }
 
-   }
+    }
 
     private fun onEndTurnClick() {
         // not used - removed button
@@ -595,6 +597,7 @@ class GamePresenter @Inject constructor(
             round: Round,
             teams: List<Team>
         )
+
         fun showLeaveGameDialog()
         fun showCorrectCard(card: Card, videoUrl: String?)
     }

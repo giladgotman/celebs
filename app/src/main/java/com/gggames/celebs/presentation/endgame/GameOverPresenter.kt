@@ -105,7 +105,7 @@ class GameOverPresenter @Inject constructor(
 
     private fun getCardsAndGame() = combineLatest(
         getCurrentGame(),
-        getCards(),
+        getCards().map { it.cards },
         BiFunction<Game, List<Card>, Result.GameAndCardsResult> { game, cards ->
             Result.GameAndCardsResult(
                 game,

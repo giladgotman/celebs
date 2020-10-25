@@ -1,6 +1,8 @@
 package com.gggames.celebs.model
 
 import com.gggames.celebs.model.TurnState.Idle
+import com.gggames.celebs.presentation.gameon.GameScreenContract
+import timber.log.Timber
 
 data class Game(
     val id: String,
@@ -35,10 +37,15 @@ data class GameInfo(
     val round: Round = Round()
 )
 
-data class Round(val state: RoundState = RoundState.Ready, val roundNumber: Int = 1, val turn: Turn = Turn())
+data class Round(
+    val state: RoundState = RoundState.Ready,
+    val roundNumber: Int = 1,
+    val turn: Turn = Turn()
+)
 
 enum class RoundState {
     Ready,
+    Started,
     Ended,
     New;
 
@@ -46,9 +53,13 @@ enum class RoundState {
         fun fromName(name: String?): RoundState =
             when (name) {
                 "Ready" -> Ready
+                "Started" -> Started
                 "Ended" -> Ended
                 "New" -> New
-                else -> throw IllegalArgumentException("Unknown round state name: $name")
+                else -> {
+                    Timber.w("Unknown round state name: $name , setting state to Ready")
+                    Ready
+                }
             }
     }
 }
@@ -58,12 +69,13 @@ data class Turn(
     val player: Player? = null,
     val time: Long? = null,
     val cardsFound: List<String> = emptyList(),
-    val lastFoundCard: Card? = null
+    val lastFoundCard: Card? = null,
+    val currentCard: Card? = null
 )
 
 enum class TurnState {
     Idle,
-    Stopped,
+    Over,
     Running,
     Paused;
 
@@ -71,13 +83,27 @@ enum class TurnState {
         fun fromName(name: String?): TurnState =
             when (name) {
                 "Idle" -> Idle
-                "Stopped" -> Stopped
+                "Over" -> Over
                 "Running" -> Running
                 "Paused" -> Paused
-                else -> throw IllegalArgumentException("Unknown turn state name: $name")
+                else -> {
+                    Timber.w("Unknown turn state name: $name , setting state to Idle")
+                    Idle
+                }
             }
     }
 }
+
+fun TurnState.isTurnOn(): Boolean = this == TurnState.Running || this == TurnState.Paused
+
+fun TurnState.toPlayButtonState() =
+    when (this) {
+        TurnState.Idle -> GameScreenContract.ButtonState.Stopped
+        TurnState.Over -> GameScreenContract.ButtonState.Stopped
+        TurnState.Running -> GameScreenContract.ButtonState.Running
+        TurnState.Paused -> GameScreenContract.ButtonState.Paused
+    }
+
 enum class GameState {
     Created,
     Started,
@@ -90,7 +116,95 @@ enum class GameState {
                 "Started" -> Started
                 "Finished" -> Finished
                 null -> null
-                else -> throw IllegalArgumentException("Unknown game state name: $name")
+                else -> {
+                    Timber.w("Unknown game state name: $name , setting state to Created")
+                    Created
+                }
             }
+    }
+}
+
+fun Game.setGameState(state: GameState) = this.copy(state = state)
+
+fun Game.setRoundState(state: RoundState) =
+    this.copy(gameInfo = this.gameInfo.copy(round = this.gameInfo.round.copy(state = state)))
+
+fun Game.setRoundNumber(roundNumber: Int) =
+    this.copy(gameInfo = this.gameInfo.copy(round = this.gameInfo.round.copy(roundNumber = roundNumber)))
+
+fun Game.setTurnState(state: TurnState) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(state = state)
+        )
+    )
+)
+
+fun Game.setCurrentCard(card: Card?) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(currentCard = card)
+        )
+    )
+)
+
+fun Game.addCardsFoundInTurn(card: Card) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(cardsFound = this.turn.cardsFound + card.id)
+        )
+    )
+)
+
+fun Game.resetCardsFoundInTurn() = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(cardsFound = emptyList())
+        )
+    )
+)
+
+fun Game.setTurnPlayer(player: Player?) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(player = player)
+        )
+    )
+)
+
+fun Game.setTeamLastPlayerId(player: Player?) = this.copy(
+    teams = this.teams.map { team ->
+        if (team.name == player?.team) {
+            team.copy(lastPlayerId = player.id)
+        } else team
+    }
+)
+
+fun Game.setTurnTime(time: Long?) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(time = time)
+        )
+    )
+)
+
+fun Game.setTurnLastCards(cardsIds: List<String>) = this.copy(
+    gameInfo = this.gameInfo.copy(
+        round = this.gameInfo.round.copy(
+            turn = this.gameInfo.round.turn.copy(cardsFound = cardsIds)
+        )
+    )
+)
+
+fun Game.increaseScore(teamName: String): Game {
+    val teamIndex = this.teams.indexOfFirst { it.name == teamName }
+    if (teamIndex != -1) {
+        val currScore = this.teams[teamIndex].score
+        val currTeam = this.teams[teamIndex]
+        val mutableTeams = this.teams.toMutableList()
+        mutableTeams[teamIndex] = currTeam.copy(score = currScore + 1)
+        return this.copy(teams = mutableTeams)
+    } else {
+        throw java.lang.IllegalArgumentException("Can't find teamName: $teamName")
     }
 }

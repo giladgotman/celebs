@@ -1,6 +1,7 @@
 package com.gggames.celebs.presentation.endturn
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.gggames.celebs.R
-import com.gggames.celebs.model.Round
 import com.gggames.celebs.model.Team
+import com.gggames.celebs.presentation.gameon.GameScreenContract
+import com.gggames.celebs.utils.rx.EventEmitter
+import com.gggames.celebs.utils.rx.ViewEventEmitter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_round_dialog.*
 
 class EndRoundDialogFragment :
-    BottomSheetDialogFragment() {
+    BottomSheetDialogFragment(), EventEmitter<GameScreenContract.UiEvent> by ViewEventEmitter() {
 
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
@@ -26,6 +29,7 @@ class EndRoundDialogFragment :
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_end_round_dialog, container, false)
 
+    private lateinit var onDismissBlock: () -> Unit
     private val KEY_ROUND_NAME = "KEY_ROUND_NAME"
     private val KEY_TEAMS = "KEY_TEAMS"
 
@@ -63,19 +67,28 @@ class EndRoundDialogFragment :
         }
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        GameScreenContract.UiEvent.RoundOverDialogDismissed.emit()
+        onDismissBlock()
+    }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         return dialog
     }
 
+    fun setOnDismiss(block: () -> Unit) {
+        onDismissBlock = block
+    }
+
     companion object {
-        fun create(round: Round, teams: List<Team>): EndRoundDialogFragment {
+        fun create(endedRoundName: String, teams: List<Team>): EndRoundDialogFragment {
             return EndRoundDialogFragment()
                 .apply {
                 isCancelable = true
                 arguments =
                     Bundle().apply {
-                        putString(KEY_ROUND_NAME, round.roundNumber.toString())
+                        putString(KEY_ROUND_NAME, endedRoundName)
                         putParcelableArray(KEY_TEAMS, teams.toTypedArray())
                     }
             }

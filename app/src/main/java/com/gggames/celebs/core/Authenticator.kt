@@ -45,13 +45,13 @@ class Authenticator @Inject constructor(
             preferenceManager.savePlayer(me)
         }
 
-    fun isMyselfActivePlayerBlocking(game: Game) = me == game.currentPlayer
+    fun isMyselfActivePlayerBlocking(game: Game) = me?.id == game.currentPlayer?.id
 
     fun isMyselfActivePlayer(game: Game) = Single.fromCallable {
         isMyselfActivePlayerBlocking(game)
     }
 
-    fun isMyselfHost(game: Game) = me == game.host
+    fun isMyselfHost(game: Game) = me?.id == game.host.id
 
     fun setMyTeam(teamName: String) {
         me = me?.copy(team = teamName)

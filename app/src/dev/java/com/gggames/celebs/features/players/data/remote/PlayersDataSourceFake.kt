@@ -2,6 +2,7 @@ package com.gggames.celebs.features.players.data.remote
 
 import com.gggames.celebs.features.players.data.PlayersDataSource
 import com.gggames.celebs.model.Player
+import com.gggames.celebs.model.PlayerTurnState
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.just
@@ -11,7 +12,18 @@ import javax.inject.Inject
 
 class PlayersDataSourceFake @Inject constructor() : PlayersDataSource {
 
-    private val players = mutableListOf<Player>()
+    private val players = mutableListOf<Player>(
+        createPlayer(
+            id = "fake1",
+            name = "fake1",
+            team = "Team1"
+        ),
+        createPlayer(
+            id = "fake2",
+            name = "fake2",
+            team = "Team2"
+        )
+    )
     private val playersSubject = PublishSubject.create<List<Player>>()
 
 
@@ -51,3 +63,18 @@ class PlayersDataSourceFake @Inject constructor() : PlayersDataSource {
             }
         }
 }
+
+
+fun createPlayer(
+    id: String = "id",
+    name: String = "name",
+    team: String? = null,
+    games: List<String> = emptyList(),
+    playerTurnState: PlayerTurnState = PlayerTurnState.Idle
+): Player = Player(
+    id = id,
+    name = name,
+    team = team,
+    games = games,
+    playerTurnState = playerTurnState
+)

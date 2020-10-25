@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/transparent" />
+    <stroke
+        android:width="3dp"
+        android:color="@color/colorAccent" />
+    <corners android:radius="@dimen/name_badge_radius" />
+    <padding
+        android:bottom="@dimen/name_badge_padding"
+        android:left="@dimen/name_badge_padding"
+        android:right="@dimen/name_badge_padding"
+        android:top="@dimen/name_badge_padding" />
+</shape>

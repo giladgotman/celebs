@@ -2,15 +2,18 @@ package com.gggames.celebs.features.games.domain
 
 import com.gggames.celebs.features.games.data.GamesRepository
 import com.gggames.celebs.model.Game
-import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
-import io.reactivex.Completable
+import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.SetGameResult
+import com.gggames.celebs.presentation.gameon.GameScreenContract.Result.SetGameResult.Done
+import io.reactivex.Observable
+import io.reactivex.Observable.just
+import timber.log.Timber
 import javax.inject.Inject
 
 class SetGame @Inject constructor(
-    private val gamesRepository: GamesRepository,
-    private val schedulerProvider: BaseSchedulerProvider
+    private val gamesRepository: GamesRepository
 ) {
-    operator fun invoke(game: Game): Completable =
+    operator fun invoke(game: Game, label: String? = null): Observable<out SetGameResult> =
         gamesRepository.setGame(game)
-            .compose(schedulerProvider.applyCompletableDefault())
+            .andThen(just<SetGameResult>(Done(label)))
+            .doOnSubscribe { label?.let { Timber.d("INTERNAL::$it") } }
 }

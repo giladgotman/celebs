@@ -30,7 +30,7 @@ class Signup @Inject constructor(
     }
 }
 
-fun createPlayer(username: String) = Player(
+private fun createPlayer(username: String) = Player(
     username,
     username,
     null,

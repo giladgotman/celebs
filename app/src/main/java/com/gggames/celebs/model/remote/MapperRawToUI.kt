@@ -14,7 +14,7 @@ fun CardRaw.toUi() = Card(
     this.videoUrlFull
 )
 
-fun PlayerRaw.toUi() = Player(this.id, this.name, this.team, this.games)
+fun PlayerRaw.toUi() = Player(this.id, this.name, this.team, this.games, PlayerTurnState.fromName(this.playerTurnState))
 
 fun UserRaw.toUi() = when (this.type) {
     UserType.Guest -> User.Guest(this.id, this.name)
@@ -51,5 +51,10 @@ fun RoundRaw.toUi() = Round(
 )
 
 fun TurnRaw.toUi() = Turn(
-    TurnState.fromName(this.state), this.player?.toUi(), this.time, this.cardsFound, this.lastFoundCard?.toUi()
+    TurnState.fromName(this.state),
+    this.player?.toUi(),
+    this.time,
+    this.cardsFound,
+    this.lastFoundCard?.toUi(),
+    this.currentCard?.toUi()
 )

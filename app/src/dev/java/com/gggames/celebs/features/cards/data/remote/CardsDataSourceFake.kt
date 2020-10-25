@@ -14,10 +14,28 @@ import kotlin.properties.Delegates
 @Singleton
 class CardsDataSourceFake @Inject constructor() : CardsDataSource {
 
-    private var cards: MutableList<Card> by Delegates.observable(mutableListOf()) { _, oldList, newList ->
+    private val fakeCards = mutableListOf(
+        createCard("id1", "1111111111", "fakeId"),
+        createCard("id2", "2222222", "fakeId"),
+        createCard("id3", "333333333", "fakeId"),
+        createCard("id4", "44444444", "fakeId"),
+        createCard("id5", "5555555", "fakeId"),
+        createCard("id6", "666666", "fakeId"),
+        createCard("id7", "7777777", "fakeId"),
+        createCard("id8", "899999999", "fakeId"),
+        createCard("id9", "9999999999", "fakeId"),
+        createCard("id10", "10", "fakeId"),
+        createCard("id11", "11", "fakeId"),
+        createCard("id12", "12", "fakeId"),
+        createCard("id13", "13", "fakeId"),
+        createCard("id14", "14", "fakeId")
+    )
+
+
+    private var cards: MutableList<Card> by Delegates.observable(fakeCards) { _, oldList, newList ->
         cardsSubject.onNext(newList)
     }
-    private val cardsSubject = BehaviorSubject.createDefault<List<Card>>(emptyList())
+    private val cardsSubject = BehaviorSubject.createDefault<List<Card>>(cards)
 
     override fun getAllCards(): Observable<List<Card>> =
         cardsSubject
@@ -26,9 +44,8 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
         Completable.fromCallable {
             val updatedList = this.cards
             cards.forEachIndexed { i, card ->
-                val cardWithId = card.copy(id= "id_$i")
+                val cardWithId = card.copy(id = "id_$i")
                 updatedList.add(cardWithId)
-//                updatedList.add(cardWithId.addFakeUrls())
             }
 
             this.cards = updatedList
@@ -37,24 +54,33 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
 
     override fun update(card: Card): Completable =
         Completable.fromCallable {
-            val updatedList = this.cards
-            updatedList.indexOfFirst { it.name == card.name }.takeIf { it != -1 }?.let { index ->
-                updatedList.set(index, card)
-            } ?: updatedList.add(card)
-
+            val updatedList = getUpdatedList(card)
             cards = updatedList
             Unit
         }
+
+    private fun getUpdatedList(card: Card): MutableList<Card> {
+        val updatedList = this.cards
+        updatedList.indexOfFirst { it.id == card.id }.takeIf { it != -1 }?.let { index ->
+            updatedList.set(index, card)
+        } ?: updatedList.add(card)
+        return updatedList
+    }
 
     override fun updateCards(cards: List<Card>): Completable =
         just(cards).flatMapIterable { it }
             .flatMapCompletable { update(it) }
 
-    private fun Card.addFakeUrls(): Card =
-        this.copy(
-            videoUrl1 = "https://drive.google.com/uc?export=download&id=194rl8msLR47b8No3-uuI-AmLre2wgoC9",
-            videoUrl2 = "https://drive.google.com/uc?export=download&id=147xu8GaVe25o3LhJ6xNcElqeEEHD6_vW",
-            videoUrl3 = "https://drive.google.com/uc?export=download&id=1CGIg6YgKin7m-QmHvyQ03omj6yEvWFRG",
-            videoUrlFull = "https://drive.google.com/uc?export=download&id=1k-6jLFqi7YO_QgeCfA_ubU22_vLY-2AO"
-        )
 }
+
+fun createCard(
+    id: String = "id",
+    name: String = "name",
+    player: String = "player",
+    used: Boolean = false
+) = Card(
+    id = id,
+    name = name,
+    player = player,
+    used = used
+)

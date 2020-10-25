@@ -65,12 +65,13 @@ class CardsDataSourceFakeTest {
          name: String = "name",
          player: String = "player",
          used: Boolean = false,
+         index: Int = 0,
          videoUrl1: String? = null,
          videoUrl2: String? = null,
          videoUrl3: String? = null,
          videoUrlFull: String? = null
     ) = Card(
-        id, name, player, used, videoUrl1, videoUrl2, videoUrl3, videoUrlFull
+        id, name, player, used, index, videoUrl1, videoUrl2, videoUrl3, videoUrlFull
     )
 
 }

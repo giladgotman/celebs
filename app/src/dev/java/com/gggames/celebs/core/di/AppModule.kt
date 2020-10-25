@@ -3,6 +3,8 @@ package com.gggames.celebs.core.di
 import android.content.Context
 import com.gggames.celebs.R
 import com.gggames.celebs.core.CelebsApplication
+import com.gggames.celebs.utils.prefs.PreferenceManager
+import com.gggames.celebs.utils.prefs.PreferenceManagerFake
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import com.idagio.app.core.utils.rx.scheduler.SchedulerProvider
 import dagger.Module
@@ -30,4 +32,9 @@ class AppModule(private val application: CelebsApplication) {
     @Provides
     @Singleton
     fun provideBaseSchedulerProvider(): BaseSchedulerProvider = SchedulerProvider()
+
+    @Provides
+    @Singleton
+    fun providePreferenceManager(): PreferenceManager = PreferenceManagerFake()
+
 }

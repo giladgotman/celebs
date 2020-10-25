@@ -1,16 +1,16 @@
 package com.gggames.celebs.presentation.creategame
 
-import com.gggames.celebs.features.games.domain.SetGame
+import com.gggames.celebs.features.games.domain.UpdateGame
 import com.gggames.celebs.features.players.domain.JoinGame
 import com.gggames.celebs.features.user.domain.GetMyUser
 import com.gggames.celebs.model.*
 import io.reactivex.Single.just
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 class CreateGamePresenter @Inject constructor(
-    private val setGame: SetGame,
+    private val updateGame: UpdateGame,
     private val getMyUser: GetMyUser,
     private val joinGame: JoinGame
 ) {
@@ -26,7 +26,7 @@ class CreateGamePresenter @Inject constructor(
         getMyUser().firstOrError().flatMap {
             val game = createGame(gameDetails, it)
             // TODO: 12.07.20 check if the setGame can be removed. it is used in joinGame (but with updateRemote = false
-            setGame(game)
+            updateGame(game)
                 .andThen(joinGame(game, it).andThen(just(game)))
         }
             .doOnSubscribe {
