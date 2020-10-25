@@ -15,6 +15,7 @@ class StartGame @Inject constructor(
                 .setTurnState(TurnState.Running)
                 .resetCardsFoundInTurn()
                 .setTurnPlayer(player)
+                .setTeamLastPlayerId(player)
                 .setTurnLastCards(emptyList()),
             this.javaClass.simpleName
         )

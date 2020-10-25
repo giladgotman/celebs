@@ -156,6 +156,7 @@ class GamePresenterMVI @Inject constructor(
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
             is SetGameResult -> previous
+            is NavigateToSelectTeam -> previous.copy(navigateToTeams = result.navigate)
         }
     }
 
@@ -167,7 +168,14 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.TimerEnd>().switchMap { onTimerEnd() },
                 o.ofType<UiEvent.OnBackPressed>().switchMap { handleBackPressed(game) },
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
-                o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) }
+                o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
+                o.ofType<UiEvent.OnSwitchTeamPressed>()
+                    .switchMap {
+                        just(
+                            NavigateToSelectTeam(true),
+                            NavigateToSelectTeam(false)
+                        )
+                    }
             )
         }
 

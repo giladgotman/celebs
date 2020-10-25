@@ -95,6 +95,11 @@ class GameOnFragmentMVI : Fragment(),
         findNavController().navigate(R.id.action_gameOnFragment_to_GamesFragment)
     }
 
+    fun navigateToTeams() {
+        disposables.clear()
+        findNavController().navigate(R.id.action_gameOnFragment_to_ChooseTeamFragment)
+    }
+
     override fun onBackPressed(): Boolean {
         _emitter.onNext(UiEvent.OnBackPressed)
         return true

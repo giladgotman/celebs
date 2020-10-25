@@ -127,6 +127,10 @@ class GameOnUiBinder @Inject constructor() {
             if (state.navigateToGames) {
                 fragment.navigateToGames()
             }
+
+            if (state.navigateToTeams) {
+                fragment.navigateToTeams()
+            }
             if (state.showLeaveGameConfirmation) {
                 showLeaveGameDialog()
             }

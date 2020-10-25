@@ -54,7 +54,8 @@ interface GameScreenContract {
         val nextPlayer: Player? = null,
         val cardsFoundInTurn: List<Card> = emptyList(),
         val showLeaveGameConfirmation: Boolean = false,
-        val navigateToGames: Boolean = false
+        val navigateToGames: Boolean = false,
+        val navigateToTeams: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -85,6 +86,7 @@ interface GameScreenContract {
                 cardsFoundInTurnSize            ${cardsFoundInTurn.size}
                 showLeaveGameConfirmation       $showLeaveGameConfirmation
                 navigateToGames                 $navigateToGames
+                navigateToTeams                 $navigateToTeams
                 """.trimIndent()
 
     }
@@ -132,6 +134,8 @@ interface GameScreenContract {
             data class ShowLeaveGameConfirmation(val showDialog: Boolean) : BackPressedResult()
             data class NavigateToGames(val navigate: Boolean) : BackPressedResult()
         }
+
+        data class NavigateToSelectTeam(val navigate: Boolean): Result()
 
         object RoundOverDialogDismissedResult : Result()
 

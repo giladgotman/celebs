@@ -172,6 +172,14 @@ fun Game.setTurnPlayer(player: Player?) = this.copy(
     )
 )
 
+fun Game.setTeamLastPlayerId(player: Player?) = this.copy(
+    teams = this.teams.map { team ->
+        if (team.name == player?.team) {
+            team.copy(lastPlayerId = player.id)
+        } else team
+    }
+)
+
 fun Game.setTurnTime(time: Long?) = this.copy(
     gameInfo = this.gameInfo.copy(
         round = this.gameInfo.round.copy(
