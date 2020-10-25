@@ -15,9 +15,9 @@ import com.gggames.celebs.utils.media.AudioPlayer
 import com.gggames.celebs.utils.rx.ofType
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
-import io.reactivex.Observable.just
-import io.reactivex.Observable.merge
+import io.reactivex.Observable.*
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Function3
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
@@ -60,10 +60,13 @@ class GamePresenterMVI @Inject constructor(
         val uiEvent = events
             .doOnNext { Timber.d("USER:: $it") }
 
-        val dataInput = merge(
-            observeGame(gameId),
-            playersObservable(gameId),
-            cardsObservable()
+        val dataInput = combineLatest(
+            observeGame(gameId).doOnNext { Timber.d("GameUpdate") },
+            playersObservable(gameId).doOnNext { Timber.d("PlayersUpdate") },
+            cardsObservable().doOnNext { Timber.d("CardsUpdate") },
+            Function3 { game: GameUpdate, players: PlayersUpdate, cards: CardsUpdate ->
+                FullGameUpdate(game.game, players.players, cards.cards)
+            }
         )
 
         val allInput = merge(uiEvent.toResult(), dataInput)
@@ -85,13 +88,19 @@ class GamePresenterMVI @Inject constructor(
 
     private fun reduce() = { previous: State, result: Result ->
         when (result) {
-            is GameUpdate -> {
+            is FullGameUpdate -> {
                 val meActive = authenticator.isMyselfActivePlayerBlocking(result.game)
                 val turnState = result.game.gameInfo.round.turn.state
                 val turnOver = result.game.turn.state == TurnState.Over &&
                         result.game.round.state == RoundState.Started
                 val roundOver = result.game.round.state == RoundState.Ended && previous.round.state != RoundState.Ended
+
+                val updatedTeams = result.game.teams.map { team ->
+                    team.copy(players = result.players.filter { it.team == team.name })
+                }
+
                 val newState = previous.copy(
+                    // Game
                     teamsWithScore = result.game.teams,
                     round = result.game.round,
                     isTimerRunning = turnState == TurnState.Running,
@@ -109,28 +118,28 @@ class GamePresenterMVI @Inject constructor(
                     revealCurrentCard = meActive,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
                     lastPlayer = result.game.currentPlayer ?: previous.lastPlayer,
-                    cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound }
-                )
-                lastGame = result.game
-                lastCard = result.game.turn.currentCard
-
-                newState
-            }
-            is PlayersUpdate -> {
-                val updatedTeams = previous.teamsWithScore.map { team ->
-                    team.copy(players = result.players.filter { it.team == team.name })
-                }
-                previous.copy(
+                    cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound },
+                    // Players
                     teamsWithPlayers = updatedTeams,
-                    nextPlayer = calculateNextPlayer(updatedTeams, previous.lastPlayer?.team)
-                )
-            }
-            is CardsUpdate -> {
-                cardDeck = result.cards
-                previous.copy(
+                    nextPlayer = calculateNextPlayer(updatedTeams, previous.lastPlayer?.team),
+                    // Cards
                     cardsInDeck = result.cards.filter { !it.used }.size,
                     totalCardsInGame = result.cards.size
                 )
+                lastGame = result.game
+                lastCard = result.game.turn.currentCard
+                cardDeck = result.cards
+
+                newState
+            }
+            is GameUpdate -> {
+                previous
+            }
+            is PlayersUpdate -> {
+                previous
+            }
+            is CardsUpdate -> {
+                previous
             }
             is RoundOverDialogDismissedResult -> previous
             is HandleNextCardResult -> {
@@ -165,7 +174,6 @@ class GamePresenterMVI @Inject constructor(
             } else {
                 null
             }
-
         }
     }
 
@@ -214,8 +222,8 @@ class GamePresenterMVI @Inject constructor(
             ButtonState.Paused -> {
                 if (game.round.state == RoundState.New) {
                     startRound(game)
-                        .switchMap { handleNextCardWrap(time) }
                         .switchMap { resumeTurn(game) }
+                        .switchMap { handleNextCardWrap(time) }
                 } else {
                     resumeTurn(game)
                 }

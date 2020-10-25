@@ -98,6 +98,11 @@ interface GameScreenContract {
         data class GameUpdate(val game: Game) : Result()
         data class PlayersUpdate(val players: List<Player>) : Result()
         data class CardsUpdate(val cards: List<Card>) : Result()
+        data class FullGameUpdate (
+            val game: Game,
+            val players: List<Player>,
+            val cards: List<Card>
+        ) : Result()
 
         sealed class HandleNextCardResult : Result() {
             object InProgress : HandleNextCardResult()

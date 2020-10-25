@@ -9,5 +9,4 @@ data class Team(
     val players: List<Player> = emptyList(), // used only locally
     val score: Int = 0,
     val lastPlayerId: String? = null
-) :
-    Parcelable
+) : Parcelable
