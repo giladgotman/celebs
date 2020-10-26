@@ -15,11 +15,56 @@
       },
       "oauth_client": [
         {
+          "client_id": "164185231772-e4r7kpie5bllqh05ngg0uc0cmqdhp7do.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gggames.celebs",
+            "certificate_hash": "337b73b280884ba260c5c64d7832c04b3af19343"
+          }
+        },
+        {
           "client_id": "164185231772-44m91lfdc43317fa2fhat56gh4vid4c9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.gggames.celebs",
             "certificate_hash": "7c63b4d02dbe0c2bad8cc0c90eacbfe3a94ed4cf"
+          }
+        },
+        {
+          "client_id": "164185231772-t7cv150r523eruu7hb09rvl59f5fvo3e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARQuFftiLix9_btCjqAxg09eh84NgXsXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164185231772-t7cv150r523eruu7hb09rvl59f5fvo3e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164185231772:android:8017f9169829ddc2e73859",
+        "android_client_info": {
+          "package_name": "com.gggames.hourglass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164185231772-jnbj3je6jcuoqa8u26n1i3np7i2lns68.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gggames.hourglass",
+            "certificate_hash": "267b4ddf6300430b467a7d9a88bc433c7656ec05"
           }
         },
         {
