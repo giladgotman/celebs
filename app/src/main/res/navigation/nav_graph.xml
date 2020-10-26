@@ -194,7 +194,7 @@
 
         <argument
             android:name="cards"
-            app:argType="com.gggames.celebs.model.Card[]"
+            app:argType="com.gggames.hourglass.model.Card[]"
             />
 
         <argument
