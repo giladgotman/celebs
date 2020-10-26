@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/GamesFragment"
-        android:name="com.gggames.celebs.presentation.creategame.GamesFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.GamesFragment"
         android:label="@string/games_fragment_label"
         tools:layout="@layout/fragment_games">
 
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/CreateGameFragment"
-        android:name="com.gggames.celebs.presentation.creategame.CreateGameFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.CreateGameFragment"
         android:label="@string/create_game_fragment_label"
         tools:layout="@layout/fragment_create_game">
 
@@ -66,7 +66,7 @@
 
     <fragment
         android:id="@+id/AddCardsFragment"
-        android:name="com.gggames.celebs.presentation.creategame.AddCardsFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.AddCardsFragment"
         android:label="@string/add_cards_fragment_label"
         tools:layout="@layout/fragment_add_cards">
         <action
@@ -104,7 +104,7 @@
 
     <fragment
         android:id="@+id/chooseTeamFragment"
-        android:name="com.gggames.celebs.presentation.creategame.ChooseTeamFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.ChooseTeamFragment"
         android:label="@string/choose_team_fragment_label"
         tools:layout="@layout/fragment_choose_teams"
         >
@@ -122,7 +122,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameOnFragment"
-        android:name="com.gggames.celebs.presentation.gameon.GameOnFragmentMVI"
+        android:name="com.gggames.hourglass.presentation.gameon.GameOnFragmentMVI"
         android:label="GameOnFragment" >
         <action
             android:id="@+id/action_gameOnFragment_to_GamesFragment"
@@ -157,7 +157,7 @@
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
-        android:name="com.gggames.celebs.presentation.endgame.GameOverFragment"
+        android:name="com.gggames.hourglass.presentation.endgame.GameOverFragment"
         android:label="GameOverFragment" >
         <action
             android:id="@+id/action_gameOverFragment_to_GamesFragment"
@@ -175,7 +175,7 @@
     </fragment>
     <fragment
         android:id="@+id/videoPlayerFragment"
-        android:name="com.gggames.celebs.presentation.video.VideoPlayerFragment"
+        android:name="com.gggames.hourglass.presentation.video.VideoPlayerFragment"
         android:label="VideoPlayerFragment" >
 
         <argument
@@ -185,7 +185,7 @@
     </fragment>
     <fragment
         android:id="@+id/endTurnDialogFragment"
-        android:name="com.gggames.celebs.presentation.endturn.EndTurnDialogFragment"
+        android:name="com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment"
         android:label="EndTurnDialogFragment" >
 
         <argument

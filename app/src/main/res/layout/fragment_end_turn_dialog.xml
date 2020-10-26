@@ -56,7 +56,7 @@
         tools:listitem="@layout/end_turn_card_found_item"
         tools:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:context="com.gggames.celebs.presentation.endturn.EndTurnDialogFragment"
+        tools:context="com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment"
 
         />
 
