@@ -17,10 +17,10 @@ import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.gggames.hourglass.utils.showErrorToast
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_choose_teams.*
 import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -29,11 +29,14 @@ class ChooseTeamFragment : Fragment() {
 
     private lateinit var viewComponent: ViewComponent
     private val disposables = CompositeDisposable()
+
     @Inject
     lateinit var chooseTeam: ChooseTeam
+
     @Inject
     lateinit var authenticator: Authenticator
-    @Inject lateinit var gamesRepository: GamesRepository
+    @Inject
+    lateinit var gamesRepository: GamesRepository
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,19 +77,29 @@ class ChooseTeamFragment : Fragment() {
             val teamName = button.text.toString()
             Timber.w("selected team: $selection, team: $teamName")
 
-            gamesRepository.currentGame?.let { game ->
-                chooseTeam(game.id, authenticator.me!!, teamName)
-                    .subscribe({
-                        authenticator.setMyTeam(teamName)
-                        Timber.w("ggg you choose team : $teamName")
-                    }, { e ->
-                        buttonDone.isEnabled = true
-                        showErrorToast(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG)
-                        Timber.e(e, "ggg failed to choose team : $teamName")
-                    }).let { disposables.add(it) }
-            }
+            chooseTeam(teamName)
 
             findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
+        }
+
+        // skip this screen if team is already chosen
+        authenticator.me!!.team?.let { chosenTeam ->
+            chooseTeam(chosenTeam)
+            findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
+        }
+    }
+
+    private fun chooseTeam(teamName: String) {
+        gamesRepository.currentGame?.let { game ->
+            chooseTeam(game.id, authenticator.me!!, teamName)
+                .subscribe({
+                    authenticator.setMyTeam(teamName)
+                    Timber.d("Team chosen : $teamName")
+                }, { e ->
+                    buttonDone.isEnabled = true
+                    showErrorToast(requireContext(), getString(R.string.error_generic), Toast.LENGTH_LONG)
+                    Timber.e(e, "failed to choose team : $teamName")
+                }).let { disposables.add(it) }
         }
     }
 }
