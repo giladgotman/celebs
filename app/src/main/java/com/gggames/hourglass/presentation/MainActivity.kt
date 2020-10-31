@@ -14,6 +14,7 @@ import com.gggames.hourglass.BuildConfig
 import com.gggames.hourglass.R
 import com.gggames.hourglass.core.Authenticator
 import com.gggames.hourglass.core.di.getAppComponent
+import com.gggames.hourglass.features.games.data.GameResult
 import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.presentation.common.MainActivityDelegate
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
@@ -49,17 +50,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         button_share.setOnClickListener {
-            gamesRepository.currentGame?.let { game ->
-                val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
-                val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
-                createDynamicLink(uri).subscribe({ shortUri ->
-                    val shareable = shareableFactory.create(game.id, game.name, shortUri)
-                    share(shareable)
-                }, {
-                    Timber.e(it, "error sharing link")
-                    showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
-                })
-            }
+            gamesRepository.getCurrentGame()
+                .subscribe { gameResult->
+                    if (gameResult is GameResult.Found) {
+                        val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${gameResult.game.id}").buildUpon()
+                        val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
+                        createDynamicLink(uri).subscribe({ shortUri ->
+                            val shareable = shareableFactory.create(gameResult.game.id, gameResult.game.name, shortUri)
+                            share(shareable)
+                        }, {
+                            Timber.e(it, "error sharing link")
+                            showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
+                        })
+                    }
+
+                }
         }
         setSupportActionBar(toolbar)
 

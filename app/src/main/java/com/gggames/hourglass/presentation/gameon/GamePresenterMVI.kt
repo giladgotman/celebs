@@ -22,6 +22,7 @@ import io.reactivex.functions.Function3
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 
 class GamePresenterMVI @Inject constructor(
@@ -41,7 +42,8 @@ class GamePresenterMVI @Inject constructor(
     private val flipLastCard: FlipLastCard,
     private val calculateNextPlayer: CalculateNextPlayer,
     private val audioPlayer: AudioPlayer,
-    private val schedulerProvider: BaseSchedulerProvider
+    private val schedulerProvider: BaseSchedulerProvider,
+    @Named("GameId") private val gameId : String
 ) {
     private var cardDeck = listOf<Card>()
 
