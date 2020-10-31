@@ -5,7 +5,7 @@
     android:layout_marginBottom="@dimen/small_margin"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.gggames.celebs.presentation.common.NameBadge
+    <com.gggames.hourglass.presentation.common.NameBadge
         android:id="@+id/nameBadge"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

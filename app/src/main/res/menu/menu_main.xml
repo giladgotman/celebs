@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.gggames.celebs.com.gggames.com.MainActivity">
+    tools:context="com.gggames.hourglass.com.gggames.com.MainActivity">
 
     <item
         android:id="@+id/menu_switch_team"

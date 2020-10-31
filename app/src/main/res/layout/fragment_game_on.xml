@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="com.gggames.celebs.presentation.creategame.GamesFragment"
+    tools:context="com.gggames.hourglass.presentation.creategame.GamesFragment"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -117,7 +117,7 @@
 
 
 
-        <com.gggames.celebs.presentation.HourglassButton
+        <com.gggames.hourglass.presentation.HourglassButton
             android:id="@+id/helpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
             app:layout_constraintStart_toStartOf="@id/cardLayout" />
 
         <!--            android:src="@drawable/ic_close_24px"-->
-        <com.gggames.celebs.presentation.PlayButton
+        <com.gggames.hourglass.presentation.PlayButton
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.gggames.celebs.presentation.HourglassButton
+        <com.gggames.hourglass.presentation.HourglassButton
             android:id="@+id/correctButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

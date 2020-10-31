@@ -9,11 +9,11 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.gggames.celebs"
+        applicationId "com.gggames.hourglass"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 23
-        versionName "1.0.23"
+        versionCode 30
+        versionName "1.0.30"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

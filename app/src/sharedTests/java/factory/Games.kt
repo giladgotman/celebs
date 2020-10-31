@@ -1,6 +1,6 @@
-package com.gggames.celebs.common.factory
+package factory
 
-import com.gggames.celebs.model.*
+import com.gggames.hourglass.model.*
 
 fun createGame(
     id: String = "id",
