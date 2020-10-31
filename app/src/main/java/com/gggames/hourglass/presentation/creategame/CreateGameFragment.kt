@@ -22,10 +22,6 @@ import com.gggames.hourglass.utils.showErrorToast
 import kotlinx.android.synthetic.main.fragment_create_game.*
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
-
 class CreateGameFragment : Fragment(), CreateGamePresenter.View {
 
     private lateinit var viewComponent: ViewComponent

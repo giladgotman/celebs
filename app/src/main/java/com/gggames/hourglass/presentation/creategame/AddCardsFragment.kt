@@ -33,9 +33,6 @@ import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
 class AddCardsFragment : Fragment() {
 
     @Inject
@@ -107,10 +104,8 @@ class AddCardsFragment : Fragment() {
                 { myCards ->
                     val cardsAlreadyFilled =
                         myCards.size >= gamesRepository.currentGame!!.celebsCount
-                    val teamIsChosen = authenticator.me!!.team != null
-                    if (teamIsChosen && cardsAlreadyFilled) {
-                        navigateToGameOn()
-                    } else if (cardsAlreadyFilled) {
+
+                    if (cardsAlreadyFilled) {
                         navigateToChooseTeam()
                     }
                 }, {}

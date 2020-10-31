@@ -68,5 +68,6 @@
     <string name="leave_game_dialog_title">Are you sure you want to quit and end your turn?</string>
     <string name="game_over_title">Game Over</string>
     <string name="game_over_subtitle">%1$s won!</string>
+    <string name="choose_team_no_team_selected_error">Please choose a team</string>
 
 </resources>
