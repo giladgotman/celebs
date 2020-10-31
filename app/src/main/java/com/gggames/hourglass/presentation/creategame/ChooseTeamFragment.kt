@@ -23,9 +23,6 @@ import kotlinx.android.synthetic.main.fragment_choose_teams.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * A simple [Fragment] subclass as the second destination in the navigation.
- */
 class ChooseTeamFragment : Fragment() {
 
     private lateinit var viewComponent: ViewComponent
@@ -75,12 +72,14 @@ class ChooseTeamFragment : Fragment() {
             buttonDone.isEnabled = false
             val selection = teamRadioGroup.checkedRadioButtonId
             val button = view.findViewById<RadioButton>(selection)
-            val teamName = button.text.toString()
-            Timber.w("selected team: $selection, team: $teamName")
-
-            chooseTeam(teamName)
-
-            findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
+            if (button != null) {
+                val teamName = button.text.toString()
+                chooseTeam(teamName)
+                findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
+            } else {
+                buttonDone.isEnabled = true
+                showErrorToast(requireContext(), getString(R.string.choose_team_no_team_selected_error))
+            }
         }
 
         // pre select team if it was already chosen
