@@ -107,10 +107,8 @@ class AddCardsFragment : Fragment() {
                 { myCards ->
                     val cardsAlreadyFilled =
                         myCards.size >= gamesRepository.currentGame!!.celebsCount
-                    val teamIsChosen = authenticator.me!!.team != null
-                    if (teamIsChosen && cardsAlreadyFilled) {
-                        navigateToGameOn()
-                    } else if (cardsAlreadyFilled) {
+
+                    if (cardsAlreadyFilled) {
                         navigateToChooseTeam()
                     }
                 }, {}
