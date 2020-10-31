@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -82,11 +83,21 @@ class ChooseTeamFragment : Fragment() {
             findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
         }
 
-        // skip this screen if team is already chosen
+        // pre select team if it was already chosen
         authenticator.me!!.team?.let { chosenTeam ->
-            chooseTeam(chosenTeam)
-            findNavController().navigate(R.id.action_chooseTeamFragment_to_gameOnFragment)
+            selectTeam(chosenTeam)
         }
+    }
+
+    private fun selectTeam(chosenTeam: String) {
+        teamRadioGroup.forEachIndexed { i, button->
+            if (button is RadioButton) {
+                if (button.text == chosenTeam) {
+                    button.isChecked = true
+                }
+            }
+        }
+
     }
 
     private fun chooseTeam(teamName: String) {

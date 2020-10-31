@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:checked="true"
+            android:checked="false"
             android:textAlignment="viewStart"
             tools:text="team1" />
 
@@ -46,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             tools:text="Team2"
+            android:checked="false"
             android:visibility="gone"
             app:layout_goneMarginEnd="0dp"
             android:textAlignment="viewStart"
@@ -57,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             tools:text="Team3"
+            android:checked="false"
             android:visibility="gone"
             android:textAlignment="viewStart"
             />
