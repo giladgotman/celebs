@@ -1,7 +1,7 @@
 package com.gggames.hourglass.features.games.data.remote
 
 import com.gggames.hourglass.features.common.getGamesCollectionPath
-import com.gggames.hourglass.features.games.data.GamesDataSource
+import com.gggames.hourglass.features.games.data.GameResult
 import com.gggames.hourglass.model.Game
 import com.gggames.hourglass.model.GameState
 import com.gggames.hourglass.model.remote.GameRaw
@@ -18,11 +18,20 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
+
+interface RemoteGamesDataSource {
+    fun getGames(gameIds: List<String>, states: List<GameState> = emptyList()): Single<List<Game>>
+
+    fun setGame(game: Game): Completable
+
+    fun observeGame(gameId: String): Observable<GameResult>
+}
+
 class FirebaseGamesDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
     @Named("baseFirebaseCollection")
     private val baseCollection: String
-) : GamesDataSource {
+) : RemoteGamesDataSource {
     override fun getGames(gameIds: List<String>, states: List<GameState>): Single<List<Game>> {
         return Single.create { emitter ->
             if (gameIds.isEmpty()) {
@@ -92,19 +101,19 @@ class FirebaseGamesDataSource @Inject constructor(
         }
     }
 
-    override fun observeGame(gameId: String): Observable<Game> {
+    override fun observeGame(gameId: String): Observable<GameResult> {
         return Observable.create { emitter ->
             firestore.collection(getGamesCollectionPath(baseCollection))
                 .document(gameId).addSnapshotListener { value, e ->
                     if (e == null) {
                         val gameRaw = value?.toObject(GameRaw::class.java)
                         gameRaw?.let {
-                            emitter.onNext(gameRaw.toUi())
+                            emitter.onNext(GameResult.Found(gameRaw.toUi()))
                         }
                             ?: emitter.onError(IllegalStateException("GameId : $gameId could not be found"))
                     } else {
-                        Timber.e(e, "observeGame, error")
-                        emitter.onError(e)
+                        Timber.e(e, "observeGame, error or not found, gameId: $gameId")
+                        emitter.onNext(GameResult.NotFound)
                     }
                 }
         }

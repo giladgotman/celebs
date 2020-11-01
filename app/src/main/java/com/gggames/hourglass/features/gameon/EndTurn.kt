@@ -11,12 +11,13 @@ import javax.inject.Inject
 class EndTurn @Inject constructor(
     private val setGame: SetGame
 ) {
-    operator fun invoke(game: Game): Observable<SetGameResult> {
-        val endTurnGame = game
-            .setTurnState(TurnState.Over)
-            .setCurrentCard(null)
-            .setTurnTime(TURN_TIME_MILLIS)
-            .setTurnPlayer(null)
+    operator fun invoke(): Observable<SetGameResult> {
+        val endTurnGame = { game: Game ->
+            game.setTurnState(TurnState.Over)
+                .setCurrentCard(null)
+                .setTurnTime(TURN_TIME_MILLIS)
+                .setTurnPlayer(null)
+        }
 
         return setGame(
             endTurnGame,
@@ -24,7 +25,7 @@ class EndTurn @Inject constructor(
         ).filter { it is Done }
             .switchMap {
                 setGame(
-                    endTurnGame.setTurnState(TurnState.Idle),
+                    { game: Game -> game.setTurnState(TurnState.Idle) },
                     "${this.javaClass.simpleName}.setTurnIdle"
                 )
             }

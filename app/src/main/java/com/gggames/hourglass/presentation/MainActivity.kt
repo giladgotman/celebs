@@ -49,16 +49,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         button_share.setOnClickListener {
-            gamesRepository.currentGame?.let { game ->
-                val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
-                val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
-                createDynamicLink(uri).subscribe({ shortUri ->
-                    val shareable = shareableFactory.create(game.id, game.name, shortUri)
-                    share(shareable)
-                }, {
-                    Timber.e(it, "error sharing link")
-                    showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
-                })
+            try {
+                gamesRepository.getCurrentGame().toObservable()
+                    .subscribe { game ->
+                        val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
+                        val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
+                        createDynamicLink(uri).subscribe({ shortUri ->
+                            val shareable = shareableFactory.create(game.id, game.name, shortUri)
+                            share(shareable)
+                        }, {
+                            Timber.e(it, "error sharing link")
+                            showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
+                        })
+                    }
+            } catch (e: Exception) {
+                Timber.e(e, "Exception while checking deep link")
             }
         }
         setSupportActionBar(toolbar)

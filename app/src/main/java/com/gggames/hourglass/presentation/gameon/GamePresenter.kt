@@ -44,7 +44,7 @@ class GamePresenter @Inject constructor(
     private lateinit var view: GameView
 
     private val game: Game
-        get() = gamesRepository.currentGame!!
+        get() = gamesRepository.getCurrentGameBlocking()!!
 
     private var lastGame: Game? = null
     private val roundState: RoundState

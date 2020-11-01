@@ -98,13 +98,8 @@ class GameOverPresenter @Inject constructor(
                 .flatMap { just(Result.CardPressedResult(it.card, it.playerView, it.giftText)) }
             )
 
-
-    private fun getCurrentGame(): Observable<Game> = Observable.fromCallable {
-        gamesRepository.currentGame!!
-    }
-
     private fun getCardsAndGame() = combineLatest(
-        getCurrentGame(),
+        gamesRepository.getCurrentGame().toObservable(),
         getCards().map { it.cards },
         BiFunction<Game, List<Card>, Result.GameAndCardsResult> { game, cards ->
             Result.GameAndCardsResult(

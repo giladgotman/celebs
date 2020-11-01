@@ -11,5 +11,11 @@ interface GamesDataSource {
 
     fun setGame(game: Game): Completable
 
-    fun observeGame(gameId: String): Observable<Game>
+    fun observeGame(gameId: String): Observable<GameResult>
+}
+
+
+sealed class GameResult {
+    data class Found(val game: Game) : GameResult()
+    object NotFound : GameResult()
 }

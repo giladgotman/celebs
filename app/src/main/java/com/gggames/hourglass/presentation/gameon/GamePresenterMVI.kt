@@ -23,7 +23,6 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
-
 class GamePresenterMVI @Inject constructor(
     private val playersObservable: ObservePlayers,
     private val cardsObservable: ObserveAllCards,
@@ -48,28 +47,26 @@ class GamePresenterMVI @Inject constructor(
     private var lastCard: Card? = null
     private val disposables = CompositeDisposable()
 
-    private val game: Game
-        get() = gamesRepository.currentGame!!
-
     private var lastGame: Game? = null
 
     private val _states = PublishSubject.create<State>()
     val states: Observable<State> = _states
 
     fun bind(events: Observable<UiEvent>) {
-        val gameId = game.id
-
         val uiEvent = events
             .doOnNext { Timber.d("USER:: $it") }
 
-        val dataInput = combineLatest(
-            observeGame(gameId).doOnNext { Timber.d("GameUpdate") },
-            playersObservable(gameId).doOnNext { Timber.d("PlayersUpdate") },
-            cardsObservable().doOnNext { Timber.d("CardsUpdate") },
-            Function3 { game: GameUpdate, players: PlayersUpdate, cards: CardsUpdate ->
-                CombinedGameUpdate(game.game, players.players, cards.cards)
+        val dataInput =
+            gamesRepository.getCurrentGame().toObservable().switchMap { game->
+                combineLatest(
+                    observeGame(game.id).doOnNext { Timber.d("GameUpdate") },
+                    playersObservable(game.id).doOnNext { Timber.d("PlayersUpdate") },
+                    cardsObservable().doOnNext { Timber.d("CardsUpdate") },
+                    Function3 { game: GameUpdate, players: PlayersUpdate, cards: CardsUpdate ->
+                        CombinedGameUpdate(game.game, players.players, cards.cards)
+                    }
+                )
             }
-        )
 
         val allInput = merge(uiEvent.toResult(), dataInput)
 
@@ -175,7 +172,7 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<CorrectClick>().switchMap { onCorrectClick(it.time) },
                 o.ofType<StartStopClick>().switchMap { handleStartStopClick(it.buttonState, it.time) },
                 o.ofType<UiEvent.TimerEnd>().switchMap { onTimerEnd() },
-                o.ofType<UiEvent.OnBackPressed>().switchMap { handleBackPressed(game) },
+                o.ofType<UiEvent.OnBackPressed>().switchMap { handleBackPressed() },
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
                 o.ofType<UiEvent.OnSwitchTeamPressed>()
@@ -189,7 +186,7 @@ class GamePresenterMVI @Inject constructor(
         }
 
     private fun quitGame(): Observable<BackPressedResult.NavigateToGames> {
-        return endTurn(game).switchMap {
+        return endTurn().switchMap {
             just(
                 BackPressedResult.NavigateToGames(true),
                 BackPressedResult.NavigateToGames(false)
@@ -203,7 +200,7 @@ class GamePresenterMVI @Inject constructor(
                 // TODO: 09.10.20 check if the InProgress can be removed cause the SetGame will start with InProgress
                 merge(
                     just(HandleNextCardResult.InProgress),
-                    handleCorrectCard(card, game, teamName)
+                    handleCorrectCard(card, teamName)
                         .switchMap { handleNextCardWrap(time) }
                 )
             }
@@ -215,36 +212,39 @@ class GamePresenterMVI @Inject constructor(
         time: Long?
     ) =
         when (buttonState) {
-            ButtonState.Stopped -> startGame(authenticator.me!!, game)
+            ButtonState.Stopped -> startGame(authenticator.me!!)
                 .switchMap { handleNextCardWrap(time) }
-            ButtonState.Running -> pauseTurn(game, time)
+            ButtonState.Running -> pauseTurn(time)
             ButtonState.Paused -> {
-                if (game.round.state == RoundState.New) {
-                    startRound(game)
-                        .switchMap { resumeTurn(game, time) }
-                        .switchMap { handleNextCardWrap(time) }
-                } else {
-                    resumeTurn(game, time)
+                gamesRepository.getCurrentGame().toObservable().switchMap { game ->
+                    if (game.round.state == RoundState.New) {
+                        startRound()
+                            .switchMap { resumeTurn(time) }
+                            .switchMap { handleNextCardWrap(time) }
+                    } else {
+                        resumeTurn(time)
+                    }
                 }
             }
             ButtonState.Finished -> just(NoOp)
         }
 
     private fun onTimerEnd(): Observable<out Result> {
-        return if (authenticator.isMyselfActivePlayerBlocking(game)) {
-            audioPlayer.play("timesupyalabye")
-            flipLastCard(lastCard)
-                .andThen(endTurn(game))
-        } else {
-            just(NoOp)
-        }
+        return gamesRepository.getCurrentGame().toObservable().switchMap { game ->
+            if (authenticator.isMyselfActivePlayerBlocking(game)) {
+                audioPlayer.play("timesupyalabye")
+                flipLastCard(lastCard)
+                    .andThen(endTurn())
+            } else {
+                just(NoOp)
+            }
 
+        }
     }
 
     private fun handleNextCardWrap(time: Long?) =
         handleNextCard(
             cardDeck,
-            game,
             time
         )
 

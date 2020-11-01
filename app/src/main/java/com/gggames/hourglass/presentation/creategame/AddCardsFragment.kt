@@ -66,7 +66,9 @@ class AddCardsFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        (activity as MainActivity).setTitle(gamesRepository.currentGame!!.name)
+        val currentGame = gamesRepository.getCurrentGameBlocking()!!
+
+        (activity as MainActivity).setTitle(currentGame.name)
         (activity as MainActivity).setShareVisible(true)
 
         playerId = authenticator.me!!.id
@@ -90,7 +92,8 @@ class AddCardsFragment : Fragment() {
     }
 
     private fun navigateToGameIfCardsAreFilled() {
-        if (gamesRepository.currentGame!!.type == GameType.Gift) {
+        val currentGame = gamesRepository.getCurrentGameBlocking()!!
+        if (currentGame.type == GameType.Gift) {
             val generatorPlayer = Player("giftGenerator", "giftGenerator")
             getMyCards(generatorPlayer).subscribe(
                 { generatedCards ->
@@ -103,7 +106,7 @@ class AddCardsFragment : Fragment() {
             getMyCards(authenticator.me!!).subscribe(
                 { myCards ->
                     val cardsAlreadyFilled =
-                        myCards.size >= gamesRepository.currentGame!!.celebsCount
+                        myCards.size >= currentGame.celebsCount
 
                     if (cardsAlreadyFilled) {
                         navigateToChooseTeam()
@@ -123,7 +126,7 @@ class AddCardsFragment : Fragment() {
     }
 
     private fun hideNonUsedCardsFields() {
-        val game = gamesRepository.currentGame!!
+        val game = gamesRepository.getCurrentGameBlocking()!!
         for (i in MAX_CARDS downTo (game.celebsCount + 1)) {
             cardEditTextList[i - 1]?.isVisible = false
         }
@@ -181,8 +184,9 @@ class AddCardsFragment : Fragment() {
     }
 
     private fun tryToAddCards(cardList: MutableList<Card>): Completable {
-        return if (gamesRepository.currentGame!!.type == GameType.Gift) {
-            if (gamesRepository.currentGame!!.gameInfo.totalCards > 0) {
+        val currentGame = gamesRepository.getCurrentGameBlocking()!!
+        return if (currentGame.type == GameType.Gift) {
+            if (gamesRepository.getCurrentGameBlocking()!!.gameInfo.totalCards > 0) {
                 complete()
             } else {
                 val giftCards = createAbaCards()
@@ -193,7 +197,7 @@ class AddCardsFragment : Fragment() {
             }
         } else getMyCards(authenticator.me!!)
             .flatMapCompletable { myCards ->
-                if (myCards.size + cardList.size > gamesRepository.currentGame!!.celebsCount) {
+                if (myCards.size + cardList.size > currentGame.celebsCount) {
                     Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))
                 } else {
                     addCards(cardList)

@@ -16,7 +16,7 @@ class CardsModule {
 
     @Provides
     @Named("GameId")
-    fun provideGameId(repository: GamesRepositoryImpl) = repository.gameId
+    fun provideGameId(repository: GamesRepositoryImpl): String = repository.getCurrentGameBlocking()!!.id
 
     @Provides
     // TODO: 08.05.20 use @PerGame ?

@@ -7,12 +7,14 @@ import javax.inject.Inject
 class ResumeTurn @Inject constructor(
     private val setGame: SetGame
 ) {
-    operator fun invoke(game: Game, time: Long?) =
+    operator fun invoke(time: Long?) =
         setGame(
-            game
-                .setRoundState(RoundState.Started)
-                .setTurnState(TurnState.Running)
-                .setTurnTime(time ?: game.turn.time),
+            { currentGame ->
+                currentGame
+                    .setRoundState(RoundState.Started)
+                    .setTurnState(TurnState.Running)
+                    .setTurnTime(time ?: currentGame.turn.time)
+            },
             this.javaClass.simpleName
         )
 }
