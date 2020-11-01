@@ -63,7 +63,7 @@ class GamesPresenter @Inject constructor(
     }
 
     private fun leaveGameIfNeeded(): Completable {
-        return gamesRepository.currentGame?.let {
+        return gamesRepository.getCurrentGameBlocking()?.let {
             leaveGame(it, authenticator.me!!)
         } ?: Completable.complete()
     }

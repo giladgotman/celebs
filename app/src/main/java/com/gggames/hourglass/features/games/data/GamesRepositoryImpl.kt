@@ -22,23 +22,24 @@ class GamesRepositoryImpl @Inject constructor(
     }
 
     override fun setGame(game: Game?, updateRemote: Boolean): Completable {
-        game?.let {
+        val setInMemory = game?.let {
             inMemoryDataSource.setGame(it)
         } ?: inMemoryDataSource.clearCache()
-
         Timber.w("setGame, currentGame: $game")
-        return if (updateRemote && game != null) {
-            remoteDataSource.setGame(game)
-        } else {
-            Completable.complete()
-        }
+        return setInMemory.andThen(
+            if (updateRemote && game != null) {
+                remoteDataSource.setGame(game)
+            } else {
+                Completable.complete()
+            }
+        )
     }
 
     override fun observeGame(gameId: String): Observable<GameResult> {
         val fetchAndCache = remoteDataSource.observeGame(gameId)
             .doOnNext {
                 if (it is GameResult.Found) {
-                    Timber.w("ggg REMOTE game: \n $it")
+                    Timber.i("observeGame REMOTE onNext: \n $it")
                     inMemoryDataSource.setGame(it.game)
                 }
             }
@@ -46,11 +47,14 @@ class GamesRepositoryImpl @Inject constructor(
         return merge(
             inMemoryDataSource.observeGame(gameId)
                 .doOnNext {
-                    Timber.w("ggg MEMRY game: \n $it")
+                    Timber.i("observeGame MEMRY onNext: \n $it")
                 },
             fetchAndCache
         )
             .distinctUntilChanged()
+            .doOnNext {
+                Timber.i("observeGame MERGE onNext: \n $it")
+            }
     }
 
 
@@ -61,5 +65,7 @@ class GamesRepositoryImpl @Inject constructor(
             throw IllegalStateException("No Current game is found in cache")
         }
     }
+
+    override fun getCurrentGameBlocking(): Game? = inMemoryDataSource.getCurrentGameBlocking()
 }
 

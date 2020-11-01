@@ -4,6 +4,7 @@ import com.gggames.hourglass.features.cards.data.CardsDataSource
 import com.gggames.hourglass.features.cards.data.CardsRepository
 import com.gggames.hourglass.features.cards.data.CardsRepositoryImpl
 import com.gggames.hourglass.features.cards.data.remote.FirebaseCardsDataSource
+import com.gggames.hourglass.features.games.data.GamesRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -11,11 +12,11 @@ import javax.inject.Named
 // TODO: 08.05.20 use @PerGame ?
 
 @Module
-class CardsModule(val gameId: String) {
+class CardsModule {
 
     @Provides
     @Named("GameId")
-    fun provideGameId() = gameId
+    fun provideGameId(repository: GamesRepositoryImpl): String = repository.getCurrentGameBlocking()!!.id
 
     @Provides
     // TODO: 08.05.20 use @PerGame ?

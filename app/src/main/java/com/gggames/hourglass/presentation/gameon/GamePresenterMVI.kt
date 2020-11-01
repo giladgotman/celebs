@@ -23,7 +23,6 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
-
 class GamePresenterMVI @Inject constructor(
     private val playersObservable: ObservePlayers,
     private val cardsObservable: ObserveAllCards,
@@ -48,17 +47,12 @@ class GamePresenterMVI @Inject constructor(
     private var lastCard: Card? = null
     private val disposables = CompositeDisposable()
 
-//    private val game: Game
-//        get() = gamesRepository.currentGame!!
-
     private var lastGame: Game? = null
 
     private val _states = PublishSubject.create<State>()
     val states: Observable<State> = _states
 
     fun bind(events: Observable<UiEvent>) {
-//        val gameId = game.id
-
         val uiEvent = events
             .doOnNext { Timber.d("USER:: $it") }
 

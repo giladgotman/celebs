@@ -14,6 +14,8 @@ interface GamesRepository {
     fun observeGame(gameId: String): Observable<GameResult>
 
     fun getCurrentGame(): Single<Game>
+
+    fun getCurrentGameBlocking() : Game?
 }
 
 const val MAX_CARDS = 6

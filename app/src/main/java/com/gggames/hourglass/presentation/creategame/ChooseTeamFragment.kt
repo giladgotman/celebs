@@ -52,7 +52,7 @@ class ChooseTeamFragment : Fragment() {
 
         buttonDone.isVisible = true
 
-        gamesRepository.currentGame!!.teams.forEachIndexed { index, team ->
+        gamesRepository.getCurrentGameBlocking()!!.teams.forEachIndexed { index, team ->
             when (index) {
                 0 -> {
                     teamRadioGroup.radioButtonTeam1.text = team.name
@@ -100,7 +100,7 @@ class ChooseTeamFragment : Fragment() {
     }
 
     private fun chooseTeam(teamName: String) {
-        gamesRepository.currentGame?.let { game ->
+        gamesRepository.getCurrentGameBlocking()?.let { game ->
             chooseTeam(game.id, authenticator.me!!, teamName)
                 .subscribe({
                     authenticator.setMyTeam(teamName)

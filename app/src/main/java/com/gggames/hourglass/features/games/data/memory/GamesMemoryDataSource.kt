@@ -23,7 +23,9 @@ interface InMemoryGamesDataSource {
 
     fun getCurrentGame(): Single<GameResult>
 
-    fun clearCache()
+    fun getCurrentGameBlocking(): Game?
+
+    fun clearCache(): Completable
 }
 
 class GamesMemoryDataSource @Inject constructor() : InMemoryGamesDataSource {
@@ -57,8 +59,16 @@ class GamesMemoryDataSource @Inject constructor() : InMemoryGamesDataSource {
 
     override fun getCurrentGame() = Single.just(currentGameCache)
 
+    override fun getCurrentGameBlocking(): Game? =
+        when (currentGameCache) {
+            is Found -> (currentGameCache as Found).game
+            else -> null
+        }
 
-    override fun clearCache() {
-        currentGameCache = GameResult.NotFound
-    }
+
+    override fun clearCache() =
+        Completable.fromCallable {
+            currentGameCache = GameResult.NotFound
+            complete()
+        }
 }
