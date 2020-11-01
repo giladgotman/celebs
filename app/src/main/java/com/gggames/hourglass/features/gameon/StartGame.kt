@@ -7,16 +7,18 @@ import javax.inject.Inject
 class StartGame @Inject constructor(
     private val setGame: SetGame
 ) {
-    operator fun invoke(player: Player, game: Game) =
+    operator fun invoke(player: Player) =
         setGame(
-            game
-                .setGameState(GameState.Started)
-                .setRoundState(RoundState.Started)
-                .setTurnState(TurnState.Running)
-                .resetCardsFoundInTurn()
-                .setTurnPlayer(player)
-                .setTeamLastPlayerId(player)
-                .setTurnLastCards(emptyList()),
+            { currentGame ->
+                currentGame
+                    .setGameState(GameState.Started)
+                    .setRoundState(RoundState.Started)
+                    .setTurnState(TurnState.Running)
+                    .resetCardsFoundInTurn()
+                    .setTurnPlayer(player)
+                    .setTeamLastPlayerId(player)
+                    .setTurnLastCards(emptyList())
+            },
             this.javaClass.simpleName
         )
 }

@@ -16,4 +16,14 @@ class SetGame @Inject constructor(
         gamesRepository.setGame(game)
             .andThen(just<SetGameResult>(Done(label)))
             .doOnSubscribe { label?.let { Timber.d("INTERNAL::$it") } }
+
+
+
+    operator fun invoke(gameOperator: (game: Game) -> Game, label: String? = null): Observable<out SetGameResult> =
+        gamesRepository.getCurrentGame().toObservable()
+            .switchMap { currentGame ->
+                gamesRepository.setGame(gameOperator(currentGame))
+                    .andThen(just<SetGameResult>(Done(label)))
+                    .doOnSubscribe { label?.let { Timber.d("INTERNAL::$it") } }
+            }
 }

@@ -24,7 +24,7 @@ class GamesRepositoryImpl @Inject constructor(
     override fun setGame(game: Game?, updateRemote: Boolean): Completable {
         game?.let {
             inMemoryDataSource.setGame(it)
-        }?: inMemoryDataSource.clearCache()
+        } ?: inMemoryDataSource.clearCache()
 
         Timber.w("setGame, currentGame: $game")
         return if (updateRemote && game != null) {
@@ -54,6 +54,12 @@ class GamesRepositoryImpl @Inject constructor(
     }
 
 
-    override fun getCurrentGame()= inMemoryDataSource.getCurrentGame()
+    override fun getCurrentGame() = inMemoryDataSource.getCurrentGame().map {
+        if (it is GameResult.Found) {
+            it.game
+        } else {
+            throw IllegalStateException("No Current game is found in cache")
+        }
+    }
 }
 

@@ -66,7 +66,7 @@ class AddCardsFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        (activity as MainActivity).setTitle(gamesRepository.currentGame!!.name)
+//        (activity as MainActivity).setTitle(gamesRepository.currentGame!!.name)
         (activity as MainActivity).setShareVisible(true)
 
         playerId = authenticator.me!!.id
@@ -90,7 +90,8 @@ class AddCardsFragment : Fragment() {
     }
 
     private fun navigateToGameIfCardsAreFilled() {
-        if (gamesRepository.currentGame!!.type == GameType.Gift) {
+//        if (gamesRepository.currentGame!!.type == GameType.Gift) {
+        if (false) {
             val generatorPlayer = Player("giftGenerator", "giftGenerator")
             getMyCards(generatorPlayer).subscribe(
                 { generatedCards ->
