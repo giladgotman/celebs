@@ -1,5 +1,6 @@
 package com.gggames.hourglass.features.games.data
 
+import com.gggames.hourglass.features.games.data.GameResult.Found
 import com.gggames.hourglass.features.games.data.memory.InMemoryGamesDataSource
 import com.gggames.hourglass.features.games.data.remote.RemoteGamesDataSource
 import com.gggames.hourglass.model.Game
@@ -25,7 +26,6 @@ class GamesRepositoryImpl @Inject constructor(
         val setInMemory = game?.let {
             inMemoryDataSource.setGame(it)
         } ?: inMemoryDataSource.clearCache()
-        Timber.w("setGame, currentGame: $game")
         return setInMemory.andThen(
             if (updateRemote && game != null) {
                 remoteDataSource.setGame(game)
@@ -36,12 +36,12 @@ class GamesRepositoryImpl @Inject constructor(
     }
 
     override fun observeGame(gameId: String): Observable<GameResult> {
-        val fetchAndCache = remoteDataSource.observeGame(gameId)
-            .doOnNext {
-                if (it is GameResult.Found) {
-                    Timber.i("observeGame REMOTE onNext: \n $it")
-                    inMemoryDataSource.setGame(it.game)
-                }
+        val fetchAndCache: Completable = remoteDataSource.observeGame(gameId)
+            .filter{ it is Found }
+            .cast(Found::class.java)
+            .switchMapCompletable {
+                Timber.i("observeGame REMOTE onNext: \n $it")
+                inMemoryDataSource.setGame(it.game)
             }
 
         return merge(
@@ -49,7 +49,7 @@ class GamesRepositoryImpl @Inject constructor(
                 .doOnNext {
                     Timber.i("observeGame MEMRY onNext: \n $it")
                 },
-            fetchAndCache
+            fetchAndCache.toObservable()
         )
             .distinctUntilChanged()
             .doOnNext {
@@ -59,7 +59,7 @@ class GamesRepositoryImpl @Inject constructor(
 
 
     override fun getCurrentGame() = inMemoryDataSource.getCurrentGame().map {
-        if (it is GameResult.Found) {
+        if (it is Found) {
             it.game
         } else {
             throw IllegalStateException("No Current game is found in cache")
