@@ -111,7 +111,7 @@ class GameOverFragment : Fragment() {
             giftText.getGlobalVisibleRect(myViewRect)
             val x = myViewRect.left.toFloat()
             val y = myViewRect.top.toFloat()
-            burstKonffeti(x,y)
+            burstKonffeti(x, y)
         }
     }
 
@@ -137,7 +137,7 @@ class GameOverFragment : Fragment() {
             .setTimeToLive(1000L)
             .addShapes(Shape.Circle)
             .addSizes(Size(12), Size(16, 6f))
-            .setPosition(x,y)
+            .setPosition(x, y)
             .burst(100)
     }
 
@@ -146,15 +146,18 @@ class GameOverFragment : Fragment() {
     }
 
     private fun render(state: GameOverScreenContract.State) {
-        subtitle.text = getString(R.string.game_over_subtitle, state.winningTeam)
-        teamsAdapter.submitList(state.teams)
-        cardsAdapter.submitList(state.cards)
+        state.winningTeam?.let {
+            subtitle.text = getString(R.string.game_over_subtitle, it)
+        }
         state.mainTitle?.let {
             title.text = it
         }
         state.subTitle?.let {
             subtitle.text = it
         }
+
+        teamsAdapter.submitList(state.teams)
+        cardsAdapter.submitList(state.cards)
     }
 
     private fun onCardClick(card: Card, playerView: PlayerView, giftText: TextView) {

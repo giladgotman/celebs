@@ -10,7 +10,7 @@ import io.reactivex.Observable
 interface GameOverScreenContract {
 
     data class State(
-        val winningTeam: String = "",
+        val winningTeam: String? = null,
         val teams: List<Team> = emptyList(),
         val cards: List<Card> = emptyList(),
         val mainTitle: String? = null,

@@ -1,6 +1,6 @@
 package com.gggames.hourglass.features.games.data.remote
 
-import com.gggames.hourglass.features.games.data.GamesDataSource
+import com.gggames.hourglass.features.games.data.GameResult
 import com.gggames.hourglass.model.*
 import io.reactivex.Completable
 import io.reactivex.Completable.fromCallable
@@ -12,10 +12,10 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
-class GamesDataSourceFake @Inject constructor() : GamesDataSource {
+class GamesDataSourceFake @Inject constructor() : RemoteGamesDataSource {
     val fakeGame = createGame(teams = listOf(createTeam("Team1"), createTeam("Team2")))
     var games = mutableListOf<Game>(fakeGame)
-    val gamesSubject = PublishSubject.create<Game>()
+    private val gamesSubject = PublishSubject.create<Game>()
 
     override fun getGames(gameIds: List<String>, states: List<GameState>): Single<List<Game>> {
         Timber.w("ggg getGames: size: ${gameIds.size}")
@@ -31,12 +31,14 @@ class GamesDataSourceFake @Inject constructor() : GamesDataSource {
             gamesSubject.onNext(game)
         }
 
-    override fun observeGame(gameId: String): Observable<Game> {
+    override fun observeGame(gameId: String): Observable<GameResult> {
         Timber.w("ggg observeGame, id: $gameId")
         val first = games.find { it.id == gameId }?.let {
             just(it)
         } ?: Observable.empty<Game>()
         return merge(gamesSubject.filter { it.id == gameId }, first)
+            .distinctUntilChanged()
+            .map { GameResult.Found(it) }
     }
 }
 
