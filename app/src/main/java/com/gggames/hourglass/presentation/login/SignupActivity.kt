@@ -78,13 +78,4 @@ class SignupActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
-    override fun onResume() {
-        super.onResume()
-        val me = authenticator.me
-        Timber.w("onResume me: $me")
-        if (me != null) {
-            goToMainActivity(me.name)
-        }
-    }
 }

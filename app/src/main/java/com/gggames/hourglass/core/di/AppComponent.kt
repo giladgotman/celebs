@@ -6,6 +6,7 @@ import com.gggames.hourglass.features.video.VideoModule
 import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.login.SignupActivity
+import com.gggames.hourglass.presentation.onboarding.WelcomeActivity
 import dagger.Component
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -31,6 +32,8 @@ interface AppComponent {
     fun inject(activity: MainActivity)
 
     fun inject(activity: SignupActivity)
+
+    fun inject(activity: WelcomeActivity)
 
     fun viewComponent(): ViewComponent.Builder
 }
