@@ -7,4 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".presentation.onboarding.WelcomeActivity">
 
+  <androidx.viewpager2.widget.ViewPager2
+      android:id="@+id/view_pager_carousel"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@android:color/transparent"
+      android:overScrollMode="never"
+      >
+
+  </androidx.viewpager2.widget.ViewPager2>
+
   </androidx.constraintlayout.widget.ConstraintLayout>

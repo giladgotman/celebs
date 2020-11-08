@@ -2,6 +2,7 @@ package com.gggames.hourglass.presentation.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.hourglass.R
 import com.gggames.hourglass.core.CelebsApplication
@@ -12,6 +13,11 @@ class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
 
     @Inject
     lateinit var presenter: WelcomePresenter
+
+    private val CAROUSEL_SWIPE_DURATION = 6L
+
+    private var mainViewPager: View? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as CelebsApplication).appComponent.inject(this)
