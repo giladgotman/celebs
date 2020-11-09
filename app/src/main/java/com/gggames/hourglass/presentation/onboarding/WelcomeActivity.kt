@@ -2,11 +2,12 @@ package com.gggames.hourglass.presentation.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.hourglass.R
 import com.gggames.hourglass.core.CelebsApplication
 import com.gggames.hourglass.presentation.MainActivity
+import kotlinx.android.synthetic.main.activity_welcome.*
+import java.util.*
 import javax.inject.Inject
 
 class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
@@ -16,15 +17,23 @@ class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
 
     private val CAROUSEL_SWIPE_DURATION = 6L
 
-    private var mainViewPager: View? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as CelebsApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
         presenter.bind(this)
     }
+
+
+    private fun initializeCarouselViewPager() {
+        val carouselItems = Arrays.asList(
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item)
+        )
+//        view_pager_carousel.adapter =
+//            WelcomePagerCarouselAdapter(this, carouselItems)
+        view_pager_carousel.offscreenPageLimit = carouselItems.size - 1
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
