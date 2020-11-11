@@ -70,5 +70,6 @@
     <string name="game_over_subtitle">%1$s won!</string>
     <string name="choose_team_no_team_selected_error">Please choose a team</string>
     <string name="welcome_1_description">Hourglass is a virtual version of a fun and known guessing game, designed for any group of all ages!</string>
+    <string name="welcome_2_description">You can play with friends or family from all around the world</string>
 
 </resources>

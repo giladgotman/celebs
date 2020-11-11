@@ -7,7 +7,6 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.core.CelebsApplication
 import com.gggames.hourglass.presentation.MainActivity
 import kotlinx.android.synthetic.main.activity_welcome.*
-import java.util.*
 import javax.inject.Inject
 
 class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
@@ -27,8 +26,9 @@ class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
 
 
     private fun initializeCarouselViewPager() {
-        val carouselItems = Arrays.asList(
-            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item1)
+        val carouselItems = listOf(
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item1),
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item2)
         )
         view_pager_carousel.adapter =
             WelcomePagerCarouselAdapter(this, carouselItems)
