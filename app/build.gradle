@@ -154,6 +154,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
     implementation 'nl.dionsegijn:konfetti:1.2.2'
 
+    implementation 'me.relex:circleindicator:1.2.2@aar'
+
     ktlint 'com.pinterest:ktlint:0.35.0'
 
     androidTestImplementation(

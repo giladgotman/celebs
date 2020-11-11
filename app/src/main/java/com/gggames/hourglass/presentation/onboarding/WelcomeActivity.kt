@@ -21,17 +21,20 @@ class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
         (application as CelebsApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
+        initializeCarouselViewPager()
         presenter.bind(this)
     }
 
 
     private fun initializeCarouselViewPager() {
         val carouselItems = Arrays.asList(
-            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item)
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item1)
         )
-//        view_pager_carousel.adapter =
-//            WelcomePagerCarouselAdapter(this, carouselItems)
+        view_pager_carousel.adapter =
+            WelcomePagerCarouselAdapter(this, carouselItems)
         view_pager_carousel.offscreenPageLimit = carouselItems.size - 1
+
+        carousel_indicator.setViewPager(view_pager_carousel)
     }
 
 
