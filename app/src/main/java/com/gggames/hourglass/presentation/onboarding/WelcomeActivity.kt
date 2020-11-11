@@ -28,7 +28,8 @@ class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
     private fun initializeCarouselViewPager() {
         val carouselItems = listOf(
             WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item1),
-            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item2)
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item2),
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.welcome_carousel_item3)
         )
         view_pager_carousel.adapter =
             WelcomePagerCarouselAdapter(this, carouselItems)
