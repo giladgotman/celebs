@@ -54,6 +54,14 @@
         <item name="android:background">@color/hawaii_blue</item>
     </style>
 
+
+    <style name="WelcomeButtonStyle" parent="DefaultButtonStyle" >
+        <item name="android:background">@drawable/ic_button_skewed</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:foreground">@drawable/ripple_circular_dark</item>
+
+    </style>
+
     <style name="NextButtonStyle" parent="DefaultButtonStyle" >
         <item name="android:src">@drawable/correct_button</item>
         <item name="android:background">@color/transparent</item>

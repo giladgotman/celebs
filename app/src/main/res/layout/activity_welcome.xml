@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".presentation.onboarding.WelcomeActivity">
 
   <androidx.viewpager.widget.ViewPager
@@ -12,7 +13,7 @@
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/get_started_button"
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:background="@android:color/transparent"
@@ -20,6 +21,25 @@
       >
 
   </androidx.viewpager.widget.ViewPager>
+
+  <Button
+      android:id="@+id/get_started_button"
+      android:background="@drawable/ic_button_skewed"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/default_margin"
+      android:layout_marginEnd="@dimen/default_margin"
+      android:layout_marginBottom="@dimen/medium_margin"
+      android:text="GET STARTED"
+      android:gravity="center"
+      android:textSize="@dimen/medium_text_size"
+      android:textColor="@color/black"
+      android:visibility="invisible"
+      android:foreground="@drawable/ripple_circular_light"
+      android:textAppearance="@style/WelcomeButtonStyle"
+      app:layout_constraintBottom_toTopOf="@id/carousel_indicator"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
 
   <me.relex.circleindicator.CircleIndicator
       android:id="@+id/carousel_indicator"

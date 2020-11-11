@@ -78,4 +78,10 @@ class SignupActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+    companion object {
+        fun start(context: Context) {
+            context.startActivity(Intent(context, SignupActivity::class.java))
+        }
+    }
 }
