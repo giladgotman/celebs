@@ -27,8 +27,8 @@
         app:layout_constraintBottom_toBottomOf="@id/bottom_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="144dp"
         android:src="@drawable/ic_hourglass"
         />
 
@@ -39,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginEnd="@dimen/medium_margin"
-        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginTop="@dimen/medium_margin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextViewSubTitle"
