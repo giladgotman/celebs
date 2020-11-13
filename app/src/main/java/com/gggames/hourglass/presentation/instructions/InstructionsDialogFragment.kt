@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.hourglass.R
+import com.gggames.hourglass.presentation.onboarding.WelcomePagerCarouselAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.fragment_instructions.*
 
 
 class InstructionsDialogFragment : BottomSheetDialogFragment() {
@@ -26,6 +28,21 @@ class InstructionsDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initializeCarouselViewPager()
+
+    }
+
+    private fun initializeCarouselViewPager() {
+        val carouselItems = listOf(
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.instructions_section1_layout),
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.instructions_section2_layout),
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.instructions_section1_layout)
+        )
+        instructions_carousel.adapter =
+            WelcomePagerCarouselAdapter(requireContext(), carouselItems)
+        instructions_carousel.offscreenPageLimit = carouselItems.size - 1
+        carousel_indicator.setViewPager(instructions_carousel)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

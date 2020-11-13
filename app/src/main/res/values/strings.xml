@@ -73,16 +73,28 @@
     <string name="welcome_1_description">Hourglass is a virtual version of a fun and known guessing game, designed for any group of all ages!</string>
     <string name="welcome_2_description">You can play with friends or family from all around the world</string>
     <string name="welcome_3_description">You will need at least 4 people to play the game so start thinking who you want to play with…</string>
+    <string name="instructions_section1_title">What is it</string>
     <string name="instructions_section1_description">"
-Hourglass is a virtual version of a popular classic game which is known in many countries around the world.\n\
-It is also known as:\n
-Celebs, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.\n
+Hourglass is a virtual version of a popular classic game which is known in many countries around the world.
+It is also known as:
+Celebs, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.
 
-You'll need at least 4 to play, but it only gets more fun with more players.\n
+You'll need at least 4 people to play, but it only gets more fun with more players.
 
-Hop on a video call and play through rounds of\n
-Describe, One Word and Charades.\n\
-
+Hop on a video call and play through rounds of:
+<b>Describe, One Word &amp; Charades</b>."
     </string>
+
+    <string name="instructions_section2_description">"
+One person creates a game and shares it with others
+
+Each player writes their words on “cards” that would be guessed later
+
+Then you will have to split into teams, players from each team will alternate turns, giving clues to their team to guess as many cards as possible against the clock (aka    )
+
+There'll be 3 rounds, and cards will get recycled after each round!
+"
+    </string>
+    <string name="instructions_section2_title">How to play</string>
 
 </resources>
