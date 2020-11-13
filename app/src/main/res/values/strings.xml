@@ -97,4 +97,21 @@ There'll be 3 rounds, and cards will get recycled after each round!
     </string>
     <string name="instructions_section2_title">How to play</string>
 
+    <string name="instructions_section3_title">The rounds</string>
+    <string name="instructions_section3_round1_descriptions">"
+<b>Round 1 : Describe</b>\n\
+You can use as many words as you like to describe the word on the card, without acting or gestures."
+    </string>
+
+    <string name="instructions_section3_round2_descriptions">"
+<b>Round 2 : One Word</b>\n\
+You can use exactly 1 word per card. once you said a word, you can only repeat it…
+You team mates should remember the cards from last round.."
+    </string>
+
+    <string name="instructions_section3_round3_descriptions">"
+<b>Round 3 : Charades</b>\n\
+Act and use mime to communicate the card. no words or sounds allowed…"
+    </string>
+
 </resources>

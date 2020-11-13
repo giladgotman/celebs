@@ -37,7 +37,7 @@ class InstructionsDialogFragment : BottomSheetDialogFragment() {
         val carouselItems = listOf(
             WelcomePagerCarouselAdapter.CarouselItem(R.layout.instructions_section1_layout),
             WelcomePagerCarouselAdapter.CarouselItem(R.layout.instructions_section2_layout),
-            WelcomePagerCarouselAdapter.CarouselItem(R.layout.instructions_section1_layout)
+            WelcomePagerCarouselAdapter.CarouselItem(R.layout.instructions_section3_layout)
         )
         instructions_carousel.adapter =
             WelcomePagerCarouselAdapter(requireContext(), carouselItems)
