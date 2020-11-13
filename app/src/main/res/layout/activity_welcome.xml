@@ -35,7 +35,6 @@
       android:textSize="@dimen/medium_text_size"
       android:textColor="@color/black"
       android:visibility="invisible"
-      android:foreground="@drawable/ripple_circular_light"
       android:textAppearance="@style/WelcomeButtonStyle"
       app:layout_constraintBottom_toTopOf="@id/carousel_indicator"
       app:layout_constraintEnd_toEndOf="parent"
