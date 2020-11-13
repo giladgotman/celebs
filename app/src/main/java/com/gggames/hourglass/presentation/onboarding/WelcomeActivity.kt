@@ -9,6 +9,9 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.core.CelebsApplication
 import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.login.SignupActivity
+import com.gggames.hourglass.utils.transitions.TRANSITION_FADE
+import com.gggames.hourglass.utils.transitions.setupWindowSlideAnimations
+import com.gggames.hourglass.utils.transitions.startActivityAnimated
 import kotlinx.android.synthetic.main.activity_welcome.*
 import javax.inject.Inject
 
@@ -22,8 +25,10 @@ class WelcomeActivity : AppCompatActivity(), WelcomeContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
 
+        setupWindowSlideAnimations()
+
         get_started_button.setOnClickListener {
-            SignupActivity.start(this)
+            startActivityAnimated(SignupActivity.createIntent(this), TRANSITION_FADE)
         }
         initializeCarouselViewPager()
         presenter.bind(this)

@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         getAppComponent(this).inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         button_share.setOnClickListener {
             try {
                 gamesRepository.getCurrentGame().toObservable()
