@@ -4,6 +4,14 @@
     tools:context="com.gggames.hourglass.com.gggames.com.MainActivity">
 
     <item
+        android:id="@+id/menu_help"
+        android:orderInCategory="100"
+        android:title="@string/menu_help"
+        android:icon="@android:drawable/ic_menu_help"
+        app:showAsAction="always" />
+
+
+    <item
         android:id="@+id/menu_switch_team"
         android:orderInCategory="100"
         android:title="@string/menu_switch_team"

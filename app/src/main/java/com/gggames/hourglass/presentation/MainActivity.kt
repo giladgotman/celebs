@@ -17,6 +17,7 @@ import com.gggames.hourglass.core.di.getAppComponent
 import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.presentation.common.MainActivityDelegate
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
+import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
 import com.gggames.hourglass.utils.showErrorToast
 import com.idagio.app.core.utils.share.Shareable
 import com.idagio.app.core.utils.share.createDynamicLink
@@ -113,6 +114,11 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_switch_team -> {
                 // handled in gameOnFragment
                 false
+            }
+
+            R.id.menu_help -> {
+                InstructionsDialogFragment().show(this)
+                true
             }
             else -> super.onOptionsItemSelected(item)
         }
