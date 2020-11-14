@@ -16,7 +16,7 @@ class UserDataSourceFake @Inject constructor() : UserDataSource {
 
     override fun getUser(userId: String): Observable<UserDataSource.UserResponse> {
         val current = Observable.fromCallable {
-            users.firstOrNull { it.id == userId || it.id == "fakeId" }
+            users.firstOrNull { it.id == userId }
                 ?.let { UserDataSource.UserResponse.Exists(it) }
                 ?: UserDataSource.UserResponse.NotExists
         }

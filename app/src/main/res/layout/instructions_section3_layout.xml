@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/instructions_section3_title"
-                android:textAppearance="@style/TextViewTitle"
+                style="@style/TextViewTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin"
                 android:text="@string/instructions_section3_round1_descriptions"
-                android:textAppearance="@style/TextViewDescription"
+                style="@style/TextViewDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/section3Title" />
 
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin"
                 android:text="@string/instructions_section3_round2_descriptions"
-                android:textAppearance="@style/TextViewDescription"
+                style="@style/TextViewDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/section3round1Description" />
 
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin"
                 android:text="@string/instructions_section3_round3_descriptions"
-                android:textAppearance="@style/TextViewDescription"
+                style="@style/TextViewDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/section3round2Description" />
 
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/instructions_section3_general_description"
-                android:textAppearance="@style/TextViewDescription"
+                style="@style/TextViewDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/section3round3Description" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,14 +13,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instructions_section2_title"
-        android:textAppearance="@style/TextViewTitle"
+        style="@style/TextViewTitle"
         />
 
     <TextView
         android:id="@+id/section2Description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextViewDescription"
+        style="@style/TextViewDescription"
         app:layout_constraintTop_toBottomOf="@id/section2Title"
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/instructions_section2_description"

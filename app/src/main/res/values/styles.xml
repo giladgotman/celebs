@@ -33,14 +33,16 @@
 
     <style name="TextViewTitle" parent="DefaultTextViewStyle" >
         <item name="android:textSize">@dimen/big_text_size</item>
+        <item name="fontFamily">@font/poppins_semi_bold</item>
     </style>
 
     <style name="TextViewSubTitle" parent="DefaultTextViewStyle" >
+        <item name="fontFamily">@font/poppins_medium</item>
         <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
 
     <style name="TextViewDescription" parent="DefaultTextViewStyle" >
-        <item name="fontFamily">@font/roboto_light</item>
+        <item name="fontFamily">@font/poppins_light</item>
         <item name="android:textSize">@dimen/small_text_size</item>
     </style>
 

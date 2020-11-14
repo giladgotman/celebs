@@ -13,25 +13,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/instructions_section1_title"
-        android:textAppearance="@style/TextViewTitle"
-        />
-
-    <ImageView
-        android:id="@+id/help_image"
-        app:layout_constraintStart_toEndOf="@id/section1Title"
-        app:layout_constraintBottom_toBottomOf="@id/section1Title"
-        app:layout_constraintTop_toTopOf="@id/section1Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_help"
-        android:layout_marginStart="@dimen/default_margin"
+        style="@style/TextViewTitle"
         />
 
     <TextView
         android:id="@+id/section1Description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextViewDescription"
+        style="@style/TextViewDescription"
         app:layout_constraintTop_toBottomOf="@id/section1Title"
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/instructions_section1_description"
