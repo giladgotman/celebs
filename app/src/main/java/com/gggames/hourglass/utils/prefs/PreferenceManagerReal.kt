@@ -10,7 +10,8 @@ interface PreferenceManager {
     fun loadPlayer(): Player?
     fun saveGameInvitation(gameId: String?)
     fun loadGameInvitation(): String?
-    fun isFirstLaunch(): Boolean
+    fun wasHelpAlreadyShown(): Boolean
+    fun setHelpAlreadyShown(shown: Boolean)
 }
 
 class PreferenceManagerReal constructor(
@@ -18,6 +19,7 @@ class PreferenceManagerReal constructor(
 ): PreferenceManager {
     private val PREFS_KEY_PLAYER = "PREFS_KEY_PLAYER"
     private val PREFS_KEY_GAME_INVITATION = "PREFS_KEY_GAME_INVITATION"
+    private val PREFS_KEY_HELP_SHOWN = "PREFS_KEY_IS_FIRST_LAUNCH"
 
     private val gson = Gson()
 
@@ -49,7 +51,13 @@ class PreferenceManagerReal constructor(
         return playerString
     }
 
-    override fun isFirstLaunch(): Boolean {
-        return true
+    override fun wasHelpAlreadyShown(): Boolean {
+        return defaultSharedPreferences.getBoolean(PREFS_KEY_HELP_SHOWN, false)
+    }
+
+    override fun setHelpAlreadyShown(shown: Boolean) {
+        val editor = defaultSharedPreferences.edit()
+        editor.putBoolean(PREFS_KEY_HELP_SHOWN, shown)
+        editor.apply()
     }
 }

@@ -114,8 +114,9 @@ class GamesPresenter @Inject constructor(
                     view.showLoading(false)
                     view.showNoGamesView(games.isEmpty())
                     view.show(games)
-                    if (games.isEmpty() && preferenceManager.isFirstLaunch()){
+                    if (games.isEmpty() && !preferenceManager.wasHelpAlreadyShown()){
                         view.showHelp()
+                        preferenceManager.setHelpAlreadyShown(true)
                     }
                 },
                 {
