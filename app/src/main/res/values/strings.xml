@@ -73,7 +73,7 @@
     <string name="welcome_1_description">Hourglass is a virtual version of a fun and known guessing game, designed for any group of all ages!</string>
     <string name="welcome_2_description">You can play with friends or family from all around the world</string>
     <string name="welcome_3_description">You will need at least 4 people to play the game so start thinking who you want to play with…</string>
-    <string name="instructions_section1_title">What is it</string>
+    <string name="instructions_section1_title">What is Hourglass</string>
     <string name="instructions_section1_description">"
 Hourglass is a virtual version of a popular classic game which is known in many countries around the world.
 It is also known as:
@@ -98,20 +98,9 @@ There'll be 3 rounds, and cards will get recycled after each round!
     <string name="instructions_section2_title">How to play</string>
 
     <string name="instructions_section3_title">The rounds</string>
-    <string name="instructions_section3_round1_descriptions">"
-<b>Round 1 : Describe</b>\n\
-You can use as many words as you like to describe the word on the card, without acting or gestures."
-    </string>
-
-    <string name="instructions_section3_round2_descriptions">"
-<b>Round 2 : One Word</b>\n\
-You can use exactly 1 word per card. once you said a word, you can only repeat it…
-You team mates should remember the cards from last round.."
-    </string>
-
-    <string name="instructions_section3_round3_descriptions">"
-<b>Round 3 : Charades</b>\n\
-Act and use mime to communicate the card. no words or sounds allowed…"
-    </string>
+    <string name="instructions_section3_round1_descriptions"><b>Round 1 : Describe</b>\n\You can use as many words as you like to describe the word on the card, without acting or gestures.</string>
+    <string name="instructions_section3_round2_descriptions"><b>Round 2 : One Word</b>\n\You can use exactly 1 word per card. once you said a word, you can only repeat it… You team mates should remember the cards from last round..</string>
+    <string name="instructions_section3_round3_descriptions"><b>Round 3 : Charades</b>\n\Act and use mime to communicate the card. no words or sounds allowed…</string>
+    <string name="instructions_section3_general_description"><b>The team that guesses the most cards across all rounds wins!</b></string>
 
 </resources>
