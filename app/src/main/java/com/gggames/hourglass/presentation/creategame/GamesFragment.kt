@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.gggames.hourglass.presentation.gameon.GAME_ID_KEY
+import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
 import com.gggames.hourglass.utils.showErrorToast
 import com.gggames.hourglass.utils.showInfoToast
 import kotlinx.android.synthetic.main.fragment_games.*
@@ -154,6 +156,10 @@ class GamesFragment : Fragment(), GamesPresenter.View {
         findNavController().navigate(R.id.action_GamesFragment_to_GameOverFragment, Bundle().apply {
             putString(GAME_ID_KEY, gameId)
         })
+    }
+
+    override fun showHelp() {
+        InstructionsDialogFragment().show(requireActivity() as AppCompatActivity)
     }
 
     override fun onDestroyView() {

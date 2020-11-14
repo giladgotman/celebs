@@ -114,6 +114,9 @@ class GamesPresenter @Inject constructor(
                     view.showLoading(false)
                     view.showNoGamesView(games.isEmpty())
                     view.show(games)
+                    if (games.isEmpty() && preferenceManager.isFirstLaunch()){
+                        view.showHelp()
+                    }
                 },
                 {
                     Timber.e(it, "error fetching games")
@@ -153,6 +156,7 @@ class GamesPresenter @Inject constructor(
         fun showJoinedGameIsFinished(gameName: String)
         fun showNoGamesView(visible: Boolean)
         fun navigateToGameOver(gameId: String)
+        fun showHelp()
     }
 
     sealed class Result {

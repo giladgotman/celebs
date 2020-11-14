@@ -10,6 +10,7 @@ interface PreferenceManager {
     fun loadPlayer(): Player?
     fun saveGameInvitation(gameId: String?)
     fun loadGameInvitation(): String?
+    fun isFirstLaunch(): Boolean
 }
 
 class PreferenceManagerReal constructor(
@@ -46,5 +47,9 @@ class PreferenceManagerReal constructor(
         val playerString = defaultSharedPreferences.getString(PREFS_KEY_GAME_INVITATION, null)
         Timber.v("loadGameInvitation : $playerString")
         return playerString
+    }
+
+    override fun isFirstLaunch(): Boolean {
+        return true
     }
 }
