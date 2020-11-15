@@ -76,9 +76,10 @@ class ChangeRoundDialogFragment :
                 listOf(
                     ViewPagerFragment(EndRoundDialogFragment(), Bundle().apply {
                         putString(KEY_PREV_ROUND_NAME, prevRoundName)
+                        putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                     }),
                     ViewPagerFragment(EndRoundDialogFragment(), Bundle().apply {
-                        putString(KEY_PREV_ROUND_NAME, prevRoundName)
+                        putParcelable(KEY_NEXT_ROUND, nextRound)
                     })
                 )
             }
@@ -111,6 +112,6 @@ class ChangeRoundDialogFragment :
     }
 }
 
-val KEY_PREV_ROUND_NAME = "KEY_PREV_ROUND"
-val KEY_NEXT_ROUND = "KEY_PREV_ROUND"
+val KEY_PREV_ROUND_NAME = "KEY_PREV_ROUND_NAME"
+val KEY_NEXT_ROUND = "KEY_NEXT_ROUND"
 val KEY_TEAMS = "KEY_TEAMS"
