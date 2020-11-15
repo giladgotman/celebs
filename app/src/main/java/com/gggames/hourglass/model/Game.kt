@@ -1,7 +1,9 @@
 package com.gggames.hourglass.model
 
+import android.os.Parcelable
 import com.gggames.hourglass.model.TurnState.Idle
 import com.gggames.hourglass.presentation.gameon.GameScreenContract
+import kotlinx.android.parcel.Parcelize
 import timber.log.Timber
 
 data class Game(
@@ -37,11 +39,12 @@ data class GameInfo(
     val round: Round = Round()
 )
 
+@Parcelize
 data class Round(
     val state: RoundState = RoundState.Ready,
     val roundNumber: Int = 1,
     val turn: Turn = Turn()
-)
+): Parcelable
 
 enum class RoundState {
     Ready,
@@ -64,6 +67,7 @@ enum class RoundState {
     }
 }
 
+@Parcelize
 data class Turn(
     val state: TurnState = Idle,
     val player: Player? = null,
@@ -71,7 +75,7 @@ data class Turn(
     val cardsFound: List<String> = emptyList(),
     val lastFoundCard: Card? = null,
     val currentCard: Card? = null
-)
+): Parcelable
 
 enum class TurnState {
     Idle,

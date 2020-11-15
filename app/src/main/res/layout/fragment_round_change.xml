@@ -6,21 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context=".presentation.onboarding.WelcomeActivity">
+    >
 
-  <androidx.viewpager.widget.ViewPager
+  <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/view_pager_carousel"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintBottom_toTopOf="@id/carousel_indicator"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:background="@android:color/transparent"
       android:overScrollMode="never"
       >
 
-  </androidx.viewpager.widget.ViewPager>
+  </androidx.viewpager2.widget.ViewPager2>
 
 
   <me.relex.circleindicator.CircleIndicator
