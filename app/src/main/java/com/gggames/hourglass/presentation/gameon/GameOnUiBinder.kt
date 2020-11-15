@@ -119,7 +119,7 @@ class GameOnUiBinder @Inject constructor() {
             }
             if (state.showEndOfRound) {
                 if (isFragmentVisible) {
-                    showEndRound(state.round, state.round, state.teamsWithScore)
+                    showEndRound(state.previousRoundName, state.round, state.teamsWithScore)
                 }
             }
             if (state.showGameOver) {
@@ -274,9 +274,9 @@ class GameOnUiBinder @Inject constructor() {
 
     }
 
-    private fun showEndRound(prevRound: Round?, nextRound: Round, teams: List<Team>) {
+    private fun showEndRound(prevRoundName: String, nextRound: Round, teams: List<Team>) {
         if (endRoundDialogFragment == null) {
-            endRoundDialogFragment = ChangeRoundDialogFragment.create(prevRound, nextRound, teams)
+            endRoundDialogFragment = ChangeRoundDialogFragment.create(prevRoundName, nextRound, teams)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
             endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
         }
