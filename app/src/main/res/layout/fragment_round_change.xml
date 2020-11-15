@@ -6,33 +6,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
+    android:paddingBottom="@dimen/medium_margin"
+
     >
 
   <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/view_pager_carousel"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintBottom_toTopOf="@id/carousel_indicator"
+      app:layout_constraintBottom_toTopOf="@id/buttonNextRound"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@android:color/transparent"
       android:overScrollMode="never"
       >
 
   </androidx.viewpager2.widget.ViewPager2>
 
-
-  <me.relex.circleindicator.CircleIndicator
-      android:id="@+id/carousel_indicator"
-      android:layout_width="0dp"
-      android:layout_height="10dp"
-      android:layout_marginBottom="@dimen/medium_margin"
-      app:ci_drawable="@drawable/white_circle_indicator"
-      app:ci_drawable_unselected="@drawable/light_grey_circle_indicator"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
+  <Button
+      android:id="@+id/buttonNextRound"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="5dp"
+      style="@style/WelcomeButtonStyle"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_pager_carousel"
+      android:text="@string/end_round_next_round_button_cta"
       />
 
   </androidx.constraintlayout.widget.ConstraintLayout>

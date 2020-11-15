@@ -35,9 +35,9 @@ class ChangeRoundDialogFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        buttonClose.setOnClickListener {
-//            dismissAllowingStateLoss()
-//        }
+        buttonNextRound.setOnClickListener {
+            view_pager_carousel.setCurrentItem(1, true)
+        }
 
         arguments?.let {
             val prevRoundName: String? = it.getString(KEY_PREV_ROUND_NAME)
@@ -45,7 +45,6 @@ class ChangeRoundDialogFragment :
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
             initializeCarouselViewPager(prevRoundName, nextRound, teams.toList())
         }
-
     }
 
     fun setOnDismiss(block: () -> Unit) {
