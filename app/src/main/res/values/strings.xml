@@ -100,6 +100,12 @@ There'll be 3 rounds, and cards will get recycled after each round!
     <string name="instructions_section3_round2_descriptions"><b>Round 2 : One Word</b>\n\You can use exactly 1 word per card. once you said a word, you can only repeat it… You team mates should remember the cards from last round..</string>
     <string name="instructions_section3_round3_descriptions"><b>Round 3 : Charades</b>\n\Act and use mime to communicate the card. no words or sounds allowed…</string>
     <string name="instructions_section3_general_description"><b>The team that guesses the most cards across all rounds wins!</b></string>
+
     <string name="end_round_next_round_button_cta">NEXT ROUND</string>
+    <string name="end_round_round2_description">You can use exactly 1 word per card. once you said a word, you can only repeat it… You team mates should remember the cards from last round..</string>
+
+    <string name="next_round_next_player_value">%1$s with %2$d seconds left</string>
+    <string name="next_round_next_player_to_play_label">Next player to play</string>
+    <string name="next_round_title">Round %d : </string>
 
 </resources>

@@ -37,6 +37,7 @@ class ChangeRoundDialogFragment :
         super.onViewCreated(view, savedInstanceState)
         buttonNextRound.setOnClickListener {
             view_pager_carousel.setCurrentItem(1, true)
+            buttonNextRound.text = "START ROUND"
         }
 
         arguments?.let {
