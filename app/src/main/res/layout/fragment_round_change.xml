@@ -14,10 +14,11 @@
       android:id="@+id/view_pager_carousel"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintBottom_toTopOf="@id/buttonNextRound"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="400dp"
       android:overScrollMode="never"
+      android:focusable="false"
+
       >
 
   </androidx.viewpager2.widget.ViewPager2>

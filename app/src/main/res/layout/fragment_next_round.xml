@@ -8,7 +8,7 @@
     android:background="@color/colorPrimary"
     android:paddingStart="@dimen/default_margin"
     android:paddingEnd="@dimen/default_margin"
-    app:layout_behavior="@string/bottom_sheet_behavior">
+    >
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

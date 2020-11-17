@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.hourglass.R
 import com.gggames.hourglass.model.Round
@@ -15,6 +16,7 @@ import com.gggames.hourglass.presentation.onboarding.ViewPagerFragment
 import com.gggames.hourglass.presentation.onboarding.ViewPagerFragmentAdapter
 import com.gggames.hourglass.utils.rx.EventEmitter
 import com.gggames.hourglass.utils.rx.ViewEventEmitter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_round_change.*
 
@@ -36,8 +38,12 @@ class ChangeRoundDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonNextRound.setOnClickListener {
-            view_pager_carousel.setCurrentItem(1, true)
-            buttonNextRound.text = "START ROUND"
+            if (view_pager_carousel.currentItem == 0) {
+                view_pager_carousel.setCurrentItem(1, true)
+                buttonNextRound.text = "START ROUND"
+            } else {
+                dismiss()
+            }
         }
 
         arguments?.let {
@@ -60,7 +66,17 @@ class ChangeRoundDialogFragment :
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
+        setupBottomSheet(dialog)
         return dialog
+    }
+
+    private fun setupBottomSheet(dialog: Dialog) {
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(bottomSheet!!)
+            behavior.isHideable = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
     private fun initializeCarouselViewPager(prevRoundName: String?, nextRound: Round, teamsWithScore: List<Team>) {
@@ -78,11 +94,12 @@ class ChangeRoundDialogFragment :
                         putString(KEY_PREV_ROUND_NAME, prevRoundName)
                         putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                     }),
-                    ViewPagerFragment(EndRoundDialogFragment(), Bundle().apply {
+                    ViewPagerFragment(NextRoundDialogFragment(), Bundle().apply {
                         putParcelable(KEY_NEXT_ROUND, nextRound)
                     })
                 )
             }
+        view_pager_carousel.isUserInputEnabled = false
         view_pager_carousel.adapter =
             ViewPagerFragmentAdapter(requireActivity().supportFragmentManager, lifecycle, carouselItems)
 
