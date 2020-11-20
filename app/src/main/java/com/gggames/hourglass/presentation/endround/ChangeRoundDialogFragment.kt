@@ -47,10 +47,9 @@ class ChangeRoundDialogFragment :
         }
 
         arguments?.let {
-            val prevRoundName: String? = it.getString(KEY_PREV_ROUND_NAME)
-            val nextRound: Round = it.getParcelable(KEY_NEXT_ROUND)!!
+            val prevRound: Round? = it.getParcelable(KEY_PREV_ROUND)
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
-            initializeCarouselViewPager(prevRoundName, nextRound, teams.toList())
+            initializeCarouselViewPager(prevRound, teams.toList())
         }
     }
 
@@ -79,23 +78,23 @@ class ChangeRoundDialogFragment :
         }
     }
 
-    private fun initializeCarouselViewPager(prevRoundName: String?, nextRound: Round, teamsWithScore: List<Team>) {
+    private fun initializeCarouselViewPager(prevRound: Round?, teamsWithScore: List<Team>) {
         val carouselItems: List<ViewPagerFragment> =
-            if (prevRoundName == null) {
+            if (prevRound == null) {
                 listOf(
                     ViewPagerFragment(EndRoundDialogFragment(), Bundle().apply {
-                        putString(KEY_PREV_ROUND_NAME, prevRoundName)
+                        putParcelable(KEY_PREV_ROUND, prevRound)
                         putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                     })
                 )
             } else {
                 listOf(
                     ViewPagerFragment(EndRoundDialogFragment(), Bundle().apply {
-                        putString(KEY_PREV_ROUND_NAME, prevRoundName)
+                        putParcelable(KEY_PREV_ROUND, prevRound)
                         putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                     }),
                     ViewPagerFragment(NextRoundDialogFragment(), Bundle().apply {
-                        putParcelable(KEY_NEXT_ROUND, nextRound)
+                        putParcelable(KEY_PREV_ROUND, prevRound)
                     })
                 )
             }
@@ -112,16 +111,15 @@ class ChangeRoundDialogFragment :
     }
 
     companion object {
-        fun create(prevRoundName: String?, nextRound: Round, teamsWithScore: List<Team>): ChangeRoundDialogFragment {
+        fun create(prevRound: Round?, teamsWithScore: List<Team>): ChangeRoundDialogFragment {
             return ChangeRoundDialogFragment()
                 .apply {
                     isCancelable = true
                     arguments =
                         Bundle().apply {
-                            prevRoundName?.let {
-                                putString(KEY_PREV_ROUND_NAME, prevRoundName)
+                            prevRound?.let {
+                                putParcelable(KEY_PREV_ROUND, prevRound)
                             }
-                            putParcelable(KEY_NEXT_ROUND, nextRound)
                             putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                         }
                 }
@@ -129,6 +127,5 @@ class ChangeRoundDialogFragment :
     }
 }
 
-val KEY_PREV_ROUND_NAME = "KEY_PREV_ROUND_NAME"
-val KEY_NEXT_ROUND = "KEY_NEXT_ROUND"
+val KEY_PREV_ROUND = "KEY_PREV_ROUND"
 val KEY_TEAMS = "KEY_TEAMS"

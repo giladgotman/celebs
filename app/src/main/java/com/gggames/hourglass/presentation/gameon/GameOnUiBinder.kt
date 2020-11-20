@@ -18,7 +18,6 @@ import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -120,7 +119,7 @@ class GameOnUiBinder @Inject constructor() {
             }
             if (state.showEndOfRound) {
                 if (isFragmentVisible) {
-                    showEndRound(state.previousRoundName, state.round, state.teamsWithScore)
+                    showEndRound(state.round, state.teamsWithScore)
                 }
             }
             if (state.showGameOver) {
@@ -274,12 +273,9 @@ class GameOnUiBinder @Inject constructor() {
         }
 
     }
-//todo change it to use only current round.
-
-    private fun showEndRound(prevRoundName: String, nextRound: Round, teams: List<Team>) {
-        Timber.w("showEndROund, nextRound: ${nextRound.roundNumber}, prevRoundName: $prevRoundName")
+    private fun showEndRound(currRound: Round, teams: List<Team>) {
         if (endRoundDialogFragment == null) {
-            endRoundDialogFragment = ChangeRoundDialogFragment.create(prevRoundName, nextRound, teams)
+            endRoundDialogFragment = ChangeRoundDialogFragment.create(currRound, teams)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
             endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
         }

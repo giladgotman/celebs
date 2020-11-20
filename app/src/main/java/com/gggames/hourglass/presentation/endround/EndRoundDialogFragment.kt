@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gggames.hourglass.R
+import com.gggames.hourglass.model.Round
 import com.gggames.hourglass.model.Team
 import kotlinx.android.synthetic.main.fragment_end_round_dialog.*
 
@@ -22,7 +23,8 @@ class EndRoundDialogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            val prevRoundName = it.getString(KEY_PREV_ROUND_NAME)
+            val prevRound = it.getParcelable<Round>(KEY_PREV_ROUND)!!
+            val prevRoundName = prevRound.roundNumber.toString()
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
 
             title.text = getString(R.string.end_round_title, prevRoundName)

@@ -22,21 +22,22 @@ class NextRoundDialogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let { bundle ->
-            val nextRound = bundle.getParcelable<Round>(KEY_NEXT_ROUND)!!
-            val roundName = when(nextRound.roundNumber) {
+            val prevRound = bundle.getParcelable<Round?>(KEY_PREV_ROUND)
+            val nextRoundId = prevRound?.let { it.roundNumber + 1 } ?: 1
+            val roundName = when(nextRoundId) {
                 1 -> "Describe"
                 2 -> "One Word"
                 3 -> "Charades"
-                else -> throw IllegalArgumentException("Unknown supported number: ${nextRound.roundNumber}")
+                else -> throw IllegalArgumentException("Unknown supported number: $nextRoundId")
             }
-            title.text = getString(R.string.next_round_title, nextRound.roundNumber, roundName)
+            title.text = getString(R.string.next_round_title, nextRoundId, roundName)
 
             next_round_description.text = getText(R.string.end_round_round2_description)
-            if (nextRound.turn.player != null) {
-                val secondsLeft =  nextRound.turn.time?.let { (it / 1000).toInt() % 60 } ?: 0
+            if (prevRound?.turn?.player != null) {
+                val secondsLeft =  prevRound.turn.time?.let { (it / 1000).toInt() % 60 } ?: 0
                 next_round_next_player_value.text = getString(
                     R.string.next_round_next_player_value,
-                    nextRound.turn.player.name,
+                    prevRound.turn.player.name,
                     secondsLeft
                 )
             } else {
