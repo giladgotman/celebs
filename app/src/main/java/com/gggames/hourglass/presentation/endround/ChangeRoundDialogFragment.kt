@@ -95,6 +95,14 @@ class ChangeRoundDialogFragment :
                 NextRoundDialogFragment.createArgs(nextRoundId, roundName, currentRound.turn)
             )
         )
+        view_pager_carousel.setPageTransformer { page, position ->
+            page.alpha = 0f
+            page.visibility = View.VISIBLE
+
+            // Start Animation for a short period of time
+            page.animate()
+                .alpha(1f).duration = 300
+        }
         view_pager_carousel.isUserInputEnabled = false
         view_pager_carousel.adapter =
             ViewPagerFragmentAdapter(requireActivity().supportFragmentManager, lifecycle, carouselItems)
