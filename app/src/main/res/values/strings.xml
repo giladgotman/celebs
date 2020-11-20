@@ -104,8 +104,8 @@ There'll be 3 rounds, and cards will get recycled after each round!
     <string name="end_round_next_round_button_cta">NEXT ROUND</string>
     <string name="end_round_round2_description">You can use exactly 1 word per card. once you said a word, you can only repeat it… You team mates should remember the cards from last round..</string>
 
-    <string name="next_round_next_player_value">%1$s with %2$d seconds left</string>
-    <string name="next_round_next_player_to_play_label">Next player to play</string>
+    <string name="next_round_next_player_value">with %1$d seconds left</string>
+    <string name="next_round_next_player_to_play_label">Next player: </string>
     <string name="next_round_title">Round %d : %s</string>
 
 </resources>

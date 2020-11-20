@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gggames.hourglass.R
+import com.gggames.hourglass.model.PlayerTurnState
 import com.gggames.hourglass.model.Turn
+import com.gggames.hourglass.presentation.common.NameBadge
 import kotlinx.android.synthetic.main.fragment_next_round.*
 
 class NextRoundDialogFragment : Fragment() {
@@ -29,10 +31,11 @@ class NextRoundDialogFragment : Fragment() {
 
             next_round_description.text = getText(R.string.end_round_round2_description)
             if (currentTurn?.player != null) {
-                val secondsLeft =  currentTurn.time?.let { (it / 1000).toInt() % 60 } ?: 0
+                next_player_name_badge.state =
+                    NameBadge.State(currentTurn.player.name, currentTurn.player.playerTurnState ?: PlayerTurnState.Idle)
+                val secondsLeft = currentTurn.time?.let { (it / 1000).toInt() % 60 } ?: 0
                 next_round_next_player_value.text = getString(
                     R.string.next_round_next_player_value,
-                    currentTurn.player.name,
                     secondsLeft
                 )
             } else {
