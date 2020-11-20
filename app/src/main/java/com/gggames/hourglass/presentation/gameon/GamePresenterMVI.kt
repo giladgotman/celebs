@@ -6,6 +6,7 @@ import com.gggames.hourglass.features.gameon.*
 import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.features.games.domain.CalculateNextPlayer
 import com.gggames.hourglass.features.games.domain.ObserveGame
+import com.gggames.hourglass.features.games.domain.ShowRoundInstructions
 import com.gggames.hourglass.features.players.domain.ObservePlayers
 import com.gggames.hourglass.model.*
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.*
@@ -39,6 +40,7 @@ class GamePresenterMVI @Inject constructor(
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
     private val calculateNextPlayer: CalculateNextPlayer,
+    private val showRoundInstructions: ShowRoundInstructions,
     private val audioPlayer: AudioPlayer,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
@@ -57,7 +59,7 @@ class GamePresenterMVI @Inject constructor(
             .doOnNext { Timber.d("USER:: $it") }
 
         val dataInput =
-            gamesRepository.getCurrentGame().toObservable().switchMap { game->
+            gamesRepository.getCurrentGame().toObservable().switchMap { game ->
                 combineLatest(
                     observeGame(game.id).doOnNext { Timber.d("GameUpdate") },
                     playersObservable(game.id).doOnNext { Timber.d("PlayersUpdate") },
@@ -68,7 +70,11 @@ class GamePresenterMVI @Inject constructor(
                 )
             }
 
-        val allInput = merge(uiEvent.toResult(), dataInput)
+        val allInput = merge(
+            uiEvent.toResult(),
+            dataInput,
+            showRoundInstructions()
+        )
 
         allInput
             .subscribeOn(schedulerProvider.io())
@@ -134,6 +140,7 @@ class GamePresenterMVI @Inject constructor(
 
                 newState
             }
+            is ShowRoundInstructionsResult -> previous.copy(showRoundInstructions = result.show)
             is GameUpdate -> {
                 previous
             }

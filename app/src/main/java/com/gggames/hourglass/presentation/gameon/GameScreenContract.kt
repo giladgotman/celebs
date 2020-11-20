@@ -56,7 +56,8 @@ interface GameScreenContract {
         val showLeaveGameConfirmation: Boolean = false,
         val navigateToGames: Boolean = false,
         val navigateToTeams: Boolean = false,
-        val useLocalTimer: Boolean = false
+        val useLocalTimer: Boolean = false,
+        val showRoundInstructions: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -90,6 +91,7 @@ interface GameScreenContract {
                 navigateToGames                 $navigateToGames
                 navigateToTeams                 $navigateToTeams
                 useLocalTimer                   $useLocalTimer
+                showRoundInstructions           $showRoundInstructions
                 """.trimIndent()
 
     }
@@ -141,6 +143,8 @@ interface GameScreenContract {
         data class NavigateToSelectTeam(val navigate: Boolean): Result()
 
         object RoundOverDialogDismissedResult : Result()
+
+        data class ShowRoundInstructionsResult(val show: Boolean): Result()
 
         object NoOp : Result()
     }
