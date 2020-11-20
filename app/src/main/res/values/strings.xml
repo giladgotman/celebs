@@ -108,5 +108,6 @@ There'll be 3 rounds, and cards will get recycled after each round!
     <string name="next_round_next_player_value">with %1$d seconds left</string>
     <string name="next_round_next_player_to_play_label">Next player: </string>
     <string name="next_round_title">Round %d : %s</string>
+    <string name="change_round_next_round_cta">READY</string>
 
 </resources>

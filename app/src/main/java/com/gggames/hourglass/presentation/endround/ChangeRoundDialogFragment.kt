@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.gggames.hourglass.R
+import com.gggames.hourglass.model.Player
 import com.gggames.hourglass.model.Round
 import com.gggames.hourglass.model.Team
 import com.gggames.hourglass.presentation.gameon.GameScreenContract
@@ -40,19 +41,20 @@ class ChangeRoundDialogFragment :
         arguments?.let {
             val currentRound: Round = it.getParcelable(KEY_CURR_ROUND)!!
             val isRoundOver = it.getBoolean(KEY_ROUND_OVER)
+            val nextPlayer: Player? = it.getParcelable(KEY_NEXT_PLAYER)
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
-            initializeCarouselViewPager(currentRound, isRoundOver, teams.toList())
+            initializeCarouselViewPager(currentRound, isRoundOver, teams.toList(), nextPlayer)
 
             buttonNextRound.setOnClickListener {
                 if (view_pager_carousel.currentItem == 0) {
                     view_pager_carousel.setCurrentItem(1, true)
-                    buttonNextRound.text = "READY"
+                    buttonNextRound.text = getString(R.string.change_round_next_round_cta)
                 } else {
                     dismiss()
                 }
             }
             if (!isRoundOver) {
-                buttonNextRound.text = "READY"
+                buttonNextRound.text = getString(R.string.change_round_next_round_cta)
                 buttonNextRound.setOnClickListener {
                     dismiss()
                 }
@@ -85,7 +87,12 @@ class ChangeRoundDialogFragment :
         }
     }
 
-    private fun initializeCarouselViewPager(currentRound: Round, roundOver: Boolean, teamsWithScore: List<Team>) {
+    private fun initializeCarouselViewPager(
+        currentRound: Round,
+        roundOver: Boolean,
+        teamsWithScore: List<Team>,
+        nextPlayer: Player?
+    ) {
         val carouselItems: List<ViewPagerFragment> =
             if (roundOver) {
                 val nextRoundId = currentRound.roundNumber + 1
@@ -106,7 +113,7 @@ class ChangeRoundDialogFragment :
                 listOf(
                     ViewPagerFragment(
                         NextRoundDialogFragment(),
-                        NextRoundDialogFragment.createArgs(nextRoundId, roundName, currentRound.turn)
+                        NextRoundDialogFragment.createArgs(nextRoundId, roundName, currentRound.turn.copy(player = nextPlayer))
                     )
                 )
             }
@@ -131,13 +138,21 @@ class ChangeRoundDialogFragment :
     }
 
     companion object {
-        fun newInstance(prevRound: Round, roundOver: Boolean, teamsWithScore: List<Team>): ChangeRoundDialogFragment {
+        fun newInstance(
+            prevRound: Round,
+            roundOver: Boolean,
+            teamsWithScore: List<Team>,
+            nextPlayer: Player? = null
+        ): ChangeRoundDialogFragment {
             return ChangeRoundDialogFragment()
                 .apply {
                     isCancelable = true
                     arguments =
                         Bundle().apply {
                             putParcelable(KEY_CURR_ROUND, prevRound)
+                            nextPlayer?.let {
+                                putParcelable(KEY_NEXT_PLAYER, it)
+                            }
                             putBoolean(KEY_ROUND_OVER, roundOver)
                             putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                         }
@@ -147,5 +162,6 @@ class ChangeRoundDialogFragment :
 }
 
 val KEY_CURR_ROUND = "KEY_CURR_ROUND"
+val KEY_NEXT_PLAYER = "KEY_NEXT_PLAYER"
 val KEY_TEAMS = "KEY_TEAMS"
 val KEY_ROUND_OVER = "KEY_ROUND_OVER"

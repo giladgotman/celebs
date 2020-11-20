@@ -124,7 +124,7 @@ class GameOnUiBinder @Inject constructor() {
             }
 
             if (state.showRoundInstructions) {
-                showFirstRoundIntro(state.round, state.teamsWithScore)
+                showFirstRoundIntro(state.round, state.teamsWithScore, state.nextPlayer)
             }
             if (state.showGameOver) {
                 fragment.navigateToEndGame()
@@ -286,9 +286,9 @@ class GameOnUiBinder @Inject constructor() {
         }
     }
 
-    private fun showFirstRoundIntro(round: Round, teams: List<Team>) {
+    private fun showFirstRoundIntro(round: Round, teams: List<Team>, nextPlayer: Player?) {
         if (endRoundDialogFragment == null) {
-            endRoundDialogFragment = ChangeRoundDialogFragment.newInstance(round, false, teams)
+            endRoundDialogFragment = ChangeRoundDialogFragment.newInstance(round, false, teams, nextPlayer)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
             endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
         }
