@@ -46,7 +46,7 @@ class NextRoundDialogFragment : Fragment() {
                     secondsLeft
                 )
             } else {
-                next_round_next_player_lbl.isVisible = false
+                starting_player_lbl.isVisible = false
             }
         }
     }

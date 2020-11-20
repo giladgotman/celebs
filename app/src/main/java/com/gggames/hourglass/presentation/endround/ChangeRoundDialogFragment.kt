@@ -43,10 +43,10 @@ class ChangeRoundDialogFragment :
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
             initializeCarouselViewPager(currentRound, teams.toList())
 
-            buttonNextRound.setOnClickListener {
+            button_ready.setOnClickListener {
                 if (view_pager_carousel.currentItem == 0) {
                     view_pager_carousel.setCurrentItem(1, true)
-                    buttonNextRound.text = getString(R.string.change_round_next_round_cta)
+                    button_ready.text = getString(R.string.change_round_next_round_cta)
                 } else {
                     dismiss()
                 }

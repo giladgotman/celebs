@@ -11,7 +11,7 @@ import com.gggames.hourglass.model.Player
 import com.gggames.hourglass.model.PlayerTurnState
 import com.gggames.hourglass.presentation.common.NameBadge
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.fragment_next_round.*
+import kotlinx.android.synthetic.main.fragment_welcome_first_round.*
 
 class WelcomeFirstRoundFragment : BottomSheetDialogFragment() {
 
@@ -45,8 +45,11 @@ class WelcomeFirstRoundFragment : BottomSheetDialogFragment() {
                 next_player_name_badge.state =
                     NameBadge.State(nextPlayer.name, nextPlayer.playerTurnState ?: PlayerTurnState.Idle)
             } else {
-                next_round_next_player_lbl.isVisible = false
+                starting_player_lbl.isVisible = false
             }
+        }
+        button_ready.setOnClickListener {
+            dismiss()
         }
     }
 

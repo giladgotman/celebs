@@ -52,7 +52,7 @@
             tools:text="@string/end_round_round2_description" />
 
         <TextView
-            android:id="@+id/next_round_next_player_lbl"
+            android:id="@+id/starting_player_lbl"
             style="@style/TextViewSubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,9 +66,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/small_margin"
-            app:layout_constraintTop_toTopOf="@id/next_round_next_player_lbl"
-            app:layout_constraintBottom_toBottomOf="@id/next_round_next_player_lbl"
-            app:layout_constraintStart_toEndOf="@id/next_round_next_player_lbl"
+            app:layout_constraintTop_toTopOf="@id/starting_player_lbl"
+            app:layout_constraintBottom_toBottomOf="@id/starting_player_lbl"
+            app:layout_constraintStart_toEndOf="@id/starting_player_lbl"
             android:textSize="18sp"
             android:elevation="8dp"
             />
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/tiny_margin"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/next_round_next_player_lbl"
+            app:layout_constraintTop_toBottomOf="@id/starting_player_lbl"
             tools:text="with 25 seconds left" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
