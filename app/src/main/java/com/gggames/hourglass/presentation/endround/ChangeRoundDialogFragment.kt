@@ -37,20 +37,26 @@ class ChangeRoundDialogFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonNextRound.setOnClickListener {
-            if (view_pager_carousel.currentItem == 0) {
-                view_pager_carousel.setCurrentItem(1, true)
-                buttonNextRound.text = "READY"
-            } else {
-                dismiss()
-            }
-        }
-
         arguments?.let {
             val currentRound: Round = it.getParcelable(KEY_CURR_ROUND)!!
             val isRoundOver = it.getBoolean(KEY_ROUND_OVER)
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
             initializeCarouselViewPager(currentRound, isRoundOver, teams.toList())
+
+            buttonNextRound.setOnClickListener {
+                if (view_pager_carousel.currentItem == 0) {
+                    view_pager_carousel.setCurrentItem(1, true)
+                    buttonNextRound.text = "READY"
+                } else {
+                    dismiss()
+                }
+            }
+            if (!isRoundOver) {
+                buttonNextRound.text = "READY"
+                buttonNextRound.setOnClickListener {
+                    dismiss()
+                }
+            }
         }
     }
 
