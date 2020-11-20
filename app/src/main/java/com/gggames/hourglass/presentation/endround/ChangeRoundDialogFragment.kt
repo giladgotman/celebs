@@ -40,7 +40,7 @@ class ChangeRoundDialogFragment :
         buttonNextRound.setOnClickListener {
             if (view_pager_carousel.currentItem == 0) {
                 view_pager_carousel.setCurrentItem(1, true)
-                buttonNextRound.text = "START ROUND"
+                buttonNextRound.text = "READY"
             } else {
                 dismiss()
             }

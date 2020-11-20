@@ -6,10 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    android:paddingStart="@dimen/default_margin"
-    android:paddingEnd="@dimen/default_margin"
     >
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
@@ -17,12 +14,9 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:elevation="1dp"
-        android:padding="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         >
 
         <TextView
@@ -30,46 +24,54 @@
             style="@style/TextViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Widget.MessageDialog.title"
+            android:layout_margin="@dimen/default_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Round 2: One Word" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_body"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        >
     <TextView
         android:id="@+id/next_round_description"
+        style="@style/TextViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        tools:text="@string/end_round_round2_description"
-        style="@style/TextViewDescription"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/end_round_round2_description" />
 
     <TextView
         android:id="@+id/next_round_next_player_lbl"
+        style="@style/TextViewSubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/next_round_description"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/medium_margin"
-        style="@style/TextViewSubTitle"
         android:text="@string/next_round_next_player_to_play_label"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/next_round_description" />
 
     <TextView
         android:id="@+id/next_round_next_player_value"
+        style="@style/TextViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/next_round_next_player_lbl"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/tiny_margin"
-        style="@style/TextViewDescription"
-        tools:text="Gilad with 25 seconds left"
-        />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/next_round_next_player_lbl"
+        tools:text="Gilad with 25 seconds left" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
