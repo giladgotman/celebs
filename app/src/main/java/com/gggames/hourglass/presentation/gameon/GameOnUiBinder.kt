@@ -273,9 +273,18 @@ class GameOnUiBinder @Inject constructor() {
         }
 
     }
+
     private fun showEndRound(currRound: Round, teams: List<Team>) {
         if (endRoundDialogFragment == null) {
-            endRoundDialogFragment = ChangeRoundDialogFragment.create(currRound, teams)
+            endRoundDialogFragment = ChangeRoundDialogFragment.newInstance(currRound, true, teams)
+            endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
+            endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
+        }
+    }
+
+    private fun showFirstRoundIntro(round: Round, teams: List<Team>) {
+        if (endRoundDialogFragment == null) {
+            endRoundDialogFragment = ChangeRoundDialogFragment.newInstance(round, false, teams)
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
             endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
         }

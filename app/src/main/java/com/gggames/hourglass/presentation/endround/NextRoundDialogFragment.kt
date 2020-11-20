@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gggames.hourglass.R
-import com.gggames.hourglass.model.Round
+import com.gggames.hourglass.model.Turn
 import kotlinx.android.synthetic.main.fragment_next_round.*
 
 class NextRoundDialogFragment : Fragment() {
@@ -22,22 +22,17 @@ class NextRoundDialogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let { bundle ->
-            val prevRound = bundle.getParcelable<Round?>(KEY_PREV_ROUND)
-            val nextRoundId = prevRound?.let { it.roundNumber + 1 } ?: 1
-            val roundName = when(nextRoundId) {
-                1 -> "Describe"
-                2 -> "One Word"
-                3 -> "Charades"
-                else -> throw IllegalArgumentException("Unknown supported number: $nextRoundId")
-            }
-            title.text = getString(R.string.next_round_title, nextRoundId, roundName)
+            val nextRoundId = bundle.getInt(KEY_NEXT_ROUND_ID)
+            val nextRoundName = bundle.getString(KEY_NEXT_ROUND_NAME)
+            val currentTurn = bundle.getParcelable<Turn?>(KEY_CURRENT_TURN)
+            title.text = getString(R.string.next_round_title, nextRoundId, nextRoundName)
 
             next_round_description.text = getText(R.string.end_round_round2_description)
-            if (prevRound?.turn?.player != null) {
-                val secondsLeft =  prevRound.turn.time?.let { (it / 1000).toInt() % 60 } ?: 0
+            if (currentTurn?.player != null) {
+                val secondsLeft =  currentTurn.time?.let { (it / 1000).toInt() % 60 } ?: 0
                 next_round_next_player_value.text = getString(
                     R.string.next_round_next_player_value,
-                    prevRound.turn.player.name,
+                    currentTurn.player.name,
                     secondsLeft
                 )
             } else {
@@ -45,4 +40,16 @@ class NextRoundDialogFragment : Fragment() {
             }
         }
     }
+
+    companion object {
+        fun createArgs(nextRoundId: Int, nextRoundName: String, currentTurn: Turn) = Bundle().apply {
+            putInt(KEY_NEXT_ROUND_ID, nextRoundId)
+            putString(KEY_NEXT_ROUND_NAME, nextRoundName)
+            putParcelable(KEY_CURRENT_TURN, currentTurn)
+        }
+    }
 }
+
+val KEY_NEXT_ROUND_ID = "KEY_NEXT_ROUND_ID"
+val KEY_NEXT_ROUND_NAME = "KEY_NEXT_ROUND_NAME"
+val KEY_CURRENT_TURN = "KEY_CURRENT_TURN"

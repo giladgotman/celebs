@@ -47,9 +47,10 @@ class ChangeRoundDialogFragment :
         }
 
         arguments?.let {
-            val prevRound: Round? = it.getParcelable(KEY_PREV_ROUND)
+            val currentRound: Round = it.getParcelable(KEY_CURR_ROUND)!!
+            val isRoundOver = it.getBoolean(KEY_ROUND_OVER)
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
-            initializeCarouselViewPager(prevRound, teams.toList())
+            initializeCarouselViewPager(currentRound, isRoundOver, teams.toList())
         }
     }
 
@@ -78,24 +79,29 @@ class ChangeRoundDialogFragment :
         }
     }
 
-    private fun initializeCarouselViewPager(prevRound: Round?, teamsWithScore: List<Team>) {
+    private fun initializeCarouselViewPager(currentRound: Round, roundOver: Boolean, teamsWithScore: List<Team>) {
         val carouselItems: List<ViewPagerFragment> =
-            if (prevRound == null) {
+            if (roundOver) {
+                val nextRoundId = currentRound.roundNumber + 1
+                val roundName = roundIdToRoundName(nextRoundId)
                 listOf(
                     ViewPagerFragment(EndRoundDialogFragment(), Bundle().apply {
-                        putParcelable(KEY_PREV_ROUND, prevRound)
-                        putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
-                    })
-                )
-            } else {
-                listOf(
-                    ViewPagerFragment(EndRoundDialogFragment(), Bundle().apply {
-                        putParcelable(KEY_PREV_ROUND, prevRound)
+                        putParcelable(KEY_CURR_ROUND, currentRound)
                         putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                     }),
-                    ViewPagerFragment(NextRoundDialogFragment(), Bundle().apply {
-                        putParcelable(KEY_PREV_ROUND, prevRound)
-                    })
+                    ViewPagerFragment(
+                        NextRoundDialogFragment(),
+                        NextRoundDialogFragment.createArgs(nextRoundId, roundName, currentRound.turn)
+                    )
+                )
+            } else {
+                val nextRoundId = currentRound.roundNumber
+                val roundName = roundIdToRoundName(nextRoundId)
+                listOf(
+                    ViewPagerFragment(
+                        NextRoundDialogFragment(),
+                        NextRoundDialogFragment.createArgs(nextRoundId, roundName, currentRound.turn)
+                    )
                 )
             }
         view_pager_carousel.isUserInputEnabled = false
@@ -106,20 +112,27 @@ class ChangeRoundDialogFragment :
 
         if (carouselItems.size > 1) {
             view_pager_carousel.offscreenPageLimit = carouselItems.size - 1
-//            carousel_indicator.setViewPager(view_pager_carousel)
+        }
+    }
+
+    private fun roundIdToRoundName(nextRoundId: Int): String {
+        return when (nextRoundId) {
+            1 -> "Describe"
+            2 -> "One Word"
+            3 -> "Charades"
+            else -> throw IllegalArgumentException("Unknown supported number: $nextRoundId")
         }
     }
 
     companion object {
-        fun create(prevRound: Round?, teamsWithScore: List<Team>): ChangeRoundDialogFragment {
+        fun newInstance(prevRound: Round, roundOver: Boolean, teamsWithScore: List<Team>): ChangeRoundDialogFragment {
             return ChangeRoundDialogFragment()
                 .apply {
                     isCancelable = true
                     arguments =
                         Bundle().apply {
-                            prevRound?.let {
-                                putParcelable(KEY_PREV_ROUND, prevRound)
-                            }
+                            putParcelable(KEY_CURR_ROUND, prevRound)
+                            putBoolean(KEY_ROUND_OVER, roundOver)
                             putParcelableArray(KEY_TEAMS, teamsWithScore.toTypedArray())
                         }
                 }
@@ -127,5 +140,6 @@ class ChangeRoundDialogFragment :
     }
 }
 
-val KEY_PREV_ROUND = "KEY_PREV_ROUND"
+val KEY_CURR_ROUND = "KEY_CURR_ROUND"
 val KEY_TEAMS = "KEY_TEAMS"
+val KEY_ROUND_OVER = "KEY_ROUND_OVER"

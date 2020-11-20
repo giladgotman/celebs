@@ -23,7 +23,7 @@ class EndRoundDialogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            val prevRound = it.getParcelable<Round>(KEY_PREV_ROUND)!!
+            val prevRound = it.getParcelable<Round>(KEY_CURR_ROUND)!!
             val prevRoundName = prevRound.roundNumber.toString()
             val teams = it.getParcelableArray(KEY_TEAMS) as Array<Team>? ?: emptyArray()
 
