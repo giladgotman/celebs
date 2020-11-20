@@ -25,34 +25,65 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/section3round1Description"
+                android:id="@+id/section3round1Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin"
+                android:text="@string/instructions_section3_round1_title"
+                style="@style/TextViewDescription"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/section3Title" />
+
+            <TextView
+                android:id="@+id/section3round1Description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/instructions_section3_round1_descriptions"
                 style="@style/TextViewDescription"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/section3Title" />
+                app:layout_constraintTop_toBottomOf="@id/section3round1Title" />
+
+            <TextView
+                android:id="@+id/section3round2Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin"
+                android:text="@string/instructions_section3_round2_title"
+                style="@style/TextViewDescription"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/section3round1Description" />
 
             <TextView
                 android:id="@+id/section3round2Description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin"
                 android:text="@string/instructions_section3_round2_descriptions"
                 style="@style/TextViewDescription"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/section3round1Description" />
+                app:layout_constraintTop_toBottomOf="@id/section3round2Title" />
+
+            <TextView
+                android:id="@+id/section3round3Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin"
+                android:text="@string/instructions_section3_round3_title"
+                style="@style/TextViewDescription"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/section3round2Description" />
+
 
             <TextView
                 android:id="@+id/section3round3Description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin"
                 android:text="@string/instructions_section3_round3_descriptions"
                 style="@style/TextViewDescription"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/section3round2Description" />
+                app:layout_constraintTop_toBottomOf="@id/section3round3Title" />
 
             <TextView
                 android:id="@+id/sectionGeneralDescription"

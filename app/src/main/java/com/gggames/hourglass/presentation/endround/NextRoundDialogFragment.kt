@@ -29,7 +29,14 @@ class NextRoundDialogFragment : Fragment() {
             val currentTurn = bundle.getParcelable<Turn?>(KEY_CURRENT_TURN)
             title.text = getString(R.string.next_round_title, nextRoundId, nextRoundName)
 
-            next_round_description.text = getText(R.string.end_round_round2_description)
+            next_round_description.text = when (nextRoundId) {
+                1 -> getText(R.string.instructions_section3_round1_descriptions)
+                2 -> getText(R.string.instructions_section3_round2_descriptions)
+                3 -> getText(R.string.instructions_section3_round3_descriptions)
+                else -> ""
+            }
+
+
             if (currentTurn?.player != null) {
                 next_player_name_badge.state =
                     NameBadge.State(currentTurn.player.name, currentTurn.player.playerTurnState ?: PlayerTurnState.Idle)
