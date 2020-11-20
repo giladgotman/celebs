@@ -46,6 +46,16 @@ data class Round(
     val turn: Turn = Turn()
 ): Parcelable
 
+
+fun roundIdToName(roundId: Int): String {
+    return when (roundId) {
+        1 -> "Describe"
+        2 -> "One Word"
+        3 -> "Charades"
+        else -> "Unknown"
+    }
+}
+
 enum class RoundState {
     Ready,
     Started,

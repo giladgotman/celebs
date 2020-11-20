@@ -14,6 +14,7 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.model.*
 import com.gggames.hourglass.presentation.endturn.ChangeRoundDialogFragment
 import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
+import com.gggames.hourglass.presentation.endturn.WelcomeFirstRoundFragment
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -124,7 +125,7 @@ class GameOnUiBinder @Inject constructor() {
             }
 
             if (state.showRoundInstructions) {
-                showFirstRoundIntro(state.round, state.teamsWithScore, state.nextPlayer)
+                showFirstRoundIntro(state.round, state.nextPlayer)
             }
             if (state.showGameOver) {
                 fragment.navigateToEndGame()
@@ -286,12 +287,10 @@ class GameOnUiBinder @Inject constructor() {
         }
     }
 
-    private fun showFirstRoundIntro(round: Round, teams: List<Team>, nextPlayer: Player?) {
-        if (endRoundDialogFragment == null) {
-            endRoundDialogFragment = ChangeRoundDialogFragment.newInstance(round, false, teams, nextPlayer)
-            endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
-            endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
-        }
+    private fun showFirstRoundIntro(round: Round, nextPlayer: Player?) {
+        val welcomeFrag =
+            WelcomeFirstRoundFragment.newInstance(round.roundNumber, roundIdToName(round.roundNumber), nextPlayer)
+        welcomeFrag.show(fragment.requireActivity() as AppCompatActivity)
     }
 
     private fun showEndTurn(player: Player, cards: List<Card>, roundNumber: Int) {
