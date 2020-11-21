@@ -96,7 +96,7 @@ class GameOnFragment : Fragment(),
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        timerTextView.text = "Turn Ended"
+//                        timerTextView.text = "Turn Ended"
                         _emitter.onNext(UiEvent.EndTurnClick)
                     }
 
@@ -249,7 +249,7 @@ class GameOnFragment : Fragment(),
 
     private fun updateTime(time: Long) {
         mTimeLeftInMillis = time
-        timerTextView?.text = getFormattedTime()
+//        timerTextView?.text = getFormattedTime()
     }
 
     override fun setRoundEndState(meActive: Boolean, roundNumber: Int) {

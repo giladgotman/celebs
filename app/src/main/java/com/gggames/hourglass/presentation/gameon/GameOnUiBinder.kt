@@ -306,7 +306,16 @@ class GameOnUiBinder @Inject constructor() {
 
     private fun updateTime(time: Long) {
         mTimeLeftInMillis = time
-        view?.timerTextView?.text = getFormattedTime()
+//        view?.timerTextView?.text = getFormattedTime()
+
+        val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
+
+        when (seconds) {
+            in 50..59 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
+            in 40..49 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_90)
+            else -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
+        }
+
     }
 
     private fun getFormattedTime(): String {
