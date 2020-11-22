@@ -311,8 +311,10 @@ class GameOnUiBinder @Inject constructor() {
         val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
 
         when (seconds) {
-            in 50..59 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
-            in 40..49 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_90)
+            59 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_59)
+            in 50..58 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_58)
+            49 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_49)
+            in 40..48 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_48)
             else -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
         }
 

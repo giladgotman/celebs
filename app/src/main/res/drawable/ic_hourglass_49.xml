@@ -1,0 +1,26 @@
+<vector android:autoMirrored="true" android:height="56dp"
+    android:viewportHeight="56" android:viewportWidth="40"
+    android:width="40dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M37.6396,48.6128l0.8792,6.3599l-34,-4.4222l1.1394,-5.5778z"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M3.4051,11.5647l32.5949,-1.7208l-1.7344,13.74l-12.2642,3.26l-17.4384,-3.26l-2.563,-12.0192z"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M25.5,46.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M20.5,39.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M13.5,36.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M23.5,32.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillAlpha="0" android:fillColor="@color/hourglass_color"
+        android:fillType="evenOdd"
+        android:pathData="M37.6702,2l-35.6702,2.6757l2.6384,18.1476l29.0921,6.8325l4.7883,24.3168l-33.0304,-2.1944l2.1817,-19.9254l27.5444,-9.0295z"
+        android:strokeColor="#000000" android:strokeWidth="2"/>
+</vector>
