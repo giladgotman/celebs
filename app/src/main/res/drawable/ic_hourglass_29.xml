@@ -2,10 +2,10 @@
     android:viewportHeight="56" android:viewportWidth="40"
     android:width="40dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
-        android:pathData="M37.6655,50.1567l0.8534,3.8159l-33,-2.6533l1.1059,-3.3467z"
+        android:pathData="M7.2011,38.9727l29.3696,5.7814l1.9481,9.2186l-33,-2.5374z"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
     <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
-        android:pathData="M3.4465,8l33.5535,-2.1223l-1.7854,16.9457l-12.6249,4.0205l-17.9513,-4.0205l-2.6384,-14.8234z"
+        android:pathData="M3.7951,15.5706l32.2049,-2.3183l-1.4745,10.3912l-12.363,3.2004l-17.5789,-3.2004l-2.5836,-11.7996z"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
     <path android:fillAlpha="0" android:fillColor="@color/hourglass_color"
         android:fillType="evenOdd"

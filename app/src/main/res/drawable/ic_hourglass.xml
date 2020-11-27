@@ -4,7 +4,7 @@
     <path android:fillColor="#FFFFFF" android:fillType="evenOdd"
         android:pathData="M4.7269,27.7732l11.8089,-4.916l12.6341,2.8312l4.8301,23.1688l-31,-1.4837z"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
-    <path android:fillColor="#FFE48D" android:fillType="evenOdd"
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
         android:pathData="M5.4785,35.6009l24.2744,-1.7438l3.2471,14l-30,-1.4248z"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
     <path android:fillColor="#FFFFFF" android:fillType="evenOdd"

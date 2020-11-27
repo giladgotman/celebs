@@ -2,7 +2,7 @@
 <resources>
     <!--    main color palate-->
     <color name="warm_yellow">#FFDE03</color>
-    <color name="peach">#FFE48D</color>
+    <color name="peach">@color/hourglass_color</color>
     <color name="warm_orange">#FCAD00</color>
     <color name="hawaii_blue">#11B8E9</color>
     <color name="hawaii_blue_transparent">#9011B8E9</color>
