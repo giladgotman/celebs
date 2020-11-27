@@ -70,9 +70,15 @@
     <string name="game_over_title">Game Over</string>
     <string name="game_over_subtitle">%1$s won!</string>
     <string name="choose_team_no_team_selected_error">Please choose a team</string>
-    <string name="welcome_1_description">Hourglass is a virtual version of a fun and known guessing game, designed for any group of all ages!</string>
-    <string name="welcome_2_description">You can play with friends or family from all around the world</string>
-    <string name="welcome_3_description">You will need at least 4 people to play the game so start thinking who you want to play with…</string>
+
+<!--    Welcome screen-->
+
+    <string name="welcome_1_title">The crazy guessing game*</string>
+    <string name="welcome_1_description">Bring your mind, body &amp; mobile device</string>
+    <string name="welcome_2_title">Connect from anywhere </string>
+    <string name="welcome_2_description">Play with friends, family and colleagues wherever you are</string>
+    <string name="welcome_3_title">Choose your teammates</string>
+    <string name="welcome_3_description">Start thinking who you want to play with, this game is for at least 4 players</string>
     <string name="instructions_section1_title">What is Hourglass ?</string>
     <string name="instructions_section1_description">"Hourglass is a virtual version of a popular classic game which is known in many countries around the world. It is also known as:
 Celebs, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.
