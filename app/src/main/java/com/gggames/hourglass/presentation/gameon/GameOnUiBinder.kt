@@ -19,6 +19,7 @@ import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -106,7 +107,7 @@ class GameOnUiBinder @Inject constructor() {
                 }
             }
             if (state.resetTime) {
-                updateTime(TURN_TIME_MILLIS)
+                resetTime(TURN_TIME_MILLIS)
             }
             startButton?.state = state.playButtonState.state
             startButton?.isEnabled = state.playButtonState.isEnabled
@@ -141,7 +142,9 @@ class GameOnUiBinder @Inject constructor() {
                 showLeaveGameDialog()
             }
 
-            state.time?.let { updateTime(it) }
+            state.time?.let {
+                Timber.w("ttt updateTime from state: $it")
+                updateTime(it) }
 
             correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
             helpButton?.isEnabled = state.helpButtonEnabled
@@ -243,16 +246,21 @@ class GameOnUiBinder @Inject constructor() {
 
     var isTimerRunning = false
     private fun startTimer() {
+        Timber.w("ttt startTimer: $mCountDownTimer")
         mCountDownTimer?.cancel()
         mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onFinish() {
                 isTimerRunning = false
+                mCountDownTimer?.cancel()
                 mCountDownTimer = null
                 _emitter.onNext(UiEvent.TimerEnd)
             }
 
             override fun onTick(millis: Long) {
-                updateTime(millis)
+                Timber.w("ttt onTick: $millis, mCountDownTimer:$mCountDownTimer")
+                if (isTimerRunning) {
+                    updateTime(millis)
+                }
             }
         }.start()
         isTimerRunning = true
@@ -301,7 +309,7 @@ class GameOnUiBinder @Inject constructor() {
     }
 
     private fun setupTimer() {
-        updateTime(TURN_TIME_MILLIS)
+        resetTime(TURN_TIME_MILLIS)
     }
 
     private fun updateTime(time: Long) {
@@ -309,15 +317,33 @@ class GameOnUiBinder @Inject constructor() {
 //        view?.timerTextView?.text = getFormattedTime()
 
         val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
-
+        Timber.w("ttt updateTime: $time, seconds: $seconds")
         when (seconds) {
-            59 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_59)
-            in 50..58 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_58)
-            49 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_49)
-            in 40..48 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_48)
-            else -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
+            in 50..59 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_59)
+            in 40..49 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_49)
+            in 30..39 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_39)
+            in 20..29 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_29)
+            in 10..19 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_19)
+            in 4..9 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_9)
+            in 1..3 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_3)
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (seconds in 2..59) {
+                when (seconds % 3) {
+                    0 -> view?.hourglass?.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_1)
+                    1 -> view?.hourglass?.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_2)
+                    2 -> view?.hourglass?.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_3)
+                }
+            } else {
+                view?.hourglass?.foreground = null
+            }
         }
 
+    }
+
+    private fun resetTime(time: Long) {
+        mTimeLeftInMillis = time
+        view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
     }
 
     private fun getFormattedTime(): String {
