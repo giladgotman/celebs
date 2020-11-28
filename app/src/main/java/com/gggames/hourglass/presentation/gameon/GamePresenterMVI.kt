@@ -178,7 +178,7 @@ class GamePresenterMVI @Inject constructor(
             Observable.mergeArray(
                 o.ofType<CorrectClick>().switchMap { onCorrectClick(it.time) },
                 o.ofType<StartStopClick>().switchMap { handleStartStopClick(it.buttonState, it.time) },
-                o.ofType<UiEvent.TimerEnd>().switchMap { onTimerEnd() },
+                o.ofType<UiEvent.TimerEnd>().switchMap { onTimerEnd(lastCard) },
                 o.ofType<UiEvent.OnBackPressed>().switchMap { handleBackPressed() },
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
@@ -236,12 +236,14 @@ class GamePresenterMVI @Inject constructor(
             ButtonState.Finished -> just(NoOp)
         }
 
-    private fun onTimerEnd(): Observable<out Result> {
+    private fun onTimerEnd(lastCard: Card?): Observable<out Result> {
         return gamesRepository.getCurrentGame().toObservable().switchMap { game ->
             if (authenticator.isMyselfActivePlayerBlocking(game)) {
                 audioPlayer.play("timesupyalabye")
-                flipLastCard(lastCard)
-                    .andThen(endTurn())
+                endTurn()
+                    .filter { it is SetGameResult.Done }
+                    .switchMapCompletable { flipLastCard(lastCard) }
+                    .andThen(just(NoOp))
             } else {
                 just(NoOp)
             }
