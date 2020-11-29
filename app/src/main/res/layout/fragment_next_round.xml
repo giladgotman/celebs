@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Round 2: One Word" />
+            tools:text="@string/instructions_section3_round1_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/end_round_round2_description" />
+            tools:text="@string/instructions_section3_round1_descriptions" />
 
         <TextView
             android:id="@+id/starting_player_lbl"

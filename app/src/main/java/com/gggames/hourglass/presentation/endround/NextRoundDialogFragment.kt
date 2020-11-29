@@ -47,6 +47,7 @@ class NextRoundDialogFragment : Fragment() {
                 )
             } else {
                 starting_player_lbl.isVisible = false
+                next_player_name_badge.isVisible = false
             }
         }
     }
