@@ -38,11 +38,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             />
 
-        <ImageView
+        <com.gggames.hourglass.presentation.common.HourglassTimer
             android:id="@+id/hourglass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_hourglass_100"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/default_margin"
             app:layout_constraintTop_toTopOf="parent"

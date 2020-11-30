@@ -318,32 +318,14 @@ class GameOnUiBinder @Inject constructor() {
 
         val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
         Timber.w("ttt updateTime: $time, seconds: $seconds")
-        when (seconds) {
-            in 50..59 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_59)
-            in 40..49 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_49)
-            in 30..39 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_39)
-            in 20..29 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_29)
-            in 10..19 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_19)
-            in 4..9 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_9)
-            in 1..3 -> view?.hourglass?.setImageResource(R.drawable.ic_hourglass_3)
-        }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (seconds in 2..59) {
-                when (seconds % 3) {
-                    0 -> view?.hourglass?.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_1)
-                    1 -> view?.hourglass?.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_2)
-                    2 -> view?.hourglass?.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_3)
-                }
-            } else {
-                view?.hourglass?.foreground = null
-            }
-        }
 
+        view?.hourglass?.state = view!!.hourglass.state.copy(time = time)
     }
 
     private fun resetTime(time: Long) {
         mTimeLeftInMillis = time
-        view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
+//        view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
+        view?.hourglass?.state = view!!.hourglass.state.copy(time = time)
     }
 
     private fun getFormattedTime(): String {
