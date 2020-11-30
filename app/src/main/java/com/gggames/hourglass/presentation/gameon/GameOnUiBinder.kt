@@ -142,9 +142,12 @@ class GameOnUiBinder @Inject constructor() {
                 showLeaveGameDialog()
             }
 
+            view?.hourglass?.state = view!!.hourglass.state.copy(turnState = state.round.turn.state)
+
             state.time?.let {
                 Timber.w("ttt updateTime from state: $it")
-                updateTime(it) }
+                updateTime(it)
+            }
 
             correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
             helpButton?.isEnabled = state.helpButtonEnabled
@@ -314,17 +317,11 @@ class GameOnUiBinder @Inject constructor() {
 
     private fun updateTime(time: Long) {
         mTimeLeftInMillis = time
-//        view?.timerTextView?.text = getFormattedTime()
-
-        val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
-        Timber.w("ttt updateTime: $time, seconds: $seconds")
-
         view?.hourglass?.state = view!!.hourglass.state.copy(time = time)
     }
 
     private fun resetTime(time: Long) {
         mTimeLeftInMillis = time
-//        view?.hourglass?.setImageResource(R.drawable.ic_hourglass_100)
         view?.hourglass?.state = view!!.hourglass.state.copy(time = time)
     }
 

@@ -3,7 +3,6 @@ package com.gggames.hourglass.presentation.di
 import android.content.Context
 import androidx.fragment.app.Fragment
 import com.gggames.hourglass.core.di.getAppComponent
-import com.gggames.hourglass.presentation.common.HourglassTimer
 import com.gggames.hourglass.presentation.common.NameBadge
 import com.gggames.hourglass.presentation.creategame.AddCardsFragment
 import com.gggames.hourglass.presentation.creategame.ChooseTeamFragment
@@ -50,7 +49,6 @@ interface ViewComponent {
     fun inject(fragment: VideoPlayerFragment)
     fun inject(fragment: EndTurnDialogFragment)
     fun inject(layout: NameBadge)
-    fun inject(layout: HourglassTimer)
 }
 
 @Qualifier

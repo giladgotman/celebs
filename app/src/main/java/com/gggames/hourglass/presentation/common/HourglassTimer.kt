@@ -4,9 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.view.isVisible
 import com.gggames.hourglass.R
-import com.gggames.hourglass.model.PlayerTurnState
-import com.gggames.hourglass.presentation.di.createViewComponent
+import com.gggames.hourglass.model.TurnState
+import com.gggames.hourglass.model.TurnState.*
 import com.gggames.hourglass.presentation.gameon.TURN_TIME_MILLIS
 import kotlinx.android.synthetic.main.hourglass_timer.view.*
 import timber.log.Timber
@@ -28,7 +29,6 @@ class HourglassTimer : FrameLayout {
         attrs,
         defStyleAttr
     ) {
-        createViewComponent(context).inject(this)
         inflateView(context, attrs)
     }
 
@@ -49,24 +49,32 @@ class HourglassTimer : FrameLayout {
             in 4..9 -> hourglassImage.setImageResource(R.drawable.ic_hourglass_9)
             in 1..3 -> hourglassImage.setImageResource(R.drawable.ic_hourglass_3)
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (seconds in 2..59) {
+
+        when (state.turnState) {
+            Running -> {
+                sand.isVisible = true
                 when (seconds % 3) {
-                    0 -> hourglassImage.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_1)
-                    1 -> hourglassImage.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_2)
-                    2 -> hourglassImage.foreground = context?.getDrawable(R.drawable.ic_hourglass_sand_3)
+                    0 -> sand.setImageResource(R.drawable.ic_hourglass_sand_1)
+                    1 -> sand.setImageResource(R.drawable.ic_hourglass_sand_2)
+                    2 -> sand.setImageResource(R.drawable.ic_hourglass_sand_3)
                 }
-            } else {
-                hourglassImage.foreground = null
+            }
+            Over,
+            Idle -> {
+                sand.isVisible = false
+                hourglassImage.setImageResource(R.drawable.ic_hourglass_100)
+            }
+            Paused -> {
+                sand.isVisible = false
+
             }
         }
-
     }
 
     data class State(
         val time: Long = 0,
         val turnTime: Long = TURN_TIME_MILLIS,
-        val turnState: PlayerTurnState = PlayerTurnState.Idle
+        val turnState: TurnState = Idle
     )
 }
 
