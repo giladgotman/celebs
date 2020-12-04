@@ -36,9 +36,9 @@ class GamesRepositoryImpl @Inject constructor(
             remoteDataSource.setGame(game)
                 .compose(schedulerProvider.applyCompletableDefault())
                 .subscribe({
-                    Timber.i("sss Update remote done")
+                    Timber.i("sss setGame remote done")
                 }, {
-                    Timber.e(it,"sss Update remote error")
+                    Timber.e(it,"sss setGame remote error")
                 }).let { disposables.add(it) }
         }
 

@@ -75,9 +75,10 @@ class FirebaseCardsDataSource @Inject constructor(
         }
         return Completable.create { emitter ->
             cardsCollectionsRef.document(cardRaw.id).set(cardRaw)
+
                 .addOnSuccessListener {
                     Timber.i("card updated in path: ${cardsCollectionsRef.path}")
-                    emitter.onComplete()
+
                 }.addOnFailureListener { error ->
                     Timber.e(
                         error,
@@ -85,6 +86,7 @@ class FirebaseCardsDataSource @Inject constructor(
                     )
                     emitter.onError(error)
                 }
+            emitter.onComplete()
         }
     }
 
@@ -102,7 +104,7 @@ class FirebaseCardsDataSource @Inject constructor(
                 }
             }.addOnSuccessListener {
                 Timber.i("cards updated to path: ${cardsCollectionsRef.path}")
-                emitter.onComplete()
+
             }.addOnFailureListener { error ->
                 Timber.e(
                     error,
@@ -110,5 +112,6 @@ class FirebaseCardsDataSource @Inject constructor(
                 )
                 emitter.onError(error)
             }
+            emitter.onComplete()
         }
 }
