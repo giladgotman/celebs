@@ -5,9 +5,11 @@ import com.gggames.hourglass.features.games.data.memory.InMemoryGamesDataSource
 import com.gggames.hourglass.features.games.data.remote.RemoteGamesDataSource
 import com.gggames.hourglass.model.Game
 import com.gggames.hourglass.model.GameState
+import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.merge
+import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,8 +17,11 @@ import javax.inject.Singleton
 @Singleton
 class GamesRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteGamesDataSource,
-    private val inMemoryDataSource: InMemoryGamesDataSource
+    private val inMemoryDataSource: InMemoryGamesDataSource,
+    private val schedulerProvider: BaseSchedulerProvider
 ) : GamesRepository {
+
+    private val disposables = CompositeDisposable()
 
     override fun getGames(gameIds: List<String>, states: List<GameState>): Observable<List<Game>> {
         return remoteDataSource.getGames(gameIds, states).toObservable()
@@ -26,13 +31,18 @@ class GamesRepositoryImpl @Inject constructor(
         val setInMemory = game?.let {
             inMemoryDataSource.setGame(it)
         } ?: inMemoryDataSource.clearCache()
-        return setInMemory.andThen(
-            if (updateRemote && game != null) {
-                remoteDataSource.setGame(game)
-            } else {
-                Completable.complete()
-            }
-        )
+
+        if (updateRemote && game != null) {
+            remoteDataSource.setGame(game)
+                .compose(schedulerProvider.applyCompletableDefault())
+                .subscribe({
+                    Timber.i("sss Update remote done")
+                }, {
+                    Timber.e(it,"sss Update remote error")
+                }).let { disposables.add(it) }
+        }
+
+        return setInMemory
     }
 
     override fun observeGame(gameId: String): Observable<GameResult> {
