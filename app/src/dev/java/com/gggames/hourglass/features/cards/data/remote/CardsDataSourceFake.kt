@@ -4,7 +4,6 @@ import com.gggames.hourglass.features.cards.data.CardsDataSource
 import com.gggames.hourglass.model.Card
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Observable.just
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -67,9 +66,11 @@ class CardsDataSourceFake @Inject constructor() : CardsDataSource {
         return updatedList
     }
 
-    override fun updateCards(cards: List<Card>): Completable =
-        just(cards).flatMapIterable { it }
-            .flatMapCompletable { update(it) }
+    override fun setCards(cards: List<Card>): Completable =
+        Completable.fromCallable {
+            this.cards = cards.toMutableList()
+            Unit
+        }
 
 }
 

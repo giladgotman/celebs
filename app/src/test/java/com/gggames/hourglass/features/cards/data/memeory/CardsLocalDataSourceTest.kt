@@ -45,19 +45,18 @@ class CardsLocalDataSourceTest {
     }
 
     @Test
-    fun `When all cards are updated Then list with all updated cards is emitted once`() {
+    fun `When all cards are set Then list with all updated cards is emitted once`() {
         val observer = tested.getAllCards().test()
         val card1 = createCard("id1")
         val card2 = createCard("id2")
-        val addedCards = listOf(card1, card2)
+        val card3 = createCard("id3")
+        val addedCards = listOf(card1, card2, card3)
 
         tested.addCards(addedCards).blockingAwait()
         observer.values().clear()
-        val updatedCard1 = card1.copy(name = "updated")
-        val updatedCard2 = card1.copy(name = "updated2")
-        val updatedCards = listOf(updatedCard1, updatedCard2)
+        val updatedCards = addedCards.map { it.copy(used = false) }
 
-        tested.updateCards(updatedCards).blockingAwait()
+        tested.setCards(updatedCards).blockingAwait()
         observer.assertValueCount(1)
         observer.assertValue(updatedCards)
     }

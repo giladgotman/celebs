@@ -37,6 +37,12 @@ class CardsLocalDataSource @Inject constructor() : CardsDataSource {
             Unit
         }
 
+    override fun setCards(cards: List<Card>): Completable =
+        Completable.fromCallable {
+            cardsCache = cards.toMutableList()
+            Unit
+        }
+
     private fun getUpdatedList(card: Card): MutableList<Card> {
         val updatedList = this.cardsCache
         updatedList.indexOfFirst { it.id == card.id }.takeIf { it != -1 }?.let { index ->
@@ -44,16 +50,4 @@ class CardsLocalDataSource @Inject constructor() : CardsDataSource {
         } ?: updatedList.add(card)
         return updatedList
     }
-
-    override fun updateCards(cards: List<Card>): Completable =
-        Observable.just(cards).flatMapIterable { it }
-            .flatMapCompletable { update(it) }
-
-
-    fun setCards(cards: List<Card>): Completable =
-        Completable.fromCallable {
-            cardsCache = cards.toMutableList()
-            Unit
-        }
-
 }

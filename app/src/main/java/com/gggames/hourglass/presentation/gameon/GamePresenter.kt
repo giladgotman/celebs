@@ -497,7 +497,7 @@ class GamePresenter @Inject constructor(
      */
     private fun resetDeck(): Completable =
         setAllCardsToUnused()
-            .andThen(cardsRepository.updateCards(cardDeck))
+            .andThen(cardsRepository.setCards(cardDeck))
 
     private fun lastRound(): Boolean =
         game.gameInfo.round.roundNumber == 3

@@ -90,7 +90,7 @@ class FirebaseCardsDataSource @Inject constructor(
         }
     }
 
-    override fun updateCards(cards: List<Card>): Completable =
+    override fun setCards(cards: List<Card>): Completable =
         Completable.create { emitter ->
             Timber.w("updateCards: $cards, cardsCollectionsRef: ${cardsCollectionsRef.path}")
             val cardsRaw = cards.map { it.toRaw() }

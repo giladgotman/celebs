@@ -36,7 +36,6 @@ class CardsRepositoryImpl @Inject constructor(
             .doOnNext {
                 Timber.i("getAllCards MERGE onNext: \n $it")
             }
-
     }
 
     override fun addCards(cards: List<Card>): Completable =
@@ -44,18 +43,19 @@ class CardsRepositoryImpl @Inject constructor(
             .andThen(remoteDataSource.addCards(cards))
 
     override fun updateCard(card: Card): Completable {
-            remoteDataSource.update(card)
-                .compose(schedulerProvider.applyCompletableDefault())
-                .subscribe({
-                    Timber.i("sss updateCard remote done")
-                }, {
-                    Timber.e(it,"sss updateCard remote error")
-                }).let { disposables.add(it) }
+        remoteDataSource.update(card)
+            .compose(schedulerProvider.applyCompletableDefault())
+            .subscribe({
+                Timber.i("sss updateCard remote done")
+            }, {
+                Timber.e(it, "sss updateCard remote error")
+            }).let { disposables.add(it) }
 
         return localDataSource.update(card)
 
     }
 
-    override fun updateCards(cards: List<Card>): Completable =
-        remoteDataSource.updateCards(cards)
+    override fun setCards(cards: List<Card>): Completable =
+        localDataSource.setCards(cards)
+            .andThen(remoteDataSource.setCards(cards))
 }

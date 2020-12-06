@@ -21,16 +21,14 @@ class HandleNextCard @Inject constructor(
         gamesRepository.getCurrentGame().toObservable().switchMap { game ->
             pickNextCard(cardDeck, game.type, game.round, time).switchMap { pickNextCardResult ->
                 if (pickNextCardResult is PickNextCardResult.Found) {
-                    cardsRepository.updateCard(pickNextCardResult.card)
-                        .andThen(
-                            setGame(
-                                game
-                                    .setCurrentCard(pickNextCardResult.card)
-                                    .setTurnTime(time ?: game.turn.time)
-                            )
-                        )
-                        .filter { it is Done }
-                        .switchMap { just(NewCard(pickNextCardResult.card, time)) }
+                    setGame(
+                        game
+                            .setCurrentCard(pickNextCardResult.card)
+                            .setTurnTime(time ?: game.turn.time)
+                    )
+                    .filter { it is Done }
+                        .switchMapCompletable { cardsRepository.updateCard(pickNextCardResult.card) }
+                        .andThen(just(NewCard(pickNextCardResult.card, time)))
                 } else {
                     val isLastRound: Boolean = (game.gameInfo.round.roundNumber == 3)
                     if (isLastRound) {
@@ -40,7 +38,7 @@ class HandleNextCard @Inject constructor(
                     } else {
 
                         val resetCards =
-                            cardsRepository.updateCards(cardDeck.map { it.copy(used = false) })
+                            cardsRepository.setCards(cardDeck.map { it.copy(used = false) })
 
                         val endedRoundGame = game
                             .setRoundState(RoundState.Ended)
