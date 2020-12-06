@@ -17,7 +17,12 @@ class HandleNextCard @Inject constructor(
     private val pickNextCard: PickNextCard,
     private val setGame: SetGame
 ) {
-    operator fun invoke(cardDeck: List<Card>, time: Long?): Observable<out HandleNextCardResult> =
+    operator fun invoke(
+        cardDeck: List<Card>,
+        time: Long?,
+        correctCard: Card? = null,
+        teamName: String = ""
+    ): Observable<out HandleNextCardResult> =
         gamesRepository.getCurrentGame().toObservable().switchMap { game ->
             pickNextCard(cardDeck, game.type, game.round, time).switchMap { pickNextCardResult ->
                 if (pickNextCardResult is PickNextCardResult.Found) {
@@ -25,14 +30,19 @@ class HandleNextCard @Inject constructor(
                         game
                             .setCurrentCard(pickNextCardResult.card)
                             .setTurnTime(time ?: game.turn.time)
+                            .addCardsFoundInTurnAndIncreaseScore(correctCard, teamName)
                     )
-                    .filter { it is Done }
+                        .filter { it is Done }
                         .switchMapCompletable { cardsRepository.updateCard(pickNextCardResult.card) }
                         .andThen(just(NewCard(pickNextCardResult.card, time)))
                 } else {
                     val isLastRound: Boolean = (game.gameInfo.round.roundNumber == 3)
                     if (isLastRound) {
-                        setGame(game.setGameState(GameState.Finished))
+                        setGame(
+                            game
+                                .setGameState(GameState.Finished)
+                                .addCardsFoundInTurnAndIncreaseScore(correctCard, teamName)
+                        )
                             .filter { it is Done }
                             .switchMap { just(HandleNextCardResult.GameOver) }
                     } else {
@@ -45,6 +55,7 @@ class HandleNextCard @Inject constructor(
                             .setTurnState(TurnState.Paused)
                             .setTurnTime(time ?: game.turn.time)
                             .setCurrentCard(null)
+                            .addCardsFoundInTurnAndIncreaseScore(correctCard, teamName)
 
                         val endRound = setGame(endedRoundGame)
 

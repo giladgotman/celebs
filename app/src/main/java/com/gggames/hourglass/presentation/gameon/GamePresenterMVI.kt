@@ -35,7 +35,6 @@ class GamePresenterMVI @Inject constructor(
     private val pauseTurn: PauseTurn,
     private val resumeTurn: ResumeTurn,
     private val startRound: StartRound,
-    private val handleCorrectCard: HandleCorrectCard,
     private val handleBackPressed: HandleBackPressed,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
@@ -207,8 +206,7 @@ class GamePresenterMVI @Inject constructor(
                 // TODO: 09.10.20 check if the InProgress can be removed cause the SetGame will start with InProgress
                 merge(
                     just(HandleNextCardResult.InProgress),
-                    handleCorrectCard(card, teamName)
-                        .switchMap { handleNextCardWrap(time) }
+                    handleNextCard(cardDeck, time, card, teamName)
                 )
             }
         } ?: just(NoOp)
@@ -220,14 +218,14 @@ class GamePresenterMVI @Inject constructor(
     ) =
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!)
-                .switchMap { handleNextCardWrap(time) }
+                .switchMap { handleNextCard(cardDeck, time) }
             ButtonState.Running -> pauseTurn(time)
             ButtonState.Paused -> {
                 gamesRepository.getCurrentGame().toObservable().switchMap { game ->
                     if (game.round.state == RoundState.New) {
                         startRound()
                             .switchMap { resumeTurn(time) }
-                            .switchMap { handleNextCardWrap(time) }
+                            .switchMap { handleNextCard(cardDeck, time) }
                     } else {
                         resumeTurn(time)
                     }
@@ -248,13 +246,6 @@ class GamePresenterMVI @Inject constructor(
 
         }
     }
-
-    private fun handleNextCardWrap(time: Long?) =
-        handleNextCard(
-            cardDeck,
-            time
-        )
-
 
     fun unBind() {
         disposables.clear()

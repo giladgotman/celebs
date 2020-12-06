@@ -44,7 +44,7 @@ data class Round(
     val state: RoundState = RoundState.Ready,
     val roundNumber: Int = 1,
     val turn: Turn = Turn()
-): Parcelable
+) : Parcelable
 
 
 fun roundIdToName(roundId: Int): String {
@@ -85,7 +85,7 @@ data class Turn(
     val cardsFound: List<String> = emptyList(),
     val lastFoundCard: Card? = null,
     val currentCard: Card? = null
-): Parcelable
+) : Parcelable
 
 enum class TurnState {
     Idle,
@@ -161,6 +161,14 @@ fun Game.setCurrentCard(card: Card?) = this.copy(
         )
     )
 )
+
+fun Game.addCardsFoundInTurnAndIncreaseScore(card: Card?, teamName: String) =
+    card?.let {
+        this
+            .addCardsFoundInTurn(it)
+            .increaseScore(teamName)
+    } ?: this
+
 
 fun Game.addCardsFoundInTurn(card: Card) = this.copy(
     gameInfo = this.gameInfo.copy(
