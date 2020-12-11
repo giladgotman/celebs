@@ -139,7 +139,6 @@ dependencies {
     //DI
     implementation "com.google.dagger:dagger:$versions.dagger"
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
-    kaptAndroidTest "com.google.dagger:dagger-$versions.dagger"
 
     //deeplinks
     implementation 'com.google.firebase:firebase-dynamic-links-ktx:19.1.0'
@@ -160,8 +159,11 @@ dependencies {
     ktlint 'com.pinterest:ktlint:0.35.0'
 
     androidTestImplementation(
-            "com.google.truth:truth:$versions.truth"
+            "com.google.truth:truth:$versions.truth",
+            "com.google.dagger:dagger:$versions.dagger"
+
     )
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$versions.dagger"
 
     testImplementation(
             "com.google.truth:truth:$versions.truth"
