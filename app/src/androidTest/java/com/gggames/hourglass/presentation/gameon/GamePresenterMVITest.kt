@@ -1,31 +1,25 @@
 package com.gggames.hourglass.presentation.gameon
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.gggames.hourglass.core.CelebsApplication
-import com.gggames.hourglass.core.di.DaggerTestAppComponent
-import com.gggames.hourglass.core.di.TestAppModule
+import com.gggames.hourglass.core.di.TestDependenciesRule
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 
 class GamePresenterMVITest {
 
-
     @Inject
-    lateinit var tested : GamePresenterMVI
+    lateinit var tested: GamePresenterMVI
+
+    @get:Rule
+    var rule = TestDependenciesRule(InstrumentationRegistry.getInstrumentation().targetContext)
 
     @Before
     fun setUp() {
-
-        val app = InstrumentationRegistry.getInstrumentation().context.applicationContext as CelebsApplication
-        val testAppComponent = DaggerTestAppComponent.builder()
-            .testAppModule(TestAppModule(app))
-            .build()
-
-
+        rule.testApplicationComponent.inject(this)
     }
-
 
     @Test
     fun goodWeatherFlow() {

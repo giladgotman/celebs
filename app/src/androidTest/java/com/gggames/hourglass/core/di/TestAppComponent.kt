@@ -1,6 +1,7 @@
 package com.gggames.hourglass.core.di
 
 import com.gggames.hourglass.features.video.VideoModule
+import com.gggames.hourglass.presentation.gameon.GamePresenterMVITest
 import dagger.Component
 import javax.inject.Singleton
 
@@ -14,4 +15,6 @@ import javax.inject.Singleton
     PlayersModule::class,
     UserModule::class,
     VideoModule::class])
-interface TestAppComponent: AppComponent
+interface TestAppComponent: AppComponent {
+    fun inject(app: GamePresenterMVITest)
+}
