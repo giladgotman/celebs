@@ -49,6 +49,10 @@ android {
     sourceSets {
         String sharedDevDir = 'src/dev/java'
         String sharedTestDir = 'src/sharedTests/java'
+
+        dev {
+            java.srcDir sharedTestDir
+        }
         test {
             java.srcDir sharedDevDir
             java.srcDir sharedTestDir
