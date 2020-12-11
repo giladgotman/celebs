@@ -10,10 +10,10 @@ import javax.inject.Singleton
     TestAppModule::class,
     SubComponentsModule::class,
     NetworkModule::class,
-    GamesModule::class,
-    CardsModule::class,
-    PlayersModule::class,
-    UserModule::class,
+    FakeGamesModule::class,
+    FakeCardsModule::class,
+    FakePlayersModule::class,
+    FakeUserModule::class,
     VideoModule::class])
 interface TestAppComponent: AppComponent {
     fun inject(app: GamePresenterMVITest)
