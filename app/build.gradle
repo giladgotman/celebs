@@ -164,7 +164,8 @@ dependencies {
 
     androidTestImplementation(
             "com.google.truth:truth:$versions.truth",
-            "com.google.dagger:dagger:$versions.dagger"
+            "com.google.dagger:dagger:$versions.dagger",
+            "org.jetbrains.kotlin:kotlin-reflect:1.4.21"
 
     )
     kaptAndroidTest "com.google.dagger:dagger-compiler:$versions.dagger"
@@ -172,5 +173,5 @@ dependencies {
     testImplementation(
             "com.google.truth:truth:$versions.truth"
     )
-
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.21"
 }

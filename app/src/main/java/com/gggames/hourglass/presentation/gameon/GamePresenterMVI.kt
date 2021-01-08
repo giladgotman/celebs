@@ -135,6 +135,7 @@ class GamePresenterMVI @Inject constructor(
                 lastCard = result.game.turn.currentCard
                 cardDeck = result.cards
 
+                previous.printDiff(newState)
                 newState
             }
             is ShowRoundInstructionsResult -> previous.copy(showRoundInstructions = result.show)

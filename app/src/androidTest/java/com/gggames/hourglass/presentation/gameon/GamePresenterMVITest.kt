@@ -25,11 +25,16 @@ class GamePresenterMVITest {
     @get:Rule
     var rule = TestDependenciesRule(InstrumentationRegistry.getInstrumentation().targetContext)
 
-    val uiEvents = PublishSubject.create<GameScreenContract.UiEvent>()
+    private val uiEvents = PublishSubject.create<GameScreenContract.UiEvent>()
 
     @Before
     fun setUp() {
         rule.testApplicationComponent.inject(this)
+    }
+
+    @After
+    fun tearDown() {
+
     }
 
     @Test
@@ -43,9 +48,7 @@ class GamePresenterMVITest {
         }
         states.assertValueCount(3) // initial ; resetTime = true and PlayButtonState.isEnabled = true ; cardsInDeck
     }
-    @After
-    fun tearDown() {
 
-    }
+
 }
 

@@ -1,6 +1,11 @@
 package com.gggames.hourglass.presentation.gameon
 
 import com.gggames.hourglass.model.*
+import timber.log.Timber
+import java.lang.reflect.Modifier
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaGetter
 
 interface GameScreenContract {
 
@@ -148,4 +153,24 @@ interface GameScreenContract {
 
         object NoOp : Result()
     }
+}
+
+fun GameScreenContract.State.printDiff(other: GameScreenContract.State) {
+    val myProperties = this::class.memberProperties.filter { isFieldAccessible(it) }
+    val otherMembers = other::class.memberProperties.filter { isFieldAccessible(it) }
+
+    myProperties.forEachIndexed { index, property ->
+        val myValue = property.getter.call(this)
+        val otherProperty = otherMembers[index]
+        val otherValue = otherProperty.getter.call(other)
+
+        if (myValue != otherValue) {
+            Timber.w("DIFF ${otherProperty.name}: $myValue -> $otherValue")
+        }
+    }
+    Timber.w("DIFF END----------------------------------")
+}
+
+fun isFieldAccessible(property: KProperty1<*, *>): Boolean {
+    return property.javaGetter?.modifiers?.let { !Modifier.isPrivate(it) } ?: false
 }
