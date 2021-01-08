@@ -77,7 +77,6 @@ class GamePresenterMVI @Inject constructor(
         allInput
             .subscribeOn(schedulerProvider.io())
             .doOnNext { Timber.d("RESULT:: $it") }
-            .share()
             .scan(State.initialState, reduce())
             .distinctUntilChanged()
             .doOnNext { Timber.d("STATE:: \n$it") }
