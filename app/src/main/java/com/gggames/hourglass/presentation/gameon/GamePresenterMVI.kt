@@ -57,17 +57,16 @@ class GamePresenterMVI @Inject constructor(
         val uiEvent = events
             .doOnNext { Timber.d("USER:: $it") }
 
+        val gameId = gamesRepository.getCurrentGameBlocking()!!.id
         val dataInput =
-            gamesRepository.getCurrentGame().toObservable().switchMap { game ->
                 combineLatest(
-                    observeGame(game.id).doOnNext { Timber.d("GameUpdate") },
-                    playersObservable(game.id).doOnNext { Timber.d("PlayersUpdate") },
+                    observeGame(gameId).doOnNext { Timber.d("GameUpdate") },
+                    playersObservable(gameId).doOnNext { Timber.d("PlayersUpdate") },
                     cardsObservable().doOnNext { Timber.d("CardsUpdate") },
                     Function3 { game: GameUpdate, players: PlayersUpdate, cards: CardsUpdate ->
                         CombinedGameUpdate(game.game, players.players, cards.cards)
                     }
                 )
-            }
 
         val allInput = merge(
             uiEvent.toResult(),
