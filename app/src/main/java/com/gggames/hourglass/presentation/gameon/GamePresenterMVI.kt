@@ -60,9 +60,9 @@ class GamePresenterMVI @Inject constructor(
         val gameId = gamesRepository.getCurrentGameBlocking()!!.id
         val dataInput =
                 combineLatest(
-                    observeGame(gameId).doOnNext { Timber.d("GameUpdate") },
-                    playersObservable(gameId).doOnNext { Timber.d("PlayersUpdate") },
-                    cardsObservable().doOnNext { Timber.d("CardsUpdate") },
+                    observeGame(gameId).doOnNext { Timber.d("::GameUpdate") },
+                    playersObservable(gameId).doOnNext { Timber.d("::PlayersUpdate") },
+                    cardsObservable().doOnNext { Timber.d("::CardsUpdate") },
                     Function3 { game: GameUpdate, players: PlayersUpdate, cards: CardsUpdate ->
                         CombinedGameUpdate(game.game, players.players, cards.cards)
                     }
@@ -150,7 +150,7 @@ class GamePresenterMVI @Inject constructor(
             }
             is RoundOverDialogDismissedResult -> previous
             is HandleNextCardResult -> {
-                when (result) {
+                val newState = when (result) {
                     is HandleNextCardResult.InProgress -> {
                         previous.copy(inProgress = true)
                     }
@@ -162,6 +162,8 @@ class GamePresenterMVI @Inject constructor(
                     is HandleNextCardResult.RoundOver -> previous.copy(inProgress = false)
                     is HandleNextCardResult.GameOver -> previous
                 }
+                previous.printDiff(newState)
+                newState
             }
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
