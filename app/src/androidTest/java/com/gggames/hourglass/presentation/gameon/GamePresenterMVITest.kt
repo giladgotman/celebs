@@ -49,6 +49,18 @@ class GamePresenterMVITest {
         states.assertValueCount(3) // initial ; resetTime = true and PlayButtonState.isEnabled = true ; cardsInDeck
     }
 
+    @Test
+    fun userStartsGame() {
+        setGame(createGame()).blockingSubscribe()
+        val states = tested.states.test()
+        tested.bind(uiEvents)
+        states.waitForAllEvents()
+        states.values().clear()
+
+        uiEvents.onNext(GameScreenContract.UiEvent.StartStopClick(buttonState = GameScreenContract.ButtonState.Stopped, time = 500))
+        states.waitForAllEvents()
+    }
+
 
 }
 
