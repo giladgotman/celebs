@@ -40,7 +40,8 @@ fun Game.toRaw() = GameRaw(
     this.state?.name,
     this.gameInfo.toRaw(),
     this.host.toRaw(),
-    this.type.name
+    this.type.name,
+    this.timestamp
 )
 
 fun Round.toRaw() = RoundRaw(

@@ -33,7 +33,8 @@ fun GameRaw.toUi() = Game(
     GameState.fromName(this.state),
     this.gameInfo.toUi(),
     this.host.toUi(),
-    this.type.toGameTypeUi()
+    this.type.toGameTypeUi(),
+    this.timestamp
 )
 
 fun String.toGameTypeUi() = when (this) {

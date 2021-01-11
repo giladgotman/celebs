@@ -16,7 +16,8 @@ data class Game(
     val state: GameState? = null,
     val gameInfo: GameInfo = GameInfo(),
     val host: Player,
-    val type: GameType
+    val type: GameType,
+    val timestamp: Long = 0L
 ) {
     val currentPlayer: Player?
         get() = this.gameInfo.round.turn.player
@@ -230,3 +231,6 @@ fun Game.increaseScore(teamName: String): Game {
         throw java.lang.IllegalArgumentException("Can't find teamName: $teamName")
     }
 }
+
+fun Game.setTimestamp(timestamp: Long): Game = this.copy(timestamp = timestamp)
+

@@ -15,7 +15,8 @@ data class GameRaw(
     val state: String? = null,
     val gameInfo: GameInfoRaw = GameInfoRaw(),
     val host: PlayerRaw = PlayerRaw(),
-    val type: String = GameType.Normal.name
+    val type: String = GameType.Normal.name,
+    val timestamp: Long = 0L
 ) {
     constructor() : this(
         id = EMPTY_VALUE,
