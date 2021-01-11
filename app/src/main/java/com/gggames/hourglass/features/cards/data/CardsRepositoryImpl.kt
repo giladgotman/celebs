@@ -43,15 +43,8 @@ class CardsRepositoryImpl @Inject constructor(
             .andThen(remoteDataSource.addCards(cards))
 
     override fun updateCard(card: Card): Completable {
-        remoteDataSource.update(card)
-            .compose(schedulerProvider.applyCompletableDefault())
-            .subscribe({
-                Timber.i("sss updateCard remote done")
-            }, {
-                Timber.e(it, "sss updateCard remote error")
-            }).let { disposables.add(it) }
-
         return localDataSource.update(card)
+            .andThen(remoteDataSource.update(card))
 
     }
 
