@@ -86,6 +86,7 @@ class FirebaseCardsDataSource @Inject constructor(
                     )
                     emitter.onError(error)
                 }
+            Timber.i("card update early complete")
             emitter.onComplete()
         }
     }
@@ -102,9 +103,10 @@ class FirebaseCardsDataSource @Inject constructor(
                         cardsCollectionsRef.document(it.id).set(it)
                     }
                 }
-            }.addOnSuccessListener {
-                Timber.i("cards updated to path: ${cardsCollectionsRef.path}")
 
+            }.addOnSuccessListener {
+                Timber.i("addOnSuccessListener, cards updated to path: ${cardsCollectionsRef.path}")
+                emitter.onComplete()
             }.addOnFailureListener { error ->
                 Timber.e(
                     error,
@@ -112,6 +114,6 @@ class FirebaseCardsDataSource @Inject constructor(
                 )
                 emitter.onError(error)
             }
-            emitter.onComplete()
+
         }
 }
