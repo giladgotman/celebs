@@ -57,6 +57,7 @@ interface GameScreenContract {
         val showGameOver: Boolean = false,
         val lastPlayer: Player? = null,
         val nextPlayer: Player? = null,
+        // TODO: 15.01.21 change to list of card id's (state is updated unnecessarily)
         val cardsFoundInTurn: List<Card> = emptyList(),
         val showLeaveGameConfirmation: Boolean = false,
         val navigateToGames: Boolean = false,
