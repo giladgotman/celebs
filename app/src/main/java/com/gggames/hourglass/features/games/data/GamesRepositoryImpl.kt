@@ -67,7 +67,7 @@ class GamesRepositoryImpl @Inject constructor(
             .cast(Found::class.java)
             .switchMapCompletable {
                 Timber.i("observeGame REMOTE onNext: \n $it")
-                val inMemGameTimestamp = inMemoryDataSource.getCurrentGameBlocking()!!.timestamp
+                val inMemGameTimestamp = inMemoryDataSource.getCurrentGameBlocking()?.timestamp ?: 0
                 if (it.game.timestamp >= inMemGameTimestamp) {
                     inMemoryDataSource.setGame(it.game)
                 } else {
