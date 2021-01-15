@@ -16,5 +16,5 @@ import javax.inject.Singleton
     FakeUserModule::class,
     VideoModule::class])
 interface TestAppComponent: AppComponent {
-    fun inject(app: GamePresenterMVITest)
+    fun inject(test: GamePresenterMVITest)
 }

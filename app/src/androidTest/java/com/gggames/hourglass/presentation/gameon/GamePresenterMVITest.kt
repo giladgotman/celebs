@@ -5,6 +5,7 @@ import com.gggames.hourglass.core.di.TestDependenciesRule
 import com.gggames.hourglass.features.games.domain.SetGame
 import com.gggames.hourglass.utils.waitForAllEvents
 import com.gggames.hourglass.utils.withFirstValue
+import com.gggames.hourglass.utils.withLastValue
 import com.google.common.truth.Truth.assertThat
 import factory.createGame
 import io.reactivex.subjects.PublishSubject
@@ -57,8 +58,44 @@ class GamePresenterMVITest {
         states.waitForAllEvents()
         states.values().clear()
 
-        uiEvents.onNext(GameScreenContract.UiEvent.StartStopClick(buttonState = GameScreenContract.ButtonState.Stopped, time = 500))
+        uiEvents.onNext(
+            GameScreenContract.UiEvent.StartStopClick(
+                buttonState = GameScreenContract.ButtonState.Stopped,
+                time = 500
+            )
+        )
         states.waitForAllEvents()
+    }
+
+    @Test
+    fun timestamp() {
+        var timestamp = 0L
+        setGame(createGame(timestamp = timestamp)).blockingSubscribe()
+        val states = tested.states.test()
+        tested.bind(uiEvents)
+        states.waitForAllEvents()
+        states.values().clear()
+
+        uiEvents.onNext(
+            GameScreenContract.UiEvent.StartStopClick(
+                buttonState = GameScreenContract.ButtonState.Stopped,
+                time = 50000
+            )
+        )
+        states.waitForAllEvents()
+//        states.withLastValue { state ->
+//            assertThat(state.currentCard != null)
+//            assertThat(state.cardsInDeck == 2)
+//        }
+        states.values().clear()
+
+        uiEvents.onNext(GameScreenContract.UiEvent.CorrectClick(time = 40000))
+        states.waitForAllEvents()
+        states.withLastValue { state ->
+            assertThat(state.cardsInDeck == 1)
+        }
+//        uiEvents.onNext(GameScreenContract.UiEvent.CorrectClick(time = 300))
+
     }
 
 

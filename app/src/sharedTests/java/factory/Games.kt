@@ -12,7 +12,8 @@ fun createGame(
     state: GameState? = null,
     gameInfo: GameInfo = GameInfo(),
     host: Player = Player("$id.player", "$id.name"),
-    type: GameType = GameType.Normal
+    type: GameType = GameType.Normal,
+    timestamp: Long = 0
 ) = Game(
     id,
     name,
@@ -23,7 +24,8 @@ fun createGame(
     state,
     gameInfo,
     host,
-    type
+    type,
+    timestamp
 )
 
 

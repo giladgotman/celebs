@@ -14,9 +14,9 @@ import kotlin.properties.Delegates
 class CardsDataSourceFake @Inject constructor() : CardsDataSource {
 
     private val fakeCards = mutableListOf(
-        createCard("id1", "1111111111", "fakeId")
-//        createCard("id2", "2222222", "fakeId"),
-//        createCard("id3", "333333333", "fakeId"),
+        createCard("id1", "1111111111", "fakeId"),
+        createCard("id2", "2222222", "fakeId"),
+        createCard("id3", "333333333", "fakeId")
 //        createCard("id4", "44444444", "fakeId"),
 //        createCard("id5", "5555555", "fakeId"),
 //        createCard("id6", "666666", "fakeId"),
