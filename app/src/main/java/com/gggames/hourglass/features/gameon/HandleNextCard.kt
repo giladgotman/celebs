@@ -9,6 +9,7 @@ import com.gggames.hourglass.presentation.gameon.GameScreenContract.Result.Handl
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.Result.SetGameResult.Done
 import io.reactivex.Observable
 import io.reactivex.Observable.just
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class HandleNextCard @Inject constructor(
@@ -34,6 +35,9 @@ class HandleNextCard @Inject constructor(
                     )
                         .filter { it is Done }
                         .switchMapCompletable { cardsRepository.updateCard(pickNextCardResult.card) }
+                        // this delay acts as a debounce against fast correct clicks. it is better than
+                        // debounce the correct clicks because this way the correct button will be kept disabled
+                        .delay(500, TimeUnit.MILLISECONDS)
                         .andThen(just(NewCard(pickNextCardResult.card, time)))
                 } else {
                     val isLastRound: Boolean = (game.gameInfo.round.roundNumber == 3)
