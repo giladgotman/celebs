@@ -71,7 +71,7 @@
     <string name="game_over_subtitle">%1$s won!</string>
     <string name="choose_team_no_team_selected_error">Please choose a team</string>
 
-<!--    Welcome screen-->
+    <!--    Welcome screen-->
 
     <string name="welcome_1_title">The crazy guessing game*</string>
     <string name="welcome_1_description">Bring your mind, body &amp; mobile device</string>

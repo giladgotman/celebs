@@ -20,7 +20,8 @@ package="com.gggames.hourglass">
         android:windowSoftInputMode="adjustResize">
         <nav-graph android:value="@navigation/nav_graph" />
     </activity>
-    <activity android:name=".presentation.onboarding.WelcomeActivity"
+    <activity
+        android:name=".presentation.onboarding.WelcomeActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:launchMode="singleTop"
         android:screenOrientation="portrait">
@@ -39,6 +40,12 @@ package="com.gggames.hourglass">
         android:windowSoftInputMode="adjustResize">
 
     </activity>
+
+    <activity android:name="com.gggames.hourglass.presentation.debug.DebugActivity"
+        android:label="Debug"
+        android:theme="@style/AppTheme.NoActionBar"
+        />
+
 </application>
 
 </manifest>

@@ -8,6 +8,7 @@ import com.gggames.hourglass.presentation.creategame.AddCardsFragment
 import com.gggames.hourglass.presentation.creategame.ChooseTeamFragment
 import com.gggames.hourglass.presentation.creategame.CreateGameFragment
 import com.gggames.hourglass.presentation.creategame.GamesFragment
+import com.gggames.hourglass.presentation.debug.DebugActivity
 import com.gggames.hourglass.presentation.endgame.GameOverFragment
 import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
 import com.gggames.hourglass.presentation.gameon.GameOnFragment
@@ -49,6 +50,7 @@ interface ViewComponent {
     fun inject(fragment: VideoPlayerFragment)
     fun inject(fragment: EndTurnDialogFragment)
     fun inject(layout: NameBadge)
+    fun inject(activity: DebugActivity)
 }
 
 @Qualifier
