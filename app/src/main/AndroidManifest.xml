@@ -7,9 +7,9 @@ package="com.gggames.hourglass">
 <application
     android:name="com.gggames.hourglass.core.CelebsApplication"
     android:allowBackup="true"
-    android:icon="@mipmap/baseline_hourglass_empty_black_48"
+    android:icon="@mipmap/ic_hourglass_launcher"
     android:label="@string/app_name"
-    android:roundIcon="@mipmap/baseline_hourglass_empty_black_48"
+    android:roundIcon="@mipmap/ic_hourglass_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
     <activity
