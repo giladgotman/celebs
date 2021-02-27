@@ -9,7 +9,7 @@
         android:id="@+id/image"
         android:layout_width="100dp"
         android:layout_height="144dp"
-        android:src="@drawable/ic_hourglass"
+        android:src="@drawable/ic_hourglass_onboarding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
