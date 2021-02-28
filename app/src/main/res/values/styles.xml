@@ -27,7 +27,21 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="DefaultEditTextStyle" parent="android:Widget.EditText">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="TextViewMedium" parent="DefaultTextViewStyle" >
+        <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+
+    <style name="EditTextBig" parent="DefaultEditTextStyle" >
+        <item name="android:textSize">@dimen/big_text_size</item>
+    </style>
+
+    <style name="EditTextMedium" parent="DefaultEditTextStyle" >
         <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
 

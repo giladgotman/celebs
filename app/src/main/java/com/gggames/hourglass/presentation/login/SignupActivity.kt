@@ -69,7 +69,7 @@ class SignupActivity : AppCompatActivity() {
                 showErrorToast(this, R.string.error_generic)
             }).let { disposables.add(it) }
         } else {
-            loginUsername.error = "Please enter your name"
+            loginUsername.error = "Please enter your nickname"
         }
     }
 

@@ -39,7 +39,7 @@
 
     <string name="login_welcome_title">Hi there, I am <i>Hourglass</i></string>
     <string name="login_welcome_subtitle">Your remote <i>Celebrity Game</i> companion</string>
-    <string name="login_username_hint">Your name</string>
+    <string name="login_username_hint">Your nickname</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
     <string name="menu_about">About</string>
