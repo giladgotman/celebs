@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:focusedByDefault="true"
-            style="@style/EditTextMedium"
+            android:text=""
             android:hint="@string/login_username_hint"
             android:imeOptions="actionDone"
             android:inputType="textPersonName" />
