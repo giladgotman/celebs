@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gggames.hourglass.R
 import com.gggames.hourglass.model.*
+import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.endturn.ChangeRoundDialogFragment
 import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
 import com.gggames.hourglass.presentation.endturn.WelcomeFirstRoundFragment
@@ -86,6 +87,8 @@ class GameOnUiBinder @Inject constructor() {
     fun render(state: GameScreenContract.State) {
         val isFragmentVisible = fragment.isResumed
         view?.apply {
+            (fragment.activity as MainActivity).setTitle(state.screenTitle)
+
             if (state.revealCurrentCard) {
                 cardTextView?.text = state.currentCard?.name ?: ""
             } else {

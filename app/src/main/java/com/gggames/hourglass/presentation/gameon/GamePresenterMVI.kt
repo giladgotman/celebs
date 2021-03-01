@@ -131,7 +131,8 @@ class GamePresenterMVI @Inject constructor(
                     // Cards
                     cardsInDeck = result.cards.filter { !it.used }.size,
                     totalCardsInGame = result.cards.size,
-                    useLocalTimer = meActive
+                    useLocalTimer = meActive,
+                    screenTitle = result.game.name
                 )
                 // TODO: 25.10.20 remove from here and make it a pure function
                 lastGame = result.game

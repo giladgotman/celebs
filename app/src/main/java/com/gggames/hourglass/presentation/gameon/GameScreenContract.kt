@@ -31,6 +31,7 @@ interface GameScreenContract {
     }
 
     data class State(
+        val screenTitle: String = "",
         val totalCardsInGame: Int = 0,
         val cardsInDeck: Int = 0,
         val currentCard: Card? = null,
@@ -65,6 +66,7 @@ interface GameScreenContract {
 
         override fun toString() =
             """
+                screenTitle:                    $screenTitle
                 totalCardsInGame:               $totalCardsInGame
                 cardsInDeck:                    $cardsInDeck
                 currentCard:                    $currentCard
