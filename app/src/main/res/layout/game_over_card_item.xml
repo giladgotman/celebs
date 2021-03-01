@@ -69,7 +69,7 @@
                 android:layout_gravity="top"
                 android:background="@color/transparent"
                 android:visibility="gone"
-                tools:visibility="visible"
+                tools:visibility="gone"
                 >
 
                 <ProgressBar
