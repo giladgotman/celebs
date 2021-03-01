@@ -5,33 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="@dimen/default_margin"
-    android:paddingTop="@dimen/medium_margin"
     android:paddingEnd="@dimen/default_margin"
     tools:context=".presentation.creategame.ChooseTeamFragment">
-
-    <TextView
-        android:id="@+id/chooseTeamDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/choose_team_title"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <RadioGroup
         android:id="@+id/teamRadioGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginTop="@dimen/default_margin"
         android:orientation="horizontal"
         android:textAlignment="viewStart"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chooseTeamDescription">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
-        <RadioButton
+        <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/radioButtonTeam1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -40,7 +30,7 @@
             android:textAlignment="viewStart"
             tools:text="team1" />
 
-        <RadioButton
+        <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/radioButtonTeam2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -52,7 +42,7 @@
             android:textAlignment="viewStart"
             />
 
-        <RadioButton
+        <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/radioButtonTeam3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -63,7 +53,6 @@
             android:textAlignment="viewStart"
             />
     </RadioGroup>
-
     <ImageButton
         android:id="@+id/buttonDone"
         android:layout_width="wrap_content"

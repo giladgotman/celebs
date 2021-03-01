@@ -14,6 +14,7 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.core.Authenticator
 import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.features.players.domain.ChooseTeam
+import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.gggames.hourglass.utils.showErrorToast
@@ -49,6 +50,8 @@ class ChooseTeamFragment : Fragment() {
 
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
+
+        (activity as MainActivity).setTitle(getString(R.string.choose_team_title))
 
         buttonDone.isVisible = true
 
