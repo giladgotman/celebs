@@ -68,9 +68,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:contentDescription="description"
-        android:text="Create A Game"
+        android:contentDescription="@string/games_create_game"
+        android:text="@string/games_create_game"
+        android:textAllCaps="false"
         android:layout_margin="@dimen/fab_margin"
         app:icon="@drawable/ic_add"
+        android:backgroundTint="@color/colorAccent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
