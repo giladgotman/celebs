@@ -32,6 +32,7 @@
                 android:id="@+id/noGamesView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center_vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -42,6 +43,21 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="@string/games_no_active_games_title" />
+
+                <TextView
+                    android:id="@+id/noGamesSubtitle"
+                    style="@style/TextViewDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@id/noGamesTitle"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/default_margin"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:text="@string/games_no_active_games_description" />
+
+
+
             </RelativeLayout>
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
