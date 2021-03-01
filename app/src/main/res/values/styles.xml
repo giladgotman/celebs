@@ -95,7 +95,7 @@
     </style>
 
     <style name="TextViewDescription" parent="DefaultTextViewStyle" >
-        <item name="fontFamily">@font/poppins_light</item>
+        <item name="fontFamily">@font/roboto_light</item>
         <item name="android:textSize">@dimen/small_text_size</item>
     </style>
 

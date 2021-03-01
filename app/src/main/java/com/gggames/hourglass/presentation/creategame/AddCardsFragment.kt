@@ -66,9 +66,7 @@ class AddCardsFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        val currentGame = gamesRepository.getCurrentGameBlocking()!!
-
-        (activity as MainActivity).setTitle(currentGame.name)
+        (activity as MainActivity).setTitle(getString(R.string.add_cards_title))
         (activity as MainActivity).setShareVisible(true)
 
         playerId = authenticator.me!!.id

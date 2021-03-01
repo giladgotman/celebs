@@ -5,19 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.gggames.hourglass.presentation.creategame.AddCardsFragment"
-    android:paddingTop="@dimen/medium_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     >
+
+    <TextView
+        android:id="@+id/add_cards_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_cards_description"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/medium_margin"
+        android:textAppearance="@style/TextViewDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <ScrollView
         android:id="@+id/addCardsScrollView"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_cards_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/buttonDone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:paddingEnd="@dimen/default_margin"
         android:paddingStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/medium_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
 
@@ -27,20 +43,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/add_cards_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_cards_description"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/add_cards_card1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_cards_description">
 
@@ -49,7 +56,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/add_cards_card_1"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    style="@style/EditTextCreateGame"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -64,7 +73,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/add_cards_card_2"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    style="@style/EditTextCreateGame"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -79,7 +90,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/add_cards_card_3"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    style="@style/EditTextCreateGame"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -94,7 +107,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/add_cards_card_4"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    style="@style/EditTextCreateGame"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -109,7 +124,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/add_cards_card_5"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    style="@style/EditTextCreateGame"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -125,7 +142,9 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/add_cards_card_6"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    style="@style/EditTextCreateGame"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
