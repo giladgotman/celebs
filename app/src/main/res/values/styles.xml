@@ -110,6 +110,13 @@
         <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
 
+    <style name="TextViewToolbarTitle" parent="DefaultTextViewStyle" >
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">@dimen/medium_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="CardTextViewStyle" parent="DefaultTextViewStyle">
         <item name="android:fontFamily">@font/indie_flower_regular</item>
         <item name="fontFamily">@font/indie_flower_regular</item>
