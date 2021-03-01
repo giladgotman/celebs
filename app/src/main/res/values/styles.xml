@@ -153,10 +153,10 @@
         <item name="android:textSize">@dimen/small_text_size</item>
     </style>
 
-    <style name="NextButtonStyle" parent="@style/Widget.MaterialComponents.Button" >
+    <style name="NextButtonStyle" parent="Widget.AppCompat.ImageButton" >
         <item name="android:src">@drawable/correct_button</item>
-        <item name="android:background">@color/transparent</item>
         <item name="android:foreground">@drawable/ripple_circular_dark</item>
+        <item name="android:background">@color/transparent</item>
 
     </style>
 
