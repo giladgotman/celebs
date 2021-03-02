@@ -1,6 +1,5 @@
 package com.gggames.hourglass.presentation.gameon
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.CountDownTimer
@@ -17,6 +16,7 @@ import com.gggames.hourglass.presentation.endturn.ChangeRoundDialogFragment
 import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
 import com.gggames.hourglass.presentation.endturn.WelcomeFirstRoundFragment
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
@@ -273,7 +273,7 @@ class GameOnUiBinder @Inject constructor() {
                     }
                 }
             }
-            val builder = AlertDialog.Builder(context)
+            val builder = MaterialAlertDialogBuilder(ctx, R.style.celebs_MaterialAlertDialog)
             builder.setMessage(ctx.getString(R.string.leave_game_dialog_title))
                 .setPositiveButton(ctx.getString(R.string.ok), dialogClickListener)
                 .setNegativeButton(ctx.getString(R.string.cancel), dialogClickListener)
