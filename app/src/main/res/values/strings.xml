@@ -55,6 +55,7 @@
     <string name="end_turn_alert_message">Are you sure you want to end your turn?</string>
     <string name="ok">OK</string>
     <string name="about_dialog_send_feedback">Send Feedback</string>
+    <string name="about_dialog_later">Later</string>
     <string name="error_generic">Something went wrong</string>
 
     <!--    Share-->
@@ -110,7 +111,7 @@ There'll be 3 rounds, and cards will get recycled after each round!
     <string name="instructions_section3_round2_title">Round 2 : One Word</string>
     <string name="instructions_section3_round3_title">Round 3 : Charades</string>
     <string name="instructions_section3_round1_descriptions">You can use as many words as you like to describe the word on the card, without acting or gestures.</string>
-    <string name="instructions_section3_round2_descriptions">You can use exactly 1 word per card. once you said a word, you can only repeat it… You team mates should remember the cards from last round..</string>
+    <string name="instructions_section3_round2_descriptions">You can use exactly 1 word per card. once you said a word, you can only repeat it…</string>
     <string name="instructions_section3_round3_descriptions">Act and use mime to communicate the card. no words or sounds allowed…</string>
     <string name="instructions_section3_general_description"><b>The team that guesses the most cards across all rounds wins!</b></string>
 
