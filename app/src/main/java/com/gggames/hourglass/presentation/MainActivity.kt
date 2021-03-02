@@ -1,6 +1,5 @@
 package com.gggames.hourglass.presentation
 
-import android.app.AlertDialog
 import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +17,9 @@ import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.presentation.common.MainActivityDelegate
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
+import com.gggames.hourglass.utils.sendEmail
 import com.gggames.hourglass.utils.showErrorToast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.idagio.app.core.utils.share.Shareable
 import com.idagio.app.core.utils.share.createDynamicLink
 import com.idagio.app.core.utils.share.getPendingDeepLink
@@ -126,16 +127,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun showAbout() {
         val sb = StringBuilder()
-        sb.append("This game was made with love")
-        sb.append("\n\n\n")
-        sb.append("Version: ${BuildConfig.VERSION_NAME}")
+        sb.append(getString(R.string.about_dialog_message_first_part))
+        sb.append(getString(R.string.about_dialog_version_part, BuildConfig.VERSION_NAME))
         val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
         }
-        val builder = AlertDialog.Builder(this)
+        val feedbackClickListener = DialogInterface.OnClickListener { _, _ ->
+            sendEmail(
+                this,
+                to = getString(R.string.myEmail),
+                subject = getString(R.string.feedback_email_subject)
+            )
+        }
+        val builder = MaterialAlertDialogBuilder(this, R.style.celebs_MaterialAlertDialog)
         builder
-            .setTitle("About")
+            .setTitle(getString(R.string.about_dialog_title))
             .setMessage(sb.toString())
-            .setPositiveButton(getString(R.string.ok), dialogClickListener)
+            .setPositiveButton(getString(R.string.about_dialog_later), dialogClickListener)
+            .setNegativeButton(getString(R.string.about_dialog_send_feedback), feedbackClickListener)
             .show()
     }
 
