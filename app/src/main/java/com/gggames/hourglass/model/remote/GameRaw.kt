@@ -41,6 +41,7 @@ data class RoundRaw(
 data class TurnRaw(
     val state: String = Turn().state.toRaw(),
     val player: PlayerRaw? = null,
+    val nextPlayer: PlayerRaw? = null,
     val time: Long? = null,
     val cardsFound: List<String> = emptyList(),
     val lastFoundCard: CardRaw? = null,

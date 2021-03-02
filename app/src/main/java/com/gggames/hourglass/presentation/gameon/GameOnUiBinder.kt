@@ -128,7 +128,7 @@ class GameOnUiBinder @Inject constructor() {
             }
 
             if (state.showRoundInstructions) {
-                showFirstRoundIntro(state.round, null)
+                showFirstRoundIntro(state.round, state.nextPlayer)
             }
             if (state.showGameOver) {
                 fragment.navigateToEndGame()

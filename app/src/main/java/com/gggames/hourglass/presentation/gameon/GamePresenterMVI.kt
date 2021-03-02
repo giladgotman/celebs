@@ -4,7 +4,6 @@ import com.gggames.hourglass.core.Authenticator
 import com.gggames.hourglass.features.cards.domain.ObserveAllCards
 import com.gggames.hourglass.features.gameon.*
 import com.gggames.hourglass.features.games.data.GamesRepository
-import com.gggames.hourglass.features.games.domain.CalculateNextPlayer
 import com.gggames.hourglass.features.games.domain.ObserveGame
 import com.gggames.hourglass.features.games.domain.ShowRoundInstructions
 import com.gggames.hourglass.features.players.domain.ObservePlayers
@@ -39,12 +38,12 @@ class GamePresenterMVI @Inject constructor(
     private val handleBackPressed: HandleBackPressed,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
-    private val calculateNextPlayer: CalculateNextPlayer,
     private val showRoundInstructions: ShowRoundInstructions,
     private val audioPlayer: AudioPlayer,
     private val schedulerProvider: BaseSchedulerProvider
 ) {
     private var cardDeck = listOf<Card>()
+    private var teamsWithPlayers = listOf<Team>()
 
     private var lastCard: Card? = null
     private val disposables = CompositeDisposable()
@@ -127,7 +126,7 @@ class GamePresenterMVI @Inject constructor(
                     time = updatedTime,
                     // Players
                     teamsWithPlayers = updatedTeams,
-                    nextPlayer = calculateNextPlayer(updatedTeams, previous.lastPlayer?.team),
+                    nextPlayer = result.game.turn.nextPlayer ?: result.game.host,
                     // Cards
                     cardsInDeck = result.cards.filter { !it.used }.size,
                     totalCardsInGame = result.cards.size,
@@ -138,6 +137,7 @@ class GamePresenterMVI @Inject constructor(
                 lastGame = result.game
                 lastCard = result.game.turn.currentCard
                 cardDeck = result.cards
+                teamsWithPlayers = updatedTeams
 
                 newState
             }
@@ -194,7 +194,7 @@ class GamePresenterMVI @Inject constructor(
         }
 
     private fun quitGame(): Observable<BackPressedResult.NavigateToGames> {
-        return endTurn().switchMap {
+        return endTurn(teamsWithPlayers).switchMap {
             just(
                 BackPressedResult.NavigateToGames(true),
                 BackPressedResult.NavigateToGames(false)
@@ -242,7 +242,7 @@ class GamePresenterMVI @Inject constructor(
             if (authenticator.isMyselfActivePlayerBlocking(game)) {
                 audioPlayer.play("timesupyalabye")
                 flipLastCard(lastCard)
-                    .andThen(endTurn())
+                    .andThen(endTurn(teamsWithPlayers))
             } else {
                 just(NoOp)
             }

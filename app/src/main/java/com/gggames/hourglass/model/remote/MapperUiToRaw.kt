@@ -50,6 +50,7 @@ fun Round.toRaw() = RoundRaw(
 fun Turn.toRaw() = TurnRaw(
     this.state.toRaw(),
     this.player?.toRaw(),
+    this.nextPlayer?.toRaw(),
     this.time,
     this.cardsFound,
     this.lastFoundCard?.toRaw(),
