@@ -211,21 +211,18 @@ class GameOnUiBinder @Inject constructor() {
         isTimerRunning = false
     }
 
-    private fun setTeamPlayers(teams: Map<String, List<Player>>) {
-        var index = 0
-        teams.forEach { team ->
-            updateTeamPlayers(index, team.key, team.value)
-            index++
+    private fun setTeamPlayers(teams: List<TeamWithPlayers>) {
+        teams.forEachIndexed { index, team ->
+            updateTeamPlayers(index, team)
         }
-
     }
 
 
-    private fun updateTeamPlayers(index: Int, teamName: String, players: List<Player>) {
+    private fun updateTeamPlayers(index: Int, team: TeamWithPlayers) {
         view?.let {
-            teamNameViews[index].text = teamName
+            teamNameViews[index].text = team.name
             teamLayouts[index].isVisible = true
-            playerAdapters[index].setData(players)
+            playerAdapters[index].setData(team.players)
         }
     }
 

@@ -39,7 +39,7 @@ interface GameScreenContract {
         val currentPlayer: Player? = null,
         val revealCurrentCard: Boolean = false,
         val teamsWithScore: List<Team> = emptyList(),
-        val teamsWithPlayers: Map<String, List<Player>> = emptyMap(),
+        val teamsWithPlayers: List<TeamWithPlayers> = emptyList(),
         val round: Round = Round(),
         val previousRoundName: String = "1",
         val playButtonState: PlayButtonState = PlayButtonState(),

@@ -47,7 +47,7 @@ class GamePresenterMVI @Inject constructor(
     private val schedulerProvider: BaseSchedulerProvider
 ) {
     private var cardDeck = listOf<Card>()
-    private var teamsWithPlayers = listOf<Team>()
+    private var teamsWithPlayers = listOf<TeamWithPlayers>()
 
     private var lastCard: Card? = null
     private val disposables = CompositeDisposable()
@@ -103,7 +103,7 @@ class GamePresenterMVI @Inject constructor(
                         result.game.round.state == RoundState.Started
                 val roundOver = result.game.round.state == RoundState.Ended && previous.round.state != RoundState.Ended
 
-                val teamPlayers = result.game.teams.map {it.name }.associateWith {teamName-> result.players.filter { it.team == teamName } }
+                val teamPlayers = result.game.teams.map { team-> team.toTeamWithPlayers(result.players.filter { it.team == team.name }) }
 
                 val updatedTime = result.game.turn.time?.takeIf { !meActive }
                 val newState = previous.copy(
@@ -141,7 +141,7 @@ class GamePresenterMVI @Inject constructor(
                 lastGame = result.game
                 lastCard = result.game.turn.currentCard
                 cardDeck = result.cards
-//                teamsWithPlayers = teamPlayers
+                teamsWithPlayers = teamPlayers
 
                 newState
             }
