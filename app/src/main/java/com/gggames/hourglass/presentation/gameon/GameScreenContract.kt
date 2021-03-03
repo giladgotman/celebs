@@ -38,7 +38,7 @@ interface GameScreenContract {
         val currentPlayer: Player? = null,
         val revealCurrentCard: Boolean = false,
         val teamsWithScore: List<Team> = emptyList(),
-        val teamsWithPlayers: List<Team> = emptyList(),
+        val teamsWithPlayers: Map<String, List<Player>> = emptyMap(),
         val round: Round = Round(),
         val previousRoundName: String = "1",
         val playButtonState: PlayButtonState = PlayButtonState(),
@@ -72,7 +72,7 @@ interface GameScreenContract {
                 currentCard:                    $currentCard
                 currentPlayer:                  $currentPlayer
                 revealCurrentCard:              $revealCurrentCard
-                teamsWithPlayers:               ${teamsWithPlayers.map { it.players }}
+                teamsWithPlayers:               $teamsWithPlayers
                 teamsWithScore:                 ${teamsWithScore.map { Pair(it.name, it.score) }}
                 previousRoundName:              $previousRoundName
                 round:                          $round

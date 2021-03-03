@@ -21,7 +21,7 @@ fun UserRaw.toUi() = when (this.type) {
     UserType.LoggedIn -> User.LoggedIn(this.id, this.name, this.games.map { it.toUi() })
 }
 
-fun TeamRaw.toUi() = Team(name = this.name, score = this.score)
+fun TeamRaw.toUi() = Team(this.name, playerIds, this.score, lastPlayerId)
 
 fun GameRaw.toUi() = Game(
     this.id,

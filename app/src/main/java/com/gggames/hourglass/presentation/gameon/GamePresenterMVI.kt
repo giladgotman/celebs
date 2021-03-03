@@ -102,9 +102,8 @@ class GamePresenterMVI @Inject constructor(
                         result.game.round.state == RoundState.Started
                 val roundOver = result.game.round.state == RoundState.Ended && previous.round.state != RoundState.Ended
 
-                val updatedTeams = result.game.teams.map { team ->
-                    team.copy(players = result.players.filter { it.team == team.name })
-                }
+                val teamPlayers = result.game.teams.map {it.name }.associateWith {teamName-> result.players.filter { it.team == teamName } }
+
                 val updatedTime = result.game.turn.time?.takeIf { !meActive }
                 val newState = previous.copy(
                     // Game
@@ -128,7 +127,7 @@ class GamePresenterMVI @Inject constructor(
                     cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound },
                     time = updatedTime,
                     // Players
-                    teamsWithPlayers = updatedTeams,
+                    teamsWithPlayers = teamPlayers,
                     nextPlayer = result.game.turn.nextPlayer ?: result.game.host,
                     // Cards
                     cardsInDeck = result.cards.filter { !it.used }.size,
@@ -140,7 +139,7 @@ class GamePresenterMVI @Inject constructor(
                 lastGame = result.game
                 lastCard = result.game.turn.currentCard
                 cardDeck = result.cards
-                teamsWithPlayers = updatedTeams
+//                teamsWithPlayers = teamPlayers
 
                 newState
             }

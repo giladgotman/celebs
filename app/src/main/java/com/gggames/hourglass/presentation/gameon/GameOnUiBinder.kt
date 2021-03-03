@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.CountDownTimer
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +35,10 @@ class GameOnUiBinder @Inject constructor() {
 
     private var playerAdapters: List<PlayersAdapter> =
         listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
+
+    private lateinit var teamNameViews: List<TextView>
+    private lateinit var teamScoreViews: List<TextView>
+    private lateinit var teamLayouts: List<ConstraintLayout>
 
     private lateinit var playersRecycleViews: List<RecyclerView>
 
@@ -67,6 +73,10 @@ class GameOnUiBinder @Inject constructor() {
             playersRecycleViews =
                 listOf(team1players, team2players, team3players)
 
+            teamNameViews = listOf(team1Name, team2Name, team3Name)
+            teamScoreViews = listOf(team1Score, team2Score, team3Score)
+            teamLayouts = listOf(team1Layout, team2Layout, team3Layout)
+
             playersRecycleViews.forEachIndexed { index, recyclerView ->
                 recyclerView.layoutManager = LinearLayoutManager(this.context)
                 recyclerView.itemAnimator = DefaultItemAnimator()
@@ -97,9 +107,7 @@ class GameOnUiBinder @Inject constructor() {
 
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
-            val updatedTeams =
-                updateTeamsWithPlayingState(state.teamsWithPlayers, state.currentPlayer, state.nextPlayer)
-            setTeamPlayers(updatedTeams)
+            setTeamPlayers(state.teamsWithPlayers)
             roundTextView?.text = state.round.roundNumber.toString()
             if (state.useLocalTimer) {
                 if (state.isTimerRunning && !state.inProgress) {
@@ -152,33 +160,33 @@ class GameOnUiBinder @Inject constructor() {
     }
 
     // update the player.playerTurnState in each team based on the currentPlayer
-    private fun updateTeamsWithPlayingState(
-        teamsWithPlayers: List<Team>,
-        currentPlayer: Player?,
-        nextPlayer: Player?
-    ): List<Team> {
-        val teams = mutableListOf<Team>()
-        teamsWithPlayers.forEachIndexed { index, team ->
-            val players = mutableListOf<Player>()
-            team.players.forEachIndexed { pIndex, player ->
-                val playerTurnState = when {
-                    currentPlayer?.id == player.id -> {
-                        PlayerTurnState.Playing
-                    }
-                    nextPlayer?.id == player.id -> {
-                        PlayerTurnState.UpNext
-                    }
-                    else -> {
-                        PlayerTurnState.Idle
-                    }
-                }
-                players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = playerTurnState))
-
-            }
-            teams.add(team.copy(players = players))
-        }
-        return teams
-    }
+//    private fun updateTeamsWithPlayingState(
+//        teamsWithPlayers: List<Team>,
+//        currentPlayer: Player?,
+//        nextPlayer: Player?
+//    ): List<Team> {
+//        val teams = mutableListOf<Team>()
+//        teamsWithPlayers.forEachIndexed { index, team ->
+//            val players = mutableListOf<Player>()
+//            team.players.forEachIndexed { pIndex, player ->
+//                val playerTurnState = when {
+//                    currentPlayer?.id == player.id -> {
+//                        PlayerTurnState.Playing
+//                    }
+//                    nextPlayer?.id == player.id -> {
+//                        PlayerTurnState.UpNext
+//                    }
+//                    else -> {
+//                        PlayerTurnState.Idle
+//                    }
+//                }
+//                players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = playerTurnState))
+//
+//            }
+//            teams.add(team.copy(players = players))
+//        }
+//        return teams
+//    }
 
     private fun startResumeTimer() {
         if (!isTimerRunning) {
@@ -191,32 +199,22 @@ class GameOnUiBinder @Inject constructor() {
         isTimerRunning = false
     }
 
-    private fun setTeamPlayers(teams: List<Team>) {
-        teams.forEachIndexed { index, team ->
-            when (index) {
-                0 -> updateTeam1(team.name, team.players)
-                1 -> updateTeam2(team.name, team.players)
-                2 -> updateTeam3(team.name, team.players)
-            }
+    private fun setTeamPlayers(teams: Map<String, List<Player>>) {
+        var index = 0
+        teams.forEach { team ->
+            updateTeamPlayers(index, team.key, team.value)
+            index++
         }
+
     }
 
-    private fun updateTeam1(teamName: String, players: List<Player>) {
-        view?.team1Name?.text = teamName
-        view?.team1Layout?.isVisible = true
-        playerAdapters[0].setData(players)
-    }
 
-    private fun updateTeam2(teamName: String, players: List<Player>) {
-        view?.team2Name?.text = teamName
-        view?.team2Layout?.isVisible = true
-        playerAdapters[1].setData(players)
-    }
-
-    private fun updateTeam3(teamName: String, players: List<Player>) {
-        view?.team3Name?.text = teamName
-        view?.team3Layout?.isVisible = true
-        playerAdapters[2].setData(players)
+    private fun updateTeamPlayers(index: Int, teamName: String, players: List<Player>) {
+        view?.let {
+            teamNameViews[index].text = teamName
+            teamLayouts[index].isVisible = true
+            playerAdapters[index].setData(players)
+        }
     }
 
     private fun setTeamNamesAndScore(teams: List<Team>) {

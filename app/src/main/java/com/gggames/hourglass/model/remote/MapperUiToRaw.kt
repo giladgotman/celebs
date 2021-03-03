@@ -26,6 +26,7 @@ fun User.toRaw() = when (this) {
 
 fun Team.toRaw() = TeamRaw(
     this.name,
+    this.playerIds,
     this.score,
     lastPlayerId = this.lastPlayerId
 )

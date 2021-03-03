@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Team(
     val name: String,
-    val players: List<Player> = emptyList(), // used only locally
+    val playerIds: List<String> = emptyList(),
     val score: Int = 0,
     val lastPlayerId: String? = null
 ) : Parcelable

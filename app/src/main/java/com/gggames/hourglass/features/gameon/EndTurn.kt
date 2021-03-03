@@ -16,7 +16,8 @@ class EndTurn @Inject constructor(
 ) {
     operator fun invoke(teams: List<Team>): Observable<SetGameResult> {
         val endTurnGame = { game: Game ->
-            val nextPlayer = calculateNextPlayer(teams, game.turn.player?.team)
+//            val nextPlayer = calculateNextPlayer(teams, game.turn.player?.team)
+            val nextPlayer = null
             Timber.w("--- endTurn nextPlayer: $nextPlayer")
             game.setTurnState(TurnState.Over)
                 .setCurrentCard(null)
