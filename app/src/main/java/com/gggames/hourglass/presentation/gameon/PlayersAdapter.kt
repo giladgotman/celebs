@@ -13,10 +13,10 @@ import kotlinx.android.synthetic.main.player_item_layout.view.*
 class PlayersAdapter :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var dataSet: List<Player> = emptyList()
+    private var dataSet = PlayersDataSet()
 
-    fun setData(players: List<Player>) {
-        dataSet = players
+    fun setData(data: PlayersDataSet) {
+        dataSet = data
         notifyDataSetChanged()
     }
     override fun onCreateViewHolder(
@@ -29,21 +29,27 @@ class PlayersAdapter :
     }
 
     override fun getItemCount(): Int {
-        return dataSet.size
+        return dataSet.players.size
     }
 
     inner class PlayersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Player) {
-            itemView.nameBadge.state = State(name = item.name, turnState = item.playerTurnState ?: PlayerTurnState.Idle)
+        fun bind(item: Player, currentPlayer: Player?, nextPlayer: Player?) {
+            val turnState = when (item.id) {
+                currentPlayer?.id -> PlayerTurnState.Playing
+                nextPlayer?.id -> PlayerTurnState.UpNext
+                else -> PlayerTurnState.Idle
+            }
+            itemView.nameBadge.state = State(item.name, turnState)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return(holder as PlayersAdapter.PlayersViewHolder).bind(dataSet[position])
+        return(holder as PlayersAdapter.PlayersViewHolder).bind(dataSet.players[position], dataSet.currentPlayer, dataSet.nextPlayer)
     }
 }
 
 data class PlayersDataSet(
     val players: List<Player> = emptyList(),
-    val currentPlayer: Player? = null
+    val currentPlayer: Player? = null,
+    val nextPlayer: Player? = null
 )

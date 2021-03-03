@@ -110,7 +110,7 @@ class GameOnUiBinder @Inject constructor() {
 
             cardsAmount?.text = state.cardsInDeck.toString()
             setTeamNamesAndScore(state.teamsWithScore)
-            setTeamPlayers(state.teamsWithPlayers)
+            setTeamPlayers(state.teamsWithPlayers, state.currentPlayer, state.nextPlayer)
             roundTextView?.text = state.round.roundNumber.toString()
             if (state.useLocalTimer) {
                 if (state.isTimerRunning && !state.inProgress) {
@@ -211,18 +211,18 @@ class GameOnUiBinder @Inject constructor() {
         isTimerRunning = false
     }
 
-    private fun setTeamPlayers(teams: List<TeamWithPlayers>) {
+    private fun setTeamPlayers(teams: List<TeamWithPlayers>, currentPlayer: Player?, nextPlayer: Player?) {
         teams.forEachIndexed { index, team ->
-            updateTeamPlayers(index, team)
+            updateTeamPlayers(index, team, currentPlayer, nextPlayer)
         }
     }
 
 
-    private fun updateTeamPlayers(index: Int, team: TeamWithPlayers) {
+    private fun updateTeamPlayers(index: Int, team: TeamWithPlayers, currentPlayer: Player?, nextPlayer: Player?) {
         view?.let {
             teamNameViews[index].text = team.name
             teamLayouts[index].isVisible = true
-            playerAdapters[index].setData(team.players)
+            playerAdapters[index].setData(PlayersDataSet(team.players, currentPlayer, nextPlayer))
         }
     }
 
