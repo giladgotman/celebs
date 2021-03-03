@@ -10,6 +10,11 @@
         android:icon="@drawable/ic_help"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/menu_end_turn"
+        android:orderInCategory="100"
+        android:title="@string/menu_end_turn"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/menu_switch_team"

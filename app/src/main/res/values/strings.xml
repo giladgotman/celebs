@@ -47,6 +47,7 @@
     <string name="action_logout">Logout</string>
     <string name="menu_about">About</string>
     <string name="menu_switch_team">Switch team</string>
+    <string name="menu_end_turn">End my turn</string>
     <string name="menu_help">Help</string>
     <string name="game_on_start">Start</string>
     <string name="version_value">v%s</string>
@@ -72,6 +73,8 @@
 
     <!--    Leave game dialog-->
     <string name="leave_game_dialog_title">Are you sure you want to quit and end your turn?</string>
+    <string name="end_turn_dialog_title">Are you sure you want to end your turn?</string>
+
     <string name="game_over_title">Game Over</string>
     <string name="game_over_subtitle">%1$s won!</string>
     <string name="choose_team_no_team_selected_error">Please choose a team</string>

@@ -39,6 +39,7 @@ class GamePresenterMVI @Inject constructor(
     private val startRound: StartRound,
     private val handleCorrectCard: HandleCorrectCard,
     private val handleBackPressed: HandleBackPressed,
+    private val handleEndTurnPressed: HandleEndTurnPressed,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
     private val showRoundInstructions: ShowRoundInstructions,
@@ -133,7 +134,8 @@ class GamePresenterMVI @Inject constructor(
                     cardsInDeck = result.cards.filter { !it.used }.size,
                     totalCardsInGame = result.cards.size,
                     useLocalTimer = meActive,
-                    screenTitle = result.game.name
+                    screenTitle = result.game.name,
+                    isEndTurnEnabled = meActive
                 )
                 // TODO: 25.10.20 remove from here and make it a pure function
                 lastGame = result.game
@@ -169,6 +171,7 @@ class GamePresenterMVI @Inject constructor(
                 }
             }
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
+            is EndTurnPressedResult.ShowLeaveGameConfirmation -> previous.copy(showEndTurnConfirmation = result.showDialog)
             is BackPressedResult.NavigateToGames -> previous.copy(navigateToGames = result.navigate)
             is NoOp -> previous
             is SetGameResult -> previous
@@ -183,6 +186,8 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<StartStopClick>().switchMap { handleStartStopClick(it.buttonState, it.time) },
                 o.ofType<UiEvent.TimerEnd>().switchMap { onTimerEnd() },
                 o.ofType<UiEvent.OnBackPressed>().switchMap { handleBackPressed() },
+                o.ofType<UiEvent.EndTurnClick>().switchMap { handleEndTurnPressed() },
+                o.ofType<UiEvent.UserApprovedEndTurn>().switchMap { endTurn(teamsWithPlayers) },
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
                 o.ofType<UiEvent.OnSwitchTeamPressed>()

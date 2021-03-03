@@ -48,14 +48,24 @@ class GameOnFragmentMVI : Fragment(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val item = menu.findItem(R.id.menu_switch_team)
+        val itemEndTurn = menu.findItem(R.id.menu_end_turn)
         item.isVisible = true
+        itemEndTurn.isVisible = true
         return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        uiBinder.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_switch_team -> {
                 _emitter.onNext(UiEvent.OnSwitchTeamPressed)
+                true
+            }
+            R.id.menu_end_turn -> {
+                _emitter.onNext(UiEvent.EndTurnClick)
                 true
             }
             else -> false

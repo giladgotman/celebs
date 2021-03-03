@@ -12,6 +12,7 @@ interface GameScreenContract {
         data class RoundClick(val time: Long) : UiEvent()
         object TimerEnd : UiEvent()
         object UserApprovedQuitGame : UiEvent()
+        object UserApprovedEndTurn : UiEvent()
         object OnBackPressed : UiEvent()
         object OnSwitchTeamPressed : UiEvent()
         object RoundOverDialogDismissed : UiEvent()
@@ -55,10 +56,12 @@ interface GameScreenContract {
         val nextPlayer: Player? = null,
         val cardsFoundInTurn: List<Card> = emptyList(),
         val showLeaveGameConfirmation: Boolean = false,
+        val showEndTurnConfirmation: Boolean = false,
         val navigateToGames: Boolean = false,
         val navigateToTeams: Boolean = false,
         val useLocalTimer: Boolean = false,
-        val showRoundInstructions: Boolean = false
+        val showRoundInstructions: Boolean = false,
+        val isEndTurnEnabled: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -90,10 +93,12 @@ interface GameScreenContract {
                 nextPlayer                      ${nextPlayer?.name}
                 cardsFoundInTurnSize            ${cardsFoundInTurn.size}
                 showLeaveGameConfirmation       $showLeaveGameConfirmation
+                showEndTurnConfirmation         $showEndTurnConfirmation
                 navigateToGames                 $navigateToGames
                 navigateToTeams                 $navigateToTeams
                 useLocalTimer                   $useLocalTimer
                 showRoundInstructions           $showRoundInstructions
+                isEndTurnEnabled                $isEndTurnEnabled
                 """.trimIndent()
 
     }
@@ -136,6 +141,12 @@ interface GameScreenContract {
                 return "SetGameResult.${this.javaClass.simpleName}.$label"
             }
         }
+
+
+        sealed class EndTurnPressedResult : Result() {
+            data class ShowLeaveGameConfirmation(val showDialog: Boolean) : EndTurnPressedResult()
+        }
+
 
         sealed class BackPressedResult : Result() {
             data class ShowLeaveGameConfirmation(val showDialog: Boolean) : BackPressedResult()

@@ -3,6 +3,7 @@ package com.gggames.hourglass.presentation.gameon
 import android.content.Context
 import android.content.DialogInterface
 import android.os.CountDownTimer
+import android.view.Menu
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,8 @@ class GameOnUiBinder @Inject constructor() {
 
     var endRoundDialogFragment: ChangeRoundDialogFragment? = null
     var endTurnDialogFragment: EndTurnDialogFragment? = null
+
+    var isEndTurnEnabled = false
 
     private var mTimeLeftInMillis = TURN_TIME_MILLIS
 
@@ -151,8 +154,17 @@ class GameOnUiBinder @Inject constructor() {
             if (state.showLeaveGameConfirmation) {
                 showLeaveGameDialog()
             }
+            if (state.showEndTurnConfirmation) {
+                showEndTurnDialog()
+            }
 
             state.time?.let { updateTime(it) }
+
+
+            if (isEndTurnEnabled != state.isEndTurnEnabled) {
+                isEndTurnEnabled = state.isEndTurnEnabled
+                fragment.activity?.invalidateOptionsMenu()
+            }
 
             correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
             helpButton?.isEnabled = state.helpButtonEnabled
@@ -280,6 +292,27 @@ class GameOnUiBinder @Inject constructor() {
 
     }
 
+    private fun showEndTurnDialog() {
+        context?.let { ctx ->
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        _emitter.onNext(UiEvent.UserApprovedEndTurn)
+                    }
+
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                    }
+                }
+            }
+            val builder = MaterialAlertDialogBuilder(ctx, R.style.celebs_MaterialAlertDialog)
+            builder.setMessage(ctx.getString(R.string.end_turn_dialog_title))
+                .setPositiveButton(ctx.getString(R.string.ok), dialogClickListener)
+                .setNegativeButton(ctx.getString(R.string.cancel), dialogClickListener)
+                .show()
+        }
+
+    }
+
     private fun showEndRound(currRound: Round, teams: List<Team>) {
         if (endRoundDialogFragment == null) {
             endRoundDialogFragment = ChangeRoundDialogFragment.newInstance(currRound, true, teams)
@@ -315,5 +348,10 @@ class GameOnUiBinder @Inject constructor() {
         val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
 
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+    }
+
+    fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.findItem(R.id.menu_end_turn).isVisible = isEndTurnEnabled
+        return true
     }
 }

@@ -90,8 +90,10 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        val item = menu.findItem(R.id.menu_switch_team)
-        item.isVisible = false
+        val itemSwitchTeam = menu.findItem(R.id.menu_switch_team)
+        val itemEndTurn = menu.findItem(R.id.menu_end_turn)
+        itemSwitchTeam.isVisible = false
+        itemEndTurn.isVisible = false
         return true
     }
 
