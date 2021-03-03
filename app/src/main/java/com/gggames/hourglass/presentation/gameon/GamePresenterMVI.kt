@@ -23,6 +23,9 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
+
+const val TURN_TIME_MILLIS = 60000L
+
 class GamePresenterMVI @Inject constructor(
     private val playersObservable: ObservePlayers,
     private val cardsObservable: ObserveAllCards,

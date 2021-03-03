@@ -20,6 +20,8 @@ import javax.inject.Inject
 /**
  * The main fragment in which the game is happening
  */
+
+const val GAME_ID_KEY = "GAME_ID_KEY"
 class GameOnFragmentMVI : Fragment(),
     MainActivityDelegate {
 
