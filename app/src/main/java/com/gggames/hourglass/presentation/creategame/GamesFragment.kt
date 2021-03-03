@@ -83,8 +83,8 @@ class GamesFragment : Fragment(), GamesPresenter.View {
 
         var gameIdFromDeepLink: String? = null
 
-        arguments?.getString("gameId")?.let { gameId ->
-            arguments?.remove("gameId")
+        arguments?.getString(GAME_ID_KEY)?.let { gameId ->
+            arguments?.remove(GAME_ID_KEY)
             gameIdFromDeepLink = gameId
         }
         Timber.w("ggg bind, gameIdFromDeepLink: $gameIdFromDeepLink")

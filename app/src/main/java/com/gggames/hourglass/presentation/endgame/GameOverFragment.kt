@@ -20,6 +20,7 @@ import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.gggames.hourglass.presentation.endgame.GameOverScreenContract.Trigger
 import com.gggames.hourglass.presentation.endgame.GameOverScreenContract.UiEvent.PressedFinish
+import com.gggames.hourglass.presentation.gameon.GAME_ID_KEY
 import com.google.android.exoplayer2.ui.PlayerView
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -60,7 +61,7 @@ class GameOverFragment : Fragment() {
         viewComponent = createViewComponent(this)
         viewComponent.inject(this)
 
-        val gameId: String? = arguments?.getString("gameId")
+        val gameId: String? = arguments?.getString(GAME_ID_KEY)
 
         videoPlayer.initializePlayer()
 
