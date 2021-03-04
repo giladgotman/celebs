@@ -16,6 +16,33 @@ class CalculateNextPlayerTest {
 
 
     @Test
+    fun `One team 1 player good weather`() {
+        givenTeamsAre(
+            listOf(
+                createTeamWithLastPlayer(1, players = createPlayerList(1, 1), lastPlayer = null)
+            )
+        )
+        val lastTeam = null
+        val nextPlayer = tested(teams, lastTeam)
+        val expected = "player1.1"
+        Truth.assertThat(nextPlayer?.id).isEqualTo(expected)
+    }
+
+    @Test
+    fun `One team 2 players good weather`() {
+        givenTeamsAre(
+            listOf(
+                createTeamWithLastPlayer(1, players = createPlayerList(1, 2), lastPlayer = "player1.1")
+            )
+        )
+        val lastTeam = "team1"
+        val nextPlayer = tested(teams, lastTeam)
+        val expected = "player1.2"
+        Truth.assertThat(nextPlayer?.id).isEqualTo(expected)
+    }
+
+
+    @Test
     fun `Given player1_1 is lastPlayer of team1 And lastTeam is team2 Then result is player1_2`() {
         givenTeamsAre(
             listOf(
