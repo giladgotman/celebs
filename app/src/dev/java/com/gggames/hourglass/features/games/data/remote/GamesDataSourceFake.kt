@@ -68,10 +68,22 @@ fun createGame(
 
 fun createTeam(
     name: String = "Team1",
-    players: List<Player> = emptyList(),
+    playerIds: List<String> = emptyList(),
     score: Int = 0,
     lastPlayerId: String? = null
 ) = Team(
+    name = name,
+    playerIds = playerIds,
+    score = score,
+    lastPlayerId = lastPlayerId
+)
+
+fun createTeamWithPlayers(
+    name: String = "Team1",
+    players: List<Player> = emptyList(),
+    score: Int = 0,
+    lastPlayerId: String? = null
+) = TeamWithPlayers(
     name = name,
     players = players,
     score = score,

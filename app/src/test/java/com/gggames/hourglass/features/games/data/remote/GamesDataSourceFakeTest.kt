@@ -1,7 +1,8 @@
 package com.gggames.hourglass.features.games.data.remote
 
-import factory.createGame
+import com.gggames.hourglass.features.games.data.GameResult
 import com.gggames.hourglass.model.GameState
+import factory.createGame
 import org.junit.Before
 import org.junit.Test
 
@@ -15,7 +16,7 @@ class GamesDataSourceFakeTest {
 
     @Test
     fun `dont emit if there is no game`() {
-        val observer = dataSourceFake.observeGame("id").test()
+        val observer = dataSourceFake.observeGame("unknownId").test()
         observer.assertNoValues()
     }
 
@@ -25,7 +26,7 @@ class GamesDataSourceFakeTest {
         val game = createGame(id = id)
         dataSourceFake.setGame(game).blockingAwait()
         val observer = dataSourceFake.observeGame(id).test()
-        observer.assertValue(game)
+        observer.assertValue(GameResult.Found(game))
     }
 
     @Test
@@ -35,9 +36,9 @@ class GamesDataSourceFakeTest {
         val updatedGame = game.copy(name = "updated")
         dataSourceFake.setGame(game).blockingAwait()
         val observer = dataSourceFake.observeGame(id).test()
-        observer.assertValueAt(0, game)
+        observer.assertValueAt(0, GameResult.Found(game))
         dataSourceFake.setGame(updatedGame).blockingAwait()
-        observer.assertValueAt(1, updatedGame)
+        observer.assertValueAt(1, GameResult.Found(updatedGame))
     }
 
     @Test
