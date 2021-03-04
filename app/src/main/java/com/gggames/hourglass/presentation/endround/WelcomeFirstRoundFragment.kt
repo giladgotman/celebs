@@ -43,7 +43,7 @@ class WelcomeFirstRoundFragment : BottomSheetDialogFragment() {
 
             if (nextPlayer != null) {
                 next_player_name_badge.state =
-                    NameBadge.State(nextPlayer.name, nextPlayer.playerTurnState ?: PlayerTurnState.Idle)
+                    NameBadge.State(nextPlayer.name, PlayerTurnState.UpNext)
             } else {
                 starting_player_lbl.isVisible = false
                 next_player_name_badge.isVisible = false
