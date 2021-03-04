@@ -65,7 +65,9 @@ class WelcomeFirstRoundFragment : BottomSheetDialogFragment() {
                     }
                 }
             }
+
+        const val KEY_NEXT_PLAYER = "KEY_NEXT_PLAYER"
     }
 }
 
-val KEY_NEXT_PLAYER = "KEY_NEXT_PLAYER"
+

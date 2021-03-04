@@ -128,7 +128,7 @@ class GameOnUiBinder @Inject constructor() {
             if (state.showEndOfTurn) {
                 state.lastPlayer?.let { player ->
                     if (isFragmentVisible) {
-                        showEndTurn(player, state.cardsFoundInTurn, state.round.roundNumber)
+                        showEndTurn(player, state.nextPlayer, state.cardsFoundInTurn, state.round.roundNumber)
                     }
                 }
             }
@@ -324,9 +324,9 @@ class GameOnUiBinder @Inject constructor() {
         welcomeFrag.show(fragment.requireActivity() as AppCompatActivity)
     }
 
-    private fun showEndTurn(player: Player, cards: List<Card>, roundNumber: Int) {
+    private fun showEndTurn(player: Player, nextPlayer: Player?, cards: List<Card>, roundNumber: Int) {
         if (endTurnDialogFragment?.isAdded != true) {
-            endTurnDialogFragment = EndTurnDialogFragment.create(player, cards, roundNumber)
+            endTurnDialogFragment = EndTurnDialogFragment.create(player, nextPlayer, cards, roundNumber)
             endTurnDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
         }
     }

@@ -14,6 +14,8 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.features.video.VideoPlayer
 import com.gggames.hourglass.model.Card
 import com.gggames.hourglass.model.Player
+import com.gggames.hourglass.model.PlayerTurnState
+import com.gggames.hourglass.presentation.common.NameBadge
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
@@ -90,6 +92,7 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
 
         arguments?.let {
             val name = it.getString(KEY_PLAYER_NAME) ?: ""
+            val nextPlayerName = it.getString(KEY_NEXT_PLAYER_NAME ) ?: ""
             roundNumber = it.getInt(KEY_ROUND_NUMBER)
             val cardsNames: Array<Card>? =
                 it.getParcelableArray(KEY_CARDS) as Array<Card>
@@ -97,6 +100,13 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
             val cardsList = cardsNames?.toList() ?: emptyList()
             cardsFoundAdapter.setData(cardsList)
             title.text = getString(R.string.end_turn_title, name)
+            if (nextPlayerName.isNotEmpty()) {
+                nextPlayerNameBadge.state =
+                    NameBadge.State(nextPlayerName, PlayerTurnState.UpNext)
+            } else {
+                nextPlayerLabel.isVisible = false
+                nextPlayerNameBadge.isVisible = false
+            }
             cardsAmountDescription.text =
                 getString(R.string.end_turn_cards_description, cardsNames?.size ?: 0)
         }
@@ -118,21 +128,25 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        fun create(player: Player, cards: List<Card>, roundNumber: Int): EndTurnDialogFragment {
+        fun create(player: Player, nextPlayer: Player?, cards: List<Card>, roundNumber: Int): EndTurnDialogFragment {
             return EndTurnDialogFragment()
                 .apply {
                     isCancelable = true
                     arguments =
                         Bundle().apply {
                             putString(KEY_PLAYER_NAME, player.name)
+                            nextPlayer?.let {
+                                putString(KEY_NEXT_PLAYER_NAME, nextPlayer.name)
+                            }
                             putParcelableArray(KEY_CARDS, cards.toTypedArray())
                             putInt(KEY_ROUND_NUMBER, roundNumber)
                         }
                 }
         }
+        const val KEY_PLAYER_NAME = "playerName"
+        const val KEY_NEXT_PLAYER_NAME = "nextPlayerName"
+        const val KEY_ROUND_NUMBER = "roundNumber"
+        const val KEY_CARDS = "cards"
     }
 }
 
-const val KEY_PLAYER_NAME = "playerName"
-const val KEY_ROUND_NUMBER = "roundNumber"
-const val KEY_CARDS = "cards"

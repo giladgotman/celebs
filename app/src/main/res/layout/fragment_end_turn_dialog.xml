@@ -52,13 +52,39 @@
         app:layout_behavior="@string/bottom_sheet_behavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/finishButton"
+        app:layout_constraintBottom_toTopOf="@+id/nextPlayerLabel"
         tools:listitem="@layout/end_turn_card_found_item"
         tools:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:context="com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment"
 
         />
+
+    <TextView
+        android:id="@+id/nextPlayerLabel"
+        style="@style/TextViewSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:text="Next player is "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/finishButton"
+        android:layout_marginBottom="@dimen/medium_margin"
+        />
+
+    <com.gggames.hourglass.presentation.common.NameBadge
+        android:id="@+id/nextPlayerNameBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
+        app:layout_constraintTop_toTopOf="@id/nextPlayerLabel"
+        app:layout_constraintBottom_toBottomOf="@id/nextPlayerLabel"
+        app:layout_constraintStart_toEndOf="@id/nextPlayerLabel"
+        android:textSize="18sp"
+        android:elevation="8dp"
+        />
+
+
 
     <ImageButton
         android:id="@+id/finishButton"
