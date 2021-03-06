@@ -5,9 +5,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     >
+
+    <ImageButton
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_close_24px"
+        android:background="@color/transparent"
+        android:padding="@dimen/small_margin"
+        android:foreground="@drawable/ripple_circular_dark"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+
+        />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/instructions_carousel"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/closeButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/default_margin"
