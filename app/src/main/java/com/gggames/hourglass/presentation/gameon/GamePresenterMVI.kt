@@ -17,6 +17,7 @@ import com.gggames.hourglass.utils.rx.ofType
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Observable.*
+import io.reactivex.ObservableSource
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function3
 import io.reactivex.subjects.PublishSubject
@@ -103,7 +104,8 @@ class GamePresenterMVI @Inject constructor(
                         result.game.round.state == RoundState.Started
                 val roundOver = result.game.round.state == RoundState.Ended && previous.round.state != RoundState.Ended
 
-                val teamPlayers = result.game.teams.map { team-> team.toTeamWithPlayers(result.players.filter { it.team == team.name }) }
+                val teamPlayers =
+                    result.game.teams.map { team -> team.toTeamWithPlayers(result.players.filter { it.team == team.name }) }
 
                 val updatedTime = result.game.turn.time?.takeIf { !meActive }
                 val newState = previous.copy(
@@ -187,7 +189,7 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.TimerEnd>().switchMap { onTimerEnd() },
                 o.ofType<UiEvent.OnBackPressed>().switchMap { handleBackPressed() },
                 o.ofType<UiEvent.EndTurnClick>().switchMap { handleEndTurnPressed() },
-                o.ofType<UiEvent.UserApprovedEndTurn>().switchMap { endTurn(teamsWithPlayers) },
+                o.ofType<UiEvent.UserApprovedEndTurn>().switchMap { onApproveEndTurn() },
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
                 o.ofType<UiEvent.OnSwitchTeamPressed>()
@@ -200,13 +202,18 @@ class GamePresenterMVI @Inject constructor(
             )
         }
 
+    private fun onApproveEndTurn(): ObservableSource<out Result> =
+        flipLastCard(lastCard)
+            .andThen(endTurn(teamsWithPlayers))
+
     private fun quitGame(): Observable<BackPressedResult.NavigateToGames> {
-        return endTurn(teamsWithPlayers).switchMap {
-            just(
-                BackPressedResult.NavigateToGames(true),
-                BackPressedResult.NavigateToGames(false)
-            )
-        }
+        return flipLastCard(lastCard)
+            .andThen(endTurn(teamsWithPlayers)).switchMap {
+                just(
+                    BackPressedResult.NavigateToGames(true),
+                    BackPressedResult.NavigateToGames(false)
+                )
+            }
     }
 
     private fun onCorrectClick(time: Long): Observable<out Result> =
