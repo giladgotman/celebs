@@ -1,6 +1,5 @@
 package com.gggames.hourglass.presentation.creategame
 
-import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
@@ -24,6 +23,7 @@ import com.gggames.hourglass.presentation.gameon.GAME_ID_KEY
 import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
 import com.gggames.hourglass.utils.showErrorToast
 import com.gggames.hourglass.utils.showInfoToast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_games.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -127,7 +127,7 @@ class GamesFragment : Fragment(), GamesPresenter.View {
                 }
             }
         }
-        val builder = AlertDialog.Builder(context)
+        val builder = MaterialAlertDialogBuilder(requireContext(), R.style.celebs_MaterialAlertDialog)
         builder
             .setTitle(R.string.games_join_game_dialog_title)
             .setMessage(getString(R.string.games_join_game_dialog_subtitle, game.name))
