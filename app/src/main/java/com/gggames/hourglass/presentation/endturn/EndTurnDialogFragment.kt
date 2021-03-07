@@ -42,16 +42,14 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_end_turn_dialog, container, false)
 
-
-    var finishPressed = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         createViewComponent(this).inject(this)
 
-        finishButton.setOnClickListener {
-            finishPressed = true
-            requireActivity().onBackPressed()
+        closeButton.setOnClickListener {
+            Timber.w("close click: dialog:$dialog")
+            dismiss()
         }
         videoPlayer.initializePlayer()
         cardsFoundAdapter = CardsFoundAdapter (onClick = { card, playerView, giftText ->
@@ -109,10 +107,6 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
             }
             cardsAmountDescription.text =
                 getString(R.string.end_turn_cards_description, cardsNames?.size ?: 0)
-        }
-
-        finishButton.setOnClickListener {
-            dismissAllowingStateLoss()
         }
     }
 
