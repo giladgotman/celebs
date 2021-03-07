@@ -83,6 +83,7 @@ class GameOnFragmentMVI : Fragment(),
         presenter.states.subscribe { uiBinder.render(it) }.let { disposables.add(it) }
 
         presenter.bind(merge(uiEvents, uiBinder.events))
+        presenter.triggers.subscribe { uiBinder.trigger(it) }.let { disposables.add(it) }
     }
 
     override fun onDestroyView() {

@@ -159,6 +159,13 @@ interface GameScreenContract {
 
         data class ShowRoundInstructionsResult(val show: Boolean): Result()
 
+        data class ShowAllCardsResult(val cards: List<Card>): Result()
+
         object NoOp : Result()
+    }
+
+    sealed class Trigger {
+        data class ShowAllCards(val cards: List<Card>): Trigger()
+        data class Test(val cards: List<Card>): Trigger()
     }
 }

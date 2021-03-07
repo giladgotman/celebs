@@ -56,7 +56,9 @@ class GamePresenterMVI @Inject constructor(
     private var lastGame: Game? = null
 
     private val _states = PublishSubject.create<State>()
+    private val _triggers = PublishSubject.create<Trigger>()
     val states: Observable<State> = _states
+    val triggers: Observable<Trigger> = _triggers
 
     fun bind(events: Observable<UiEvent>) {
         val uiEvent = events
@@ -84,15 +86,30 @@ class GamePresenterMVI @Inject constructor(
             .subscribeOn(schedulerProvider.io())
             .doOnNext { Timber.d("RESULT:: $it") }
             .share()
-            .scan(State.initialState, reduce())
-            .distinctUntilChanged()
-            .doOnNext { Timber.d("STATE:: \n$it") }
-            .observeOn(schedulerProvider.ui())
-            .subscribe({
-                _states.onNext(it)
-            }) { Timber.e(it, "Unhandled exception in the main stream") }
-            .let { disposables.add(it) }
+            .also { results ->
+                results.scan(State.initialState, reduce())
+                .distinctUntilChanged()
+                .doOnNext { Timber.d("STATE:: \n$it") }
+                .observeOn(schedulerProvider.ui())
+                .subscribe({
+                    _states.onNext(it)
+                }) { Timber.e(it, "Unhandled exception in the main stream") }
+                .let { disposables.add(it) }
 
+                results
+                    .observeOn(schedulerProvider.ui())
+                    .compose { o ->
+                        mergeArray(
+                            o.ofType<ShowAllCardsResult>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) },
+                            o.ofType<Trigger.Test>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) }
+                        )
+                    }
+                    .doOnNext { Timber.d("TRIGGER:: $it") }
+                    .subscribe({
+                        _triggers.onNext(it)
+                    }) { Timber.e(it, "Unhandled exception in the main triggers stream") }
+                    .let { disposables.add(it) }
+            }
     }
 
     private fun reduce() = { previous: State, result: Result ->
@@ -178,6 +195,7 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is SetGameResult -> previous
             is NavigateToSelectTeam -> previous.copy(navigateToTeams = result.navigate)
+            is ShowAllCardsResult -> previous
         }
     }
 
@@ -191,6 +209,7 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.EndTurnClick>().switchMap { handleEndTurnPressed() },
                 o.ofType<UiEvent.UserApprovedEndTurn>().switchMap { onApproveEndTurn() },
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
+                o.ofType<UiEvent.CardsAmountClick>().switchMap { just(ShowAllCardsResult(cardDeck)) },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
                 o.ofType<UiEvent.OnSwitchTeamPressed>()
                     .switchMap {

@@ -171,34 +171,11 @@ class GameOnUiBinder @Inject constructor() {
         }
     }
 
-    // update the player.playerTurnState in each team based on the currentPlayer
-//    private fun updateTeamsWithPlayingState(
-//        teamsWithPlayers: List<Team>,
-//        currentPlayer: Player?,
-//        nextPlayer: Player?
-//    ): List<Team> {
-//        val teams = mutableListOf<Team>()
-//        teamsWithPlayers.forEachIndexed { index, team ->
-//            val players = mutableListOf<Player>()
-//            team.players.forEachIndexed { pIndex, player ->
-//                val playerTurnState = when {
-//                    currentPlayer?.id == player.id -> {
-//                        PlayerTurnState.Playing
-//                    }
-//                    nextPlayer?.id == player.id -> {
-//                        PlayerTurnState.UpNext
-//                    }
-//                    else -> {
-//                        PlayerTurnState.Idle
-//                    }
-//                }
-//                players.add(teamsWithPlayers[index].players[pIndex].copy(playerTurnState = playerTurnState))
-//
-//            }
-//            teams.add(team.copy(players = players))
-//        }
-//        return teams
-//    }
+    fun trigger(trigger: GameScreenContract.Trigger) {
+        when (trigger) {
+            is GameScreenContract.Trigger.ShowAllCards -> showAllCards(trigger.cards)
+        }
+    }
 
     private fun startResumeTimer() {
         if (!isTimerRunning) {
@@ -316,6 +293,24 @@ class GameOnUiBinder @Inject constructor() {
             endRoundDialogFragment?.show(fragment.requireActivity() as AppCompatActivity)
             endRoundDialogFragment?.setOnDismiss { endRoundDialogFragment = null }
         }
+    }
+
+    private fun showAllCards(cards: List<Card>) {
+        context?.let {ctx->
+            val sb = java.lang.StringBuilder()
+            cards.forEachIndexed { index, card ->
+                sb.append("${index + 1}: ${card.name}\n")
+            }
+            val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
+            }
+            val builder = MaterialAlertDialogBuilder(ctx, R.style.celebs_MaterialAlertDialog)
+            builder
+                .setTitle("All cards")
+                .setMessage(sb.toString())
+                .setPositiveButton(ctx.getString(R.string.ok), dialogClickListener)
+                .show()
+        }
+
     }
 
     private fun showFirstRoundIntro(round: Round, nextPlayer: Player?) {
