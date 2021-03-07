@@ -61,7 +61,8 @@ interface GameScreenContract {
         val navigateToTeams: Boolean = false,
         val useLocalTimer: Boolean = false,
         val showRoundInstructions: Boolean = false,
-        val isEndTurnEnabled: Boolean = false
+        val isEndTurnEnabled: Boolean = false,
+        val isCardsAmountEnabled: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -99,6 +100,7 @@ interface GameScreenContract {
                 useLocalTimer                   $useLocalTimer
                 showRoundInstructions           $showRoundInstructions
                 isEndTurnEnabled                $isEndTurnEnabled
+                isCardsAmountEnabled            $isCardsAmountEnabled
                 """.trimIndent()
 
     }
@@ -112,7 +114,7 @@ interface GameScreenContract {
         data class GameUpdate(val game: Game) : Result()
         data class PlayersUpdate(val players: List<Player>) : Result()
         data class CardsUpdate(val cards: List<Card>) : Result()
-        data class CombinedGameUpdate (
+        data class CombinedGameUpdate(
             val game: Game,
             val players: List<Player>,
             val cards: List<Card>
@@ -131,6 +133,7 @@ interface GameScreenContract {
                     return super.toString()
                 }
             }
+
             data class Done(override val label: String?) : SetGameResult(label) {
                 override fun toString(): String {
                     return super.toString()
@@ -153,19 +156,19 @@ interface GameScreenContract {
             data class NavigateToGames(val navigate: Boolean) : BackPressedResult()
         }
 
-        data class NavigateToSelectTeam(val navigate: Boolean): Result()
+        data class NavigateToSelectTeam(val navigate: Boolean) : Result()
 
         object RoundOverDialogDismissedResult : Result()
 
-        data class ShowRoundInstructionsResult(val show: Boolean): Result()
+        data class ShowRoundInstructionsResult(val show: Boolean) : Result()
 
-        data class ShowAllCardsResult(val cards: List<Card>): Result()
+        data class ShowAllCardsResult(val cards: List<Card>) : Result()
 
         object NoOp : Result()
     }
 
     sealed class Trigger {
-        data class ShowAllCards(val cards: List<Card>): Trigger()
-        data class Test(val cards: List<Card>): Trigger()
+        data class ShowAllCards(val cards: List<Card>) : Trigger()
+        data class Test(val cards: List<Card>) : Trigger()
     }
 }

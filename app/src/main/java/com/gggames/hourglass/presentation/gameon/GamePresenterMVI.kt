@@ -154,7 +154,8 @@ class GamePresenterMVI @Inject constructor(
                     totalCardsInGame = result.cards.size,
                     useLocalTimer = meActive,
                     screenTitle = result.game.name,
-                    isEndTurnEnabled = meActive
+                    isEndTurnEnabled = meActive,
+                    isCardsAmountEnabled = result.game.round.let { it.state == RoundState.New && it.roundNumber == 2}
                 )
                 // TODO: 25.10.20 remove from here and make it a pure function
                 lastGame = result.game

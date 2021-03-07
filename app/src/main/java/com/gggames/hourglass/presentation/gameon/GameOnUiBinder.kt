@@ -124,6 +124,7 @@ class GameOnUiBinder @Inject constructor() {
             }
             startButton?.state = state.playButtonState.state
             startButton?.isEnabled = state.playButtonState.isEnabled
+            cardsAmount?.isEnabled = state.isCardsAmountEnabled
 
             if (state.showEndOfTurn) {
                 state.lastPlayer?.let { player ->
