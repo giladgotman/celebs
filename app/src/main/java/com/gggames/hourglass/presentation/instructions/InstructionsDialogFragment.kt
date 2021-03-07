@@ -16,8 +16,6 @@ import kotlinx.android.synthetic.main.fragment_instructions.*
 
 class InstructionsDialogFragment : BottomSheetDialogFragment() {
 
-    var dialog2: Dialog? = null
-
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
     }
@@ -32,7 +30,7 @@ class InstructionsDialogFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         closeButton.setOnClickListener {
-            dialog2?.dismiss()
+            dismiss()
         }
         initializeCarouselViewPager()
     }
@@ -51,9 +49,7 @@ class InstructionsDialogFragment : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
-        dialog2 = dialog
         setupBottomSheet(dialog)
-
         return dialog
 
     }
