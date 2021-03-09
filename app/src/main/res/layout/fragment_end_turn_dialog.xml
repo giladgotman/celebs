@@ -9,33 +9,37 @@
         android:layout_gravity="top"
         android:orientation="vertical"
         android:paddingStart="@dimen/default_margin"
-        android:paddingTop="@dimen/default_margin"
-        android:paddingEnd="@dimen/default_margin"
         android:paddingBottom="@dimen/default_margin"
         android:background="@color/colorPrimary"
         app:layout_behavior="@string/bottom_sheet_behavior"
     >
 
+
     <ImageButton
-        android:id="@+id/buttonClose"
-        android:background="@drawable/ripple_circular_light"
-        android:padding="5dp"
+        android:id="@+id/closeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_close_24px"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_close_24px"
+        android:background="@color/transparent"
+        android:padding="@dimen/small_margin"
+        android:foreground="@drawable/ripple_circular_dark"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+
         />
 
-
-        <TextView
+    <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/Widget.MessageDialog.title"
+            android:layout_marginTop="@dimen/default_margin"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/cardsAmountDescription"
             tools:text="End of Gilad's turn" />
 
 
@@ -49,17 +53,61 @@
             android:textAppearance="@style/Widget.MessageDialog.description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintBottom_toTopOf="@id/cardsRecyclerView"
             tools:text="7 cards found" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cardsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/default_margin"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/bottom_sheet_behavior"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardsAmountDescription" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cardsRecyclerView"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/nextPlayerLabel"
+        tools:listitem="@layout/end_turn_card_found_item"
+        tools:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:context="com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment"
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        />
+
+    <TextView
+        android:id="@+id/nextPlayerLabel"
+        style="@style/TextViewSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:text="Next player is "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/medium_margin"
+        />
+
+    <com.gggames.hourglass.presentation.common.NameBadge
+        android:id="@+id/nextPlayerNameBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
+        app:layout_constraintTop_toTopOf="@id/nextPlayerLabel"
+        app:layout_constraintBottom_toBottomOf="@id/nextPlayerLabel"
+        app:layout_constraintStart_toEndOf="@id/nextPlayerLabel"
+        android:textSize="18sp"
+        android:elevation="8dp"
+        />
+
+
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/finishButton"-->
+<!--        style="@style/NextButtonStyle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

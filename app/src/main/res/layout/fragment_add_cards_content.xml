@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gggames.celebs.presentation.creategame.AddCardsFragment"
+    tools:context="com.gggames.hourglass.presentation.creategame.AddCardsFragment"
     android:paddingStart="@dimen/default_margin"
     android:paddingEnd="@dimen/default_margin"
     android:paddingTop="@dimen/medium_margin"

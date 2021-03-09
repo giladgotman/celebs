@@ -7,20 +7,28 @@
 
     <fragment
         android:id="@+id/GamesFragment"
-        android:name="com.gggames.celebs.presentation.creategame.GamesFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.GamesFragment"
         android:label="@string/games_fragment_label"
         tools:layout="@layout/fragment_games">
 
         <action
             android:id="@+id/action_GamesFragment_to_CreateGameFragment"
             app:destination="@id/CreateGameFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
         <action
             android:id="@+id/action_GamesFragment_to_AddCardsFragment"
             app:destination="@id/AddCardsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
+        <action
+            android:id="@+id/action_GamesFragment_to_GameOverFragment"
+            app:destination="@id/gameOverFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
 
         <argument
             android:name="gameId"
@@ -31,10 +39,15 @@
             android:autoVerify="true"
             app:uri="https://gglab.page.link/joinGame/{gameId}" />
 
+        <deepLink
+            android:id="@+id/joinGameDirect"
+            android:autoVerify="true"
+            app:uri="https://gglab.page.link/joinGameDirect/{gameId}" />
+
     </fragment>
     <fragment
         android:id="@+id/CreateGameFragment"
-        android:name="com.gggames.celebs.presentation.creategame.CreateGameFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.CreateGameFragment"
         android:label="@string/create_game_fragment_label"
         tools:layout="@layout/fragment_create_game">
 
@@ -46,19 +59,23 @@
             app:destination="@id/AddCardsFragment"
             app:popUpTo="@+id/CreateGameFragment"
             app:popUpToInclusive="true"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
     </fragment>
 
     <fragment
         android:id="@+id/AddCardsFragment"
-        android:name="com.gggames.celebs.presentation.creategame.AddCardsFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.AddCardsFragment"
         android:label="@string/add_cards_fragment_label"
         tools:layout="@layout/fragment_add_cards">
         <action
             android:id="@+id/action_AddCardsFragment_to_GamesFragment"
             app:destination="@id/GamesFragment"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+
+            />
         <argument
             android:name="gameId"
             app:argType="string" />
@@ -69,12 +86,25 @@
             android:id="@+id/action_AddCardsFragment_to_chooseTeamFragment"
             app:popUpTo="@+id/AddCardsFragment"
             app:popUpToInclusive="true"
-            app:destination="@id/chooseTeamFragment" />
+            app:destination="@id/chooseTeamFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
+
+        <action
+            android:id="@+id/action_AddCardsFragment_to_gameOnFragment"
+            app:popUpTo="@+id/AddCardsFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/gameOnFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
+
     </fragment>
 
     <fragment
         android:id="@+id/chooseTeamFragment"
-        android:name="com.gggames.celebs.presentation.creategame.ChooseTeamFragment"
+        android:name="com.gggames.hourglass.presentation.creategame.ChooseTeamFragment"
         android:label="@string/choose_team_fragment_label"
         tools:layout="@layout/fragment_choose_teams"
         >
@@ -85,11 +115,14 @@
             android:id="@+id/action_chooseTeamFragment_to_gameOnFragment"
             app:popUpTo="@+id/chooseTeamFragment"
             app:popUpToInclusive="true"
-            app:destination="@id/gameOnFragment" />
+            app:destination="@id/gameOnFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            />
     </fragment>
     <fragment
         android:id="@+id/gameOnFragment"
-        android:name="com.gggames.celebs.presentation.gameon.GameOnFragment"
+        android:name="com.gggames.hourglass.presentation.gameon.GameOnFragmentMVI"
         android:label="GameOnFragment" >
         <action
             android:id="@+id/action_gameOnFragment_to_GamesFragment"
@@ -98,21 +131,33 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:launchSingleTop="true"
             app:popUpTo="@id/gameOnFragment"
-            app:popUpToInclusive="true"
-            />
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_gameOnFragment_to_gameOverFragment"
             app:destination="@id/gameOverFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
             app:popUpTo="@id/gameOnFragment"
             app:popUpToInclusive="true"
 
             />
+        <action
+            android:id="@+id/action_gameOnFragment_to_endTurnDialogFragment"
+            app:destination="@id/endTurnDialogFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            />
+        <action
+            android:id="@+id/action_gameOnFragment_to_ChooseTeamFragment"
+            app:destination="@id/chooseTeamFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/gameOnFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"
-        android:name="com.gggames.celebs.presentation.endgame.GameOverFragment"
+        android:name="com.gggames.hourglass.presentation.endgame.GameOverFragment"
         android:label="GameOverFragment" >
         <action
             android:id="@+id/action_gameOverFragment_to_GamesFragment"
@@ -126,6 +171,39 @@
         <argument
             android:name="gameId"
             app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.gggames.hourglass.presentation.video.VideoPlayerFragment"
+        android:label="VideoPlayerFragment" >
+
+        <argument
+            android:name="videoUrl"
+            app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/endTurnDialogFragment"
+        android:name="com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment"
+        android:label="EndTurnDialogFragment" >
+
+        <argument
+            android:name="playerName"
+            app:argType="string" />
+
+        <argument
+            android:name="cards"
+            app:argType="com.gggames.hourglass.model.Card[]"
+            />
+
+        <argument
+            android:name="roundNumber"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_endTurnDialogFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment"
+            app:enterAnim="@android:anim/fade_in" />
 
     </fragment>
 

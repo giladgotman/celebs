@@ -14,7 +14,7 @@
     <string name="create_game_team_1_name">Team 1 Name</string>
     <string name="create_game_team_2_name">Team 2 Name</string>
     <string name="create_game_team_3_name">Team 3 Name</string>
-    <string name="create_game_num_cards">#cards</string>
+    <string name="create_game_num_cards">Cards per player</string>
     <string name="create_game_password">Game password</string>
 
     <!--    Games Screen-->
@@ -23,12 +23,16 @@
     <string name="games_join_game_dialog_subtitle">Game: %1$s </string>
     <string name="games_join_game_dialog_positive_button">Join</string>
     <string name="games_join_game_dialog_negative_button">Cancel</string>
+    <string name="games_no_active_games_title">No active games</string>
+    <string name="games_no_active_games_description">Games that you join or create will be shown here</string>
+    <string name="games_create_game">Create</string>
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="add_cards_description">Add your cards</string>
+    <string name="add_cards_title">Add your cards</string>
+    <string name="add_cards_description">You can use celebrities, characters from a book or a TV series, or anything you decide on…</string>
     <string name="add_cards_card_1">Card 1</string>
     <string name="add_cards_card_2">Card 2</string>
     <string name="add_cards_card_3">Card 3</string>
@@ -37,22 +41,27 @@
     <string name="add_cards_card_6">Card 6</string>
 
     <string name="login_welcome_title">Hi there, I am <i>Hourglass</i></string>
-    <string name="login_welcome_subtitle">Your remote <i>Celebs Game</i> companion</string>
-    <string name="login_username_hint">Your name</string>
+    <string name="login_welcome_subtitle">Your remote <i>Celebrity Game</i> companion</string>
+    <string name="login_username_hint">Your nickname</string>
     <string name="shared_prefs_default">prefs</string>
     <string name="action_logout">Logout</string>
     <string name="menu_about">About</string>
+    <string name="menu_switch_team">Switch team</string>
+    <string name="menu_end_turn">End my turn</string>
+    <string name="menu_help">Help</string>
     <string name="game_on_start">Start</string>
     <string name="version_value">v%s</string>
     <string name="teams">Teams</string>
     <string name="new_round_alert_message">Are you sure you want to start a new round?</string>
     <string name="end_turn_alert_message">Are you sure you want to end your turn?</string>
     <string name="ok">OK</string>
+    <string name="about_dialog_send_feedback">Send Feedback</string>
+    <string name="about_dialog_later">Later</string>
     <string name="error_generic">Something went wrong</string>
 
     <!--    Share-->
     <string name="share_with_title">Share with</string>
-    <string name="share_message">Please join this cool Hourglass game(%1$s):\n%2$s</string>
+    <string name="share_message">Please join this Hourglass game(%1$s):\n%2$s</string>
 
     <!--    End of turn dialog-->
     <string name="end_turn_title">%1$s\'s turn ended</string>
@@ -64,6 +73,69 @@
 
     <!--    Leave game dialog-->
     <string name="leave_game_dialog_title">Are you sure you want to quit and end your turn?</string>
+    <string name="end_turn_dialog_title">Are you sure you want to end your turn?</string>
+
     <string name="game_over_title">Game Over</string>
     <string name="game_over_subtitle">%1$s won!</string>
+    <string name="choose_team_no_team_selected_error">Please choose a team</string>
+
+<!--    Welcome screen-->
+
+    <string name="welcome_1_title">The crazy guessing game*</string>
+    <string name="welcome_1_description">Bring your mind, body &amp; mobile device</string>
+    <string name="welcome_2_title">Connect from anywhere </string>
+    <string name="welcome_2_description">Play with friends, family and colleagues wherever you are</string>
+    <string name="welcome_3_title">Choose your teammates</string>
+    <string name="welcome_3_description">Start thinking who you want to play with, this game is for at least 4 players</string>
+    <string name="instructions_section1_title">What is Hourglass ?</string>
+    <string name="instructions_section1_description">"Hourglass is a virtual version of a popular classic game which is known in many countries around the world. It is also known as:
+Celebs, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.
+
+You'll need at least 4 people to play, but it only gets more fun with more players.
+
+Hop on a video call and play through rounds of:
+<b>Describe, One Word &amp; Charades</b>."
+    </string>
+
+    <string name="instructions_section2_description">"
+One person creates a game and shares it with others
+
+Each player writes their words on “cards” that would be guessed later
+
+Then you will have to split into teams, players from each team will alternate turns, giving clues to their team to guess as many cards as possible against the clock (aka Hourglass)
+
+There'll be 3 rounds, and cards will get recycled after each round!
+"
+    </string>
+    <string name="instructions_section2_title">How to play</string>
+
+    <string name="instructions_section3_title">The rounds</string>
+    <string name="instructions_section3_round1_title">Round 1 : Describe</string>
+    <string name="instructions_section3_round2_title">Round 2 : One Word</string>
+    <string name="instructions_section3_round3_title">Round 3 : Charades</string>
+    <string name="instructions_section3_round1_descriptions">You can use as many words as you like to describe the word on the card, without acting or gestures.</string>
+    <string name="instructions_section3_round2_descriptions">You can use exactly 1 word per card. once you said a word, you can only repeat it…</string>
+    <string name="instructions_section3_round3_descriptions">Act and use mime to communicate the card. no words or sounds allowed…</string>
+    <string name="instructions_section3_general_description"><b>The team that guesses the most cards across all rounds wins!</b></string>
+
+    <string name="end_round_next_round_button_cta">NEXT ROUND</string>
+    <string name="next_round_next_player_value">with %1$d seconds left</string>
+    <string name="next_round_next_player_to_play_label">Next player: </string>
+    <string name="next_round_title">Round %d : %s</string>
+    <string name="change_round_next_round_cta">READY</string>
+    <string name="welcome_first_round_cta">READY</string>
+    <string name="welcome_first_round_starting_player_label">Starting player:</string>
+    <string name="myEmail">giladgot@gmail.com</string>
+    <string name="about_dialog_message_first_part">"
+This game was made with love and it\'s in the very early stage.
+
+Your feedback is very important to us 💛
+
+
+"
+    </string>
+    <string name="feedback_email_subject">Feedback for Hourglass</string>
+    <string name="about_dialog_title">About</string>
+    <string name="about_dialog_version_part">Version: %s</string>
+
 </resources>

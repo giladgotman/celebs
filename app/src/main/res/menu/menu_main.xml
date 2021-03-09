@@ -1,7 +1,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.gggames.celebs.com.gggames.com.MainActivity">
+    tools:context="com.gggames.hourglass.com.gggames.com.MainActivity">
+
+    <item
+        android:id="@+id/menu_help"
+        android:orderInCategory="100"
+        android:title="@string/menu_help"
+        android:icon="@drawable/ic_help"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_end_turn"
+        android:orderInCategory="100"
+        android:title="@string/menu_end_turn"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_switch_team"
+        android:orderInCategory="100"
+        android:title="@string/menu_switch_team"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/menu_logout"
         android:orderInCategory="100"

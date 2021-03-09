@@ -5,13 +5,14 @@
     android:layout_marginBottom="@dimen/small_margin"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/name"
+    <com.gggames.hourglass.presentation.common.NameBadge
+        android:id="@+id/nameBadge"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
+        android:elevation="8dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

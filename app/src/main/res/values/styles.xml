@@ -1,10 +1,47 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
+    </style>
+
+
+    <style name="Widget.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="hintTextColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">4dp</item>
+    </style>
+
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>
+        <item name="editTextStyle">@style/DefaultEditTextStyle</item>
+    </style>
+
+
+    <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">@dimen/medium_text_size</item>
+        <item name="android:color">@color/black</item>
+
+    </style>
+
+    <style name="TextAppearance.App.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/poppins_light</item>
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:color">@color/black</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -27,16 +64,44 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="DefaultEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="fontFamily">@font/poppins_light</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="TextViewMedium" parent="DefaultTextViewStyle" >
         <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
 
-    <style name="TextViewTitle" parent="DefaultTextViewStyle" >
+    <style name="EditTextBig" parent="DefaultEditTextStyle" >
         <item name="android:textSize">@dimen/big_text_size</item>
     </style>
 
+    <style name="EditTextCreateGame" parent="DefaultEditTextStyle" >
+        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/poppins_semi_bold</item>
+
+    </style>
+
+    <style name="TextViewTitle" parent="DefaultTextViewStyle" >
+        <item name="android:textSize">@dimen/big_text_size</item>
+        <item name="fontFamily">@font/poppins_semi_bold</item>
+    </style>
+
     <style name="TextViewSubTitle" parent="DefaultTextViewStyle" >
+        <item name="fontFamily">@font/poppins_medium</item>
         <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+
+    <style name="TextViewDescription" parent="DefaultTextViewStyle" >
+        <item name="fontFamily">@font/roboto_light</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
+    <style name="TextViewWelcomeDescription" parent="DefaultTextViewStyle" >
+        <item name="fontFamily">@font/poppins_light</item>
+        <item name="android:textSize">@dimen/text_size_18</item>
     </style>
 
     <style name="TextViewBold" parent="DefaultTextViewStyle" >
@@ -45,19 +110,53 @@
         <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
 
+    <style name="TextViewToolbarTitle" parent="DefaultTextViewStyle" >
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">@dimen/medium_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="CardTextViewStyle" parent="DefaultTextViewStyle">
         <item name="android:fontFamily">@font/indie_flower_regular</item>
         <item name="fontFamily">@font/indie_flower_regular</item>
     </style>
 
-    <style name="DefaultButtonStyle" parent="android:Widget.Material.Light.ImageButton">
-        <item name="android:background">@color/hawaii_blue</item>
+    <style name="DefaultButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:backgroundTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20dp</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:letterSpacing">0.1</item>
     </style>
 
-    <style name="NextButtonStyle" parent="DefaultButtonStyle" >
+
+    <style name="GenericWideButton" parent="DefaultButtonStyle" >
+        <item name="android:padding">@dimen/default_margin</item>
+        <item name="android:layout_marginStart">@dimen/default_margin</item>
+        <item name="android:layout_marginEnd">@dimen/default_margin</item>
+        <item name="android:gravity">center</item>
+        <item name="rippleColor">@color/white</item>
+
+    </style>
+
+
+    <style name="SkewedButtonStyle" parent="DefaultButtonStyle" >
+        <item name="android:background">@drawable/ic_button_skewed</item>
+        <item name="fontFamily">@font/poppins_bold</item>
+        <item name="android:padding">30dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="WelcomeButtonStyle" parent="SkewedButtonStyle" >
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
+    <style name="NextButtonStyle" parent="Widget.AppCompat.ImageButton" >
         <item name="android:src">@drawable/correct_button</item>
-        <item name="android:background">@color/transparent</item>
         <item name="android:foreground">@drawable/ripple_circular_dark</item>
+        <item name="android:background">@color/transparent</item>
 
     </style>
 
@@ -71,7 +170,7 @@
 
     <style name="Widget.MessageDialog.ApproveButton" parent="Widget.AppCompat.Button.Colored">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="Widget.MessageDialog.title" parent="Widget.AppCompat.TextView">
