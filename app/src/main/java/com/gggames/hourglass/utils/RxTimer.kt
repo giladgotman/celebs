@@ -1,16 +1,26 @@
 package com.gggames.hourglass.utils
 
+import androidx.annotation.VisibleForTesting
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class RxTimer @Inject constructor(val schedulerProvider: BaseSchedulerProvider) {
+class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     private val disposables = CompositeDisposable()
     private val _events = PublishSubject.create<TimerEvent>()
+
+    @VisibleForTesting
+    var createTimerObservable : () -> Observable<Long> = {
+        Observable.interval(
+            1000,
+            1000,
+            TimeUnit.MILLISECONDS,
+            schedulerProvider.io()
+        )
+    }
 
     private var isPaused = false
     var time: Long = 0
@@ -26,7 +36,7 @@ class RxTimer @Inject constructor(val schedulerProvider: BaseSchedulerProvider) 
         }
         isPaused = false
 
-        val timerObservable = Observable.interval(1000, 1000, TimeUnit.MILLISECONDS, schedulerProvider.io())
+        val timerObservable = createTimerObservable()
             .filter { !isPaused }
             .map { time -= 1000 }
             .takeUntil { time <= 0 }
