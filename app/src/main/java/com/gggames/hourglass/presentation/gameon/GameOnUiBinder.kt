@@ -2,7 +2,6 @@ package com.gggames.hourglass.presentation.gameon
 
 import android.content.Context
 import android.content.DialogInterface
-import android.os.CountDownTimer
 import android.view.Menu
 import android.view.View
 import android.widget.TextView
@@ -19,14 +18,19 @@ import com.gggames.hourglass.presentation.endturn.ChangeRoundDialogFragment
 import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
 import com.gggames.hourglass.presentation.endturn.WelcomeFirstRoundFragment
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
+import com.gggames.hourglass.utils.RxTimer
+import com.gggames.hourglass.utils.TimerEvent
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class GameOnUiBinder @Inject constructor() {
+class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerProvider) {
 
     private lateinit var fragment: GameOnFragmentMVI
 
@@ -43,30 +47,30 @@ class GameOnUiBinder @Inject constructor() {
 
     private lateinit var playersRecycleViews: List<RecyclerView>
 
-    private var mCountDownTimer: CountDownTimer? = null
+    private val rxTimer = RxTimer(schedulerProvider)
 
-    var endRoundDialogFragment: ChangeRoundDialogFragment? = null
-    var endTurnDialogFragment: EndTurnDialogFragment? = null
+    private var endRoundDialogFragment: ChangeRoundDialogFragment? = null
+    private var endTurnDialogFragment: EndTurnDialogFragment? = null
 
-    var isEndTurnEnabled = false
-
-    private var mTimeLeftInMillis = TURN_TIME_MILLIS
+    private var isEndTurnEnabled = false
 
     private val _emitter = PublishSubject.create<UiEvent>()
     val events: Observable<UiEvent> = _emitter
 
+    private val disposables = CompositeDisposable()
+
     private fun setup() {
         view?.apply {
             correctButton.setOnClickListener {
-                _emitter.onNext(UiEvent.CorrectClick(mTimeLeftInMillis))
+                _emitter.onNext(UiEvent.CorrectClick(rxTimer.time))
             }
 
             roundTextView.setOnClickListener {
-                _emitter.onNext(UiEvent.RoundClick(mTimeLeftInMillis))
+                _emitter.onNext(UiEvent.RoundClick(rxTimer.time))
             }
 
             startButton.setOnClickListener {
-                _emitter.onNext(UiEvent.StartStopClick(startButton.state, mTimeLeftInMillis))
+                _emitter.onNext(UiEvent.StartStopClick(startButton.state, rxTimer.time))
             }
 
             cardsAmount.setOnClickListener {
@@ -87,7 +91,17 @@ class GameOnUiBinder @Inject constructor() {
             }
 
         }
-        setupTimer()
+        rxTimer.observe()
+            .observeOn(schedulerProvider.ui())
+            .subscribe {
+                Timber.w("ttt TIMER EVENT $it")
+                when (it) {
+                    is TimerEvent.UpdatedTime -> view?.timerTextView?.text = getFormattedTime(it.time)
+                    is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
+                    is TimerEvent.Tick -> {}
+                }
+            }.let { disposables.add(it) }
+        rxTimer.time = TURN_TIME_MILLIS
     }
 
     fun setFragment(fragment: GameOnFragmentMVI) {
@@ -112,20 +126,26 @@ class GameOnUiBinder @Inject constructor() {
             setTeamNamesAndScore(state.teamsWithScore)
             setTeamPlayers(state.teamsWithPlayers, state.currentPlayer, state.nextPlayer)
             roundTextView?.text = state.round.roundNumber.toString()
+
+            // Time
             if (state.useLocalTimer) {
                 if (state.isTimerRunning && !state.inProgress) {
-                    startResumeTimer()
+                    resumeTimer()
                 } else {
                     pauseTimer()
                 }
             }
-            if (state.resetTime) {
-                updateTime(TURN_TIME_MILLIS)
-            }
+            if (state.resetTime) { rxTimer.time = TURN_TIME_MILLIS }
+            state.time?.let { rxTimer.time = it }
+
+            // Buttons
             startButton?.state = state.playButtonState.state
             startButton?.isEnabled = state.playButtonState.isEnabled
             cardsAmount?.isEnabled = state.isCardsAmountEnabled
+            correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
+            helpButton?.isEnabled = state.helpButtonEnabled
 
+            // Dialogs
             if (state.showEndOfTurn) {
                 state.lastPlayer?.let { player ->
                     if (isFragmentVisible) {
@@ -138,55 +158,36 @@ class GameOnUiBinder @Inject constructor() {
                     showEndRound(state.round, state.teamsWithScore)
                 }
             }
+            if (state.showRoundInstructions) { showFirstRoundIntro(state.round, state.nextPlayer) }
+            if (state.showLeaveGameConfirmation) { showLeaveGameDialog() }
+            if (state.showEndTurnConfirmation) {showEndTurnDialog() }
 
-            if (state.showRoundInstructions) {
-                showFirstRoundIntro(state.round, state.nextPlayer)
-            }
-            if (state.showGameOver) {
-                fragment.navigateToEndGame()
-            }
-            if (state.navigateToGames) {
-                fragment.navigateToGames()
-            }
+            // Navigation
+            if (state.showGameOver) { fragment.navigateToEndGame() }
+            if (state.navigateToGames) { fragment.navigateToGames() }
+            if (state.navigateToTeams) { fragment.navigateToTeams() }
 
-            if (state.navigateToTeams) {
-                fragment.navigateToTeams()
-            }
-            if (state.showLeaveGameConfirmation) {
-                showLeaveGameDialog()
-            }
-            if (state.showEndTurnConfirmation) {
-                showEndTurnDialog()
-            }
-
-            state.time?.let { updateTime(it) }
-
-
+            // Toolbar
             if (isEndTurnEnabled != state.isEndTurnEnabled) {
                 isEndTurnEnabled = state.isEndTurnEnabled
                 fragment.activity?.invalidateOptionsMenu()
             }
-
-            correctButton?.isEnabled = state.correctButtonEnabled && !state.inProgress
-            helpButton?.isEnabled = state.helpButtonEnabled
         }
     }
 
     fun trigger(trigger: GameScreenContract.Trigger) {
         when (trigger) {
             is GameScreenContract.Trigger.ShowAllCards -> showAllCards(trigger.cards)
+            is GameScreenContract.Trigger.StartTimer -> rxTimer.start()
         }
     }
 
-    private fun startResumeTimer() {
-        if (!isTimerRunning) {
-            startTimer()
-        }
+    private fun resumeTimer() {
+        rxTimer.resume()
     }
 
     private fun pauseTimer() {
-        mCountDownTimer?.cancel()
-        isTimerRunning = false
+        rxTimer.pause()
     }
 
     private fun setTeamPlayers(teams: List<TeamWithPlayers>, currentPlayer: Player?, nextPlayer: Player?) {
@@ -227,23 +228,6 @@ class GameOnUiBinder @Inject constructor() {
                 }
             }
         }
-    }
-
-    var isTimerRunning = false
-    private fun startTimer() {
-        mCountDownTimer?.cancel()
-        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
-            override fun onFinish() {
-                isTimerRunning = false
-                mCountDownTimer = null
-                _emitter.onNext(UiEvent.TimerEnd)
-            }
-
-            override fun onTick(millis: Long) {
-                updateTime(millis)
-            }
-        }.start()
-        isTimerRunning = true
     }
 
     private fun showLeaveGameDialog() {
@@ -297,7 +281,7 @@ class GameOnUiBinder @Inject constructor() {
     }
 
     private fun showAllCards(cards: List<Card>) {
-        context?.let {ctx->
+        context?.let { ctx ->
             val sb = java.lang.StringBuilder()
             cards.forEachIndexed { index, card ->
                 sb.append("${index + 1}: ${card.name}\n")
@@ -327,18 +311,9 @@ class GameOnUiBinder @Inject constructor() {
         }
     }
 
-    private fun setupTimer() {
-        updateTime(TURN_TIME_MILLIS)
-    }
-
-    private fun updateTime(time: Long) {
-        mTimeLeftInMillis = time
-        view?.timerTextView?.text = getFormattedTime()
-    }
-
-    private fun getFormattedTime(): String {
-        val minutes = (mTimeLeftInMillis / 1000).toInt() / 60
-        val seconds = (mTimeLeftInMillis / 1000).toInt() % 60
+    private fun getFormattedTime(rawTime: Long): String {
+        val minutes = (rawTime / 1000).toInt() / 60
+        val seconds = (rawTime / 1000).toInt() % 60
 
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
     }
@@ -346,5 +321,9 @@ class GameOnUiBinder @Inject constructor() {
     fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menu.findItem(R.id.menu_end_turn).isVisible = isEndTurnEnabled
         return true
+    }
+
+    fun clear() {
+        disposables.clear()
     }
 }

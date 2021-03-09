@@ -101,7 +101,7 @@ class GamePresenterMVI @Inject constructor(
                     .compose { o ->
                         mergeArray(
                             o.ofType<ShowAllCardsResult>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) },
-                            o.ofType<Trigger.Test>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) }
+                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) }
                         )
                     }
                     .doOnNext { Timber.d("TRIGGER:: $it") }
@@ -196,7 +196,9 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is SetGameResult -> previous
             is NavigateToSelectTeam -> previous.copy(navigateToTeams = result.navigate)
+            // Handled as Triggers:
             is ShowAllCardsResult -> previous
+            is StartedGameResult -> previous
         }
     }
 
@@ -255,7 +257,11 @@ class GamePresenterMVI @Inject constructor(
     ) =
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!)
+                .filter { it is SetGameResult.Done }
                 .switchMap { handleNextCardWrap(time) }
+                .filter{ it is HandleNextCardResult.NewCard }
+                .switchMap { just(StartedGameResult) }
+
             ButtonState.Running -> pauseTurn(time)
             ButtonState.Paused -> {
                 gamesRepository.getCurrentGame().toObservable().switchMap { game ->

@@ -159,6 +159,7 @@ interface GameScreenContract {
         data class NavigateToSelectTeam(val navigate: Boolean) : Result()
 
         object RoundOverDialogDismissedResult : Result()
+        object StartedGameResult : Result()
 
         data class ShowRoundInstructionsResult(val show: Boolean) : Result()
 
@@ -169,6 +170,6 @@ interface GameScreenContract {
 
     sealed class Trigger {
         data class ShowAllCards(val cards: List<Card>) : Trigger()
-        data class Test(val cards: List<Card>) : Trigger()
+        object StartTimer : Trigger()
     }
 }
