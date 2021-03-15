@@ -251,14 +251,15 @@ class GamePresenterMVI @Inject constructor(
 
     private fun onCorrectClick(time: Long): Observable<out Result> =
         lastCard?.let { card ->
-            authenticator.me?.team?.let { teamName ->
-                // TODO: 09.10.20 check if the InProgress can be removed cause the SetGame will start with InProgress
-                merge(
-                    just(HandleNextCardResult.InProgress),
-                    handleCorrectCard(card, teamName)
-                        .switchMap { handleNextCardWrap(time) }
-                )
-            }
+            if (time > 100L) {
+                authenticator.me?.team?.let { teamName ->
+                    merge(
+                        just(HandleNextCardResult.InProgress),
+                        handleCorrectCard(card, teamName)
+                            .switchMap { handleNextCardWrap(time) }
+                    )
+                }
+            } else just(NoOp)
         } ?: just(NoOp)
 
 
