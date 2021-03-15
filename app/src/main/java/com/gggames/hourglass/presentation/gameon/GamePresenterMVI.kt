@@ -166,6 +166,7 @@ class GamePresenterMVI @Inject constructor(
                 cardDeck = result.cards
                 teamsWithPlayers = teamPlayers
 
+                previous.printDiff(newState)
                 newState
             }
             is ShowRoundInstructionsResult -> previous.copy(showRoundInstructions = result.show)
@@ -180,7 +181,7 @@ class GamePresenterMVI @Inject constructor(
             }
             is RoundOverDialogDismissedResult -> previous
             is HandleNextCardResult -> {
-                when (result) {
+                val newState = when (result) {
                     is HandleNextCardResult.InProgress -> {
                         previous.copy(inProgress = true)
                     }
@@ -192,6 +193,8 @@ class GamePresenterMVI @Inject constructor(
                     is HandleNextCardResult.RoundOver -> previous.copy(inProgress = false)
                     is HandleNextCardResult.GameOver -> previous
                 }
+                previous.printDiff(newState)
+                newState
             }
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
             is EndTurnPressedResult.ShowLeaveGameConfirmation -> previous.copy(showEndTurnConfirmation = result.showDialog)
