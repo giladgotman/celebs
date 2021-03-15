@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.gggames.hourglass.R
@@ -11,6 +12,7 @@ import com.gggames.hourglass.model.PlayerTurnState
 import com.gggames.hourglass.model.Turn
 import com.gggames.hourglass.presentation.common.NameBadge
 import kotlinx.android.synthetic.main.fragment_next_round.*
+import kotlin.math.ceil
 
 class NextRoundDialogFragment : Fragment() {
 
@@ -40,7 +42,7 @@ class NextRoundDialogFragment : Fragment() {
             if (currentTurn?.player != null) {
                 next_player_name_badge.state =
                     NameBadge.State(currentTurn.player.name, PlayerTurnState.UpNext)
-                val secondsLeft = currentTurn.time?.let { ((it / 1000).toInt() % 60) + 1} ?: 0
+                val secondsLeft = convertTime(currentTurn.time)
                 next_round_next_player_value.text = getString(
                     R.string.next_round_next_player_value,
                     secondsLeft
@@ -59,6 +61,12 @@ class NextRoundDialogFragment : Fragment() {
             putParcelable(KEY_CURRENT_TURN, currentTurn)
         }
     }
+
+    @VisibleForTesting
+    fun convertTime(time: Long?) =
+        time?.let {
+            ceil((it / 1000f)).toInt()
+        } ?: 0
 }
 
 val KEY_NEXT_ROUND_ID = "KEY_NEXT_ROUND_ID"
