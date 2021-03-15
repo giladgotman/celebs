@@ -62,7 +62,7 @@ class GamePresenterMVI @Inject constructor(
 
     fun bind(events: Observable<UiEvent>) {
         val uiEvent = events
-            .doOnNext { Timber.d("USER:: $it") }
+            .doOnNext { Timber.i("USER:: $it") }
 
         val dataInput =
             gamesRepository.getCurrentGame().toObservable().switchMap { game ->
@@ -85,7 +85,7 @@ class GamePresenterMVI @Inject constructor(
         allInput
             .subscribeOn(schedulerProvider.io())
             .doOnNext {
-                Timber.d("RESULT:: ${it.javaClass}")
+                Timber.i("RESULT:: ${it.javaClass}")
                 Timber.v("RESULT:: $it")
             }
             .share()
@@ -107,7 +107,7 @@ class GamePresenterMVI @Inject constructor(
                             o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) }
                         )
                     }
-                    .doOnNext { Timber.d("TRIGGER:: $it") }
+                    .doOnNext { Timber.i("TRIGGER:: $it") }
                     .subscribe({
                         _triggers.onNext(it)
                     }) { Timber.e(it, "Unhandled exception in the main triggers stream") }

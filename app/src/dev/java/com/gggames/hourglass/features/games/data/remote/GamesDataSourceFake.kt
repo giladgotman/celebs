@@ -18,13 +18,13 @@ class GamesDataSourceFake @Inject constructor() : RemoteGamesDataSource {
     private val gamesSubject = PublishSubject.create<Game>()
 
     override fun getGames(gameIds: List<String>, states: List<GameState>): Single<List<Game>> {
-        Timber.w("ggg getGames: size: ${gameIds.size}")
+        Timber.v("ggg getGames: size: ${gameIds.size}")
         return Single.just(games.filter { (it.id in gameIds && ((it.state in states) || it.type == GameType.Gift)) || it.id == "id" })
     }
 
     override fun setGame(game: Game): Completable =
         fromCallable {
-            Timber.w("ggg setGame: id: ${game.id}")
+            Timber.v("ggg setGame: id: ${game.id}")
             games.indexOfFirst { it.id == game.id }.takeIf { it != -1 }?.let { index ->
                 games.set(index, game)
             } ?: games.add(game)
@@ -32,7 +32,7 @@ class GamesDataSourceFake @Inject constructor() : RemoteGamesDataSource {
         }
 
     override fun observeGame(gameId: String): Observable<GameResult> {
-        Timber.w("ggg observeGame, id: $gameId")
+        Timber.v("ggg observeGame, id: $gameId")
         val first = games.find { it.id == gameId }?.let {
             just(it)
         } ?: Observable.empty<Game>()
