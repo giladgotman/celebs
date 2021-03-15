@@ -12,6 +12,7 @@ import com.gggames.hourglass.presentation.gameon.GameScreenContract.*
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.Result.*
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.CorrectClick
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.StartStopClick
+import com.gggames.hourglass.utils.doInDebug
 import com.gggames.hourglass.utils.media.AudioPlayer
 import com.gggames.hourglass.utils.rx.ofType
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
@@ -166,7 +167,9 @@ class GamePresenterMVI @Inject constructor(
                 cardDeck = result.cards
                 teamsWithPlayers = teamPlayers
 
-                previous.printDiff(newState)
+                doInDebug {
+                    previous.printDiff(newState)
+                }
                 newState
             }
             is ShowRoundInstructionsResult -> previous.copy(showRoundInstructions = result.show)
@@ -193,7 +196,9 @@ class GamePresenterMVI @Inject constructor(
                     is HandleNextCardResult.RoundOver -> previous.copy(inProgress = false)
                     is HandleNextCardResult.GameOver -> previous
                 }
-                previous.printDiff(newState)
+                doInDebug {
+                    previous.printDiff(newState)
+                }
                 newState
             }
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)

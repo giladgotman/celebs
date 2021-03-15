@@ -4,6 +4,7 @@ import com.gggames.hourglass.features.games.data.GameResult
 import com.gggames.hourglass.features.games.data.GameResult.Found
 import com.gggames.hourglass.model.Game
 import com.gggames.hourglass.model.GameState
+import com.gggames.hourglass.utils.isInDebug
 import io.reactivex.Completable
 import io.reactivex.Completable.complete
 import io.reactivex.Observable
@@ -33,7 +34,10 @@ class GamesMemoryDataSource @Inject constructor() : InMemoryGamesDataSource {
 
     private val currentGame = PublishSubject.create<GameResult>()
 
-    private val fakeDelay = 800L
+    private val fakeDelay = if (isInDebug())
+        0L
+    else
+        0L
 
     private var currentGameCache: GameResult by Delegates.observable<GameResult>(GameResult.NotFound) { _, _, newValue ->
         currentGame.onNext(newValue)
