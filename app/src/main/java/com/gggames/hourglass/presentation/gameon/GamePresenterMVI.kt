@@ -198,7 +198,7 @@ class GamePresenterMVI @Inject constructor(
             is NavigateToSelectTeam -> previous.copy(navigateToTeams = result.navigate)
             // Handled as Triggers:
             is ShowAllCardsResult -> previous
-            is StartedGameResult -> previous
+            is StartedGameResult -> previous.copy(inProgress = false)
         }
     }
 
@@ -257,11 +257,16 @@ class GamePresenterMVI @Inject constructor(
     ) =
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!)
-                .filter { it is SetGameResult.Done }
-                .switchMap { handleNextCardWrap(time) }
-                .filter{ it is HandleNextCardResult.NewCard }
-                .switchMap { just(StartedGameResult) }
-
+                .switchMap {
+                    handleNextCardWrap(time)
+                        .map {
+                            if (it is HandleNextCardResult.NewCard) {
+                                StartedGameResult
+                            } else {
+                                it
+                            }
+                        }
+                }
             ButtonState.Running -> pauseTurn(time)
             ButtonState.Paused -> {
                 gamesRepository.getCurrentGame().toObservable().switchMap { game ->
