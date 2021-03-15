@@ -12,11 +12,13 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     private val disposables = CompositeDisposable()
     private val _events = PublishSubject.create<TimerEvent>()
 
+    val interval = 100L
+
     @VisibleForTesting
-    var createTimerObservable : () -> Observable<Long> = {
+    var createTimerObservable: () -> Observable<Long> = {
         Observable.interval(
-            1000,
-            1000,
+            interval,
+            interval,
             TimeUnit.MILLISECONDS,
             schedulerProvider.io()
         )
@@ -26,7 +28,9 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     var time: Long = 0
         set(value) {
             field = value
-            _events.onNext(TimerEvent.UpdatedTime(value))
+            if ((value % 1000L) == 0L) {
+                _events.onNext(TimerEvent.UpdatedTime(value))
+            }
         }
 
     fun start(elapsedTime: Long? = null) {
@@ -38,18 +42,18 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
 
         val timerObservable = createTimerObservable()
             .filter { !isPaused }
-            .map { time -= 1000 }
-            .takeUntil { time <= 0 }
-            .doOnNext {
-                Timber.w("ttt tick, doOnNext, time: $time")
-            }
-            .doOnComplete { _events.onNext(TimerEvent.TimerEnd) }
-            .map<TimerEvent> { TimerEvent.Tick(time) }
+            .map { time -= interval }
+            .takeUntil { time <= 200 }
+            .doOnComplete {
+                time = 0
+                _events.onNext(TimerEvent.TimerEnd) }
 
 
         timerObservable.subscribe({
-            Timber.w("ttt tick, time: $time, timerObservable: $timerObservable")
-            _events.onNext(TimerEvent.Tick(time))
+            if (time % 1000L == 0L) {
+                Timber.w("ttt tick, time: $time, timerObservable: $timerObservable")
+                _events.onNext(TimerEvent.Tick(time))
+            }
         }, {
             Timber.e(it, "Error while using RxTimer")
         })
