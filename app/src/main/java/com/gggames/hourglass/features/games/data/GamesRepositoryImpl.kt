@@ -8,7 +8,6 @@ import com.gggames.hourglass.model.GameState
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.merge
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,21 +39,16 @@ class GamesRepositoryImpl @Inject constructor(
             .filter{ it is Found }
             .cast(Found::class.java)
             .switchMapCompletable {
-                Timber.i("observeGame REMOTE onNext: \n $it")
                 inMemoryDataSource.setGame(it.game)
             }
 
         return merge(
             inMemoryDataSource.observeGame(gameId)
                 .doOnNext {
-                    Timber.i("observeGame MEMRY onNext: \n $it")
                 },
             fetchAndCache.toObservable()
         )
             .distinctUntilChanged()
-            .doOnNext {
-                Timber.i("observeGame MERGE onNext: \n $it")
-            }
     }
 
 

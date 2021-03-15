@@ -25,7 +25,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-const val TURN_TIME_MILLIS = 10000L
+const val TURN_TIME_MILLIS = 5000L
 
 class GamePresenterMVI @Inject constructor(
     private val playersObservable: ObservePlayers,
@@ -84,17 +84,20 @@ class GamePresenterMVI @Inject constructor(
 
         allInput
             .subscribeOn(schedulerProvider.io())
-            .doOnNext { Timber.d("RESULT:: $it") }
+            .doOnNext {
+                Timber.d("RESULT:: ${it.javaClass}")
+                Timber.v("RESULT:: $it")
+            }
             .share()
             .also { results ->
                 results.scan(State.initialState, reduce())
-                .distinctUntilChanged()
-                .doOnNext { Timber.d("STATE:: \n$it") }
-                .observeOn(schedulerProvider.ui())
-                .subscribe({
-                    _states.onNext(it)
-                }) { Timber.e(it, "Unhandled exception in the main stream") }
-                .let { disposables.add(it) }
+                    .distinctUntilChanged()
+                    .doOnNext { Timber.v("STATE:: \n$it") }
+                    .observeOn(schedulerProvider.ui())
+                    .subscribe({
+                        _states.onNext(it)
+                    }) { Timber.e(it, "Unhandled exception in the main stream") }
+                    .let { disposables.add(it) }
 
                 results
                     .observeOn(schedulerProvider.ui())
@@ -155,7 +158,7 @@ class GamePresenterMVI @Inject constructor(
                     useLocalTimer = meActive,
                     screenTitle = result.game.name,
                     isEndTurnEnabled = meActive,
-                    isCardsAmountEnabled = result.game.round.let { it.state == RoundState.New && it.roundNumber == 2}
+                    isCardsAmountEnabled = result.game.round.let { it.state == RoundState.New && it.roundNumber == 2 }
                 )
                 // TODO: 25.10.20 remove from here and make it a pure function
                 lastGame = result.game
@@ -283,6 +286,7 @@ class GamePresenterMVI @Inject constructor(
         }
 
     private fun onTimerEnd(): Observable<out Result> {
+        Timber.i("onTimerEnd")
         return gamesRepository.getCurrentGame().toObservable().switchMap { game ->
             if (authenticator.isMyselfActivePlayerBlocking(game)) {
                 audioPlayer.play("timesupyalabye")

@@ -94,7 +94,7 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
         rxTimer.observe()
             .observeOn(schedulerProvider.ui())
             .subscribe {
-                Timber.w("ttt TIMER EVENT $it")
+                Timber.v("ttt TIMER EVENT $it")
                 when (it) {
                     is TimerEvent.UpdatedTime -> view?.timerTextView?.text = getFormattedTime(it.time)
                     is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
