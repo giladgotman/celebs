@@ -11,6 +11,7 @@ import io.reactivex.Observable.just
 import io.reactivex.Observable.merge
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -32,6 +33,8 @@ class GamesMemoryDataSource @Inject constructor() : InMemoryGamesDataSource {
 
     private val currentGame = PublishSubject.create<GameResult>()
 
+    private val fakeDelay = 800L
+
     private var currentGameCache: GameResult by Delegates.observable<GameResult>(GameResult.NotFound) { _, _, newValue ->
         currentGame.onNext(newValue)
     }
@@ -42,10 +45,11 @@ class GamesMemoryDataSource @Inject constructor() : InMemoryGamesDataSource {
     }
 
     override fun setGame(game: Game): Completable =
-        Completable.fromCallable {
-            currentGameCache = Found(game)
-            complete()
-        }
+        Observable.timer(fakeDelay, TimeUnit.MILLISECONDS)
+            .flatMapCompletable {
+                currentGameCache = Found(game)
+                complete()
+            }
 
     override fun observeGame(gameId: String): Observable<GameResult> =
         merge(
