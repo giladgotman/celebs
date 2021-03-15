@@ -10,7 +10,7 @@ import kotlin.reflect.jvm.javaGetter
 interface GameScreenContract {
 
     sealed class UiEvent {
-        data class StartStopClick(val buttonState: ButtonState, val time: Long?) : UiEvent()
+        data class StartStopClick(val buttonState: ButtonState, val time: Long) : UiEvent()
         data class CorrectClick(val time: Long) : UiEvent()
         object EndTurnClick : UiEvent()
         object CardsAmountClick : UiEvent()
@@ -172,7 +172,6 @@ interface GameScreenContract {
 
         object NoOp : Result()
     }
-
     sealed class Trigger {
         data class ShowAllCards(val cards: List<Card>) : Trigger()
         object StartTimer : Trigger()

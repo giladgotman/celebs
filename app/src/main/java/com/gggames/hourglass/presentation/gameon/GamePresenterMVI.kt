@@ -259,7 +259,7 @@ class GamePresenterMVI @Inject constructor(
 
     private fun handleStartStopClick(
         buttonState: ButtonState,
-        time: Long?
+        time: Long
     ) =
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!)
@@ -278,8 +278,15 @@ class GamePresenterMVI @Inject constructor(
                 gamesRepository.getCurrentGame().toObservable().switchMap { game ->
                     if (game.round.state == RoundState.New) {
                         startRound()
-                            .switchMap { resumeTurn(time) }
-                            .switchMap { handleNextCardWrap(time) }
+                            .switchMap {
+                                // if there is less than a second, end turn cause it gets tricky when the timerEnd comes before the handleNextCard resul
+                                if (time < 1000L) {
+                                    endTurn(teamsWithPlayers)
+                                } else {
+                                    resumeTurn(time)
+                                        .switchMap { handleNextCardWrap(time) }
+                                }
+                            }
                     } else {
                         resumeTurn(time)
                     }
