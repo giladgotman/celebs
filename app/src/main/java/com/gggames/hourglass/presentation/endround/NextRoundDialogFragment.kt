@@ -40,7 +40,7 @@ class NextRoundDialogFragment : Fragment() {
             if (currentTurn?.player != null) {
                 next_player_name_badge.state =
                     NameBadge.State(currentTurn.player.name, PlayerTurnState.UpNext)
-                val secondsLeft = currentTurn.time?.let { (it / 1000).toInt() % 60 } ?: 0
+                val secondsLeft = currentTurn.time?.let { ((it / 1000).toInt() % 60) + 1} ?: 0
                 next_round_next_player_value.text = getString(
                     R.string.next_round_next_player_value,
                     secondsLeft
