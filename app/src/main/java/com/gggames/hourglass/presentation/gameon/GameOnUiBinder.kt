@@ -135,6 +135,9 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
                     pauseTimer()
                 }
             }
+            if (state.round.turn.state == TurnState.Over) {
+                rxTimer.stop()
+            }
             if (state.resetTime) { rxTimer.time = TURN_TIME_MILLIS }
             state.time?.let { rxTimer.time = it }
 
