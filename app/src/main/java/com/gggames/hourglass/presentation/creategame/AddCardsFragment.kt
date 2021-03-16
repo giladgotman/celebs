@@ -100,7 +100,9 @@ class AddCardsFragment : Fragment() {
 
         arguments?.let {
             if (it.getBoolean(KEY_SHOW_SHARE_POPUP, false)) {
-                showSharePopup()
+                Observable.timer(1, TimeUnit.SECONDS).subscribe {
+                    showSharePopup()
+                }
             }
         }
     }
