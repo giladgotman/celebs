@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import com.gggames.hourglass.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_share_game.*
@@ -31,7 +32,7 @@ class ShareGameFragment : BottomSheetDialogFragment() {
         arguments?.let {
             val gameName = it.getString(KEY_GAME_NAME, null)
             gameName?.let {
-                description.text = getString(R.string.share_frag_description, gameName)
+                description.text = HtmlCompat.fromHtml(getString(R.string.share_frag_description, gameName), HtmlCompat.FROM_HTML_MODE_LEGACY)
             }
         }
         button_ready.setOnClickListener {
