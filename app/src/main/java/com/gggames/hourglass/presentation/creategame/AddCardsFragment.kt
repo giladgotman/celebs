@@ -1,6 +1,7 @@
 package com.gggames.hourglass.presentation.creategame
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,21 +27,27 @@ import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.gggames.hourglass.utils.showErrorToast
 import com.gggames.hourglass.utils.showInfoToast
+import com.skydoves.balloon.*
 import io.reactivex.Completable
 import io.reactivex.Completable.complete
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
 import javax.inject.Inject
+
 
 class AddCardsFragment : Fragment() {
 
     @Inject
     lateinit var addCards: AddCards
+
     @Inject
     lateinit var getMyCards: GetMyCards
+
     @Inject
     lateinit var gamesRepository: GamesRepository
+
     @Inject
     lateinit var authenticator: Authenticator
 
@@ -83,7 +90,10 @@ class AddCardsFragment : Fragment() {
         setCardsInputFields()
         hideNonUsedCardsFields()
         buttonDone.setOnClickListener {
-            onDoneClick()
+
+            val tooltip = setupToolTip2()
+            show(tooltip, requireActivity().button_share)
+//            onDoneClick()
         }
 
         navigateToGameIfCardsAreFilled()
@@ -153,11 +163,11 @@ class AddCardsFragment : Fragment() {
             }, {
                 buttonDone.isEnabled = true
                 val errorMessage =
-                if (it is java.lang.IllegalStateException) {
-                    it.localizedMessage
-                } else {
-                    getString(R.string.error_generic)
-                }
+                    if (it is java.lang.IllegalStateException) {
+                        it.localizedMessage
+                    } else {
+                        getString(R.string.error_generic)
+                    }
                 showErrorToast(
                     requireContext(),
                     errorMessage,
@@ -214,5 +224,42 @@ class AddCardsFragment : Fragment() {
         } else {
             null
         }
+    }
+
+    fun setupToolTip2(): Balloon {
+        return createBalloon(requireContext()) {
+            setArrowSize(10)
+            setPadding(8)
+            setArrowOrientation(ArrowOrientation.BOTTOM)
+            setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+            setWidth(BalloonSizeSpec.WRAP)
+            setHeight(65)
+            setArrowPosition(0.5f)
+            setCornerRadius(4f)
+            setAlpha(0.9f)
+            setText("Click here to share the game")
+            setTextSize(14f)
+            setTextTypeface(Typeface.BOLD)
+            setTextColorResource(R.color.white)
+            setBackgroundColorResource(R.color.colorAccent)
+            setBalloonAnimation(BalloonAnimation.ELASTIC)
+            setLifecycleOwner(lifecycleOwner)
+        }
+    }
+
+    fun show(balloon: Balloon, view: View) {
+        balloon.setOnBalloonClickListener {
+            balloon.dismiss()
+        }
+
+        balloon.setOnBalloonDismissListener {
+            // doSomething;
+        }
+
+        balloon.setOnBalloonOutsideTouchListener { _, _ ->
+            balloon.dismiss()
+        }
+
+        balloon.showAlignBottom(view)
     }
 }

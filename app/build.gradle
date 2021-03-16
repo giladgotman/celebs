@@ -167,4 +167,10 @@ dependencies {
             "com.google.truth:truth:$versions.truth"
     )
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
+
+    // tooltips
+//    implementation 'com.github.sephiroth74:android-target-tooltip:v2.0.4'
+//    implementation 'com.tomergoldst.android:tooltips:1.1.0'
+
+    implementation "com.github.skydoves:balloon:1.3.3"
 }
