@@ -138,4 +138,10 @@ Your feedback is very important to us 💛
     <string name="about_dialog_title">About</string>
     <string name="about_dialog_version_part">Version: %s</string>
 
+<!--    Share-->
+    <string name="share_frag_description">You have successfully created the game <b>%s</b>. Now it\'s time to share it</string>
+    <string name="share_frag_button_cta">SHARE</string>
+    <string name="share_frag_title">Sharing is nice</string>
+    <string name="share_frag_description2">* If you haven\'t yet, hop on a video call with your buddies</string>
+
 </resources>

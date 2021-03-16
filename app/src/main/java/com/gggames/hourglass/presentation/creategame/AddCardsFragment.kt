@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -30,10 +31,12 @@ import com.gggames.hourglass.utils.showInfoToast
 import com.skydoves.balloon.*
 import io.reactivex.Completable
 import io.reactivex.Completable.complete
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -90,13 +93,22 @@ class AddCardsFragment : Fragment() {
         setCardsInputFields()
         hideNonUsedCardsFields()
         buttonDone.setOnClickListener {
-
-            val tooltip = setupToolTip()
-            showTooltip(tooltip, requireActivity().button_share)
-//            onDoneClick()
+            onDoneClick()
         }
 
         navigateToGameIfCardsAreFilled()
+
+        gamesRepository.getCurrentGameBlocking()?.let { game ->
+            ShareGameFragment.newInstance(game.name).show(requireActivity() as AppCompatActivity) {
+                Observable.timer(2, TimeUnit.SECONDS)
+                    .subscribe {
+                        val tooltip = setupToolTip()
+                        showTooltip(tooltip, requireActivity().button_share)
+                    }.let { disposables.add(it) }
+                (requireActivity() as MainActivity).shareGame()
+            }
+        }
+
     }
 
     private fun navigateToGameIfCardsAreFilled() {
@@ -230,9 +242,9 @@ class AddCardsFragment : Fragment() {
         createToolTip(
             requireContext(),
             ArrowOrientation.BOTTOM,
-            "Click here to share the game",
+            "Anyone can share the game at anytime",
             lifecycleOwner = viewLifecycleOwner,
-            animation = BalloonAnimation.ELASTIC
+            animation = BalloonAnimation.FADE
         )
 
     private fun showTooltip(balloon: Balloon, view: View) {
