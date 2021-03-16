@@ -82,6 +82,9 @@
         <argument
             android:name="groups"
             app:argType="string[]" />
+        <argument
+            android:name="KEY_SHOW_SHARE_POPUP"
+            app:argType="boolean" />
         <action
             android:id="@+id/action_AddCardsFragment_to_chooseTeamFragment"
             app:popUpTo="@+id/AddCardsFragment"

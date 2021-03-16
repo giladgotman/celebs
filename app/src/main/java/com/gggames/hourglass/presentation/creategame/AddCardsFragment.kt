@@ -98,6 +98,14 @@ class AddCardsFragment : Fragment() {
 
         navigateToGameIfCardsAreFilled()
 
+        arguments?.let {
+            if (it.getBoolean(KEY_SHOW_SHARE_POPUP, false)) {
+                showSharePopup()
+            }
+        }
+    }
+
+    private fun showSharePopup() {
         gamesRepository.getCurrentGameBlocking()?.let { game ->
             ShareGameFragment.newInstance(game.name).show(requireActivity() as AppCompatActivity) {
                 Observable.timer(2, TimeUnit.SECONDS)
@@ -108,7 +116,6 @@ class AddCardsFragment : Fragment() {
                 (requireActivity() as MainActivity).shareGame()
             }
         }
-
     }
 
     private fun navigateToGameIfCardsAreFilled() {
@@ -261,5 +268,9 @@ class AddCardsFragment : Fragment() {
         }
 
         balloon.showAlignBottom(view)
+    }
+
+    companion object {
+        const val KEY_SHOW_SHARE_POPUP = "KEY_SHOW_SHARE_POPUP"
     }
 }
