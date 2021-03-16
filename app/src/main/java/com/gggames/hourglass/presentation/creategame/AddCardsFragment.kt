@@ -1,7 +1,6 @@
 package com.gggames.hourglass.presentation.creategame
 
 import android.content.Context
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +24,7 @@ import com.gggames.hourglass.model.Player
 import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
+import com.gggames.hourglass.utils.createToolTip
 import com.gggames.hourglass.utils.showErrorToast
 import com.gggames.hourglass.utils.showInfoToast
 import com.skydoves.balloon.*
@@ -91,8 +91,8 @@ class AddCardsFragment : Fragment() {
         hideNonUsedCardsFields()
         buttonDone.setOnClickListener {
 
-            val tooltip = setupToolTip2()
-            show(tooltip, requireActivity().button_share)
+            val tooltip = setupToolTip()
+            showTooltip(tooltip, requireActivity().button_share)
 //            onDoneClick()
         }
 
@@ -226,28 +226,16 @@ class AddCardsFragment : Fragment() {
         }
     }
 
-    fun setupToolTip2(): Balloon {
-        return createBalloon(requireContext()) {
-            setArrowSize(10)
-            setPadding(8)
-            setArrowOrientation(ArrowOrientation.BOTTOM)
-            setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
-            setWidth(BalloonSizeSpec.WRAP)
-            setHeight(65)
-            setArrowPosition(0.5f)
-            setCornerRadius(4f)
-            setAlpha(0.9f)
-            setText("Click here to share the game")
-            setTextSize(14f)
-            setTextTypeface(Typeface.BOLD)
-            setTextColorResource(R.color.white)
-            setBackgroundColorResource(R.color.colorAccent)
-            setBalloonAnimation(BalloonAnimation.ELASTIC)
-            setLifecycleOwner(lifecycleOwner)
-        }
-    }
+    private fun setupToolTip() =
+        createToolTip(
+            requireContext(),
+            ArrowOrientation.BOTTOM,
+            "Click here to share the game",
+            lifecycleOwner = viewLifecycleOwner,
+            animation = BalloonAnimation.ELASTIC
+        )
 
-    fun show(balloon: Balloon, view: View) {
+    private fun showTooltip(balloon: Balloon, view: View) {
         balloon.setOnBalloonClickListener {
             balloon.dismiss()
         }
