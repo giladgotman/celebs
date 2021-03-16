@@ -1,5 +1,6 @@
 package com.gggames.hourglass.presentation.creategame
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,12 @@ import kotlinx.android.synthetic.main.fragment_welcome_first_round.button_ready
 
 class ShareGameFragment : BottomSheetDialogFragment() {
 
-     private var onClick : (()-> Unit)? = null
+    private var onClick: (() -> Unit)? = null
+    private var onDismiss: (() -> Unit)? = null
 
-    fun show(activity: AppCompatActivity, onClick: ()-> Unit) {
+    fun show(activity: AppCompatActivity, onClick: () -> Unit, onDismiss: () -> Unit) {
         this.onClick = onClick
+        this.onDismiss = onDismiss
         show(activity.supportFragmentManager, this.javaClass.simpleName)
     }
 
@@ -32,7 +35,10 @@ class ShareGameFragment : BottomSheetDialogFragment() {
         arguments?.let {
             val gameName = it.getString(KEY_GAME_NAME, null)
             gameName?.let {
-                description.text = HtmlCompat.fromHtml(getString(R.string.share_frag_description, gameName), HtmlCompat.FROM_HTML_MODE_LEGACY)
+                description.text = HtmlCompat.fromHtml(
+                    getString(R.string.share_frag_description, gameName),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
             }
         }
         button_ready.setOnClickListener {
@@ -40,6 +46,12 @@ class ShareGameFragment : BottomSheetDialogFragment() {
             onClick?.let { it() }
             onClick = null
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismiss?.let { it() }
+        onDismiss = null
     }
 
     companion object {

@@ -109,14 +109,17 @@ class AddCardsFragment : Fragment() {
 
     private fun showSharePopup() {
         gamesRepository.getCurrentGameBlocking()?.let { game ->
-            ShareGameFragment.newInstance(game.name).show(requireActivity() as AppCompatActivity) {
-                Observable.timer(2, TimeUnit.SECONDS)
-                    .subscribe {
-                        val tooltip = setupToolTip()
-                        showTooltip(tooltip, requireActivity().button_share)
-                    }.let { disposables.add(it) }
-                (requireActivity() as MainActivity).shareGame()
-            }
+            ShareGameFragment.newInstance(game.name).show((requireActivity() as AppCompatActivity),
+                onClick = {
+                    Observable.timer(2, TimeUnit.SECONDS)
+                        .subscribe {
+                            showTooltip(setupToolTip(), requireActivity().button_share)
+                        }.let { disposables.add(it) }
+                    (requireActivity() as MainActivity).shareGame()
+                },
+                onDismiss = {
+                    showTooltip(setupToolTip(), requireActivity().button_share)
+                })
         }
     }
 
