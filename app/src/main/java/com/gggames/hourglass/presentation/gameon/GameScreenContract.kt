@@ -21,6 +21,7 @@ interface GameScreenContract {
         object OnBackPressed : UiEvent()
         object OnSwitchTeamPressed : UiEvent()
         object RoundOverDialogDismissed : UiEvent()
+        object FirstRoundInstructionsDismissed : UiEvent()
 
         sealed class MainUiEvent : UiEvent()
 
@@ -164,6 +165,7 @@ interface GameScreenContract {
         data class NavigateToSelectTeam(val navigate: Boolean) : Result()
 
         object RoundOverDialogDismissedResult : Result()
+        object FirstRoundInstructionsDismissedResult : Result()
         object StartedGameResult : Result()
 
         data class ShowRoundInstructionsResult(val show: Boolean) : Result()
@@ -175,6 +177,7 @@ interface GameScreenContract {
     sealed class Trigger {
         data class ShowAllCards(val cards: List<Card>) : Trigger()
         object StartTimer : Trigger()
+        object ShowTooltip : Trigger()
     }
 }
 

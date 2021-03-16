@@ -20,14 +20,18 @@ import com.gggames.hourglass.presentation.endturn.WelcomeFirstRoundFragment
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.hourglass.utils.RxTimer
 import com.gggames.hourglass.utils.TimerEvent
+import com.gggames.hourglass.utils.createToolTip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
+import com.skydoves.balloon.ArrowOrientation
+import com.skydoves.balloon.BalloonAnimation
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_game_on.view.*
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerProvider) {
@@ -98,7 +102,8 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
                 when (it) {
                     is TimerEvent.UpdatedTime -> view?.timerTextView?.text = getFormattedTime(it.time)
                     is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
-                    is TimerEvent.Tick -> {}
+                    is TimerEvent.Tick -> {
+                    }
                 }
             }.let { disposables.add(it) }
         rxTimer.time = TURN_TIME_MILLIS
@@ -139,7 +144,9 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
                 rxTimer.stop()
             }
 
-            if (state.resetTime) { rxTimer.time = TURN_TIME_MILLIS }
+            if (state.resetTime) {
+                rxTimer.time = TURN_TIME_MILLIS
+            }
             state.time?.let { rxTimer.time = it }
 
             // Buttons
@@ -162,14 +169,26 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
                     showEndRound(state.round, state.teamsWithScore)
                 }
             }
-            if (state.showRoundInstructions) { showFirstRoundIntro(state.round, state.nextPlayer) }
-            if (state.showLeaveGameConfirmation) { showLeaveGameDialog() }
-            if (state.showEndTurnConfirmation) {showEndTurnDialog() }
+            if (state.showRoundInstructions) {
+                showFirstRoundIntro(state.round, state.nextPlayer)
+            }
+            if (state.showLeaveGameConfirmation) {
+                showLeaveGameDialog()
+            }
+            if (state.showEndTurnConfirmation) {
+                showEndTurnDialog()
+            }
 
             // Navigation
-            if (state.showGameOver) { fragment.navigateToEndGame() }
-            if (state.navigateToGames) { fragment.navigateToGames() }
-            if (state.navigateToTeams) { fragment.navigateToTeams() }
+            if (state.showGameOver) {
+                fragment.navigateToEndGame()
+            }
+            if (state.navigateToGames) {
+                fragment.navigateToGames()
+            }
+            if (state.navigateToTeams) {
+                fragment.navigateToTeams()
+            }
 
             // Toolbar
             if (isEndTurnEnabled != state.isEndTurnEnabled) {
@@ -183,6 +202,11 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
         when (trigger) {
             is GameScreenContract.Trigger.ShowAllCards -> showAllCards(trigger.cards)
             is GameScreenContract.Trigger.StartTimer -> rxTimer.start()
+            is GameScreenContract.Trigger.ShowTooltip -> view?.let { view ->
+                Observable.timer(1, TimeUnit.SECONDS).subscribe {
+                    showPlayTooltip(view.startButton)
+                }
+            }
         }
     }
 
@@ -306,6 +330,8 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
         val welcomeFrag =
             WelcomeFirstRoundFragment.newInstance(round.roundNumber, roundIdToName(round.roundNumber), nextPlayer)
         welcomeFrag.show(fragment.requireActivity() as AppCompatActivity)
+
+        welcomeFrag.events().subscribe(_emitter::onNext).let { disposables.addAll(it) }
     }
 
     private fun showEndTurn(player: Player, nextPlayer: Player?, cards: List<Card>, roundNumber: Int) {
@@ -329,5 +355,19 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
 
     fun clear() {
         disposables.clear()
+    }
+
+    private fun showPlayTooltip(view: View) {
+        context?.let { ctx ->
+            val tooltip = createToolTip(
+                ctx,
+                ArrowOrientation.BOTTOM,
+                "Press here to start your turn",
+                lifecycleOwner = fragment.viewLifecycleOwner,
+                animation = BalloonAnimation.FADE
+            )
+            tooltip.setOnBalloonClickListener { tooltip.dismiss() }
+            tooltip.showAlignBottom(view)
+        }
     }
 }

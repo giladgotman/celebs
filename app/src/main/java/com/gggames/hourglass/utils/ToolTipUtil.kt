@@ -2,6 +2,7 @@ package com.gggames.hourglass.utils
 
 import android.content.Context
 import android.graphics.Typeface
+import android.view.View
 import androidx.annotation.ColorRes
 import androidx.lifecycle.LifecycleOwner
 import com.gggames.hourglass.R
@@ -14,10 +15,14 @@ fun createToolTip(
     textSize: Float = 14f,
     lifecycleOwner: LifecycleOwner,
     animation: BalloonAnimation,
-    @ColorRes backgroundColor:  Int = R.color.colorAccent,
-    @ColorRes textColor:  Int = R.color.white,
+    @ColorRes backgroundColor: Int = R.color.colorAccent,
+    @ColorRes textColor: Int = R.color.white,
     height: Int = 65,
-    alpha: Float = 1.0f
+    alpha: Float = 1.0f,
+    clickListener: OnBalloonClickListener = object: OnBalloonClickListener {
+        override fun onBalloonClick(view: View) {
+        }
+    }
 
 ): Balloon {
     return createBalloon(context) {
@@ -37,5 +42,6 @@ fun createToolTip(
         setBackgroundColorResource(backgroundColor)
         setBalloonAnimation(animation)
         setLifecycleOwner(lifecycleOwner)
+        setOnBalloonClickListener (clickListener)
     }
 }

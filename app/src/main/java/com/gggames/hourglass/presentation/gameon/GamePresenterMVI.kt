@@ -105,7 +105,8 @@ class GamePresenterMVI @Inject constructor(
                     .compose { o ->
                         mergeArray(
                             o.ofType<ShowAllCardsResult>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) },
-                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) }
+                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) },
+                            o.ofType<FirstRoundInstructionsDismissedResult>().flatMap<Trigger> { just(Trigger.ShowTooltip) }
                         )
                     }
                     .doOnNext { Timber.i("TRIGGER:: $it") }
@@ -210,6 +211,7 @@ class GamePresenterMVI @Inject constructor(
             // Handled as Triggers:
             is ShowAllCardsResult -> previous
             is StartedGameResult -> previous.copy(inProgress = false)
+            is FirstRoundInstructionsDismissedResult -> previous
         }
     }
 
@@ -225,6 +227,7 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.CardsAmountClick>().switchMap { just(ShowAllCardsResult(cardDeck)) },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
+                o.ofType<UiEvent.FirstRoundInstructionsDismissed>().switchMap { just(FirstRoundInstructionsDismissedResult) },
                 o.ofType<UiEvent.OnSwitchTeamPressed>()
                     .switchMap {
                         just(

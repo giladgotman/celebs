@@ -1,5 +1,6 @@
 package com.gggames.hourglass.presentation.endturn
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +11,15 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.model.Player
 import com.gggames.hourglass.model.PlayerTurnState
 import com.gggames.hourglass.presentation.common.NameBadge
+import com.gggames.hourglass.presentation.gameon.GameScreenContract
+import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.FirstRoundInstructionsDismissed
+import com.gggames.hourglass.utils.rx.EventEmitter
+import com.gggames.hourglass.utils.rx.ViewEventEmitter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_welcome_first_round.*
 
-class WelcomeFirstRoundFragment : BottomSheetDialogFragment() {
+class WelcomeFirstRoundFragment : BottomSheetDialogFragment(),
+    EventEmitter<GameScreenContract.UiEvent> by ViewEventEmitter() {
 
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
@@ -54,6 +60,11 @@ class WelcomeFirstRoundFragment : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        FirstRoundInstructionsDismissed.emit()
+    }
+
     companion object {
         fun newInstance(nextRoundId: Int, nextRoundName: String, nextPlayer: Player?) =
             WelcomeFirstRoundFragment().apply {
@@ -68,6 +79,7 @@ class WelcomeFirstRoundFragment : BottomSheetDialogFragment() {
 
         const val KEY_NEXT_PLAYER = "KEY_NEXT_PLAYER"
     }
+
 }
 
 
