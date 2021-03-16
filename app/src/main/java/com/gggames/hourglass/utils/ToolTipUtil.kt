@@ -19,10 +19,13 @@ fun createToolTip(
     @ColorRes textColor: Int = R.color.white,
     height: Int = 65,
     alpha: Float = 1.0f,
-    clickListener: OnBalloonClickListener = object: OnBalloonClickListener {
+    clickListener: OnBalloonClickListener = object : OnBalloonClickListener {
         override fun onBalloonClick(view: View) {
         }
-    }
+    },
+    countLabel: String? = null,
+    count: Int = 1
+
 
 ): Balloon {
     return createBalloon(context) {
@@ -42,6 +45,11 @@ fun createToolTip(
         setBackgroundColorResource(backgroundColor)
         setBalloonAnimation(animation)
         setLifecycleOwner(lifecycleOwner)
-        setOnBalloonClickListener (clickListener)
+        setOnBalloonClickListener(clickListener)
+        countLabel?.let {
+            setPreferenceName(it) // sets preference name of the Balloon.
+            setShowCounts(count)
+        }
+
     }
 }

@@ -364,7 +364,8 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
                 ArrowOrientation.BOTTOM,
                 "Press here to start your turn",
                 lifecycleOwner = fragment.viewLifecycleOwner,
-                animation = BalloonAnimation.FADE
+                animation = BalloonAnimation.FADE,
+                countLabel = "startButton"
             )
             tooltip.setOnBalloonClickListener { tooltip.dismiss() }
             tooltip.showAlignBottom(view)
