@@ -105,8 +105,7 @@ class GamePresenterMVI @Inject constructor(
                     .compose { o ->
                         mergeArray(
                             o.ofType<ShowAllCardsResult>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) },
-                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) },
-                            o.ofType<FirstRoundInstructionsDismissedResult>().flatMap<Trigger> { just(Trigger.ShowTooltip) }
+                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) }
                         )
                     }
                     .doOnNext { Timber.i("TRIGGER:: $it") }
@@ -208,10 +207,14 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is SetGameResult -> previous
             is NavigateToSelectTeam -> previous.copy(navigateToTeams = result.navigate)
+            is ShowPlayTooltipResult -> {
+                val myTurn = gamesRepository.getCurrentGameBlocking()?.host?.id == authenticator.me?.id
+                previous.copy(showPlayTooltip = myTurn && result.show)
+            }
+
             // Handled as Triggers:
             is ShowAllCardsResult -> previous
             is StartedGameResult -> previous.copy(inProgress = false)
-            is FirstRoundInstructionsDismissedResult -> previous
         }
     }
 
@@ -227,7 +230,12 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.CardsAmountClick>().switchMap { just(ShowAllCardsResult(cardDeck)) },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
-                o.ofType<UiEvent.FirstRoundInstructionsDismissed>().switchMap { just(FirstRoundInstructionsDismissedResult) },
+                o.ofType<UiEvent.FirstRoundInstructionsDismissed>().switchMap {
+                    just(
+                        ShowPlayTooltipResult(true),
+                        ShowPlayTooltipResult(false)
+                    )
+                },
                 o.ofType<UiEvent.OnSwitchTeamPressed>()
                     .switchMap {
                         just(

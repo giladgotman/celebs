@@ -68,7 +68,8 @@ interface GameScreenContract {
         val useLocalTimer: Boolean = false,
         val showRoundInstructions: Boolean = false,
         val isEndTurnEnabled: Boolean = false,
-        val isCardsAmountEnabled: Boolean = false
+        val isCardsAmountEnabled: Boolean = false,
+        val showPlayTooltip: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -107,6 +108,7 @@ interface GameScreenContract {
                 showRoundInstructions           $showRoundInstructions
                 isEndTurnEnabled                $isEndTurnEnabled
                 isCardsAmountEnabled            $isCardsAmountEnabled
+                showPlayTooltip                 $showPlayTooltip
                 """.trimIndent()
 
     }
@@ -165,7 +167,7 @@ interface GameScreenContract {
         data class NavigateToSelectTeam(val navigate: Boolean) : Result()
 
         object RoundOverDialogDismissedResult : Result()
-        object FirstRoundInstructionsDismissedResult : Result()
+        data class ShowPlayTooltipResult(val show: Boolean) : Result()
         object StartedGameResult : Result()
 
         data class ShowRoundInstructionsResult(val show: Boolean) : Result()
@@ -177,7 +179,6 @@ interface GameScreenContract {
     sealed class Trigger {
         data class ShowAllCards(val cards: List<Card>) : Trigger()
         object StartTimer : Trigger()
-        object ShowTooltip : Trigger()
     }
 }
 

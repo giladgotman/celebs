@@ -1,5 +1,6 @@
-package com.gggames.hourglass.presentation.endturn
+package com.gggames.hourglass.presentation.endround
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater

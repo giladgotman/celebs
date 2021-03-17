@@ -1,6 +1,5 @@
 package com.gggames.hourglass.presentation.endround
 
-import com.gggames.hourglass.presentation.endturn.NextRoundDialogFragment
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
