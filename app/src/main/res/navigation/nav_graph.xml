@@ -44,6 +44,11 @@
             android:autoVerify="true"
             app:uri="https://gglab.page.link/joinGameDirect/{gameId}" />
 
+        <deepLink
+            android:id="@+id/generalInvitation"
+            android:autoVerify="true"
+            app:uri="https://gglab.page.link/hourglass" />
+
     </fragment>
     <fragment
         android:id="@+id/CreateGameFragment"
