@@ -15,6 +15,7 @@ import com.gggames.hourglass.core.Authenticator
 import com.gggames.hourglass.core.di.getAppComponent
 import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.presentation.common.MainActivityDelegate
+import com.gggames.hourglass.presentation.feedback.FeedbackActivity
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
 import com.gggames.hourglass.utils.showErrorToast
@@ -156,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openWeb(url: String) {
-        TODO("Not yet implemented")
+        FeedbackActivity.start(this)
     }
 
     override fun onBackPressed() {
