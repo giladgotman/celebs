@@ -79,7 +79,7 @@
     <string name="game_over_subtitle">%1$s won!</string>
     <string name="choose_team_no_team_selected_error">Please choose a team</string>
 
-<!--    Welcome screen-->
+    <!--    Welcome screen-->
 
     <string name="welcome_1_title">The crazy guessing game*</string>
     <string name="welcome_1_description">Bring your mind, body &amp; mobile device</string>
@@ -91,9 +91,9 @@
     <string name="instructions_section1_description">"Hourglass is a virtual version of a popular classic game which is known in many countries around the world. It is also known as:
 Celebs, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.
 
-You'll need at least 4 people to play, but it only gets more fun with more players.
+You'll need at least 4 people to play and it only gets more fun with more.
 
-Hop on a video call and play through rounds of:
+Join a video call and play through rounds of:
 <b>Describe, One Word &amp; Charades</b>."
     </string>
 
@@ -104,7 +104,7 @@ Each player writes their words on “cards” that would be guessed later
 
 Then you will have to split into teams, players from each team will alternate turns, giving clues to their team to guess as many cards as possible against the clock (aka Hourglass)
 
-There'll be 3 rounds, and cards will get recycled after each round!
+There'll be 3 rounds, and cards will get reused after each round!
 "
     </string>
     <string name="instructions_section2_title">How to play</string>
@@ -138,7 +138,7 @@ Your feedback is very important to us 💛
     <string name="about_dialog_title">About</string>
     <string name="about_dialog_version_part">Version: %s</string>
 
-<!--    Share-->
+    <!--    Share-->
     <string name="share_frag_description"><![CDATA[Game <b>%s</b> was successfully created.<br>Now it is time to share it]]></string>
     <string name="share_frag_button_cta">SHARE</string>
     <string name="share_frag_title">Sharing is nice</string>
