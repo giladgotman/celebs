@@ -17,7 +17,6 @@ import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.presentation.common.MainActivityDelegate
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
-import com.gggames.hourglass.utils.sendEmail
 import com.gggames.hourglass.utils.showErrorToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.idagio.app.core.utils.share.Shareable
@@ -144,11 +143,8 @@ class MainActivity : AppCompatActivity() {
         val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
         }
         val feedbackClickListener = DialogInterface.OnClickListener { _, _ ->
-            sendEmail(
-                this,
-                to = getString(R.string.myEmail),
-                subject = getString(R.string.feedback_email_subject)
-            )
+
+            openWeb("https://i6j1aat88q8.typeform.com/to/OxJapaQX")
         }
         val builder = MaterialAlertDialogBuilder(this, R.style.celebs_MaterialAlertDialog)
         builder
@@ -157,6 +153,10 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.about_dialog_later), dialogClickListener)
             .setNegativeButton(getString(R.string.about_dialog_send_feedback), feedbackClickListener)
             .show()
+    }
+
+    private fun openWeb(url: String) {
+        TODO("Not yet implemented")
     }
 
     override fun onBackPressed() {
