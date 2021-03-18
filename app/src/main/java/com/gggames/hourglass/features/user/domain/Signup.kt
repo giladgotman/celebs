@@ -4,6 +4,7 @@ import com.gggames.hourglass.core.Authenticator
 import com.gggames.hourglass.features.user.data.UserDataSource
 import com.gggames.hourglass.model.Player
 import io.reactivex.Single
+import timber.log.Timber
 import javax.inject.Inject
 
 class Signup @Inject constructor(
@@ -14,13 +15,12 @@ class Signup @Inject constructor(
     operator fun invoke(username: String): Single<SignupResponse> {
         return observeUser(username).firstOrError().flatMap {
             if (it is UserDataSource.UserResponse.NotExists) {
-                setUser(createPlayer(username))
+                val player = createPlayer(username)
+                setUser(player)
                     .andThen(authenticator.signup(username))
                     .andThen(
                         Single.just(
-                            SignupResponse.Success(
-                                createPlayer(username)
-                            )
+                            SignupResponse.Success(player)
                         )
                     )
             } else {
