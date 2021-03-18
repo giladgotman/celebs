@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit
 class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     private val disposables = CompositeDisposable()
     private val _events = PublishSubject.create<TimerEvent>()
-
-    val interval = 100L
+    private val interval = 100L
+    private var state = TimerState.NoInit
 
     @VisibleForTesting
     var createTimerObservable: () -> Observable<Long> = {
@@ -23,8 +23,6 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
             schedulerProvider.io()
         )
     }
-
-    private var isPaused = false
     var time: Long = 0
         set(value) {
             field = value
@@ -38,10 +36,10 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
         elapsedTime?.let {
             this.time = it
         }
-        isPaused = false
+        state = TimerState.Running
 
         val timerObservable = createTimerObservable()
-            .filter { !isPaused }
+            .filter { state == TimerState.Running }
             .map { time -= interval }
             .takeUntil { time <= 200 }
             .doOnComplete {
@@ -61,18 +59,30 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     }
 
     fun stop() {
+        state = TimerState.Stopped
         disposables.clear()
     }
 
     fun pause() {
-        isPaused = true
+        state = TimerState.Paused
     }
 
     fun resume() {
-        isPaused = false
+        if (state == TimerState.NoInit) {
+            start(time)
+        } else {
+            state = TimerState.Running
+        }
     }
 
     fun observe() = _events
+}
+
+enum class TimerState {
+    NoInit,
+    Running,
+    Paused,
+    Stopped
 }
 
 sealed class TimerEvent {
