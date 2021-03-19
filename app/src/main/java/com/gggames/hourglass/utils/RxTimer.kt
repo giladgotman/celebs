@@ -54,12 +54,11 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
             .takeUntil { time <= 200 }
             .doOnComplete {
                 time = 0
-                _events.onNext(TimerEvent.TimerEnd) }
-
+                _events.onNext(TimerEvent.TimerEnd)
+            }
 
         timerObservable.subscribe({
-            if (time % 1000L == 0L) {
-                Timber.w("ttt tick, time: $time, timerObservable: $timerObservable")
+            if (time <= 5000L && time % 1000L == 0L && time != 0L) {
                 _events.onNext(TimerEvent.Tick(time))
             }
         }, {

@@ -316,7 +316,7 @@ class GamePresenterMVI @Inject constructor(
         Timber.i("onTimerEnd")
         return gamesRepository.getCurrentGame().toObservable().switchMap { game ->
             if (authenticator.isMyselfActivePlayerBlocking(game)) {
-                audioPlayer.play("timesupyalabye")
+                audioPlayer.play("ding_clean")
                 flipLastCard(lastCard)
                     .andThen(endTurn(teamsWithPlayers))
             } else {

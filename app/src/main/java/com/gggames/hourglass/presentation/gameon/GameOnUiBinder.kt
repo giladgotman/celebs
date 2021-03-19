@@ -21,6 +21,7 @@ import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.hourglass.utils.RxTimer
 import com.gggames.hourglass.utils.TimerEvent
 import com.gggames.hourglass.utils.createToolTip
+import com.gggames.hourglass.utils.media.AudioPlayer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import com.skydoves.balloon.ArrowOrientation
@@ -34,7 +35,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerProvider) {
+class GameOnUiBinder @Inject constructor(
+    val schedulerProvider: BaseSchedulerProvider,
+    val audioPlayer: AudioPlayer
+) {
 
     private lateinit var fragment: GameOnFragmentMVI
 
@@ -103,6 +107,7 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
                     is TimerEvent.UpdatedTime -> view?.timerTextView?.text = getFormattedTime(it.time)
                     is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
                     is TimerEvent.Tick -> {
+                        audioPlayer.play("shake")
                     }
                 }
             }.let { disposables.add(it) }
