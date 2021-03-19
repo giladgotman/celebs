@@ -31,8 +31,18 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
             }
         }
 
+    fun updateTime(time: Long) {
+        val roundedTime = (time / 1000) * 1000
+        Timber.e("update time: $time, rounded: $roundedTime")
+        this.time = roundedTime
+    }
+
     fun start(elapsedTime: Long? = null) {
-        Timber.w("ttt start, elapsedTime: $elapsedTime")
+        Timber.w("ttt start, elapsedTime: $elapsedTime, state: $state")
+
+        if (state == TimerState.Running) {
+            disposables.clear()
+        }
         elapsedTime?.let {
             this.time = it
         }
@@ -68,8 +78,10 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     }
 
     fun resume() {
+        Timber.w("ttt resume, state: $state")
         if (state == TimerState.NoInit) {
-            start(time)
+            Timber.w("ttt resume, timer must be initted before resuming")
+            return
         } else {
             state = TimerState.Running
         }
