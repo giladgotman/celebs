@@ -15,8 +15,8 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.model.*
 import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.endround.ChangeRoundDialogFragment
-import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
 import com.gggames.hourglass.presentation.endround.WelcomeFirstRoundFragment
+import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent
 import com.gggames.hourglass.utils.RxTimer
 import com.gggames.hourglass.utils.TimerEvent
@@ -147,7 +147,7 @@ class GameOnUiBinder @Inject constructor(val schedulerProvider: BaseSchedulerPro
             if (state.resetTime) {
                 rxTimer.time = TURN_TIME_MILLIS
             }
-            state.time?.let { rxTimer.time = it }
+            state.time?.let { rxTimer.updateTime(it) }
 
             // Buttons
             startButton?.state = state.playButtonState.state
