@@ -7,8 +7,8 @@ import org.junit.Before
 import org.junit.Test
 
 class RxTimerTest{
-    val tested = RxTimer(TrampolineSchedulerProvider())
-    val timerObservable = PublishSubject.create<Long>()
+    private val tested = RxTimer(TrampolineSchedulerProvider())
+    private val timerObservable = PublishSubject.create<Long>()
 
     @Before
     fun setup() {
@@ -18,7 +18,7 @@ class RxTimerTest{
     }
     @Test
     fun `Good weather flow - start`() {
-        tested.time = 1000
+        tested.time = 100
         val observer = tested.observe().test()
         tested.start()
         timerObservable.onNext(0)
@@ -32,16 +32,15 @@ class RxTimerTest{
         val observer = tested.observe().test()
         tested.start()
         timerObservable.onNext(0)
-        assertThat(observer.values().first()).isEqualTo(TimerEvent.UpdatedTime(1000))
+        assertThat(observer.values().first()).isEqualTo(TimerEvent.UpdatedTime(1900))
 
         tested.stop()
 
-        assertThat(tested.time).isEqualTo(1000)
+        assertThat(tested.time).isEqualTo(1900)
         observer.values().clear()
         tested.start()
         timerObservable.onNext(0)
-        assertThat(observer.values().first()).isEqualTo(TimerEvent.UpdatedTime(0))
-        assertThat(observer.values().last()).isEqualTo(TimerEvent.TimerEnd)
+        assertThat(observer.values().first()).isEqualTo(TimerEvent.UpdatedTime(1800))
     }
 
     @Test
@@ -50,7 +49,7 @@ class RxTimerTest{
         val observer = tested.observe().test()
         tested.start()
         timerObservable.onNext(0)
-        assertThat(observer.values().first()).isEqualTo(TimerEvent.UpdatedTime(1000))
+        assertThat(observer.values().first()).isEqualTo(TimerEvent.UpdatedTime(1900))
         observer.values().clear()
 
         tested.pause()
@@ -59,6 +58,27 @@ class RxTimerTest{
 
         tested.resume()
         timerObservable.onNext(0)
-        assertThat(observer.values().last()).isEqualTo(TimerEvent.TimerEnd)
+        assertThat(observer.values().first()).isEqualTo(TimerEvent.UpdatedTime(1800))
+    }
+
+    @Test
+    fun `update time rounds it`() {
+        tested.updateTime(1200)
+        assertThat(tested.time).isEqualTo(1000)
+
+        tested.updateTime(1000)
+        assertThat(tested.time).isEqualTo(1000)
+
+        tested.updateTime(0)
+        assertThat(tested.time).isEqualTo(0)
+
+        tested.updateTime(999)
+        assertThat(tested.time).isEqualTo(0)
+
+        tested.updateTime(60000)
+        assertThat(tested.time).isEqualTo(60000)
+
+        tested.updateTime(59999)
+        assertThat(tested.time).isEqualTo(59000)
     }
 }
