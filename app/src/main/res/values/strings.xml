@@ -125,14 +125,7 @@ There'll be 3 rounds, and cards will get reused after each round!
     <string name="welcome_first_round_cta">READY</string>
     <string name="welcome_first_round_starting_player_label">Starting player:</string>
     <string name="myEmail">giladgot@gmail.com</string>
-    <string name="about_dialog_message_first_part">"
-This game was made with love and it\'s in the very early stage.
-
-Your feedback is very important to us 💛
-
-
-"
-    </string>
+    <string name="about_dialog_message_first_part">"This game was made with love.\n\nYour feedback is important to us 💛"</string>
     <string name="feedback_email_subject">Feedback for Hourglass</string>
     <string name="about_dialog_title">About</string>
     <string name="about_dialog_version_part">Version: %s</string>

@@ -140,6 +140,7 @@ class MainActivity : AppCompatActivity() {
     private fun showAbout() {
         val sb = StringBuilder()
         sb.append(getString(R.string.about_dialog_message_first_part))
+        sb.append("\n\n")
         sb.append(getString(R.string.about_dialog_version_part, BuildConfig.VERSION_NAME))
         val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
         }
