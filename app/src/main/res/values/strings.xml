@@ -122,7 +122,7 @@ There'll be 3 rounds, and cards will get reused after each round!
     <string name="next_round_next_player_to_play_label">Next player: </string>
     <string name="next_round_title">Round %d : %s</string>
     <string name="change_round_next_round_cta">READY</string>
-    <string name="welcome_first_round_cta">READY</string>
+    <string name="welcome_first_round_cta">LET\'S PLAY</string>
     <string name="welcome_first_round_starting_player_label">Starting player:</string>
     <string name="myEmail">giladgot@gmail.com</string>
     <string name="about_dialog_message_first_part">"This game was made with love.\n\nYour feedback is important to us 💛"</string>
@@ -131,7 +131,7 @@ There'll be 3 rounds, and cards will get reused after each round!
     <string name="about_dialog_version_part">Version: %s</string>
 
     <!--    Share-->
-    <string name="share_frag_description"><![CDATA[Game <b>%s</b> was successfully created.<br>Now it is time to share it]]></string>
+    <string name="share_frag_description"><![CDATA[Game <b>%s</b> was successfully created.<br><br>Now it is time to share it.]]></string>
     <string name="share_frag_button_cta">SHARE</string>
     <string name="share_frag_title">Sharing is nice</string>
     <string name="share_frag_description2">* If you haven\'t yet, hop on a video call with your buddies</string>
