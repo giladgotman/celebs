@@ -91,30 +91,30 @@
     <string name="instructions_section1_description">"Hourglass is a virtual version of a popular classic game which is known in many countries around the world. It is also known as:
 Celebs, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.
 
-You'll need at least 4 people to play and it only gets more fun with more.
+You will need at least 4 people to play and the more the merrier!
 
-Join a video call and play through rounds of: <b>Describe, One Word &amp; Charades</b>."
+Get together in a video call and play through rounds of: <b>Describe, One Word &amp; Charades</b>."
     </string>
 
     <string name="instructions_section2_description">"
 One person creates a game and shares it with others
 
-Each player writes their words on “cards” that would be guessed later
+Each player writes their words on “cards” that will be guessed later
 
 Then you will have to split into teams, players from each team will alternate turns, giving clues to their team to guess as many cards as possible against the clock (aka Hourglass)
 
 There'll be 3 rounds, and cards will get reused after each round!
 "
     </string>
-    <string name="instructions_section2_title">How to play</string>
+    <string name="instructions_section2_title">Game Instructions</string>
 
     <string name="instructions_section3_title">The rounds</string>
     <string name="instructions_section3_round1_title">Round 1 : Describe</string>
     <string name="instructions_section3_round2_title">Round 2 : One Word</string>
     <string name="instructions_section3_round3_title">Round 3 : Charades</string>
     <string name="instructions_section3_round1_descriptions">You can use as many words as you like to describe the word on the card, without acting or gestures.</string>
-    <string name="instructions_section3_round2_descriptions">You can use exactly 1 word per card. once you said a word, you can only repeat it…</string>
-    <string name="instructions_section3_round3_descriptions">Act and use mime to communicate the card. no words or sounds allowed…</string>
+    <string name="instructions_section3_round2_descriptions">You can say exactly 1 word per card. Once you said a word, you can only repeat it…</string>
+    <string name="instructions_section3_round3_descriptions">Act and use mime to communicate the card. No words or sounds allowed…</string>
     <string name="instructions_section3_general_description"><b>The team that guesses the most cards across all rounds wins!</b></string>
 
     <string name="end_round_next_round_button_cta">NEXT ROUND</string>
