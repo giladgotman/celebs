@@ -24,7 +24,7 @@
     <string name="games_join_game_dialog_positive_button">Join</string>
     <string name="games_join_game_dialog_negative_button">Cancel</string>
     <string name="games_no_active_games_title">No active games</string>
-    <string name="games_no_active_games_description">Games that you join or create will be shown here</string>
+    <string name="games_no_active_games_description">Games that you join or create\nwill be shown here</string>
     <string name="games_create_game">Create</string>
 
     <string name="done">Done</string>
