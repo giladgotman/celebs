@@ -12,6 +12,7 @@ import com.gggames.hourglass.presentation.gameon.GameScreenContract.*
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.Result.*
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.CorrectClick
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.StartStopClick
+import com.gggames.hourglass.utils.doInDebug
 import com.gggames.hourglass.utils.media.AudioPlayer
 import com.gggames.hourglass.utils.rx.ofType
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
@@ -62,7 +63,7 @@ class GamePresenterMVI @Inject constructor(
 
     fun bind(events: Observable<UiEvent>) {
         val uiEvent = events
-            .doOnNext { Timber.d("USER:: $it") }
+            .doOnNext { Timber.i("USER:: $it") }
 
         val dataInput =
             gamesRepository.getCurrentGame().toObservable().switchMap { game ->
@@ -84,27 +85,30 @@ class GamePresenterMVI @Inject constructor(
 
         allInput
             .subscribeOn(schedulerProvider.io())
-            .doOnNext { Timber.d("RESULT:: $it") }
+            .doOnNext {
+                Timber.i("RESULT:: ${it.javaClass}")
+                Timber.v("RESULT:: $it")
+            }
             .share()
             .also { results ->
                 results.scan(State.initialState, reduce())
-                .distinctUntilChanged()
-                .doOnNext { Timber.d("STATE:: \n$it") }
-                .observeOn(schedulerProvider.ui())
-                .subscribe({
-                    _states.onNext(it)
-                }) { Timber.e(it, "Unhandled exception in the main stream") }
-                .let { disposables.add(it) }
+                    .distinctUntilChanged()
+                    .doOnNext { Timber.v("STATE:: \n$it") }
+                    .observeOn(schedulerProvider.ui())
+                    .subscribe({
+                        _states.onNext(it)
+                    }) { Timber.e(it, "Unhandled exception in the main stream") }
+                    .let { disposables.add(it) }
 
                 results
                     .observeOn(schedulerProvider.ui())
                     .compose { o ->
                         mergeArray(
                             o.ofType<ShowAllCardsResult>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) },
-                            o.ofType<Trigger.Test>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) }
+                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) }
                         )
                     }
-                    .doOnNext { Timber.d("TRIGGER:: $it") }
+                    .doOnNext { Timber.i("TRIGGER:: $it") }
                     .subscribe({
                         _triggers.onNext(it)
                     }) { Timber.e(it, "Unhandled exception in the main triggers stream") }
@@ -155,7 +159,7 @@ class GamePresenterMVI @Inject constructor(
                     useLocalTimer = meActive,
                     screenTitle = result.game.name,
                     isEndTurnEnabled = meActive,
-                    isCardsAmountEnabled = result.game.round.let { it.state == RoundState.New && it.roundNumber == 2}
+                    isCardsAmountEnabled = result.game.round.let { it.state == RoundState.New && it.roundNumber == 2 }
                 )
                 // TODO: 25.10.20 remove from here and make it a pure function
                 lastGame = result.game
@@ -163,6 +167,9 @@ class GamePresenterMVI @Inject constructor(
                 cardDeck = result.cards
                 teamsWithPlayers = teamPlayers
 
+                doInDebug {
+                    previous.printDiff(newState)
+                }
                 newState
             }
             is ShowRoundInstructionsResult -> previous.copy(showRoundInstructions = result.show)
@@ -177,7 +184,7 @@ class GamePresenterMVI @Inject constructor(
             }
             is RoundOverDialogDismissedResult -> previous
             is HandleNextCardResult -> {
-                when (result) {
+                val newState = when (result) {
                     is HandleNextCardResult.InProgress -> {
                         previous.copy(inProgress = true)
                     }
@@ -189,6 +196,10 @@ class GamePresenterMVI @Inject constructor(
                     is HandleNextCardResult.RoundOver -> previous.copy(inProgress = false)
                     is HandleNextCardResult.GameOver -> previous
                 }
+                doInDebug {
+                    previous.printDiff(newState)
+                }
+                newState
             }
             is BackPressedResult.ShowLeaveGameConfirmation -> previous.copy(showLeaveGameConfirmation = result.showDialog)
             is EndTurnPressedResult.ShowLeaveGameConfirmation -> previous.copy(showEndTurnConfirmation = result.showDialog)
@@ -196,7 +207,14 @@ class GamePresenterMVI @Inject constructor(
             is NoOp -> previous
             is SetGameResult -> previous
             is NavigateToSelectTeam -> previous.copy(navigateToTeams = result.navigate)
+            is ShowPlayTooltipResult -> {
+                val myTurn = gamesRepository.getCurrentGameBlocking()?.host?.id == authenticator.me?.id
+                previous.copy(showPlayTooltip = myTurn && result.show)
+            }
+
+            // Handled as Triggers:
             is ShowAllCardsResult -> previous
+            is StartedGameResult -> previous.copy(inProgress = false)
         }
     }
 
@@ -212,6 +230,12 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.CardsAmountClick>().switchMap { just(ShowAllCardsResult(cardDeck)) },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
+                o.ofType<UiEvent.FirstRoundInstructionsDismissed>().switchMap {
+                    just(
+                        ShowPlayTooltipResult(true),
+                        ShowPlayTooltipResult(false)
+                    )
+                },
                 o.ofType<UiEvent.OnSwitchTeamPressed>()
                     .switchMap {
                         just(
@@ -238,31 +262,48 @@ class GamePresenterMVI @Inject constructor(
 
     private fun onCorrectClick(time: Long): Observable<out Result> =
         lastCard?.let { card ->
-            authenticator.me?.team?.let { teamName ->
-                // TODO: 09.10.20 check if the InProgress can be removed cause the SetGame will start with InProgress
-                merge(
-                    just(HandleNextCardResult.InProgress),
-                    handleCorrectCard(card, teamName)
-                        .switchMap { handleNextCardWrap(time) }
-                )
-            }
+            if (time > 100L) {
+                authenticator.me?.team?.let { teamName ->
+                    merge(
+                        just(HandleNextCardResult.InProgress),
+                        handleCorrectCard(card, teamName)
+                            .switchMap { handleNextCardWrap(time) }
+                    )
+                }
+            } else just(NoOp)
         } ?: just(NoOp)
 
 
     private fun handleStartStopClick(
         buttonState: ButtonState,
-        time: Long?
+        time: Long
     ) =
         when (buttonState) {
             ButtonState.Stopped -> startGame(authenticator.me!!)
-                .switchMap { handleNextCardWrap(time) }
+                .switchMap {
+                    handleNextCardWrap(time)
+                        .map {
+                            if (it is HandleNextCardResult.NewCard) {
+                                StartedGameResult
+                            } else {
+                                it
+                            }
+                        }
+                }
             ButtonState.Running -> pauseTurn(time)
             ButtonState.Paused -> {
                 gamesRepository.getCurrentGame().toObservable().switchMap { game ->
                     if (game.round.state == RoundState.New) {
                         startRound()
-                            .switchMap { resumeTurn(time) }
-                            .switchMap { handleNextCardWrap(time) }
+                            .switchMap {
+                                // if there is less than a second, end turn cause it gets tricky when the timerEnd comes before the handleNextCard resul
+                                if (time < 1000L) {
+                                    endTurn(teamsWithPlayers)
+                                } else {
+                                    resumeTurn(time)
+                                        .switchMap { handleNextCardWrap(time) }
+                                }
+                            }
                     } else {
                         resumeTurn(time)
                     }
@@ -272,9 +313,10 @@ class GamePresenterMVI @Inject constructor(
         }
 
     private fun onTimerEnd(): Observable<out Result> {
+        Timber.i("onTimerEnd")
         return gamesRepository.getCurrentGame().toObservable().switchMap { game ->
             if (authenticator.isMyselfActivePlayerBlocking(game)) {
-                audioPlayer.play("timesupyalabye")
+                audioPlayer.play("ding_clean")
                 flipLastCard(lastCard)
                     .andThen(endTurn(teamsWithPlayers))
             } else {

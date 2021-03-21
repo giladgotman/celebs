@@ -1,10 +1,10 @@
 package com.gggames.hourglass.presentation.endturn
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -17,6 +17,7 @@ import com.gggames.hourglass.model.Player
 import com.gggames.hourglass.model.PlayerTurnState
 import com.gggames.hourglass.presentation.common.NameBadge
 import com.gggames.hourglass.presentation.di.createViewComponent
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_end_turn_dialog.*
 import timber.log.Timber
@@ -28,10 +29,12 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
 
     private var roundNumber: Int = 1
 
-
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
     }
+
+    // TODO 17.3.21: remove when gift game is supported
+    private val isGiftGame = false
 
     @Inject
     lateinit var videoPlayer: VideoPlayer
@@ -51,35 +54,13 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
             Timber.w("close click: dialog:$dialog")
             dismiss()
         }
-        videoPlayer.initializePlayer()
-        cardsFoundAdapter = CardsFoundAdapter (onClick = { card, playerView, giftText ->
 
-            val url = when (roundNumber) {
-                1 -> { card.videoUrl1 }
-                2 -> { card.videoUrl2 }
-                3 -> { card.videoUrl3 }
-                else -> { null }
-            }
-            url?.let {
-
-                if (it.startsWith("text:")) {
-                    if (giftText.tag != "open") {
-                        giftText.text = it.removePrefix("text:")
-                        giftText.tag = "open"
-                    } else {
-                        giftText.text = card.name
-                        giftText.tag = null
-                    }
-                } else {
-                    videoPlayer.setView(playerView)
-                    playerView.isVisible = true
-                    videoPlayer.playVideo(it)
-                }
-            }
-        }, onClose = {playerView->
-            playerView.isVisible = false
-            videoPlayer.stop()
-        })
+        cardsFoundAdapter = if (isGiftGame) {
+            videoPlayer.initializePlayer()
+            CardsFoundAdapter(onClick = null, onClose = null)
+        } else {
+            CardsFoundAdapter(onClick = onGiftCardClick(), onClose = onGiftCardClose())
+        }
 
         cardsRecyclerView.setHasFixedSize(true)
 
@@ -90,7 +71,7 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
 
         arguments?.let {
             val name = it.getString(KEY_PLAYER_NAME) ?: ""
-            val nextPlayerName = it.getString(KEY_NEXT_PLAYER_NAME ) ?: ""
+            val nextPlayerName = it.getString(KEY_NEXT_PLAYER_NAME) ?: ""
             roundNumber = it.getInt(KEY_ROUND_NUMBER)
             val cardsNames: Array<Card>? =
                 it.getParcelableArray(KEY_CARDS) as Array<Card>
@@ -110,15 +91,11 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        return dialog
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        Timber.w("onDestroyView videoPlayer: $videoPlayer")
-        videoPlayer.releasePlayer()
+        if (isGiftGame) {
+            videoPlayer.releasePlayer()
+        }
     }
 
     companion object {
@@ -137,10 +114,49 @@ class EndTurnDialogFragment : BottomSheetDialogFragment() {
                         }
                 }
         }
+
         const val KEY_PLAYER_NAME = "playerName"
         const val KEY_NEXT_PLAYER_NAME = "nextPlayerName"
         const val KEY_ROUND_NUMBER = "roundNumber"
         const val KEY_CARDS = "cards"
+    }
+
+    private fun onGiftCardClick() = { card: Card, playerView: PlayerView, giftText: TextView ->
+        val url = when (roundNumber) {
+            1 -> {
+                card.videoUrl1
+            }
+            2 -> {
+                card.videoUrl2
+            }
+            3 -> {
+                card.videoUrl3
+            }
+            else -> {
+                null
+            }
+        }
+        url?.let {
+
+            if (it.startsWith("text:")) {
+                if (giftText.tag != "open") {
+                    giftText.text = it.removePrefix("text:")
+                    giftText.tag = "open"
+                } else {
+                    giftText.text = card.name
+                    giftText.tag = null
+                }
+            } else {
+                videoPlayer.setView(playerView)
+                playerView.isVisible = true
+                videoPlayer.playVideo(it)
+            }
+        }
+    }
+
+    private fun onGiftCardClose() = { playerView: PlayerView ->
+        playerView.isVisible = false
+        videoPlayer.stop()
     }
 }
 

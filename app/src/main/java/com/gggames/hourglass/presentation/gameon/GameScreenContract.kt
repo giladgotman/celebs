@@ -1,11 +1,16 @@
 package com.gggames.hourglass.presentation.gameon
 
 import com.gggames.hourglass.model.*
+import timber.log.Timber
+import java.lang.reflect.Modifier
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaGetter
 
 interface GameScreenContract {
 
     sealed class UiEvent {
-        data class StartStopClick(val buttonState: ButtonState, val time: Long?) : UiEvent()
+        data class StartStopClick(val buttonState: ButtonState, val time: Long) : UiEvent()
         data class CorrectClick(val time: Long) : UiEvent()
         object EndTurnClick : UiEvent()
         object CardsAmountClick : UiEvent()
@@ -16,6 +21,7 @@ interface GameScreenContract {
         object OnBackPressed : UiEvent()
         object OnSwitchTeamPressed : UiEvent()
         object RoundOverDialogDismissed : UiEvent()
+        object FirstRoundInstructionsDismissed : UiEvent()
 
         sealed class MainUiEvent : UiEvent()
 
@@ -62,7 +68,8 @@ interface GameScreenContract {
         val useLocalTimer: Boolean = false,
         val showRoundInstructions: Boolean = false,
         val isEndTurnEnabled: Boolean = false,
-        val isCardsAmountEnabled: Boolean = false
+        val isCardsAmountEnabled: Boolean = false,
+        val showPlayTooltip: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -101,6 +108,7 @@ interface GameScreenContract {
                 showRoundInstructions           $showRoundInstructions
                 isEndTurnEnabled                $isEndTurnEnabled
                 isCardsAmountEnabled            $isCardsAmountEnabled
+                showPlayTooltip                 $showPlayTooltip
                 """.trimIndent()
 
     }
@@ -159,6 +167,8 @@ interface GameScreenContract {
         data class NavigateToSelectTeam(val navigate: Boolean) : Result()
 
         object RoundOverDialogDismissedResult : Result()
+        data class ShowPlayTooltipResult(val show: Boolean) : Result()
+        object StartedGameResult : Result()
 
         data class ShowRoundInstructionsResult(val show: Boolean) : Result()
 
@@ -166,9 +176,29 @@ interface GameScreenContract {
 
         object NoOp : Result()
     }
-
     sealed class Trigger {
         data class ShowAllCards(val cards: List<Card>) : Trigger()
-        data class Test(val cards: List<Card>) : Trigger()
+        object StartTimer : Trigger()
     }
+}
+
+
+fun GameScreenContract.State.printDiff(other: GameScreenContract.State) {
+    val myProperties = this::class.memberProperties.filter { isFieldAccessible(it) }
+    val otherMembers = other::class.memberProperties.filter { isFieldAccessible(it) }
+
+    myProperties.forEachIndexed { index, property ->
+        val myValue = property.getter.call(this)
+        val otherProperty = otherMembers[index]
+        val otherValue = otherProperty.getter.call(other)
+
+        if (myValue != otherValue) {
+            Timber.d("DIFF ${otherProperty.name}: $myValue -> $otherValue")
+        }
+    }
+    Timber.d("DIFF END----------------------------------")
+}
+
+fun isFieldAccessible(property: KProperty1<*, *>): Boolean {
+    return property.javaGetter?.modifiers?.let { !Modifier.isPrivate(it) } ?: false
 }

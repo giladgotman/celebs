@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,23 +25,32 @@ import com.gggames.hourglass.model.Player
 import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
+import com.gggames.hourglass.utils.createToolTip
 import com.gggames.hourglass.utils.showErrorToast
 import com.gggames.hourglass.utils.showInfoToast
+import com.skydoves.balloon.*
 import io.reactivex.Completable
 import io.reactivex.Completable.complete
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_add_cards.*
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 class AddCardsFragment : Fragment() {
 
     @Inject
     lateinit var addCards: AddCards
+
     @Inject
     lateinit var getMyCards: GetMyCards
+
     @Inject
     lateinit var gamesRepository: GamesRepository
+
     @Inject
     lateinit var authenticator: Authenticator
 
@@ -87,6 +97,30 @@ class AddCardsFragment : Fragment() {
         }
 
         navigateToGameIfCardsAreFilled()
+
+        arguments?.let {
+            if (it.getBoolean(KEY_SHOW_SHARE_POPUP, false)) {
+                Observable.timer(1, TimeUnit.SECONDS).subscribe {
+                    showSharePopup()
+                }
+            }
+        }
+    }
+
+    private fun showSharePopup() {
+        gamesRepository.getCurrentGameBlocking()?.let { game ->
+            ShareGameFragment.newInstance(game.name).show((requireActivity() as AppCompatActivity),
+                onClick = {
+                    Observable.timer(2, TimeUnit.SECONDS)
+                        .subscribe {
+                            showTooltip(setupToolTip(), requireActivity().button_share)
+                        }.let { disposables.add(it) }
+                    (requireActivity() as MainActivity).shareGame()
+                },
+                onDismiss = {
+                    showTooltip(setupToolTip(), requireActivity().button_share)
+                })
+        }
     }
 
     private fun navigateToGameIfCardsAreFilled() {
@@ -153,11 +187,11 @@ class AddCardsFragment : Fragment() {
             }, {
                 buttonDone.isEnabled = true
                 val errorMessage =
-                if (it is java.lang.IllegalStateException) {
-                    it.localizedMessage
-                } else {
-                    getString(R.string.error_generic)
-                }
+                    if (it is java.lang.IllegalStateException) {
+                        it.localizedMessage
+                    } else {
+                        getString(R.string.error_generic)
+                    }
                 showErrorToast(
                     requireContext(),
                     errorMessage,
@@ -214,5 +248,34 @@ class AddCardsFragment : Fragment() {
         } else {
             null
         }
+    }
+
+    private fun setupToolTip() =
+        createToolTip(
+            requireContext(),
+            ArrowOrientation.BOTTOM,
+            "Anyone can share the game at anytime",
+            lifecycleOwner = viewLifecycleOwner,
+            animation = BalloonAnimation.FADE
+        )
+
+    private fun showTooltip(balloon: Balloon, view: View) {
+        balloon.setOnBalloonClickListener {
+            balloon.dismiss()
+        }
+
+        balloon.setOnBalloonDismissListener {
+            // doSomething;
+        }
+
+        balloon.setOnBalloonOutsideTouchListener { _, _ ->
+            balloon.dismiss()
+        }
+
+        balloon.showAlignBottom(view)
+    }
+
+    companion object {
+        const val KEY_SHOW_SHARE_POPUP = "KEY_SHOW_SHARE_POPUP"
     }
 }

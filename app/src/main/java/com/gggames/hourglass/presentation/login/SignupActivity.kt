@@ -15,7 +15,7 @@ import com.gggames.hourglass.features.user.domain.SignupResponse
 import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.utils.showErrorToast
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_signup.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class SignupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as CelebsApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_signup)
 
         loginUsernameEditText.setOnEditorActionListener { v, actionId, _ ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {

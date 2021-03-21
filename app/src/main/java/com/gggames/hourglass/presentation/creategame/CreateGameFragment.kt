@@ -16,6 +16,7 @@ import com.gggames.hourglass.features.games.data.MAX_CARDS
 import com.gggames.hourglass.model.GameType
 import com.gggames.hourglass.model.Team
 import com.gggames.hourglass.presentation.MainActivity
+import com.gggames.hourglass.presentation.creategame.AddCardsFragment.Companion.KEY_SHOW_SHARE_POPUP
 import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.gggames.hourglass.utils.showErrorToast
@@ -91,7 +92,10 @@ class CreateGameFragment : Fragment(), CreateGamePresenter.View {
 
     override fun navigateToAddCards(gameId: String) {
         findNavController().navigate(
-            R.id.action_CreateGameFragment_to_AddCardsFragment
+            R.id.action_CreateGameFragment_to_AddCardsFragment,
+            Bundle().apply {
+                putBoolean(KEY_SHOW_SHARE_POPUP, true)
+            }
         )
     }
 

@@ -8,7 +8,6 @@ import com.gggames.hourglass.R
 import com.gggames.hourglass.model.PlayerTurnState
 import com.gggames.hourglass.presentation.di.createViewComponent
 import kotlinx.android.synthetic.main.name_badge.view.*
-import timber.log.Timber
 
 class NameBadge : ConstraintLayout {
 
@@ -35,16 +34,7 @@ class NameBadge : ConstraintLayout {
         LayoutInflater.from(context).inflate(R.layout.name_badge, this, true)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-    }
-
     fun render(state: State) {
-        Timber.w("render: $state")
         name.text = state.name
 
         when (state.turnState) {

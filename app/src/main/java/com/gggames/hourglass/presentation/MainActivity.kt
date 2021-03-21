@@ -15,9 +15,9 @@ import com.gggames.hourglass.core.Authenticator
 import com.gggames.hourglass.core.di.getAppComponent
 import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.presentation.common.MainActivityDelegate
+import com.gggames.hourglass.presentation.feedback.FeedbackActivity
 import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.MainUiEvent
 import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
-import com.gggames.hourglass.utils.sendEmail
 import com.gggames.hourglass.utils.showErrorToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.idagio.app.core.utils.share.Shareable
@@ -52,22 +52,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         button_share.setOnClickListener {
-            try {
-                gamesRepository.getCurrentGame().toObservable()
-                    .subscribe { game ->
-                        val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
-                        val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
-                        createDynamicLink(uri).subscribe({ shortUri ->
-                            val shareable = shareableFactory.create(game.id, game.name, shortUri)
-                            share(shareable)
-                        }, {
-                            Timber.e(it, "error sharing link")
-                            showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
-                        })
-                    }
-            } catch (e: Exception) {
-                Timber.e(e, "Exception while checking deep link")
-            }
+            shareGame()
         }
         setSupportActionBar(toolbar)
 
@@ -81,13 +66,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun shareGame() {
+        try {
+            gamesRepository.getCurrentGame().toObservable().take(1)
+                .subscribe { game ->
+                    val uriBuilder = Uri.parse("https://gglab.page.link/joinGame/${game.id}").buildUpon()
+                    val uri = uriBuilder.appendQueryParameter("host", authenticator.me!!.name).build()
+                    createDynamicLink(uri).subscribe({ shortUri ->
+                        val shareable = shareableFactory.create(game.id, game.name, shortUri)
+                        share(shareable)
+                    }, {
+                        Timber.e(it, "error sharing link")
+                        showErrorToast(this, getString(R.string.error_generic), Toast.LENGTH_LONG)
+                    })
+                }.let { disposables.add(it) }
+        } catch (e: Exception) {
+            Timber.e(e, "Exception while checking deep link")
+        }
+
+    }
+
     fun setShareVisible(visible: Boolean) {
         button_share.isVisible = visible
+    }
+
+    fun onShare() {
+        shareGame()
     }
 
     fun setTitle(title: String) {
         toolbar_title.text = title
     }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val itemSwitchTeam = menu.findItem(R.id.menu_switch_team)
@@ -130,15 +140,13 @@ class MainActivity : AppCompatActivity() {
     private fun showAbout() {
         val sb = StringBuilder()
         sb.append(getString(R.string.about_dialog_message_first_part))
+        sb.append("\n\n")
         sb.append(getString(R.string.about_dialog_version_part, BuildConfig.VERSION_NAME))
         val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
         }
         val feedbackClickListener = DialogInterface.OnClickListener { _, _ ->
-            sendEmail(
-                this,
-                to = getString(R.string.myEmail),
-                subject = getString(R.string.feedback_email_subject)
-            )
+
+            openWeb("https://i6j1aat88q8.typeform.com/to/OxJapaQX")
         }
         val builder = MaterialAlertDialogBuilder(this, R.style.celebs_MaterialAlertDialog)
         builder
@@ -147,6 +155,10 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.about_dialog_later), dialogClickListener)
             .setNegativeButton(getString(R.string.about_dialog_send_feedback), feedbackClickListener)
             .show()
+    }
+
+    private fun openWeb(url: String) {
+        FeedbackActivity.start(this)
     }
 
     override fun onBackPressed() {

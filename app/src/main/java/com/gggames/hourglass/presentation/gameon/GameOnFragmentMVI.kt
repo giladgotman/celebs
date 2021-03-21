@@ -91,6 +91,7 @@ class GameOnFragmentMVI : Fragment(),
         Timber.d("onDestroyView")
         disposables.clear()
         presenter.unBind()
+        uiBinder.clear()
     }
 
 
