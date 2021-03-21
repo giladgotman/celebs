@@ -134,4 +134,15 @@ There'll be 3 rounds, and cards will get reused after each round!"</string>
     <string name="share_frag_title">Sharing is nice</string>
     <string name="share_frag_description2">* If you haven\'t yet, hop on a video call with your buddies</string>
 
+
+<!--    New version available-->
+    <string name="new_version_available_title">New version</string>
+    <string name="new_version_available_body">There is a newer Hourglass version available!</string>
+    <string name="new_version_available_positive">Update</string>
+    <string name="new_version_available_negative">Later</string>
+
+    <!--    New version must upgrade-->
+    <string name="new_version_must_title">Update required</string>
+    <string name="new_version_must_body">You will need to update your version to the newest one</string>
+    <string name="new_version_must_positive">Update</string>
 </resources>
