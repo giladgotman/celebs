@@ -117,9 +117,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    // Firebase
-    implementation "com.google.firebase:firebase-analytics:$versions.firebase_sdk"
-    implementation 'com.google.firebase:firebase-firestore-ktx:21.5.0'
+
 
 
     // rx-java
@@ -141,14 +139,17 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
     kaptAndroidTest "com.google.dagger:dagger-$versions.dagger"
 
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:26.7.0')
+    implementation 'com.google.firebase:firebase-firestore-ktx'
     //deeplinks
-    implementation 'com.google.firebase:firebase-dynamic-links-ktx:19.1.0'
-
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
     //analytics
-    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.4'
-
+    implementation 'com.google.firebase:firebase-analytics-ktx'
     // Crashlytics
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    // remote config
+    implementation 'com.google.firebase:firebase-config-ktx'
 
     //Exo player
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
