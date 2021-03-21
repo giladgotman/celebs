@@ -96,16 +96,15 @@ You will need at least 4 people to play and the more the merrier!
 Get together in a video call and play through rounds of: <b>Describe, One Word &amp; Charades</b>."
     </string>
 
-    <string name="instructions_section2_description">"One person creates a game and shares it with others.
+    <string name="instructions_section2_title">Instructions</string>
+    <string name="instructions_section2_subtitle_setup">Setup</string>
+    <string name="instructions_section2_description">"1. One person creates a game and shares it with others.
+2. Each player writes their words on “cards” that will be guessed later.
+3. Each player chooses their team. "</string>
+    <string name="instructions_section2_subtitle_game">The game</string>
+    <string name="instructions_section2_description2">"Players from each team will alternate turns, giving clues to their team to guess as many cards as possible against the clock (aka Hourglass).
 
-Each player writes their words on “cards” that will be guessed later.
-
-Then you will have to split into teams, players from each team will alternate turns, giving clues to their team to guess as many cards as possible against the clock (aka Hourglass).
-
-There'll be 3 rounds, and cards will get reused after each round!
-"
-    </string>
-    <string name="instructions_section2_title">Game Instructions</string>
+There'll be 3 rounds, and cards will get reused after each round!"</string>
 
     <string name="instructions_section3_title">The rounds</string>
     <string name="instructions_section3_round1_title">Round 1 : Describe</string>

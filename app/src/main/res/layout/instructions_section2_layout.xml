@@ -21,13 +21,41 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/section2subtitleSetup"
+            style="@style/TextViewSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/instructions_section2_subtitle_setup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/section2Title" />
+
+        <TextView
             android:id="@+id/section2Description"
             style="@style/TextViewDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/instructions_section2_description"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/section2Title" />
+            app:layout_constraintTop_toBottomOf="@id/section2subtitleSetup" />
+
+        <TextView
+            android:id="@+id/section2subtitleGame"
+            style="@style/TextViewSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_margin"
+            android:text="@string/instructions_section2_subtitle_game"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/section2Description" />
+
+        <TextView
+            android:id="@+id/section2Description2"
+            style="@style/TextViewDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/instructions_section2_description2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/section2subtitleGame" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
