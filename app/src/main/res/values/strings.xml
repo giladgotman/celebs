@@ -89,7 +89,7 @@
     <string name="welcome_3_description">Start thinking who you\nwant to play with</string>
     <string name="instructions_section1_title">What is Hourglass ?</string>
     <string name="instructions_section1_description">"Hourglass is a virtual version of a popular classic game which is known in many countries around the world. It is also known as:
-Celebs, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.
+Celebrities, The Hat Game, Lunchbox, Fish Bowl, Salad Bowl, Who Is The Man &amp; The Name Game.
 
 You will need at least 4 people to play and the more the merrier!
 
@@ -99,12 +99,14 @@ Get together in a video call and play through rounds of: <b>Describe, One Word &
     <string name="instructions_section2_title">Instructions</string>
     <string name="instructions_section2_subtitle_setup">Setup</string>
     <string name="instructions_section2_description">"1. One person creates a game and shares it with others.
-2. Each player writes their words on “cards” that will be guessed later.
+2. Each player writes their words on “cards” that will be guessed later. All cards from all players are gathered together in one deck.
 3. Each player chooses their team. "</string>
-    <string name="instructions_section2_subtitle_game">The game</string>
-    <string name="instructions_section2_description2">"Players from each team will alternate turns, giving clues to their team to guess as many cards as possible against the clock (aka Hourglass).
+    <string name="instructions_section2_subtitle_game">Gameplay</string>
+    <string name="instructions_section2_description2">"Each team tries to guess as many cards as possible against the clock (aka Hourglass).
+In each turn one player is giving the clues while the rest of their team guesses.
 
-There'll be 3 rounds, and cards will get reused after each round!"</string>
+One game includes 3 rounds and the same cards are reused in every round!
+</string>
 
     <string name="instructions_section3_title">The rounds</string>
     <string name="instructions_section3_round1_title">Round 1 : Describe</string>
@@ -113,7 +115,7 @@ There'll be 3 rounds, and cards will get reused after each round!"</string>
     <string name="instructions_section3_round1_descriptions">You can use as many words as you like to describe the word on the card, without acting or gestures.</string>
     <string name="instructions_section3_round2_descriptions">You can say exactly 1 word per card. Once you said a word, you can only repeat it…</string>
     <string name="instructions_section3_round3_descriptions">Act and use mime to communicate the card. No words or sounds allowed…</string>
-    <string name="instructions_section3_general_description"><b>The team that guesses the most cards across all rounds wins!</b></string>
+    <string name="instructions_section3_general_description"><b>The scores from all three rounds are added together. The team with the most points wins!</b></string>
 
     <string name="end_round_next_round_button_cta">NEXT ROUND</string>
     <string name="next_round_next_player_value">with %1$d seconds left</string>
@@ -132,7 +134,6 @@ There'll be 3 rounds, and cards will get reused after each round!"</string>
     <string name="share_frag_description"><![CDATA[Game <b>%s</b> was successfully created.<br><br>Now it is time to share it.]]></string>
     <string name="share_frag_button_cta">SHARE</string>
     <string name="share_frag_title">Sharing is nice</string>
-    <string name="share_frag_description2">* If you haven\'t yet, hop on a video call with your buddies</string>
 
 
 <!--    New version available-->
