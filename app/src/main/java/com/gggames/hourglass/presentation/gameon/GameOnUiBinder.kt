@@ -60,6 +60,7 @@ class GameOnUiBinder @Inject constructor(
 
     private var endRoundDialogFragment: ChangeRoundDialogFragment? = null
     private var endTurnDialogFragment: EndTurnDialogFragment? = null
+    private var cardInfoFragment: CardInfoFragment? = null
 
     private var isEndTurnEnabled = false
 
@@ -168,6 +169,7 @@ class GameOnUiBinder @Inject constructor(
 
             // Dialogs
             if (state.showEndOfTurn) {
+                cardInfoFragment?.let { it.dismiss() }
                 state.lastPlayer?.let { player ->
                     if (isFragmentVisible) {
                         showEndTurn(player, state.nextPlayer, state.cardsFoundInTurn, state.round.roundNumber)
@@ -175,6 +177,7 @@ class GameOnUiBinder @Inject constructor(
                 }
             }
             if (state.showEndOfRound) {
+                cardInfoFragment?.let { it.dismiss() }
                 if (isFragmentVisible) {
                     showEndRound(state.round, state.teamsWithScore)
                 }
@@ -191,6 +194,7 @@ class GameOnUiBinder @Inject constructor(
 
             // Navigation
             if (state.showGameOver) {
+                cardInfoFragment?.let { it.dismiss() }
                 fragment.navigateToEndGame()
             }
             if (state.navigateToGames) {
@@ -216,8 +220,11 @@ class GameOnUiBinder @Inject constructor(
     }
 
     private fun showCardInfo(cardName: String) {
-        val frag = CardInfoFragment.newInstance(cardName)
-        frag.show(fragment.requireActivity() as AppCompatActivity)
+        cardInfoFragment?.let {
+            it.dismiss()
+        }
+        cardInfoFragment = CardInfoFragment.newInstance(cardName)
+        cardInfoFragment!!.show(fragment.requireActivity() as AppCompatActivity)
     }
 
     fun trigger(trigger: GameScreenContract.Trigger) {
