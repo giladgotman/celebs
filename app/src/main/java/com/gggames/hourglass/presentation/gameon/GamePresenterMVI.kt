@@ -105,7 +105,8 @@ class GamePresenterMVI @Inject constructor(
                     .compose { o ->
                         mergeArray(
                             o.ofType<ShowAllCardsResult>().flatMap<Trigger> { just(Trigger.ShowAllCards(it.cards)) },
-                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) }
+                            o.ofType<StartedGameResult>().flatMap<Trigger> { just(Trigger.StartTimer) },
+                            o.ofType<ShowCardInfoResult>().flatMap<Trigger> { just(Trigger.ShowCardInfo(it.cardName)) }
                         )
                     }
                     .doOnNext { Timber.i("TRIGGER:: $it") }
@@ -147,6 +148,7 @@ class GamePresenterMVI @Inject constructor(
                     currentPlayer = result.game.turn.player,
                     revealCurrentCard = meActive,
                     correctButtonEnabled = meActive && turnState == TurnState.Running,
+                    helpButtonEnabled = meActive && turnState == TurnState.Running,
                     lastPlayer = result.game.currentPlayer ?: previous.lastPlayer,
                     cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound },
                     time = updatedTime,
@@ -215,6 +217,7 @@ class GamePresenterMVI @Inject constructor(
             // Handled as Triggers:
             is ShowAllCardsResult -> previous
             is StartedGameResult -> previous.copy(inProgress = false)
+            is ShowCardInfoResult -> previous
         }
     }
 
@@ -230,6 +233,7 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.UserApprovedQuitGame>().switchMap { quitGame() },
                 o.ofType<UiEvent.CardsAmountClick>().switchMap { just(ShowAllCardsResult(cardDeck)) },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
+                o.ofType<UiEvent.CardInfoClick>().switchMap { just(ShowCardInfoResult(it.cardName)) },
                 o.ofType<UiEvent.FirstRoundInstructionsDismissed>().switchMap {
                     just(
                         ShowPlayTooltipResult(true),

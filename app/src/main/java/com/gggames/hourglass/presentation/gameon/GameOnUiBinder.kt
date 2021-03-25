@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gggames.hourglass.R
 import com.gggames.hourglass.model.*
 import com.gggames.hourglass.presentation.MainActivity
+import com.gggames.hourglass.presentation.cardunknown.CardInfoFragment
 import com.gggames.hourglass.presentation.endround.ChangeRoundDialogFragment
 import com.gggames.hourglass.presentation.endround.WelcomeFirstRoundFragment
 import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
@@ -59,6 +60,7 @@ class GameOnUiBinder @Inject constructor(
 
     private var endRoundDialogFragment: ChangeRoundDialogFragment? = null
     private var endTurnDialogFragment: EndTurnDialogFragment? = null
+    private var cardInfoFragment: CardInfoFragment? = null
 
     private var isEndTurnEnabled = false
 
@@ -83,6 +85,10 @@ class GameOnUiBinder @Inject constructor(
 
             cardsAmount.setOnClickListener {
                 _emitter.onNext(UiEvent.CardsAmountClick)
+            }
+
+            helpButton.setOnClickListener {
+                _emitter.onNext(UiEvent.CardInfoClick(cardTextView.text.toString()))
             }
 
             playersRecycleViews =
@@ -163,6 +169,7 @@ class GameOnUiBinder @Inject constructor(
 
             // Dialogs
             if (state.showEndOfTurn) {
+                cardInfoFragment?.let { it.dismiss() }
                 state.lastPlayer?.let { player ->
                     if (isFragmentVisible) {
                         showEndTurn(player, state.nextPlayer, state.cardsFoundInTurn, state.round.roundNumber)
@@ -170,6 +177,7 @@ class GameOnUiBinder @Inject constructor(
                 }
             }
             if (state.showEndOfRound) {
+                cardInfoFragment?.let { it.dismiss() }
                 if (isFragmentVisible) {
                     showEndRound(state.round, state.teamsWithScore)
                 }
@@ -186,6 +194,7 @@ class GameOnUiBinder @Inject constructor(
 
             // Navigation
             if (state.showGameOver) {
+                cardInfoFragment?.let { it.dismiss() }
                 fragment.navigateToEndGame()
             }
             if (state.navigateToGames) {
@@ -210,10 +219,22 @@ class GameOnUiBinder @Inject constructor(
         }
     }
 
+    private fun showCardInfo(cardName: String) {
+        cardInfoFragment?.let {
+            it.dismiss()
+        }
+        cardInfoFragment = CardInfoFragment.newInstance(cardName)
+        cardInfoFragment!!.show(fragment.requireActivity() as AppCompatActivity)
+    }
+
     fun trigger(trigger: GameScreenContract.Trigger) {
         when (trigger) {
             is GameScreenContract.Trigger.ShowAllCards -> showAllCards(trigger.cards)
             is GameScreenContract.Trigger.StartTimer -> rxTimer.start()
+            is GameScreenContract.Trigger.ShowCardInfo -> {
+                rxTimer.updateTime(rxTimer.time - 10000)
+                showCardInfo(trigger.cardName)
+            }
         }
     }
 
