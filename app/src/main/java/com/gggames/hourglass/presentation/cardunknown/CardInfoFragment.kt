@@ -3,6 +3,7 @@ package com.gggames.hourglass.presentation.cardunknown
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +39,7 @@ class CardInfoFragment : BottomSheetDialogFragment() {
             val cardName = bundle.getString(KEY_CARD_NAME)!!
             title.text = cardName
             val url = "https://www.google.com/search?q=$cardName"
+            webview.setBackgroundColor(Color.TRANSPARENT)
             webview.settings.javaScriptEnabled = true
 
             webview.loadUrl(url)
