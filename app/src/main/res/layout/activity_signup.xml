@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginTop="@dimen/medium_margin"
         android:text="How would you like to be called?"
         style="@style/TextAppearance.App.Subtitle1"
         />
@@ -28,7 +28,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
-        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -36,7 +37,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:focusedByDefault="true"
             android:text=""
             android:hint="@string/login_username_hint"
             android:imeOptions="actionDone"

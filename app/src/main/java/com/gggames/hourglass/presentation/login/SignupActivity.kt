@@ -48,6 +48,8 @@ class SignupActivity : AppCompatActivity() {
         }
 
         versionValue.text = getString(R.string.version_value, BuildConfig.VERSION_NAME)
+
+        loginUsernameEditText.requestFocus()
     }
 
     private fun onDoneClick() {

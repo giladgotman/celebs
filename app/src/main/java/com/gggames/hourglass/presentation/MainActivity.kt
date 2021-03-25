@@ -1,6 +1,7 @@
 package com.gggames.hourglass.presentation
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -20,11 +21,15 @@ import com.gggames.hourglass.presentation.gameon.GameScreenContract.UiEvent.Main
 import com.gggames.hourglass.presentation.instructions.InstructionsDialogFragment
 import com.gggames.hourglass.utils.showErrorToast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.idagio.app.core.utils.share.Shareable
 import com.idagio.app.core.utils.share.createDynamicLink
 import com.idagio.app.core.utils.share.getPendingDeepLink
 import com.idagio.app.core.utils.share.share
 import io.reactivex.Completable
+import io.reactivex.Completable.complete
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
@@ -43,6 +48,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var shareableFactory: Shareable.Factory
 
     private val disposables = CompositeDisposable()
+
+    private var showUpdateVersionPopup = true
 
     val events = PublishSubject.create<MainUiEvent>()
 
@@ -64,6 +71,36 @@ class MainActivity : AppCompatActivity() {
         }).let {
             disposables.add(it)
         }
+
+        setRemoteConfigSettings(60 * 15)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkVersionUpdate()
+    }
+
+    private fun checkVersionUpdate() {
+        fetchRemoteConfig().andThen {
+            val minimumVersionCode = Firebase.remoteConfig.getLong("version_code_minimum")
+            val showMustUpdate = minimumVersionCode > BuildConfig.VERSION_CODE
+            Timber.v("ccc minimumVersion: $minimumVersionCode")
+            if (showMustUpdate) {
+                showNewVersionMustUpdateView()
+            }
+            val versionCodeUpdate = Firebase.remoteConfig.getLong("version_code_update")
+            val showCanUpdate = versionCodeUpdate > BuildConfig.VERSION_CODE
+            Timber.v("ccc versionCodeUpdate: $versionCodeUpdate")
+            if (!showMustUpdate && showCanUpdate && showUpdateVersionPopup) {
+                showNewVersionAvailableView()
+            }
+            Firebase.remoteConfig.getLong("version_code_latest").let { latestVersionCode ->
+                Timber.v("ccc latestVersionCode: $latestVersionCode")
+            }
+
+            complete()
+        }.subscribe {
+        }.let { disposables.add(it) }
     }
 
     fun shareGame() {
@@ -136,6 +173,69 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun setRemoteConfigSettings(fetchInterval: Long) {
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = fetchInterval
+        }
+        Firebase.remoteConfig.setConfigSettingsAsync(configSettings)
+
+    }
+
+    private fun fetchRemoteConfig(): Completable {
+        return Completable.fromCallable {
+            Firebase.remoteConfig.fetchAndActivate()
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Timber.d("Config params updated: ${task.result}")
+                        complete()
+                    } else {
+                        error("Fetch config failed")
+                    }
+                }
+        }
+    }
+
+    private fun showNewVersionAvailableView() {
+        Timber.w("ccc showNewverisionView")
+        val goToPlayStore = DialogInterface.OnClickListener { dialog, _ ->
+            showUpdateVersionPopup = false
+            dialog.dismiss()
+            val url = "http://play.google.com/store/apps/details?id=com.gggames.hourglass"
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(browserIntent)
+        }
+
+        val dialogClickListener = DialogInterface.OnClickListener { _, _ ->
+            showUpdateVersionPopup = false
+        }
+        val builder = MaterialAlertDialogBuilder(this, R.style.celebs_MaterialAlertDialog)
+        builder
+            .setTitle(getString(R.string.new_version_available_title))
+            .setMessage(getString(R.string.new_version_available_body))
+            .setPositiveButton(getString(R.string.new_version_available_positive), goToPlayStore)
+            .setNegativeButton(getString(R.string.new_version_available_negative), dialogClickListener)
+            .show()
+    }
+
+    private fun showNewVersionMustUpdateView() {
+        Timber.w("ccc showNewVersionMustUpdateView")
+        val goToPlayStore = DialogInterface.OnClickListener { dialog, _ ->
+            val url = "http://play.google.com/store/apps/details?id=com.gggames.hourglass"
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(browserIntent)
+        }
+
+        val builder = MaterialAlertDialogBuilder(this, R.style.celebs_MaterialAlertDialog)
+        builder
+            .setTitle(getString(R.string.new_version_must_title))
+            .setMessage(getString(R.string.new_version_must_body))
+            .setPositiveButton(getString(R.string.new_version_must_positive), goToPlayStore)
+            .setOnDismissListener {}
+            .setCancelable(false)
+            .show()
+    }
+
 
     private fun showAbout() {
         val sb = StringBuilder()
