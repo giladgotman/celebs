@@ -27,6 +27,11 @@ class CardInfoFragment : BottomSheetDialogFragment() {
         closeButton.setOnClickListener {
             dismiss()
         }
+
+        arguments?.let { bundle ->
+            val cardName = bundle.getString(KEY_CARD_NAME)!!
+            title.text = cardName
+        }
     }
 
     companion object {
