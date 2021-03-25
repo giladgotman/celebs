@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gggames.hourglass.R
 import com.gggames.hourglass.model.*
 import com.gggames.hourglass.presentation.MainActivity
+import com.gggames.hourglass.presentation.cardunknown.CardInfoFragment
 import com.gggames.hourglass.presentation.endround.ChangeRoundDialogFragment
 import com.gggames.hourglass.presentation.endround.WelcomeFirstRoundFragment
 import com.gggames.hourglass.presentation.endturn.EndTurnDialogFragment
@@ -83,6 +84,10 @@ class GameOnUiBinder @Inject constructor(
 
             cardsAmount.setOnClickListener {
                 _emitter.onNext(UiEvent.CardsAmountClick)
+            }
+
+            helpButton.setOnClickListener {
+                _emitter.onNext(UiEvent.CardInfoClick(cardTextView.text.toString()))
             }
 
             playersRecycleViews =
@@ -210,10 +215,16 @@ class GameOnUiBinder @Inject constructor(
         }
     }
 
+    private fun showCardInfo(cardName: String) {
+        val frag = CardInfoFragment.newInstance(cardName)
+        frag.show(fragment.requireActivity() as AppCompatActivity)
+    }
+
     fun trigger(trigger: GameScreenContract.Trigger) {
         when (trigger) {
             is GameScreenContract.Trigger.ShowAllCards -> showAllCards(trigger.cards)
             is GameScreenContract.Trigger.StartTimer -> rxTimer.start()
+            is GameScreenContract.Trigger.ShowCardInfo -> showCardInfo(trigger.cardName)
         }
     }
 

@@ -9,7 +9,7 @@ import com.gggames.hourglass.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_card_info.*
 
-class CardInfoFragment: BottomSheetDialogFragment() {
+class CardInfoFragment : BottomSheetDialogFragment() {
 
     fun show(activity: AppCompatActivity) {
         show(activity.supportFragmentManager, this.javaClass.simpleName)
@@ -28,4 +28,16 @@ class CardInfoFragment: BottomSheetDialogFragment() {
             dismiss()
         }
     }
+
+    companion object {
+        fun newInstance(cardName: String) =
+            CardInfoFragment().apply {
+                arguments = Bundle().apply {
+                    putString(KEY_CARD_NAME, cardName)
+                }
+            }
+
+        const val KEY_CARD_NAME = "KEY_CARD_NAME"
+    }
+
 }
