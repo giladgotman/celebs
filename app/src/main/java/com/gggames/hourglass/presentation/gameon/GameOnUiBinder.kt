@@ -231,7 +231,10 @@ class GameOnUiBinder @Inject constructor(
         when (trigger) {
             is GameScreenContract.Trigger.ShowAllCards -> showAllCards(trigger.cards)
             is GameScreenContract.Trigger.StartTimer -> rxTimer.start()
-            is GameScreenContract.Trigger.ShowCardInfo -> showCardInfo(trigger.cardName)
+            is GameScreenContract.Trigger.ShowCardInfo -> {
+                rxTimer.updateTime(rxTimer.time - 10000)
+                showCardInfo(trigger.cardName)
+            }
         }
     }
 

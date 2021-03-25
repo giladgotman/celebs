@@ -25,9 +25,9 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     }
     var time: Long = 0
         set(value) {
-            field = value
+            field = if(value <0) 0 else value
             if ((value % 1000L) == 0L) {
-                _events.onNext(TimerEvent.UpdatedTime(value))
+                _events.onNext(TimerEvent.UpdatedTime(field))
             }
         }
 
