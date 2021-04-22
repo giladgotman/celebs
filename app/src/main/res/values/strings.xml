@@ -114,7 +114,7 @@ One game includes 3 rounds and the same cards are reused in every round!
     <string name="instructions_section3_round3_title">Round 3 : Charades</string>
     <string name="instructions_section3_round1_descriptions">You can use as many words as you like to describe the word on the card, without acting or gestures.</string>
     <string name="instructions_section3_round2_descriptions">You can say exactly 1 word per card. Once you said a word, you can only repeat it…</string>
-    <string name="instructions_section3_round3_descriptions">Act and use mime to communicate the card. No words or sounds allowed…</string>
+    <string name="instructions_section3_round3_descriptions">Use mime to communicate the name in the card. No words or sounds allowed</string>
     <string name="instructions_section3_general_description"><b>The scores from all three rounds are added together. The team with the most points wins!</b></string>
 
     <string name="end_round_next_round_button_cta">NEXT ROUND</string>
