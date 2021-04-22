@@ -9,8 +9,10 @@ import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.model.Card
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -26,7 +28,7 @@ class AddCardsPresenter @Inject constructor(
     private lateinit var view: View
     private var disposables = CompositeDisposable()
 
-    fun bind(view: View) {
+    fun bind(view: View, showSharePopup: Boolean) {
         this.view = view
 
         getMyCards(authenticator.me!!)
@@ -41,9 +43,11 @@ class AddCardsPresenter @Inject constructor(
                     view.showCards(cards, currentGame.celebsCount)
                 }
 
-                val showShare = false
-                if (showShare) {
-                    view.showSharePopup(currentGame.name)
+                if (showSharePopup == true) {
+                    Observable.timer(1, TimeUnit.SECONDS).subscribe {
+                        view.showSharePopup(currentGame.name)
+                    }
+
                 }
 
             }, {

@@ -71,15 +71,8 @@ class AddCardsFragment : Fragment(), AddCardsPresenter.View {
             onDoneClick()
         }
 
-//        arguments?.let {
-//            if (it.getBoolean(KEY_SHOW_SHARE_POPUP, false)) {
-//                Observable.timer(1, TimeUnit.SECONDS).subscribe {
-//                    showSharePopup()
-//                }
-//            }
-//        }
-
-        presenter.bind(this)
+        val showPopup = arguments?.getBoolean(KEY_SHOW_SHARE_POPUP, false) ?: false
+        presenter.bind(this, showPopup)
     }
 
 
@@ -133,7 +126,7 @@ class AddCardsFragment : Fragment(), AddCardsPresenter.View {
         cardEditTextList.forEach { editText ->
             val cardName = editTextToString(editText)
             cardName?.let {
-                if (!cardList.contains(cardName)){
+                if (!cardList.contains(cardName)) {
                     cardList.add(cardName)
                 } else {
                     editText?.error = "This name was already used"
