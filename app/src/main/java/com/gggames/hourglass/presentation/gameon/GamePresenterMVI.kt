@@ -97,7 +97,7 @@ class GamePresenterMVI @Inject constructor(
                     .observeOn(schedulerProvider.ui())
                     .subscribe({
                         _states.onNext(it)
-                    }) { Timber.e(it, "Unhandled exception in the main stream") }
+                    }, { Timber.e(it, "Unhandled exception in the main stream") })
                     .let { disposables.add(it) }
 
                 results
@@ -112,7 +112,7 @@ class GamePresenterMVI @Inject constructor(
                     .doOnNext { Timber.i("TRIGGER:: $it") }
                     .subscribe({
                         _triggers.onNext(it)
-                    }) { Timber.e(it, "Unhandled exception in the main triggers stream") }
+                    }, { Timber.e(it, "Unhandled exception in the main triggers stream") })
                     .let { disposables.add(it) }
             }
     }
