@@ -8,7 +8,6 @@ import com.gggames.hourglass.features.cards.domain.SetCards
 import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.model.Card
 import com.idagio.app.core.utils.rx.scheduler.BaseSchedulerProvider
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
@@ -61,19 +60,6 @@ class AddCardsPresenter @Inject constructor(
             }).let { disposables.add(it) }
     }
 
-
-    private fun tryToAddCards(cardList: List<Card>): Completable {
-        val currentGame = gamesRepository.getCurrentGameBlocking()!!
-        return getMyCards(authenticator.me!!)
-            .flatMapCompletable { myCards ->
-                if (myCards.size + cardList.size > currentGame.celebsCount) {
-                    Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))
-                } else {
-                    setCards(cardList)
-                }
-            }
-    }
-
     fun onDoneClicked(cardNames: List<String>) {
         val playerId = authenticator.me!!.id
         val cardList = cardNames.map { editTextToCard(playerId, it) }
@@ -85,6 +71,13 @@ class AddCardsPresenter @Inject constructor(
                 view.navigateToChooseTeam()
             }, {
                 Timber.e(it, "error while trying to add cards")
+                val errorMessage =
+                    if (it is java.lang.IllegalStateException) {
+                        it.localizedMessage
+                    } else {
+                        context.getString(R.string.error_generic)
+                    }
+                view.showError(errorMessage)
                 view.enableDone(true)
 
             }).let {
