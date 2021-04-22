@@ -169,7 +169,7 @@ class GameOnUiBinder @Inject constructor(
 
             // Dialogs
             if (state.showEndOfTurn) {
-                cardInfoFragment?.let { it.dismiss() }
+                cardInfoFragment?.let { if (it.isResumed) it.dismiss() }
                 state.lastPlayer?.let { player ->
                     if (isFragmentVisible) {
                         showEndTurn(player, state.nextPlayer, state.cardsFoundInTurn, state.round.roundNumber)
@@ -177,7 +177,7 @@ class GameOnUiBinder @Inject constructor(
                 }
             }
             if (state.showEndOfRound) {
-                cardInfoFragment?.let { it.dismiss() }
+                cardInfoFragment?.let { if (it.isResumed) it.dismiss() }
                 if (isFragmentVisible) {
                     showEndRound(state.round, state.teamsWithScore)
                 }
@@ -194,7 +194,7 @@ class GameOnUiBinder @Inject constructor(
 
             // Navigation
             if (state.showGameOver) {
-                cardInfoFragment?.let { it.dismiss() }
+                cardInfoFragment?.let { if (it.isResumed) it.dismiss() }
                 fragment.navigateToEndGame()
             }
             if (state.navigateToGames) {
