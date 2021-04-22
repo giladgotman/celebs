@@ -14,53 +14,32 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.gggames.hourglass.R
-import com.gggames.hourglass.core.Authenticator
-import com.gggames.hourglass.features.cards.domain.AddCards
-import com.gggames.hourglass.features.cards.domain.GetMyCards
-import com.gggames.hourglass.features.games.data.GamesRepository
 import com.gggames.hourglass.features.games.data.MAX_CARDS
 import com.gggames.hourglass.model.Card
-import com.gggames.hourglass.model.GameType
-import com.gggames.hourglass.model.Player
 import com.gggames.hourglass.presentation.MainActivity
 import com.gggames.hourglass.presentation.di.ViewComponent
 import com.gggames.hourglass.presentation.di.createViewComponent
 import com.gggames.hourglass.utils.createToolTip
 import com.gggames.hourglass.utils.showErrorToast
-import com.gggames.hourglass.utils.showInfoToast
 import com.skydoves.balloon.*
-import io.reactivex.Completable
-import io.reactivex.Completable.complete
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_add_cards.*
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class AddCardsFragment : Fragment() {
+class AddCardsFragment : Fragment(), AddCardsPresenter.View {
 
     @Inject
-    lateinit var addCards: AddCards
-
-    @Inject
-    lateinit var getMyCards: GetMyCards
-
-    @Inject
-    lateinit var gamesRepository: GamesRepository
-
-    @Inject
-    lateinit var authenticator: Authenticator
+    lateinit var presenter: AddCardsPresenter
 
     private var cardEditTextList = mutableListOf<EditText?>()
 
     private lateinit var viewComponent: ViewComponent
 
     private val disposables = CompositeDisposable()
-
-    private lateinit var playerId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,8 +58,6 @@ class AddCardsFragment : Fragment() {
         (activity as MainActivity).setTitle(getString(R.string.add_cards_title))
         (activity as MainActivity).setShareVisible(true)
 
-        playerId = authenticator.me!!.id
-
         add_cards_card6_editText.setOnEditorActionListener { v, actionId, _ ->
             return@setOnEditorActionListener if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val imm: InputMethodManager = v.context
@@ -90,62 +67,50 @@ class AddCardsFragment : Fragment() {
                 true
             } else false
         }
-        setCardsInputFields()
-        hideNonUsedCardsFields()
         buttonDone.setOnClickListener {
             onDoneClick()
         }
 
-        navigateToGameIfCardsAreFilled()
+//        arguments?.let {
+//            if (it.getBoolean(KEY_SHOW_SHARE_POPUP, false)) {
+//                Observable.timer(1, TimeUnit.SECONDS).subscribe {
+//                    showSharePopup()
+//                }
+//            }
+//        }
 
-        arguments?.let {
-            if (it.getBoolean(KEY_SHOW_SHARE_POPUP, false)) {
-                Observable.timer(1, TimeUnit.SECONDS).subscribe {
-                    showSharePopup()
-                }
-            }
-        }
+        presenter.bind(this)
     }
 
-    private fun showSharePopup() {
-        gamesRepository.getCurrentGameBlocking()?.let { game ->
-            ShareGameFragment.newInstance(game.name).show((requireActivity() as AppCompatActivity),
-                onClick = {
-                    Observable.timer(2, TimeUnit.SECONDS)
-                        .subscribe {
-                            showTooltip(setupToolTip(), requireActivity().button_share)
-                        }.let { disposables.add(it) }
-                    (requireActivity() as MainActivity).shareGame()
-                },
-                onDismiss = {
-                    showTooltip(setupToolTip(), requireActivity().button_share)
-                })
+
+    override fun showCards(cards: List<Card>, cardsLimit: Int) {
+        setCardsInputFields()
+        hideNonUsedCardsFields(cardsLimit)
+
+        cards.forEachIndexed { index, card ->
+            cardEditTextList[index]?.setText(card.name)
+            cardEditTextList[index]?.isEnabled = false
         }
+
     }
 
-    private fun navigateToGameIfCardsAreFilled() {
-        val currentGame = gamesRepository.getCurrentGameBlocking()!!
-        if (currentGame.type == GameType.Gift) {
-            val generatorPlayer = Player("giftGenerator", "giftGenerator")
-            getMyCards(generatorPlayer).subscribe(
-                { generatedCards ->
-                    Timber.w("ggg celebs count: ${generatedCards.size}")
-                    if (generatedCards.isNotEmpty()) navigateToChooseTeam()
+    override fun enableDone(enable: Boolean) {
+        buttonDone.isEnabled = enable
+    }
 
-                }, {}).let { disposables.add(it) }
 
-        } else {
-            getMyCards(authenticator.me!!).subscribe(
-                { myCards ->
-                    val cardsAlreadyFilled =
-                        myCards.size >= currentGame.celebsCount
-
-                    if (cardsAlreadyFilled) {
-                        navigateToChooseTeam()
-                    }
-                }, {}
-            ).let { disposables.add(it) }
-        }
+    override fun showSharePopup(gameName: String) {
+        ShareGameFragment.newInstance(gameName).show((requireActivity() as AppCompatActivity),
+            onClick = {
+                Observable.timer(2, TimeUnit.SECONDS)
+                    .subscribe {
+                        showTooltip(setupToolTip(), requireActivity().button_share)
+                    }.let { disposables.add(it) }
+                (requireActivity() as MainActivity).shareGame()
+            },
+            onDismiss = {
+                showTooltip(setupToolTip(), requireActivity().button_share)
+            })
     }
 
     private fun setCardsInputFields() {
@@ -157,53 +122,45 @@ class AddCardsFragment : Fragment() {
         cardEditTextList.add(add_cards_card6.editText)
     }
 
-    private fun hideNonUsedCardsFields() {
-        val game = gamesRepository.getCurrentGameBlocking()!!
-        for (i in MAX_CARDS downTo (game.celebsCount + 1)) {
+    private fun hideNonUsedCardsFields(cardsLimit: Int) {
+        for (i in MAX_CARDS downTo (cardsLimit + 1)) {
             cardEditTextList[i - 1]?.isVisible = false
         }
     }
 
     private fun onDoneClick() {
-        val cardList = mutableListOf<Card>()
-
+        val cardList = mutableListOf<String>()
         cardEditTextList.forEach { editText ->
-            editTextToCard(editText)?.let { card ->
-                if (cardList.none { it.name == card.name }) {
-                    cardList.add(card)
+            val cardName = editTextToString(editText)
+            cardName?.let {
+                if (!cardList.contains(cardName)){
+                    cardList.add(cardName)
                 } else {
                     editText?.error = "This name was already used"
                     return
                 }
             }
         }
-
-        tryToAddCards(cardList)
-            .doOnSubscribe {
-                buttonDone.isEnabled = false
-            }
-            .subscribe({
-                navigateToChooseTeam()
-            }, {
-                buttonDone.isEnabled = true
-                val errorMessage =
-                    if (it is java.lang.IllegalStateException) {
-                        it.localizedMessage
-                    } else {
-                        getString(R.string.error_generic)
-                    }
-                showErrorToast(
-                    requireContext(),
-                    errorMessage,
-                    Toast.LENGTH_LONG
-                )
-                Timber.e(it, "ggg added cards failed")
-            }).let {
-                disposables.add(it)
-            }
+        presenter.onDoneClicked(cardList)
     }
 
-    private fun navigateToChooseTeam() {
+    private fun editTextToString(editText: EditText?): String? {
+        return if (editText?.text?.isNotEmpty() == true) {
+            return editText.text.toString()
+        } else {
+            null
+        }
+    }
+
+    override fun showError(errorText: String) {
+        showErrorToast(
+            requireContext(),
+            errorText,
+            Toast.LENGTH_LONG
+        )
+    }
+
+    override fun navigateToChooseTeam() {
         findNavController().navigate(
             R.id.action_AddCardsFragment_to_chooseTeamFragment
         )
@@ -215,40 +172,6 @@ class AddCardsFragment : Fragment() {
         )
     }
 
-    private fun tryToAddCards(cardList: MutableList<Card>): Completable {
-        val currentGame = gamesRepository.getCurrentGameBlocking()!!
-        return if (currentGame.type == GameType.Gift) {
-            if (gamesRepository.getCurrentGameBlocking()!!.gameInfo.totalCards > 0) {
-                complete()
-            } else {
-                val giftCards = createAbaCards()
-                addCards(giftCards)
-                    .doOnComplete {
-                        showInfoToast(requireContext(), "${giftCards.size} gift cards added")
-                    }
-            }
-        } else getMyCards(authenticator.me!!)
-            .flatMapCompletable { myCards ->
-                if (myCards.size + cardList.size > currentGame.celebsCount) {
-                    Completable.error(IllegalStateException("you can't add ${cardList.size} more cards.\nyou already have ${myCards.size}"))
-                } else {
-                    addCards(cardList)
-                }
-            }
-    }
-
-    private fun editTextToCard(editText: EditText?): Card? {
-        return if (editText?.text?.isNotEmpty() == true) {
-            val cardName = editText.text.toString()
-            Card(
-                id = "${playerId}.$cardName",
-                name = cardName,
-                player = playerId
-            )
-        } else {
-            null
-        }
-    }
 
     private fun setupToolTip() =
         createToolTip(
