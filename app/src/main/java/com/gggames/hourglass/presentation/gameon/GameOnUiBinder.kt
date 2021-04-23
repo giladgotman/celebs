@@ -110,7 +110,7 @@ class GameOnUiBinder @Inject constructor(
             .subscribe {
                 Timber.v("ttt TIMER EVENT $it")
                 when (it) {
-                    is TimerEvent.UpdatedTime -> view?.timerTextView?.text = getFormattedTime(it.time)
+                    is TimerEvent.UpdatedTime -> view?.hourglass?.state = view!!.hourglass.state.copy(time = it.time)
                     is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
                     is TimerEvent.Tick -> {
                         audioPlayer.play("shake")
@@ -216,6 +216,8 @@ class GameOnUiBinder @Inject constructor(
                     showPlayTooltip(startButton)
                 }
             }
+
+            view?.hourglass?.state = view!!.hourglass.state.copy(turnState = state.round.turn.state)
         }
     }
 

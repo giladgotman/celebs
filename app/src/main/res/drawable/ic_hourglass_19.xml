@@ -1,0 +1,14 @@
+<vector android:autoMirrored="true" android:height="56dp"
+    android:viewportHeight="56" android:viewportWidth="40"
+    android:width="40dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M7.1181,34.4416l27.8819,6.5584l3.5188,12.9727l-32.752,-2.4655z"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
+        android:pathData="M3.7423,18.5768l31.2577,-1.7001l0,5.9466l-13.4305,4.0205l-16.9311,-4.0205l-0.3632,-3.4795z"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillAlpha="0" android:fillColor="@color/hourglass_color"
+        android:fillType="evenOdd"
+        android:pathData="M37.6702,2l-35.6702,2.6757l2.6384,18.1476l29.0921,6.8325l4.7883,24.3168l-33.0304,-2.1944l2.1817,-19.9254l27.5444,-9.0295z"
+        android:strokeColor="#000000" android:strokeWidth="2"/>
+</vector>
