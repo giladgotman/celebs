@@ -52,6 +52,7 @@ class HourglassTimer : FrameLayout {
 
         when (state.turnState) {
             Running -> {
+                timeString.text = ""
                 sand.isVisible = true
                 when (seconds % 3) {
                     0 -> sand.setImageResource(R.drawable.ic_hourglass_sand_1)
@@ -62,9 +63,12 @@ class HourglassTimer : FrameLayout {
             Over,
             Idle -> {
                 sand.isVisible = false
+                timeString.text = "60"
                 hourglassImage.setImageResource(R.drawable.ic_hourglass_100)
             }
             Paused -> {
+                val sec = if (seconds == 0) 60 else seconds
+                timeString.text = "${sec}"
                 sand.isVisible = false
 
             }
@@ -74,7 +78,8 @@ class HourglassTimer : FrameLayout {
     data class State(
         val time: Long = 0,
         val turnTime: Long = TURN_TIME_MILLIS,
-        val turnState: TurnState = Idle
+        val turnState: TurnState = Idle,
+        val timeStr : String? = null
     )
 }
 
