@@ -43,8 +43,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginStart="@dimen/tiny_margin"
             app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.gggames.hourglass.presentation.PlayButton
+            android:id="@+id/startButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/start_button"
+            android:background="@drawable/ripple_circular_dark"
+            app:layout_constraintTop_toTopOf="@id/hourglass"
+            app:layout_constraintBottom_toBottomOf="@id/hourglass"
+            app:layout_constraintStart_toEndOf="@id/hourglass"
+            android:layout_marginStart="@dimen/small_margin"
             />
 
 
@@ -132,26 +144,16 @@
             android:layout_height="wrap_content"
             android:src="@drawable/help_button"
             android:background="@drawable/ripple_circular_dark"
-            app:layout_constraintBottom_toBottomOf="@id/startButton"
+            app:layout_constraintTop_toBottomOf="@id/cardLayout"
             app:layout_constraintStart_toStartOf="@id/cardLayout" />
 
-        <!--            android:src="@drawable/ic_close_24px"-->
-        <com.gggames.hourglass.presentation.PlayButton
-            android:id="@+id/startButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/start_button"
-            android:background="@drawable/ripple_circular_dark"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <com.gggames.hourglass.presentation.HourglassButton
             android:id="@+id/correctButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/NextButtonStyle"
-            app:layout_constraintBottom_toBottomOf="@id/startButton"
+            app:layout_constraintTop_toBottomOf="@id/cardLayout"
             app:layout_constraintEnd_toEndOf="@id/cardLayout"
             />
 
