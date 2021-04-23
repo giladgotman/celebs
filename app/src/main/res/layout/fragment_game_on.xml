@@ -108,16 +108,18 @@
         >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardLayout"
-                android:layout_width="250dp"
-                android:layout_height="237dp"
-                android:background="@drawable/card_blue"
-                app:layout_constraintBottom_toTopOf="@id/startButton"
+                android:layout_width="330dp"
+                android:layout_height="270dp"
+                android:background="@drawable/card_new_blue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginBottom="@dimen/medium_margin"
 
-                android:padding="20dp"
+android:paddingTop="40dp"
+                android:paddingBottom="80dp"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"
                 >
             <TextView
                 android:id="@+id/cardTextView"
@@ -131,6 +133,7 @@
                 android:gravity="center_horizontal|center_vertical"
                 android:textColor="@color/black"
                 android:textSize="34sp"
+                android:lines="3"
                 style="@style/CardTextViewStyle"
                 tools:text="Putin the president of russia" />
 
