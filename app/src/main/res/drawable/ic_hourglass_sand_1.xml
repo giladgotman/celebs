@@ -1,19 +1,19 @@
-<vector android:autoMirrored="true" android:height="57dp"
-    android:viewportHeight="57" android:viewportWidth="40"
+<vector android:autoMirrored="true" android:height="56dp"
+    android:viewportHeight="56" android:viewportWidth="40"
     android:width="40dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
-        android:pathData="M23,47.3558a2.5,2.5481 0,1 0,5 0a2.5,2.5481 0,1 0,-5 0z"
+        android:pathData="M25.5,46.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
     <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
-        android:pathData="M15,41.2404a2.5,2.5481 0,1 0,5 0a2.5,2.5481 0,1 0,-5 0z"
+        android:pathData="M17.5,40.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
     <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
-        android:pathData="M24,38.1827a2.5,2.5481 0,1 0,5 0a2.5,2.5481 0,1 0,-5 0z"
+        android:pathData="M26.5,37.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
     <path android:fillColor="@color/hourglass_color" android:fillType="evenOdd"
-        android:pathData="M18,33.0865a2.5,2.5481 0,1 0,5 0a2.5,2.5481 0,1 0,-5 0z"
+        android:pathData="M20.5,32.5m-2.5,0a2.5,2.5 0,1 1,5 0a2.5,2.5 0,1 1,-5 0"
         android:strokeColor="#00000000" android:strokeWidth="1"/>
     <path android:fillColor="#00000000" android:fillType="evenOdd"
-        android:pathData="M37.6702,2l-35.6702,2.7272l2.6384,18.4966l29.0921,6.9639l4.7883,24.7844l-33.0304,-2.2366l2.1817,-20.3086l27.5444,-9.2031z"
+        android:pathData="M37.6702,2l-35.6702,2.6757l2.6384,18.1476l29.0921,6.8325l4.7883,24.3168l-33.0304,-2.1944l2.1817,-19.9254l27.5444,-9.0295z"
         android:strokeColor="#000000" android:strokeWidth="2"/>
 </vector>

@@ -49,31 +49,15 @@
 
         <com.gggames.hourglass.presentation.PlayButton
             android:id="@+id/startButton"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play_button"
             android:background="@drawable/ripple_circular_dark"
             app:layout_constraintTop_toTopOf="@id/hourglass"
             app:layout_constraintBottom_toBottomOf="@id/hourglass"
             app:layout_constraintStart_toEndOf="@id/hourglass"
             android:layout_marginStart="@dimen/small_margin"
             />
-
-
-<!--        <TextView-->
-<!--            android:id="@+id/timerTextView"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            android:fontFamily="@font/courgette_regular"-->
-<!--            android:textSize="32dp"-->
-<!--            tools:text="1:00"-->
-<!--            android:layout_marginEnd="5dp"-->
-<!--            />-->
-
 
     <TextView
         android:id="@+id/cardsAmount"
@@ -97,68 +81,72 @@
         android:id="@+id/gameSection"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginStart="@dimen/default_margin"
         android:layout_marginTop="@dimen/default_margin"
-        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginEnd="@dimen/default_margin"
         android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintBottom_toTopOf="@id/infoSection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gameTopSection"
         >
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cardLayout"
-                android:layout_width="330dp"
-                android:layout_height="270dp"
-                android:background="@drawable/card_new_blue"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginBottom="@dimen/medium_margin"
 
-android:paddingTop="40dp"
-                android:paddingBottom="80dp"
-                android:paddingStart="50dp"
-                android:paddingEnd="50dp"
-                >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardLayout"
+            android:layout_width="370dp"
+            android:layout_height="270dp"
+            android:background="@drawable/card_background"
+            android:paddingStart="50dp"
+            android:paddingTop="40dp"
+            android:paddingEnd="50dp"
+
+            android:paddingBottom="80dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.444"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
                 android:id="@+id/cardTextView"
+                style="@style/CardTextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center_horizontal|center_vertical"
+                android:lines="3"
                 android:textColor="@color/black"
                 android:textSize="34sp"
-                android:lines="3"
-                style="@style/CardTextViewStyle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Putin the president of russia" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.gggames.hourglass.presentation.HourglassButton
             android:id="@+id/helpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/help_button"
             android:background="@drawable/ripple_circular_dark"
-            app:layout_constraintTop_toBottomOf="@id/cardLayout"
-            app:layout_constraintStart_toStartOf="@id/cardLayout" />
+            android:src="@drawable/ic_help_button"
+            android:translationX="35dp"
+            android:translationY="-90dp"
+            app:layout_constraintStart_toStartOf="@id/cardLayout"
+            app:layout_constraintTop_toBottomOf="@id/cardLayout" />
 
 
         <com.gggames.hourglass.presentation.HourglassButton
             android:id="@+id/correctButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/NextButtonStyle"
-            app:layout_constraintTop_toBottomOf="@id/cardLayout"
+            android:background="@drawable/ripple_circular_dark"
+            android:src="@drawable/ic_correct_button"
+            android:translationX="-10dp"
+            android:translationY="-90dp"
             app:layout_constraintEnd_toEndOf="@id/cardLayout"
-            />
+            app:layout_constraintTop_toBottomOf="@id/cardLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
