@@ -7,5 +7,5 @@
     <path android:fillAlpha="0" android:fillColor="@color/hourglass_color"
         android:fillType="evenOdd"
         android:pathData="M37.6702,2l-35.6702,2.6757l2.6384,18.1476l29.0921,6.8325l4.7883,24.3168l-33.0304,-2.1944l2.1817,-19.9254l27.5444,-9.0295z"
-        android:strokeColor="#000000" android:strokeWidth="2"/>
+        android:strokeColor="#000000" android:strokeWidth="3"/>
 </vector>
