@@ -17,26 +17,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:elevation="3dp"
         android:paddingTop="@dimen/default_margin"
-        android:paddingBottom="@dimen/default_margin"
+        android:paddingBottom="@dimen/small_margin"
         android:paddingStart="@dimen/default_margin"
         android:paddingEnd="@dimen/default_margin"
         >
 
 <!--            android:background="@drawable/button_bg_a"-->
-        <TextView
-            android:id="@+id/roundTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="@dimen/medium_text_size"
-            android:text="Describe"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:fontFamily="@font/indie_flower_regular"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+
 
         <com.gggames.hourglass.presentation.common.HourglassTimer
             android:id="@+id/hourglass"
@@ -66,11 +53,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="24"
-        android:gravity="center|top"
-        android:paddingTop="5dp"
+        android:textSize="@dimen/small_text_size"
+        app:fontFamily="@font/poppins_bold"
+        android:textStyle="bold"
+        android:gravity="center"
         android:background="@drawable/ic_deck"
-        android:foreground="@drawable/ripple_circular_dark"
-        android:layout_marginEnd="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
@@ -82,7 +69,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/default_margin"
         android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintBottom_toTopOf="@id/infoSection"
@@ -90,6 +77,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gameTopSection"
         >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/roundInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:rotation="-4"
+            android:translationY="7dp"
+            >
+
+            <TextView
+                android:id="@+id/roundLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:textSize="@dimen/small_text_size"
+                android:text="Round"
+                app:layout_constraintStart_toStartOf="parent"
+                app:fontFamily="@font/poppins_light"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/roundTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:textSize="@dimen/small_text_size"
+                android:text="1"
+                app:layout_constraintBaseline_toBaselineOf="@id/roundLabelTextView"
+                app:layout_constraintStart_toEndOf="@id/roundLabelTextView"
+                app:fontFamily="@font/poppins_light"
+                android:layout_marginStart="@dimen/small_margin"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -105,7 +130,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.444"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/roundInfo">
 
             <TextView
                 android:id="@+id/cardTextView"
@@ -148,7 +173,15 @@
             app:layout_constraintEnd_toEndOf="@id/cardLayout"
             app:layout_constraintTop_toBottomOf="@id/cardLayout" />
 
+
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/infoSection"
