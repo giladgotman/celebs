@@ -118,8 +118,8 @@
     </style>
 
     <style name="CardTextViewStyle" parent="DefaultTextViewStyle">
-        <item name="android:fontFamily">@font/indie_flower_regular</item>
-        <item name="fontFamily">@font/indie_flower_regular</item>
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="fontFamily">@font/poppins_semi_bold</item>
     </style>
 
     <style name="DefaultButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton">
