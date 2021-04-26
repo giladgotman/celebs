@@ -27,19 +27,27 @@ class TeamsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as TeamsViewHolder).bind(teams[position])
+        (holder as TeamsViewHolder).bind(teams[position], position)
     }
 
     override fun getItemCount() = this.teams.size
 
 
     inner class TeamsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: TeamItem) {
+        fun bind(item: TeamItem, position: Int) {
             itemView.teamName.text = item.name
             itemView.score.text = item.score.toString()
             with (itemView.playersView.adapter as PlayersAdapter) {
                 setData(item.playersDataSet)
             }
+
+            val bg = when (position) {
+                0 -> R.drawable.ic_score_bg_1
+                1 -> R.drawable.ic_score_bg_2
+                2 -> R.drawable.ic_score_bg_3
+                else -> 0
+            }
+            itemView.score_bg.setImageResource(bg)
         }
     }
 
