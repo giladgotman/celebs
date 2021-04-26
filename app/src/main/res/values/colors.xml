@@ -20,6 +20,7 @@
     <color name="error">#fe325e</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="light_grey">#C9C9C9</color>
+    <color name="grey">#EFEDED</color>
     <color name="hourglass_color">@color/hawaii_blue</color>
 
 

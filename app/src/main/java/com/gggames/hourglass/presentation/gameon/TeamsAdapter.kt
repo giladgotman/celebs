@@ -48,6 +48,14 @@ class TeamsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 else -> 0
             }
             itemView.score_bg.setImageResource(bg)
+
+            val teamBg = when (position) {
+                0 -> R.drawable.ic_team_name_bg1
+                1 -> R.drawable.ic_team_name_bg2
+                2 -> R.drawable.ic_team_name_bg3
+                else -> 0
+            }
+            itemView.teamName.setBackgroundResource(teamBg)
         }
     }
 

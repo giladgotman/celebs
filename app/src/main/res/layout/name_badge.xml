@@ -18,5 +18,6 @@
         android:textStyle="bold"
         android:text="Name Badge"
         android:padding="8dp"
+        app:fontFamily="@font/poppins_light"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
