@@ -10,6 +10,7 @@ open class HourglassButton : AppCompatImageButton {
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
+
         if (enabled) {
             this.colorFilter = null
         } else {
@@ -29,8 +30,17 @@ open class HourglassButton : AppCompatImageButton {
 
     private fun appyGreyScale() {
         val matrix = ColorMatrix()
-        matrix.setSaturation(0f)
+        matrix.setSaturation(0.3f)
         val filter = ColorMatrixColorFilter(matrix)
         this.colorFilter = filter
+    }
+
+    private fun setAlpha(enabled: Boolean) {
+        if (enabled) {
+            this.alpha = 1f
+        } else {
+            this.alpha = 0.7f
+        }
+
     }
 }
