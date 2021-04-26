@@ -33,7 +33,7 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
 
     fun updateTime(time: Long) {
         val roundedTime = (time / 1000) * 1000
-        Timber.e("update time: $time, rounded: $roundedTime")
+        Timber.v("update time: $time, rounded: $roundedTime")
         this.time = roundedTime
     }
 

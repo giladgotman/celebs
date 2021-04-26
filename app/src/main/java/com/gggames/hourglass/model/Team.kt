@@ -13,7 +13,7 @@ data class Team(
 
 
 data class TeamWithPlayers(
-    val name: String,
+    val name: String = "",
     val players: List<Player> = emptyList(),
     val score: Int = 0,
     val lastPlayerId: String? = null

@@ -15,7 +15,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:elevation="3dp"
         android:paddingTop="@dimen/default_margin"
         android:paddingBottom="@dimen/small_margin"
         android:paddingStart="@dimen/default_margin"
@@ -182,10 +181,12 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:paddingStart="@dimen/small_margin"
-        android:elevation="15dp"
+        android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="@dimen/default_margin"
+        >
 
         <View
             android:id="@+id/teamsRuler"
@@ -195,173 +196,17 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
-        <LinearLayout
-            android:id="@+id/teamsLayout"
-            android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/teamsView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:orientation="horizontal"
-            android:divider="?android:dividerVertical"
-            android:showDividers="middle"
-            >
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/team1Layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/small_margin"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/team1Name"
-                    android:layout_width="0dp"
-                    android:minWidth="50dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/team1Score"
-                    tools:text="Team1 dsfkjdf ksdjfn" />
-
-                <TextView
-                    android:id="@+id/team1Score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/score_bg"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/team1Name"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/team1Name"
-                    app:layout_constraintTop_toTopOf="@+id/team1Name"
-                    android:layout_marginStart="@dimen/default_margin"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    tools:text="1" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/team1players"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="@dimen/small_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/team1Name"
-                    />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/team2Layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingStart="@dimen/small_margin"
-                android:paddingTop="@dimen/small_margin"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/team2Name"
-                    android:layout_width="0dp"
-                    android:minWidth="50dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/team2Score"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    tools:text="Team2 which is quite long" />
-
-                <TextView
-                    android:id="@+id/team2Score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/score_bg"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/team2Name"
-                    app:layout_constraintStart_toEndOf="@+id/team2Name"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/team2Name"
-                    android:layout_marginStart="@dimen/default_margin"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    tools:text="1" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/team2players"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="@dimen/small_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/team2Name" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/team3Layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/small_margin"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:layout_marginStart="@dimen/small_margin"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/team3Name"
-                    android:layout_width="0dp"
-                    android:minWidth="50dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/team3Score"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    tools:text="Team3" />
-
-                <TextView
-                    android:id="@+id/team3Score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/score_bg"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/team3Name"
-                    app:layout_constraintStart_toEndOf="@+id/team3Name"
-                    app:layout_constraintTop_toTopOf="@+id/team3Name"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginStart="@dimen/default_margin"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    tools:text="1" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/team3players"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="@dimen/small_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/team3Name"
-                    />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+            android:orientation="vertical"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

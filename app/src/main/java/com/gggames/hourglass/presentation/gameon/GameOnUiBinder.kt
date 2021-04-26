@@ -4,13 +4,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.view.Menu
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.gggames.hourglass.R
 import com.gggames.hourglass.model.*
 import com.gggames.hourglass.presentation.MainActivity
@@ -47,14 +42,7 @@ class GameOnUiBinder @Inject constructor(
 
     private var context: Context? = null
 
-    private var playerAdapters: List<PlayersAdapter> =
-        listOf(PlayersAdapter(), PlayersAdapter(), PlayersAdapter())
-
-    private lateinit var teamNameViews: List<TextView>
-    private lateinit var teamScoreViews: List<TextView>
-    private lateinit var teamLayouts: List<ConstraintLayout>
-
-    private lateinit var playersRecycleViews: List<RecyclerView>
+    private val teamsAdapter = TeamsAdapter()
 
     private val rxTimer = RxTimer(schedulerProvider)
 
@@ -91,19 +79,8 @@ class GameOnUiBinder @Inject constructor(
                 _emitter.onNext(UiEvent.CardInfoClick(cardTextView.text.toString()))
             }
 
-            playersRecycleViews =
-                listOf(team1players, team2players, team3players)
-
-            teamNameViews = listOf(team1Name, team2Name, team3Name)
-            teamScoreViews = listOf(team1Score, team2Score, team3Score)
-            teamLayouts = listOf(team1Layout, team2Layout, team3Layout)
-
-            playersRecycleViews.forEachIndexed { index, recyclerView ->
-                recyclerView.layoutManager = LinearLayoutManager(this.context)
-                recyclerView.itemAnimator = DefaultItemAnimator()
-                recyclerView.adapter = playerAdapters[index]
-            }
-
+            teamsView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            teamsView.adapter = teamsAdapter
         }
         rxTimer.observe()
             .observeOn(schedulerProvider.ui())
@@ -139,8 +116,19 @@ class GameOnUiBinder @Inject constructor(
             }
 
             cardsAmount?.text = state.cardsInDeck.toString()
-            setTeamNamesAndScore(state.teamsWithScore)
-            setTeamPlayers(state.teamsWithPlayers, state.currentPlayer, state.nextPlayer)
+
+            val teamsDataSet = state.teamsWithScore.map { teamWithScore ->
+                val team = state.teamsWithPlayers.find { it.name == teamWithScore.name } ?: TeamWithPlayers()
+                team.let {
+                    TeamsAdapter.TeamItem(
+                        teamWithScore.name,
+                        PlayersDataSet(team.players, state.currentPlayer, state.nextPlayer),
+                        teamWithScore.score
+                    )
+                }
+            }
+            teamsAdapter.setData(teamsDataSet)
+
             roundTextView?.text = state.round.roundNumber.toString()
 
             // Time
@@ -246,46 +234,6 @@ class GameOnUiBinder @Inject constructor(
 
     private fun pauseTimer() {
         rxTimer.pause()
-    }
-
-    private fun setTeamPlayers(teams: List<TeamWithPlayers>, currentPlayer: Player?, nextPlayer: Player?) {
-        teams.forEachIndexed { index, team ->
-            updateTeamPlayers(index, team, currentPlayer, nextPlayer)
-        }
-    }
-
-
-    private fun updateTeamPlayers(index: Int, team: TeamWithPlayers, currentPlayer: Player?, nextPlayer: Player?) {
-        view?.let {
-            teamNameViews[index].text = team.name
-            teamLayouts[index].isVisible = true
-            playerAdapters[index].setData(PlayersDataSet(team.players, currentPlayer, nextPlayer))
-        }
-    }
-
-    private fun setTeamNamesAndScore(teams: List<Team>) {
-        if (teams.size > 2) {
-            view?.team3Layout?.isVisible = true
-        }
-        teams.forEachIndexed { index, team ->
-            when (index) {
-                0 -> {
-                    view?.team1Name?.text = team.name
-                    view?.team1Name?.isSelected = true
-                    view?.team1Score?.text = team.score.toString()
-                }
-                1 -> {
-                    view?.team2Name?.text = team.name
-                    view?.team2Name?.isSelected = true
-                    view?.team2Score?.text = team.score.toString()
-                }
-                2 -> {
-                    view?.team3Name?.text = team.name
-                    view?.team3Name?.isSelected = true
-                    view?.team3Score?.text = team.score.toString()
-                }
-            }
-        }
     }
 
     private fun showLeaveGameDialog() {

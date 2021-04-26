@@ -1,0 +1,51 @@
+package com.gggames.hourglass.presentation.gameon
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.gggames.hourglass.R
+import kotlinx.android.synthetic.main.team_item_layout.view.*
+
+class TeamsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var teams = emptyList<TeamItem>()
+
+    fun setData(teams: List<TeamItem>) {
+        this.teams = teams
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val view: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.team_item_layout, parent, false)
+        view.playersView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = PlayersAdapter()
+        }
+        return TeamsViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as TeamsViewHolder).bind(teams[position])
+    }
+
+    override fun getItemCount() = this.teams.size
+
+
+    inner class TeamsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(item: TeamItem) {
+            itemView.teamName.text = item.name
+            itemView.score.text = item.score.toString()
+            with (itemView.playersView.adapter as PlayersAdapter) {
+                setData(item.playersDataSet)
+            }
+        }
+    }
+
+    data class TeamItem(
+        val name: String,
+        val playersDataSet: PlayersDataSet,
+        val score: Int
+    )
+}
