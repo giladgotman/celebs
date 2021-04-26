@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/background_pieces"
     tools:context="com.gggames.hourglass.presentation.creategame.GamesFragment"
     >
 
@@ -179,7 +179,6 @@
         android:id="@+id/infoSection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         android:paddingStart="@dimen/small_margin"
         android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
