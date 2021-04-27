@@ -9,7 +9,7 @@
     <color name="mouse_grey">#979797</color>
 
     <color name="colorPrimary">@color/peach</color>
-    <color name="colorPrimaryDark">@color/warm_orange</color>
+    <color name="colorPrimaryDark">@color/peach</color>
     <color name="colorAccent">@color/hawaii_blue</color>
     <color name="mainTextColor">@color/black</color>
 

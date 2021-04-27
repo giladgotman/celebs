@@ -3,7 +3,7 @@
     <solid android:color="@color/transparent" />
     <stroke
         android:width="3dp"
-        android:color="@color/colorPrimaryDark" />
+        android:color="@color/mouse_grey" />
     <corners android:radius="@dimen/name_badge_radius" />
     <padding
         android:bottom="@dimen/name_badge_padding"
