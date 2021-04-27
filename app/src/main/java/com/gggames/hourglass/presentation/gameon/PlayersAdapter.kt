@@ -34,17 +34,28 @@ class PlayersAdapter :
 
     inner class PlayersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Player, currentPlayer: Player?, nextPlayer: Player?) {
-            val turnState = when (item.id) {
-                currentPlayer?.id -> PlayerTurnState.Playing
-                nextPlayer?.id -> PlayerTurnState.UpNext
-                else -> PlayerTurnState.Idle
+            val currentOrNextPlayer = currentPlayer ?: nextPlayer
+
+            // if someone is playing show playing and don't show the upnext
+            val turnState = if (item.id == currentOrNextPlayer?.id) {
+                when (item.id) {
+                    currentPlayer?.id -> PlayerTurnState.Playing
+                    nextPlayer?.id -> PlayerTurnState.UpNext
+                    else -> PlayerTurnState.Idle
+                }
+            } else {
+                PlayerTurnState.Idle
             }
             itemView.nameBadge.state = State(item.name, turnState)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return(holder as PlayersAdapter.PlayersViewHolder).bind(dataSet.players[position], dataSet.currentPlayer, dataSet.nextPlayer)
+        return (holder as PlayersAdapter.PlayersViewHolder).bind(
+            dataSet.players[position],
+            dataSet.currentPlayer,
+            dataSet.nextPlayer
+        )
     }
 }
 
