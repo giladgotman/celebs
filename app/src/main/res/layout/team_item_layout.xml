@@ -18,7 +18,6 @@
         tools:text="Team1"
         style="@style/TextViewSubTitle"
         android:textSize="20sp"
-        android:background="@drawable/ic_team_name_bg1"
         />
 
 

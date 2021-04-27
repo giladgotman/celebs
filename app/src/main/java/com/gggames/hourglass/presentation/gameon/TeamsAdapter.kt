@@ -55,7 +55,19 @@ class TeamsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 2 -> R.drawable.ic_team_name_bg3
                 else -> 0
             }
-            itemView.teamName.setBackgroundResource(teamBg)
+
+            val currentOrNextTeam =
+                if (item.playersDataSet.currentPlayer != null) {
+                     item.playersDataSet.currentPlayer.team
+                } else {
+                    item.playersDataSet.nextPlayer?.team
+                }
+
+            if (currentOrNextTeam == item.name) {
+                itemView.teamName.setBackgroundResource(teamBg)
+            } else {
+                itemView.teamName.background = null
+            }
         }
     }
 
