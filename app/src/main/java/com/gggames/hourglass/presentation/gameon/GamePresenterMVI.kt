@@ -44,6 +44,7 @@ class GamePresenterMVI @Inject constructor(
     private val handleEndTurnPressed: HandleEndTurnPressed,
     private val endTurn: EndTurn,
     private val flipLastCard: FlipLastCard,
+    private val checkIfTurnStarted: CheckIfTurnStarted,
     private val showRoundInstructions: ShowRoundInstructions,
     private val audioPlayer: AudioPlayer,
     private val schedulerProvider: BaseSchedulerProvider
@@ -80,7 +81,8 @@ class GamePresenterMVI @Inject constructor(
         val allInput = merge(
             uiEvent.toResult(),
             dataInput,
-            showRoundInstructions()
+            showRoundInstructions(),
+            checkIfTurnStarted()
         )
 
         allInput
