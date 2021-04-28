@@ -71,7 +71,8 @@ interface GameScreenContract {
         val isEndTurnEnabled: Boolean = false,
         val isCardsAmountEnabled: Boolean = false,
         val showPlayTooltip: Boolean = false,
-        val showCardInfoView: Boolean = false
+        val showCardInfoView: Boolean = false,
+        val meActive: Boolean = false
     ) {
         companion object {
             val initialState = State()
@@ -112,6 +113,7 @@ interface GameScreenContract {
                 isCardsAmountEnabled            $isCardsAmountEnabled
                 showPlayTooltip                 $showPlayTooltip
                 showCardInfoView                $showCardInfoView
+                meActive                        $meActive
                 """.trimIndent()
 
     }

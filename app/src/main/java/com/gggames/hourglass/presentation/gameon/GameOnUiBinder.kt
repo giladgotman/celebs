@@ -146,7 +146,10 @@ class GameOnUiBinder @Inject constructor(
             if (state.resetTime) {
                 rxTimer.time = TURN_TIME_MILLIS
             }
-            state.time?.let { rxTimer.updateTime(it) }
+
+            if (!state.meActive) {
+                state.time?.let { rxTimer.updateTime(it) }
+            }
 
             // Buttons
             startButton?.state = state.playButtonState.state

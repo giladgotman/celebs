@@ -77,7 +77,7 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     }
 
     fun resume() {
-        Timber.w("ttt resume, state: $state")
+        Timber.w("ttt resume, state: $state, this: $this")
         if (state == TimerState.NoInit) {
             Timber.w("ttt resume, timer must be initted before resuming")
             return

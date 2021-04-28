@@ -129,7 +129,6 @@ class GamePresenterMVI @Inject constructor(
                 val teamPlayers =
                     result.game.teams.map { team -> team.toTeamWithPlayers(result.players.filter { it.team == team.name }) }
 
-                val updatedTime = result.game.turn.time?.takeIf { !meActive }
                 val newState = previous.copy(
                     // Game
                     teamsWithScore = result.game.teams,
@@ -151,17 +150,18 @@ class GamePresenterMVI @Inject constructor(
                     helpButtonEnabled = meActive && turnState == TurnState.Running,
                     lastPlayer = result.game.currentPlayer ?: previous.lastPlayer,
                     cardsFoundInTurn = cardDeck.filter { it.id in result.game.turn.cardsFound },
-                    time = updatedTime,
+                    time = result.game.turn.time,
                     // Players
                     teamsWithPlayers = teamPlayers,
                     nextPlayer = result.game.turn.nextPlayer ?: result.game.host,
                     // Cards
                     cardsInDeck = result.cards.filter { !it.used }.size,
                     totalCardsInGame = result.cards.size,
-                    useLocalTimer = meActive,
+                    useLocalTimer = true,
                     screenTitle = result.game.name,
                     isEndTurnEnabled = meActive,
-                    isCardsAmountEnabled = result.game.round.let { it.state == RoundState.New && it.roundNumber == 2 }
+                    isCardsAmountEnabled = result.game.round.let { it.state == RoundState.New && it.roundNumber == 2 },
+                    meActive = meActive
                 )
                 // TODO: 25.10.20 remove from here and make it a pure function
                 lastGame = result.game
