@@ -90,7 +90,10 @@ class GameOnUiBinder @Inject constructor(
                     is TimerEvent.UpdatedTime -> view?.hourglass?.state = view!!.hourglass.state.copy(time = it.time)
                     is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
                     is TimerEvent.Tick -> {
-                        audioPlayer.play("shake")
+                        if (it.time == 10000L) {
+                            audioPlayer.play("clock_ticking")
+                        }
+
                     }
                 }
             }.let { disposables.add(it) }

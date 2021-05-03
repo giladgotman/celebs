@@ -58,7 +58,7 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
             }
 
         timerObservable.subscribe({
-            if (time <= 5000L && time % 1000L == 0L && time != 0L) {
+            if (time <= 10000L && time % 1000L == 0L && time != 0L) {
                 _events.onNext(TimerEvent.Tick(time))
             }
         }, {
