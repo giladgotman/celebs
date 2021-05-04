@@ -97,11 +97,8 @@ class GameOnUiBinder @Inject constructor(
                         }
                     }
                     is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
-                    is TimerEvent.Tick -> {
-                        if (timerEvent.time == 10000L) {
-                            audioPlayer.play("clock_ticking")
-                        }
-
+                    is TimerEvent.TimeWarning -> {
+                        audioPlayer.play("clock_ticking")
                     }
                 }
             }.let { disposables.add(it) }

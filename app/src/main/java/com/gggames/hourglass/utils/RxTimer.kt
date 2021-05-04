@@ -13,6 +13,7 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
     private val _events = PublishSubject.create<TimerEvent>()
     private val interval = 100L
     private var state = TimerState.NoInit
+    private var warningSent = false
 
     @VisibleForTesting
     var createTimerObservable: () -> Observable<Long> = {
@@ -39,6 +40,7 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
 
     fun start(elapsedTime: Long? = null) {
         Timber.w("ttt start, elapsedTime: $elapsedTime, state: $state")
+        warningSent = false
 
         if (state == TimerState.Running) {
             disposables.clear()
@@ -58,8 +60,9 @@ class RxTimer constructor(val schedulerProvider: BaseSchedulerProvider) {
             }
 
         timerObservable.subscribe({
-            if (time <= 10000L && time % 1000L == 0L && time != 0L) {
-                _events.onNext(TimerEvent.Tick(time))
+            if (time <= 10000L && !warningSent && time != 0L) {
+                _events.onNext(TimerEvent.TimeWarning(time))
+                warningSent = true
             }
         }, {
             Timber.e(it, "Error while using RxTimer")
@@ -98,6 +101,6 @@ enum class TimerState {
 
 sealed class TimerEvent {
     object TimerEnd : TimerEvent()
-    data class Tick(val time: Long) : TimerEvent()
+    data class TimeWarning(val time: Long) : TimerEvent()
     data class UpdatedTime(val time: Long) : TimerEvent()
 }
