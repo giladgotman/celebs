@@ -43,6 +43,7 @@ class GamePresenterMVI @Inject constructor(
     private val handleBackPressed: HandleBackPressed,
     private val handleEndTurnPressed: HandleEndTurnPressed,
     private val endTurn: EndTurn,
+    private val updateTurnTime: UpdateTurnTime,
     private val flipLastCard: FlipLastCard,
     private val checkIfTurnStarted: CheckIfTurnStarted,
     private val showRoundInstructions: ShowRoundInstructions,
@@ -236,6 +237,7 @@ class GamePresenterMVI @Inject constructor(
                 o.ofType<UiEvent.CardsAmountClick>().switchMap { just(ShowAllCardsResult(cardDeck)) },
                 o.ofType<UiEvent.RoundOverDialogDismissed>().switchMap { just(RoundOverDialogDismissedResult) },
                 o.ofType<UiEvent.CardInfoClick>().switchMap { just(ShowCardInfoResult(it.cardName)) },
+                o.ofType<UiEvent.UpdateTime>().switchMap { updateTurnTime(it.time) },
                 o.ofType<UiEvent.FirstRoundInstructionsDismissed>().switchMap {
                     just(
                         ShowPlayTooltipResult(true),

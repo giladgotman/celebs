@@ -84,13 +84,21 @@ class GameOnUiBinder @Inject constructor(
         }
         rxTimer.observe()
             .observeOn(schedulerProvider.ui())
-            .subscribe {
-                Timber.v("ttt TIMER EVENT $it")
-                when (it) {
-                    is TimerEvent.UpdatedTime -> view?.hourglass?.state = view!!.hourglass.state.copy(time = it.time)
+            .subscribe { timerEvent ->
+                Timber.v("ttt TIMER EVENT $timerEvent")
+                when (timerEvent) {
+                    is TimerEvent.UpdatedTime -> {
+                        view?.let { view ->
+                            // signal big change of time like when info button is clicked
+                            if (view.hourglass.state.time - timerEvent.time >= 10000) {
+                                _emitter.onNext(UiEvent.UpdateTime(time = timerEvent.time))
+                            }
+                            view.hourglass.state = view.hourglass.state.copy(time = timerEvent.time)
+                        }
+                    }
                     is TimerEvent.TimerEnd -> _emitter.onNext(UiEvent.TimerEnd)
                     is TimerEvent.Tick -> {
-                        if (it.time == 10000L) {
+                        if (timerEvent.time == 10000L) {
                             audioPlayer.play("clock_ticking")
                         }
 

@@ -23,6 +23,7 @@ interface GameScreenContract {
         object RoundOverDialogDismissed : UiEvent()
         object FirstRoundInstructionsDismissed : UiEvent()
         data class CardInfoClick(val cardName: String) : UiEvent()
+        data class UpdateTime(val time: Long) : UiEvent()
 
         sealed class MainUiEvent : UiEvent()
 
